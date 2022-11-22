@@ -29,7 +29,7 @@ namespace TranslationHelper.Menus.MainMenus.Edit
             FunctionsCopyPaste.CopyToClipboard(AppData.Main.THFileElementsDataGridView);
         }
 
-        protected bool IsValidToCopy()
+        protected static bool IsValidToCopy()
         {
             if (AppSettings.DGVCellInEditMode) AppData.Main.ControlsSwitch(); // если ячейка в режиме редактирования вылючение действий для ячеек при выходе из режима редактирования
 

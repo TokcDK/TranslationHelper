@@ -43,10 +43,6 @@
             this.allIfExistsFiledirWithNameToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.TSMISetOriginalToTranslationAll = new System.Windows.Forms.ToolStripMenuItem();
             this.TSMISetOriginalToTranslationTable = new System.Windows.Forms.ToolStripMenuItem();
-            this.PasteCellValuesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.ClearSelectedCellsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.ClearTableCellsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.ClearAllCellsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.ToUPPERCASEToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toUPPERCASEAllToolStripMenuItem4 = new System.Windows.Forms.ToolStripMenuItem();
             this.toUPPERCASETableToolStripMenuItem2 = new System.Windows.Forms.ToolStripMenuItem();
@@ -84,6 +80,8 @@
             this.ReloadRulesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.helpToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.aboutToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.ClearTableCellsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.ClearAllCellsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.pOFileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.THsplitContainerFilesElements = new System.Windows.Forms.SplitContainer();
             this.THFilesListPanel = new System.Windows.Forms.Panel();
@@ -106,8 +104,6 @@
             this.toolStripMenuItem5 = new System.Windows.Forms.ToolStripMenuItem();
             this.selectedForceToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.OriginalToTransalationContextToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.PasteToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.CleanSelectedCellsToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
             this.ToolStripMenuItem14 = new System.Windows.Forms.ToolStripMenuItem();
             this.UppercaseToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.LowercaseToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -195,8 +191,6 @@
             this.EditToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.fixCellSpecialSymbolsToolStripMenuItem,
             this.SetOriginalValueToTranslationToolStripMenuItem,
-            this.PasteCellValuesToolStripMenuItem,
-            this.ClearSelectedCellsToolStripMenuItem,
             this.ToUPPERCASEToolStripMenuItem,
             this.FirstCharacterToUppercaseToolStripMenuItem,
             this.ToLowercaseToolStripMenuItem,
@@ -281,41 +275,6 @@
             this.TSMISetOriginalToTranslationTable.Text = "Table";
             this.TSMISetOriginalToTranslationTable.Click += new System.EventHandler(this.TSMISetOriginalToTranslationTable_Click);
             // 
-            // PasteCellValuesToolStripMenuItem
-            // 
-            this.PasteCellValuesToolStripMenuItem.Enabled = false;
-            this.PasteCellValuesToolStripMenuItem.Name = "PasteCellValuesToolStripMenuItem";
-            this.PasteCellValuesToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.V)));
-            this.PasteCellValuesToolStripMenuItem.Size = new System.Drawing.Size(296, 22);
-            this.PasteCellValuesToolStripMenuItem.Text = "Paste";
-            this.PasteCellValuesToolStripMenuItem.Click += new System.EventHandler(this.PasteToolStripMenuItem_Click);
-            // 
-            // ClearSelectedCellsToolStripMenuItem
-            // 
-            this.ClearSelectedCellsToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.ClearTableCellsToolStripMenuItem,
-            this.ClearAllCellsToolStripMenuItem});
-            this.ClearSelectedCellsToolStripMenuItem.Enabled = false;
-            this.ClearSelectedCellsToolStripMenuItem.Name = "ClearSelectedCellsToolStripMenuItem";
-            this.ClearSelectedCellsToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Shift | System.Windows.Forms.Keys.Delete)));
-            this.ClearSelectedCellsToolStripMenuItem.Size = new System.Drawing.Size(296, 22);
-            this.ClearSelectedCellsToolStripMenuItem.Text = "Clear";
-            this.ClearSelectedCellsToolStripMenuItem.Click += new System.EventHandler(this.ClearSelectedCellsToolStripMenuItem_Click);
-            // 
-            // ClearTableCellsToolStripMenuItem
-            // 
-            this.ClearTableCellsToolStripMenuItem.Name = "ClearTableCellsToolStripMenuItem";
-            this.ClearTableCellsToolStripMenuItem.Size = new System.Drawing.Size(101, 22);
-            this.ClearTableCellsToolStripMenuItem.Text = "Table";
-            this.ClearTableCellsToolStripMenuItem.Click += new System.EventHandler(this.ClearTableCellsToolStripMenuItem_Click);
-            // 
-            // ClearAllCellsToolStripMenuItem
-            // 
-            this.ClearAllCellsToolStripMenuItem.Name = "ClearAllCellsToolStripMenuItem";
-            this.ClearAllCellsToolStripMenuItem.Size = new System.Drawing.Size(101, 22);
-            this.ClearAllCellsToolStripMenuItem.Text = "All";
-            this.ClearAllCellsToolStripMenuItem.Click += new System.EventHandler(this.ClearAllCellsToolStripMenuItem_Click);
-            // 
             // ToUPPERCASEToolStripMenuItem
             // 
             this.ToUPPERCASEToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
@@ -330,14 +289,14 @@
             // toUPPERCASEAllToolStripMenuItem4
             // 
             this.toUPPERCASEAllToolStripMenuItem4.Name = "toUPPERCASEAllToolStripMenuItem4";
-            this.toUPPERCASEAllToolStripMenuItem4.Size = new System.Drawing.Size(101, 22);
+            this.toUPPERCASEAllToolStripMenuItem4.Size = new System.Drawing.Size(180, 22);
             this.toUPPERCASEAllToolStripMenuItem4.Text = "All";
             this.toUPPERCASEAllToolStripMenuItem4.Click += new System.EventHandler(this.UPPERCASEallToolStripMenuItem_Click);
             // 
             // toUPPERCASETableToolStripMenuItem2
             // 
             this.toUPPERCASETableToolStripMenuItem2.Name = "toUPPERCASETableToolStripMenuItem2";
-            this.toUPPERCASETableToolStripMenuItem2.Size = new System.Drawing.Size(101, 22);
+            this.toUPPERCASETableToolStripMenuItem2.Size = new System.Drawing.Size(180, 22);
             this.toUPPERCASETableToolStripMenuItem2.Text = "Table";
             this.toUPPERCASETableToolStripMenuItem2.Click += new System.EventHandler(this.UPPERCASETableToolStripMenuItem_Click);
             // 
@@ -617,6 +576,16 @@
             this.aboutToolStripMenuItem.Text = "About";
             this.aboutToolStripMenuItem.Click += new System.EventHandler(this.AboutToolStripMenuItem_Click);
             // 
+            // ClearTableCellsToolStripMenuItem
+            // 
+            this.ClearTableCellsToolStripMenuItem.Name = "ClearTableCellsToolStripMenuItem";
+            this.ClearTableCellsToolStripMenuItem.Size = new System.Drawing.Size(32, 19);
+            // 
+            // ClearAllCellsToolStripMenuItem
+            // 
+            this.ClearAllCellsToolStripMenuItem.Name = "ClearAllCellsToolStripMenuItem";
+            this.ClearAllCellsToolStripMenuItem.Size = new System.Drawing.Size(32, 19);
+            // 
             // pOFileToolStripMenuItem
             // 
             this.pOFileToolStripMenuItem.Name = "pOFileToolStripMenuItem";
@@ -800,13 +769,6 @@
             this.copyNameToolStripMenuItem.Text = "Copy Name";
             this.copyNameToolStripMenuItem.Click += new System.EventHandler(this.CopyNameToolStripMenuItem_Click);
             // 
-            // ClearTableToolStripMenuItem
-            // 
-            this.ClearTableToolStripMenuItem.Name = "ClearTableToolStripMenuItem";
-            this.ClearTableToolStripMenuItem.Size = new System.Drawing.Size(137, 22);
-            this.ClearTableToolStripMenuItem.Text = "Clear";
-            this.ClearTableToolStripMenuItem.Click += new System.EventHandler(this.ClearTableToolStripMenuItem_Click);
-            // 
             // UPPERCASETableToolStripMenuItem1
             // 
             this.UPPERCASETableToolStripMenuItem1.Name = "UPPERCASETableToolStripMenuItem1";
@@ -833,8 +795,6 @@
             this.THFileElementsDataGridViewContextMenuStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.toolStripMenuItem2,
             this.OriginalToTransalationContextToolStripMenuItem,
-            this.PasteToolStripMenuItem,
-            this.CleanSelectedCellsToolStripMenuItem1,
             this.ToolStripMenuItem14,
             this.UppercaseToolStripMenuItem,
             this.LowercaseToolStripMenuItem,
@@ -845,7 +805,7 @@
             this.addToCustomDBToolStripMenuItem,
             this.trimEndToolStripMenuItem1});
             this.THFileElementsDataGridViewContextMenuStrip.Name = "contextMenuStrip1";
-            this.THFileElementsDataGridViewContextMenuStrip.Size = new System.Drawing.Size(238, 290);
+            this.THFileElementsDataGridViewContextMenuStrip.Size = new System.Drawing.Size(238, 246);
             // 
             // toolStripMenuItem2
             // 
@@ -897,23 +857,6 @@
             this.OriginalToTransalationContextToolStripMenuItem.Size = new System.Drawing.Size(237, 22);
             this.OriginalToTransalationContextToolStripMenuItem.Text = "Original=Translation";
             this.OriginalToTransalationContextToolStripMenuItem.Click += new System.EventHandler(this.SetOriginalValueToTranslationToolStripMenuItem_Click);
-            // 
-            // PasteToolStripMenuItem
-            // 
-            this.PasteToolStripMenuItem.Enabled = false;
-            this.PasteToolStripMenuItem.Name = "PasteToolStripMenuItem";
-            this.PasteToolStripMenuItem.Size = new System.Drawing.Size(237, 22);
-            this.PasteToolStripMenuItem.Text = "Paste";
-            this.PasteToolStripMenuItem.Click += new System.EventHandler(this.PasteToolStripMenuItem_Click);
-            // 
-            // CleanSelectedCellsToolStripMenuItem1
-            // 
-            this.CleanSelectedCellsToolStripMenuItem1.Enabled = false;
-            this.CleanSelectedCellsToolStripMenuItem1.Name = "CleanSelectedCellsToolStripMenuItem1";
-            this.CleanSelectedCellsToolStripMenuItem1.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Shift | System.Windows.Forms.Keys.Delete)));
-            this.CleanSelectedCellsToolStripMenuItem1.Size = new System.Drawing.Size(237, 22);
-            this.CleanSelectedCellsToolStripMenuItem1.Text = "Clear";
-            this.CleanSelectedCellsToolStripMenuItem1.Click += new System.EventHandler(this.ClearSelectedCellsToolStripMenuItem_Click);
             // 
             // ToolStripMenuItem14
             // 
@@ -1359,11 +1302,7 @@
         internal System.Windows.Forms.ToolStripMenuItem FixSymbolsTableContextToolStripMenuItem;
         internal System.Windows.Forms.ToolStripMenuItem toolStripMenuItem5;
         internal System.Windows.Forms.ToolStripMenuItem SetOriginalValueToTranslationToolStripMenuItem;
-        internal System.Windows.Forms.ToolStripMenuItem ClearSelectedCellsToolStripMenuItem;
         internal System.Windows.Forms.ToolStripMenuItem OriginalToTransalationContextToolStripMenuItem;
-        internal System.Windows.Forms.ToolStripMenuItem CleanSelectedCellsToolStripMenuItem1;
-        internal System.Windows.Forms.ToolStripMenuItem PasteToolStripMenuItem;
-        internal System.Windows.Forms.ToolStripMenuItem PasteCellValuesToolStripMenuItem;
         internal System.Windows.Forms.ToolStripMenuItem ToUPPERCASEToolStripMenuItem;
         internal System.Windows.Forms.ToolStripMenuItem FirstCharacterToUppercaseToolStripMenuItem;
         internal System.Windows.Forms.ToolStripMenuItem ToLowercaseToolStripMenuItem;

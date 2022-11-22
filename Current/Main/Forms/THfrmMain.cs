@@ -1474,30 +1474,6 @@ namespace TranslationHelper
             }
         }
 
-        private void PasteToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            if (DGVCellInEditMode)//если ячейка в режиме редактирования
-            {
-                //выключение действий для ячеек при выходе из режима редактирования
-                ControlsSwitch();
-            }
-
-            new PasteTranslation().Selected();
-        }
-
-        private void ClearSelectedCellsToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            _ = new ClearCells().Selected();
-        }
-        private void ClearTableCellsToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            _ = new ClearCells().TableT();
-        }
-        private void ClearAllCellsToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            _ = new ClearCells().AllT();
-        }
-
         private void SetColumnSortingToolStripMenuItem_Click(object sender, EventArgs e)
         {
             AppData.CurrentProject.FilesContent.Tables[THFilesList.GetSelectedIndex()].DefaultView.Sort = string.Empty;
@@ -2395,11 +2371,6 @@ namespace TranslationHelper
         private void MakeTranslatedFilecopyForExistOriginalsToolStripMenuItem_Click(object sender, EventArgs e)
         {
             _ = new MakeTranslatedCopyIfFileWithTheNameExists().AllT();
-        }
-
-        private void ClearTableToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            _ = new ClearCells().TableT();
         }
 
         private void UPPERCASETableToolStripMenuItem1_Click(object sender, EventArgs e)
