@@ -347,6 +347,7 @@
     <Compile Include="Functions\OnlineTranslation\TranslationBigBlock.cs" />
     <Compile Include="Functions\OnlineTranslation\TranslationBigBlockMulti.cs" />
     <Compile Include="GlobalSuppressions.cs" />
+    <Compile Include="Menus\FileRowMenus\FileListMenuItemBase.cs" />
     <Compile Include="Menus\FilesListMenus\FileListMenuItemBase.cs" />
     <Compile Include="Menus\FilesListMenus\FileListMenuItemCopyName.cs" />
     <Compile Include="Menus\MainMenus\Edit\MainMenuEditSubBase.cs" />

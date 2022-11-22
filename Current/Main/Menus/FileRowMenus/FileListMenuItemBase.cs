@@ -4,17 +4,16 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using TranslationHelper.Menus.FileRowMenus;
 using TranslationHelper.Menus.MenuTypes;
 
-namespace TranslationHelper.Menus.MainMenus
+namespace TranslationHelper.Menus.FilesListMenus
 {
-    public abstract class MainMenuItemBase : IMainMenuItem
+    internal abstract class FileRowMenuItemBase : IFileRowMenuItem
     {
-        public virtual string ParentMenuName => "";
-
         public abstract string Text { get; }
 
-        public virtual string Description { get; } = "";
+        public abstract string Description { get; }
 
         public virtual string CategoryName => "";
 

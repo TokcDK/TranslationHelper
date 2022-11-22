@@ -3,7 +3,6 @@ using System.Windows.Forms;
 
 namespace TranslationHelper.Menus.MenuTypes
 {
-
     public interface IMenuItem
     {
         /// <summary>
@@ -22,7 +21,7 @@ namespace TranslationHelper.Menus.MenuTypes
         /// </summary>
         string CategoryName { get; }
 
-        /// <summary>
+        /// <summary>s
         /// Menu item action
         /// </summary>
         /// <param name="sender"></param>
@@ -33,5 +32,14 @@ namespace TranslationHelper.Menus.MenuTypes
         /// Shortcut keys to activate the menu
         /// </summary>
         Keys ShortcutKeys { get; }
+
+        /// <summary>
+        /// Child menu items
+        /// </summary>
+        IMenuItem[] Childs { get; }
+    }
+    public interface IChildMenuItem
+    {
+        // detect if not need to add the menu in menus list because it is child menu
     }
 }

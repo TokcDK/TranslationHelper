@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using TranslationHelper.Menus.MenuTypes;
 
 namespace TranslationHelper.Menus.FilesListMenus
 {
@@ -18,5 +19,7 @@ namespace TranslationHelper.Menus.FilesListMenus
         public virtual Keys ShortcutKeys => Keys.None;
 
         public abstract void OnClick(object sender, EventArgs e);
+
+        public virtual IMenuItem[] Childs { get; } = null;
     }
 }
