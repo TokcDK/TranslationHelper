@@ -1,31 +1,26 @@
-﻿using CSRegisterHotkey;
-using System;
+﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Data;
 using System.Diagnostics;
 using System.Drawing;
 using System.Globalization;
 using System.IO;
 using System.Linq;
-using System.Net;
 using System.Reflection;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using CSRegisterHotkey;
 using TranslationHelper.Data;
 using TranslationHelper.Extensions;
-using TranslationHelper.Formats.RPGMaker.Functions;
 using TranslationHelper.Functions;
 using TranslationHelper.Functions.FileElementsFunctions.Row;
 using TranslationHelper.Functions.FileElementsFunctions.Row.AutoSameForSimular;
-using TranslationHelper.Functions.FileElementsFunctions.Row.ExportFormats;
 using TranslationHelper.Functions.FileElementsFunctions.Row.HardFixes;
 using TranslationHelper.Functions.FileElementsFunctions.Row.StringCaseMorph;
 using TranslationHelper.Main.Functions;
-using TranslationHelper.Projects.RPGMTrans;
 
 namespace TranslationHelper
 {
@@ -655,7 +650,7 @@ namespace TranslationHelper
 
                 THInfoTextBox.Text += Environment.NewLine + T._("Selected bytes length") + ":" + " UTF8" + "=" + Encoding.UTF8.GetByteCount(SelectedCellValue) + "/932" + "=" + Encoding.GetEncoding(932).GetByteCount(SelectedCellValue);
 
-                if (AppData.CurrentProject.Name== "RPG Maker MV")
+                if (AppData.CurrentProject.Name == "RPG Maker MV")
                 {
                     THInfoTextBox.Text += Environment.NewLine + Environment.NewLine + T._("Several strings also can be in Plugins.js in 'www\\js' folder and referred plugins in plugins folder.");
                 }
@@ -1423,7 +1418,7 @@ namespace TranslationHelper
         {
             if (forcevalue || (AppSettings.AutotranslationForSimular && (cellchanged || forcerun))) //запуск только при изменении ячейки, чтобы не запускалось каждый раз. Переменная задается в событии изменения ячейки
             {
-                await Task.Run(()=> AutoSameForSimularUtils.Set(InputTableIndex, InputRowIndex, forcevalue)).ConfigureAwait(false);
+                await Task.Run(() => AutoSameForSimularUtils.Set(InputTableIndex, InputRowIndex, forcevalue)).ConfigureAwait(false);
 
                 cellchanged = false;
             }
@@ -1614,35 +1609,31 @@ namespace TranslationHelper
         internal THfrmSearch search;
         private void SearchToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            if (THFilesList.GetSelectedIndex() == -1)
-            {
-            }
-            else
-            {
-                try
-                {
-                    if (search == null || search.IsDisposed)
-                    {
-                        search = new THfrmSearch(THFilesList, THFileElementsDataGridView, THTargetRichTextBox);
-                    }
+            if (THFilesList.GetSelectedIndex() == -1) return;
 
-                    if (search.Visible)
-                    {
-                        search.Activate();//помещает на передний план
-                        search.GetSelectedText();
-                    }
-                    else
-                    {
-                        search.Show();
-                        search.GetSelectedText();
-                        //поместить на передний план
-                        //search.TopMost = true;
-                        //search.TopMost = false;
-                    }
-                }
-                catch
+            try
+            {
+                if (search == null || search.IsDisposed)
                 {
+                    search = new THfrmSearch(THFilesList, THFileElementsDataGridView, THTargetRichTextBox);
                 }
+
+                if (search.Visible)
+                {
+                    search.Activate();//помещает на передний план
+                    search.GetSelectedText();
+                }
+                else
+                {
+                    search.Show();
+                    search.GetSelectedText();
+                    //поместить на передний план
+                    //search.TopMost = true;
+                    //search.TopMost = false;
+                }
+            }
+            catch
+            {
             }
         }
 
@@ -1729,30 +1720,22 @@ namespace TranslationHelper
 
         private void THSourceRichTextBox_MouseEnter(object sender, EventArgs e)
         {
-            if (DGVCellInEditMode)
-            {
-            }
-            else
-            {
-                //отключение действий для ячеек при входе
-                ControlsSwitch();
-                //https://stackoverflow.com/questions/12780961/disable-copy-and-paste-in-datagridview
-                THFileElementsDataGridView.ClipboardCopyMode = DataGridViewClipboardCopyMode.Disable;
-            }
+            if (DGVCellInEditMode) return;
+
+            //отключение действий для ячеек при входе
+            ControlsSwitch();
+            //https://stackoverflow.com/questions/12780961/disable-copy-and-paste-in-datagridview
+            THFileElementsDataGridView.ClipboardCopyMode = DataGridViewClipboardCopyMode.Disable;
 
         }
 
         private void THSourceRichTextBox_MouseLeave(object sender, EventArgs e)
         {
-            if (DGVCellInEditMode)
-            {
-            }
-            else
-            {
-                //влючение действий для ячеек при выходе из режима редктирования
-                //ControlsSwitch(true);
-                THFileElementsDataGridView.ClipboardCopyMode = DataGridViewClipboardCopyMode.EnableWithoutHeaderText;
-            }
+            if (DGVCellInEditMode) return;
+
+            //влючение действий для ячеек при выходе из режима редктирования
+            //ControlsSwitch(true);
+            THFileElementsDataGridView.ClipboardCopyMode = DataGridViewClipboardCopyMode.EnableWithoutHeaderText;
         }
 
         private void THTargetRichTextBox_MouseEnter(object sender, EventArgs e)
@@ -1791,10 +1774,6 @@ namespace TranslationHelper
                     PasteCellValuesToolStripMenuItem.ShortcutKeys = Keys.None;
                 }
             }
-        }
-
-        private /*async*/ void LoadTranslationFromCompatibleSourceToolStripMenuItem_Click(object sender, EventArgs e)
-        {
         }
 
         private void THFiltersDataGridView_MouseEnter(object sender, EventArgs e)
@@ -1933,8 +1912,7 @@ namespace TranslationHelper
 
             int cind = AppData.CurrentProject.FilesContent.Tables[0].Columns[THSettings.OriginalColumnName].Ordinal;// Колонка Original
             int cindTrans = AppData.CurrentProject.FilesContent.Tables[0].Columns[THSettings.TranslationColumnName].Ordinal;// Колонка Original
-            //string[] Files = Directory.GetFiles(AppSettings.THWorkProjectDir, "*.*", SearchOption.AllDirectories);
-            //string[] Dirs = Directory.GetDirectories(AppSettings.THWorkProjectDir, "*", SearchOption.AllDirectories);
+
             int tablesCount = AppData.CurrentProject.FilesContent.Tables.Count;
             for (int t = 0; t < tablesCount; t++)
             {
@@ -1972,45 +1950,6 @@ namespace TranslationHelper
             HardcodedFixesExecuting = true;
 
             _ = new AllHardFixes().AllT();
-
-            //int TCount = ProjectData.THFilesElementsDataset.Tables.Count;
-
-            //Parallel.For(0, TCount, t =>
-            //    {
-            //        var table = ProjectData.THFilesElementsDataset.Tables[t];
-            //        var RCount = table.Rows.Count;
-            //        Parallel.For(0, RCount,
-            //            r =>
-            //            {
-            //                var row = table.Rows[r];
-            //                var translation = row[1] + string.Empty;
-            //                if (!string.IsNullOrWhiteSpace(row[0] + string.Empty))
-            //                {
-            //                    //Set result value
-            //                    string result = FunctionsStringFixes.ApplyHardFixes(row[0] as string, translation);
-            //                    if (!Equals(result, translation))
-            //                    {
-            //                        lock (row)
-            //                        {
-            //                            row[1] = result;
-            //                        }
-            //                    }
-            //                }
-
-            //            });
-            //    });
-
-            //for (int t = 0; t < TCount; t++)
-            //{
-            //    int RCount = ProjectData.THFilesElementsDataset.Tables[t].Rows.Count;
-            //    for (int r = 0; r < RCount; r++)
-            //    {
-            //        var row = ProjectData.THFilesElementsDataset.Tables[t].Rows[r];
-
-            //        //Set result value
-            //        row[1] = FunctionsStringFixes.ApplyHardFixes(row[0] + string.Empty, row[1] + string.Empty);
-            //    }
-            //}
 
             HardcodedFixesExecuting = false;
 
