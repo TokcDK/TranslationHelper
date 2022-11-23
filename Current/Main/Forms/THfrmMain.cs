@@ -48,7 +48,7 @@ namespace TranslationHelper
             AppSettings.ApplicationProductName = Application.ProductName;
             AppSettings.NewLine = Environment.NewLine;
 
-            FunctionsMenus.CreateMainMenus(this.menuStrip1);
+            FunctionsMenus.CreateMainMenus(this.MainMenu);
 
             FunctionsHotkeys.BindShortCuts();
 
@@ -1731,10 +1731,10 @@ namespace TranslationHelper
 
         private void THfrmMain_FormClosed(object sender, FormClosedEventArgs e)
         {
-            if (THFileElementsDataGridViewOriginalToTranslationHotkey == null) return;
+            //if (THFileElementsDataGridViewOriginalToTranslationHotkey == null) return;
 
-            THFileElementsDataGridViewOriginalToTranslationHotkey.Dispose();
-            THFileElementsDataGridViewOriginalToTranslationHotkey = null;
+            //THFileElementsDataGridViewOriginalToTranslationHotkey.Dispose();
+            //THFileElementsDataGridViewOriginalToTranslationHotkey = null;
         }
 
         ///// <summary>
