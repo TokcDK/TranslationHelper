@@ -16,17 +16,13 @@ using TranslationHelper.Projects.RPGMTrans;
 
 namespace TranslationHelper.Menus.MainMenus.File.Import
 {
-    internal class MenuItemImportFromPOfile : IMainMenuItem
+    internal class MenuItemImportFromPOfile : MainMenuFileSubItemBase
     {
-        public string ParentMenuName => T._("File");
+        public override string Text => T._("Import translation from PO file");
 
-        public string Text => T._("Import translation from PO file");
+        public override string CategoryName => "Import";
 
-        public string Description => "";
-
-        public string CategoryName => "Import";
-
-        public void OnClick(object sender, EventArgs e)
+        public override void OnClick(object sender, EventArgs e)
         {
             using (OpenFileDialog d = new OpenFileDialog())
             {

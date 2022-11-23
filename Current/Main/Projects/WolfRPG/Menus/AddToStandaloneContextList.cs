@@ -5,21 +5,20 @@ using System.Text;
 using System.Windows.Forms;
 using TranslationHelper.Data;
 using TranslationHelper.Menus.FileRowMenus;
+using TranslationHelper.Menus.FilesListMenus;
 
 namespace TranslationHelper.Projects.WolfRPG.Menus
 {
-    class AddToStandaloneContextList : IFileRowMenuItem
+    class AddToStandaloneContextList : FileRowMenuItemBase
     {
-        public string Text => "Add standalone context";
+        public override string Text => "Add standalone context";
 
-        public string Description => "Adds entered context as standalone. Each string using the context path will be moved in separated text block in patch in time of open/save";
-
-        public string CategoryName => "";
+        public override string Description => "Adds entered context as standalone. Each string using the context path will be moved in separated text block in patch in time of open/save";
 
         public static string BeginStringMarker = "> BEGIN STRING\r\n";
         public static string EndStringMarker = "\r\n> END STRING\r\n";
         public static string StandaloneContextFilePath = Path.Combine(AppData.CurrentProject.SelectedGameDir, "StandaloneContextList.thdata");
-        public void OnClick(object sender, EventArgs e)
+        public override void OnClick(object sender, EventArgs e)
         {
             var standaloneContextList = LoadList(StandaloneContextFilePath);
 

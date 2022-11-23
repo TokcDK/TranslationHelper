@@ -8,15 +8,13 @@ using TranslationHelper.Menus.FilesListMenus;
 
 namespace TranslationHelper.Projects.RPGMMV.Menus
 {
-    class AddToSkipJS : IFileListMenuItem
+    class AddToSkipJS : FileListMenuItemBase
     {
-        public string Text => "[" + AppData.CurrentProject.Name+ "]" + T._("Skip JS");
+        public override string Text => "[" + AppData.CurrentProject.Name+ "]" + T._("Skip JS");
 
-        public string Description => T._("Add selected item to Skip.js file");
+        public override string Description => T._("Add selected item to Skip.js file");
 
-        public string CategoryName => "";
-
-        public void OnClick(object sender, EventArgs e)
+        public override void OnClick(object sender, EventArgs e)
         {
             //read and check the name
             var names = AppData.THFilesList.CopySelectedNames();
