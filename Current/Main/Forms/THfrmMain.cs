@@ -48,7 +48,7 @@ namespace TranslationHelper
             AppSettings.ApplicationProductName = Application.ProductName;
             AppSettings.NewLine = Environment.NewLine;
 
-            BindShortCuts();
+            FunctionsHotkeys.BindShortCuts();
 
             AppData.SetSettings();
 
@@ -70,90 +70,6 @@ namespace TranslationHelper
 
             //Test Проверка ключа Git для планируемой функции использования Git
             //string GitPath = Registry.GetValue("HKEY_LOCAL_MACHINE\\SOFTWARE\\GitForWindows", "InstallPath", null).ToString();
-        }
-
-        HotKeyRegister THFileElementsDataGridViewOriginalToTranslationHotkey;
-        Keys registerKey = Keys.None;
-        KeyModifiers registerModifiers = KeyModifiers.None;
-        private void BindShortCuts()
-        {
-            //THFileElementsDataGridViewOriginalToTranslationHotkey = new HotKeyRegister(this.Handle, 100, KeyModifiers.None, Keys.F8);
-            //THFileElementsDataGridViewOriginalToTranslationHotkey.HotKeyPressed += new EventHandler(SetOriginalValueToTranslationToolStripMenuItem_Click);
-        }
-
-        /// <summary>
-        /// Handle the KeyDown of tbHotKey. In this event handler, check the pressed keys.
-        /// The keys that must be pressed in combination with the key Ctrl, Shift or Alt,
-        /// like Ctrl+Alt+T. The method HotKeyRegister.GetModifiers could check whether 
-        /// "T" is pressed.
-        /// </summary>
-        private void TbHotKey_KeyDown(object sender, KeyEventArgs e)
-        {
-            // The key event should not be sent to the underlying control.
-            e.SuppressKeyPress = true;
-
-            // Check whether the modifier keys are pressed.
-            if (e.Modifiers != Keys.None)
-            {
-                KeyModifiers modifiers = HotKeyRegister.GetModifiers(e.KeyData, out Keys key);
-
-                // If the pressed key is valid...
-                if (key != Keys.None)
-                {
-                    this.registerKey = key;
-                    this.registerModifiers = modifiers;
-
-                    // Display the pressed key in the textbox.
-                    //tbHotKey.Text = string.Format("{0}+{1}",
-                    //    this.registerModifiers, this.registerKey);
-
-                    // Enable the button.
-                    //btnRegister.Enabled = true;
-                }
-            }
-        }
-
-        /// <summary>
-        /// Handle the Click event of btnRegister.
-        /// </summary>
-        private void BtnRegister_Click(object sender, EventArgs e)
-        {
-            try
-            {
-                // Register the hotkey.
-                THFileElementsDataGridViewOriginalToTranslationHotkey = new HotKeyRegister(this.Handle, 100,
-                    this.registerModifiers, this.registerKey);
-
-                // Register the HotKeyPressed event.
-                THFileElementsDataGridViewOriginalToTranslationHotkey.HotKeyPressed += new EventHandler(HotKeyPressed);
-
-                // Update the UI.
-                //btnRegister.Enabled = false;
-                //tbHotKey.Enabled = false;
-                //btnUnregister.Enabled = true;
-            }
-            catch (ArgumentException argumentException)
-            {
-                _ = MessageBox.Show(argumentException.Message);
-            }
-            catch (ApplicationException applicationException)
-            {
-                _ = MessageBox.Show(applicationException.Message);
-            }
-        }
-
-        /// <summary>
-        /// Show a message box if the HotKeyPressed event is raised.
-        /// </summary>
-        void HotKeyPressed(object sender, EventArgs e)
-        {
-            //SetOriginalToTranslation();
-
-            //if (this.WindowState == FormWindowState.Minimized)
-            //{
-            //    this.WindowState = FormWindowState.Normal;
-            //}
-            //this.Activate();
         }
 
         private void SetUIStrings()

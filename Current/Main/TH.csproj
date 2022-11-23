@@ -326,6 +326,7 @@
     <Compile Include="Functions\FilesListControl\FilesListControlItem\FilesListControlItemBase.cs" />
     <Compile Include="Functions\FilesListControl\FilesListControlItem\FilesListControlItemListItem.cs" />
     <Compile Include="Functions\FilesListControl\FilesListControlListBox.cs" />
+    <Compile Include="Functions\FunctionsHotkeys.cs" />
     <Compile Include="Functions\FunctionsInterfaces.cs" />
     <Compile Include="Functions\FunctionsLoadTranslationDB.cs" />
     <Compile Include="Functions\FunctionsLogs.cs" />
