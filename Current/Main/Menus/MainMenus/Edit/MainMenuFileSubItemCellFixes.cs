@@ -1,23 +1,29 @@
 ﻿using System;
 using System.Windows.Forms;
 using TranslationHelper.Data;
+using TranslationHelper.Functions.FileElementsFunctions.Row;
 using TranslationHelper.Functions.FileElementsFunctions.Row.StringCaseMorph;
 using TranslationHelper.Menus.MenuTypes;
 
-namespace TranslationHelper.Menus.MainMenus.Edit.CaseMorph
+namespace TranslationHelper.Menus.MainMenus.Edit.CellFixes
 {
-    public abstract class MainMenuFileSubItemCaseMorphToUpperCategory : MainMenuFileSubItemCaseMorphBase
+    public abstract class MainMenuFileSubItemCellFixesBase : MainMenuEditSubItemBase
     {
-        public override IMenuItem[] Childs => base.Childs;
+        public override string CategoryName => T._("CellFixes");
     }
 
-    public abstract class MainMenuFileSubItemCaseMorphToUpperBase : IMenuItem, IChildMenuItem
+    public abstract class MainMenuFileSubItemCellFixes : MainMenuFileSubItemCellFixesBase
+    {
+        public override IMenuItem[] Childs => new IMenuItem[1] { new MenuItemCaseCellFixesVariated() };
+    }
+
+    public abstract class MainMenuFileSubItemCellFixesSubBase : IMenuItem, IChildMenuItem
     {
         public abstract string Text { get; }
 
         public virtual string Description { get; } = "";
 
-        public virtual string CategoryName => "ToUpper";
+        public virtual string CategoryName => "";
 
         public virtual Keys ShortcutKeys => Keys.None;
 
@@ -26,11 +32,11 @@ namespace TranslationHelper.Menus.MainMenus.Edit.CaseMorph
         public virtual IMenuItem[] Childs { get; } = null;
     }
 
-    internal class MenuItemCaseMorphUpperVariated : MainMenuFileSubItemCaseMorphToUpperBase
+    internal class MenuItemCaseCellFixesVariated : MainMenuFileSubItemCellFixesSubBase
     {
-        public override string Text => T._("To Upper");
+        public override string Text => T._("Cell Fixes");
 
-        public override string Description => T._("Change case of first char of rows to Upper");
+        public override string Description => T._("Fix cells by regex rules");
 
         public override void OnClick(object sender, EventArgs e)
         {
@@ -49,39 +55,39 @@ namespace TranslationHelper.Menus.MainMenus.Edit.CaseMorph
         }
     }
 
-    internal class MenuItemCaseMorphUpperAll : MainMenuFileSubItemCaseMorphToUpperBase
+    internal class MenuItemCellFixesAll : MainMenuFileSubItemCellFixesSubBase
     {
         public override string Text => T._("All");
 
-        public override string Description => T._("Change case of first char of all rows to Upper");
+        public override string Description => T._("Cell Fixes for all");
 
         public override void OnClick(object sender, EventArgs e)
         {
-            _ = new ToUpperCaseFirst().AllT();
+            _ = new FixCells().AllT();
         }
     }
 
-    internal class MenuItemCaseMorphUpperTable : MainMenuFileSubItemCaseMorphToUpperBase
+    internal class MenuItemCellFixesTable : MainMenuFileSubItemCellFixesSubBase
     {
         public override string Text => T._("Table");
 
-        public override string Description => T._("Change case of first char of each row in table to Upper");
+        public override string Description => T._("Cell Fixes for selected tables");
 
         public override void OnClick(object sender, EventArgs e)
         {
-            _ = new ToUpperCaseFirst().TableT();
+            _ = new FixCells().TableT();
         }
     }
 
-    internal class MenuItemCaseMorphUpperSelected : MainMenuFileSubItemCaseMorphToUpperBase
+    internal class MenuItemCellFixesSelected : MainMenuFileSubItemCellFixesSubBase
     {
-        public override string Text => T._("Table");
+        public override string Text => T._("Row");
 
-        public override string Description => T._("Change case of first char of each row in table to Upper");
+        public override string Description => T._("Cell Fixes for selected rows");
 
         public override void OnClick(object sender, EventArgs e)
         {
-            _ = new ToUpperCaseFirst().Selected();
+            _ = new FixCells().Selected();
         }
     }
 }
