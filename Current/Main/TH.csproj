@@ -397,9 +397,13 @@
     <Compile Include="Menus\MainMenus\File\MenuItemWriteTranslation.cs" />
     <Compile Include="Menus\MainMenus\File\MenuItemOpen.cs" />
     <Compile Include="Menus\MainMenus\File\Other\MainMenuFileSubItemOtherBase.cs" />
+    <Compile Include="Menus\MainMenus\Help\MainMenuHelpSubItemBase.cs" />
+    <Compile Include="Menus\MainMenus\Help\MenuItemShowAboutWindow.cs" />
     <Compile Include="Menus\MainMenus\MainMenuItemBase.cs" />
     <Compile Include="Menus\MainMenus\View\MainMenuViewSubItemBase.cs" />
-    <Compile Include="Menus\MainMenus\View\MenuItemOpenTranslationRulesFile - Copy.cs" />
+    <Compile Include="Menus\MainMenus\View\MenuItemReloadRules.cs" />
+    <Compile Include="Menus\MainMenus\View\MenuItemOpenSettings.cs" />
+    <Compile Include="Menus\MainMenus\View\MenuItemOpenCellFixesFile.cs" />
     <Compile Include="Menus\MainMenus\View\MenuItemOpenTranslationRulesFile.cs" />
     <Compile Include="Menus\MainMenus\View\MenuItemOpenProjectsDir.cs" />
     <Compile Include="Menus\MainMenus\View\MenuItemShowCheckboxvalue.cs" />

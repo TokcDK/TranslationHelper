@@ -771,12 +771,6 @@ namespace TranslationHelper
             }
         }
 
-        private void AboutToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            THfrmAbout AboutForm = new THfrmAbout();
-            AboutForm.Show();
-        }
-
         private void THTargetTextBox_KeyDown(object sender, KeyEventArgs e)
         {
             //Ctrl+Del function
@@ -843,29 +837,6 @@ namespace TranslationHelper
                 //https://10tec.com/articles/why-datagridview-slow.aspx
                 //THFilesElementsDataset.Tables[THFilesListBox.SelectedIndex].DefaultView.RowFilter = string.Format("" + THFiltersDataGridView.Columns[e.ColumnIndex].Name + " LIKE '%{0}%'", THFiltersDataGridView.Rows[0].Cells[e.ColumnIndex].Value);
                 AppData.CurrentProject.FilesContent.Tables[THFilesList.GetSelectedIndex()].DefaultView.RowFilter = OverallFilter;
-            }
-            catch
-            {
-            }
-        }
-
-        private void SettingsToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            try
-            {
-                if (AppData.Settings == null || AppData.Settings.IsDisposed)
-                {
-                    AppData.Settings = new THfrmSettings();
-                }
-
-                if (AppData.Settings.Visible)
-                {
-                    AppData.Settings.Activate();
-                }
-                else
-                {
-                    AppData.Settings.Show();
-                }
             }
             catch
             {
@@ -1767,120 +1738,6 @@ namespace TranslationHelper
         private void TableCompleteInfoLabel_Click(object sender, EventArgs e)
         {
             FunctionsTable.ShowFirstRowWithEmptyTranslation();
-        }
-
-        private void ReloadRulesToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            ReloadTranslationRegexRules();
-            ReloadCellFixesRegexRules();
-            FunctionsSounds.LoadDBCompleted();
-        }
-
-        internal static void ReloadTranslationRegexRules()
-        {
-            // make temp dict
-            var ProjectDataTranslationRegexRules = new Dictionary<string, string>();
-
-            //если файл с правилами существует
-            if (File.Exists(THSettings.TranslationRegexRulesFilePath))
-            {
-                //читать файл с правилами
-                using (var rules = new StreamReader(THSettings.TranslationRegexRulesFilePath))
-                {
-                    //regex правило и результат из файла
-                    var regexPattern = string.Empty;
-                    var regexReplacement = string.Empty;
-                    var ReadRule = true;
-                    while (!rules.EndOfStream)
-                    {
-                        try
-                        {
-                            //читать правило и результат
-                            if (ReadRule)
-                            {
-                                regexPattern = rules.ReadLine();
-                                if (string.IsNullOrWhiteSpace(regexPattern) || regexPattern.TrimStart().StartsWith(";"))//игнорировать комментарии
-                                {
-                                    continue;
-                                }
-                                ReadRule = !ReadRule;
-                                continue;
-                            }
-                            else
-                            {
-                                regexReplacement = rules.ReadLine();
-                                if (string.IsNullOrWhiteSpace(regexPattern) || regexReplacement.TrimStart().StartsWith(";") || !FunctionsString.IsStringAContainsStringB(regexReplacement, "$"))//игнорировать комментарии
-                                {
-                                    continue;
-                                }
-                                ReadRule = !ReadRule;
-                            }
-
-                            ProjectDataTranslationRegexRules.TryAdd(regexPattern, regexReplacement);
-                        }
-                        catch
-                        {
-
-                        }
-                    }
-                }
-            }
-
-            // re:Set rules
-            AppData.TranslationRegexRules = ProjectDataTranslationRegexRules;
-        }
-
-        internal static void ReloadCellFixesRegexRules()
-        {
-            var ProjectDataCellFixesRegexRules = new Dictionary<string, string>();
-
-            //если файл с правилами существует
-            if (File.Exists(THSettings.CellFixesRegexRulesFilePath))
-            {
-                //читать файл с правилами
-                using (var rules = new StreamReader(THSettings.CellFixesRegexRulesFilePath))
-                {
-                    //regex правило и результат из файла
-                    var regexPattern = string.Empty;
-                    var regexReplacement = string.Empty;
-                    var ReadRule = true;
-                    while (!rules.EndOfStream)
-                    {
-                        try
-                        {
-                            //читать правило и результат
-                            if (ReadRule)
-                            {
-                                regexPattern = rules.ReadLine();
-                                if (string.IsNullOrEmpty(regexPattern) || regexPattern.TrimStart().StartsWith(";"))//игнорировать комментарии
-                                {
-                                    continue;
-                                }
-                                ReadRule = !ReadRule;
-                                continue;
-                            }
-                            else
-                            {
-                                regexReplacement = rules.ReadLine();
-                                if (string.IsNullOrEmpty(regexPattern) || regexReplacement.TrimStart().StartsWith(";"))//игнорировать комментарии
-                                {
-                                    continue;
-                                }
-                                ReadRule = !ReadRule;
-                            }
-
-                            ProjectDataCellFixesRegexRules.TryAdd(regexPattern, regexReplacement);
-                        }
-                        catch
-                        {
-
-                        }
-                    }
-                }
-            }
-
-            // re:Set rules
-            AppData.CellFixesRegexRules = ProjectDataCellFixesRegexRules;
         }
 
         private void THTargetRichTextBox_TextChanged(object sender, EventArgs e)
