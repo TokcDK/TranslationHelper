@@ -11,7 +11,7 @@ namespace TranslationHelper.Menus.MainMenus.Edit.CaseMorph
         public override string CategoryName => T._("Case morph");
     }
     
-    public abstract class MainMenuFileSubItemCaseMorphToUpper : MainMenuFileSubItemCaseMorphBase
+    public abstract class MainMenuFileSubItemCaseMorphToUpperFirst : MainMenuFileSubItemCaseMorphBase
     {
         public override IMenuItem[] Childs => new IMenuItem[1] { new MenuItemCaseMorphUpperVariated() };
     }
@@ -22,7 +22,7 @@ namespace TranslationHelper.Menus.MainMenus.Edit.CaseMorph
 
         public virtual string Description { get; } = "";
 
-        public virtual string CategoryName => "ToUpper";
+        public virtual string CategoryName => "";
 
         public virtual Keys ShortcutKeys => Keys.None;
 
