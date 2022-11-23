@@ -14,7 +14,11 @@ namespace TranslationHelper.Menus.MainMenus.Edit.CellFixes
 
     public abstract class MainMenuFileSubItemCellFixes : MainMenuFileSubItemCellFixesBase
     {
-        public override IMenuItem[] Childs => new IMenuItem[1] { new MenuItemCaseCellFixesVariated() };
+        public override IMenuItem[] Childs => new IMenuItem[2] 
+        { 
+            new MenuItemCaseCellFixesVariated(),
+            new MenuItemCaseCellFixesVariatedForce()
+        };
     }
 
     public abstract class MainMenuFileSubItemCellFixesSubBase : IMenuItem, IChildMenuItem
@@ -51,6 +55,29 @@ namespace TranslationHelper.Menus.MainMenus.Edit.CellFixes
             else
             {
                 _ = new ToUpperCaseFirst().Selected();
+            }
+        }
+    }
+
+    internal class MenuItemCaseCellFixesVariatedForce : MainMenuFileSubItemCellFixesSubBase
+    {
+        public override string Text => T._("Cell Fixes (Force)");
+
+        public override string Description => T._("Force fix cells by regex rules");
+
+        public override void OnClick(object sender, EventArgs e)
+        {
+            if (AppData.THFilesList.SelectedItems.Count == AppData.THFilesList.Items.Count)
+            {
+                _ = new FixCellsForce().AllT();
+            }
+            else if (AppData.Main.THFileElementsDataGridView.Rows.Count == AppData.Main.THFileElementsDataGridView.SelectedRows.Count)
+            {
+                _ = new FixCellsForce().TableT();
+            }
+            else
+            {
+                _ = new FixCellsForce().Selected();
             }
         }
     }

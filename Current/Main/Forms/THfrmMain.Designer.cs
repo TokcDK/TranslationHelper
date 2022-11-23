@@ -186,41 +186,6 @@
             this.EditToolStripMenuItem.Size = new System.Drawing.Size(39, 20);
             this.EditToolStripMenuItem.Text = "Edit";
             // 
-            // fixCellSpecialSymbolsToolStripMenuItem
-            // 
-            this.fixCellSpecialSymbolsToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.FixCellsSelectedToolStripMenuItem,
-            this.FixCellsTableToolStripMenuItem,
-            this.allToolStripMenuItem});
-            this.fixCellSpecialSymbolsToolStripMenuItem.Name = "fixCellSpecialSymbolsToolStripMenuItem";
-            this.fixCellSpecialSymbolsToolStripMenuItem.Size = new System.Drawing.Size(237, 22);
-            this.fixCellSpecialSymbolsToolStripMenuItem.Text = "Fix cell special symbols";
-            // 
-            // FixCellsSelectedToolStripMenuItem
-            // 
-            this.FixCellsSelectedToolStripMenuItem.Enabled = false;
-            this.FixCellsSelectedToolStripMenuItem.Name = "FixCellsSelectedToolStripMenuItem";
-            this.FixCellsSelectedToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)(((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Shift) 
-            | System.Windows.Forms.Keys.F)));
-            this.FixCellsSelectedToolStripMenuItem.Size = new System.Drawing.Size(190, 22);
-            this.FixCellsSelectedToolStripMenuItem.Text = "Selected";
-            this.FixCellsSelectedToolStripMenuItem.Click += new System.EventHandler(this.CellFixesSelectedToolStripMenuItem_Click);
-            // 
-            // FixCellsTableToolStripMenuItem
-            // 
-            this.FixCellsTableToolStripMenuItem.Enabled = false;
-            this.FixCellsTableToolStripMenuItem.Name = "FixCellsTableToolStripMenuItem";
-            this.FixCellsTableToolStripMenuItem.Size = new System.Drawing.Size(190, 22);
-            this.FixCellsTableToolStripMenuItem.Text = "Table";
-            this.FixCellsTableToolStripMenuItem.Click += new System.EventHandler(this.CellFixesTableToolStripMenuItem_Click);
-            // 
-            // allToolStripMenuItem
-            // 
-            this.allToolStripMenuItem.Name = "allToolStripMenuItem";
-            this.allToolStripMenuItem.Size = new System.Drawing.Size(190, 22);
-            this.allToolStripMenuItem.Text = "All";
-            this.allToolStripMenuItem.Click += new System.EventHandler(this.CellFixesAllToolStripMenuItem_Click);
-            // 
             // SetOriginalValueToTranslationToolStripMenuItem
             // 
             this.SetOriginalValueToTranslationToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
@@ -681,48 +646,6 @@
             this.trimEndToolStripMenuItem1});
             this.THFileElementsDataGridViewContextMenuStrip.Name = "contextMenuStrip1";
             this.THFileElementsDataGridViewContextMenuStrip.Size = new System.Drawing.Size(238, 180);
-            // 
-            // toolStripMenuItem2
-            // 
-            this.toolStripMenuItem2.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.FixSymbolsContextToolStripMenuItem,
-            this.FixSymbolsTableContextToolStripMenuItem,
-            this.toolStripMenuItem5,
-            this.selectedForceToolStripMenuItem});
-            this.toolStripMenuItem2.Name = "toolStripMenuItem2";
-            this.toolStripMenuItem2.Size = new System.Drawing.Size(237, 22);
-            this.toolStripMenuItem2.Text = "Fix cell special symbols";
-            this.toolStripMenuItem2.Click += new System.EventHandler(this.CellFixesSelectedToolStripMenuItem_Click);
-            // 
-            // FixSymbolsContextToolStripMenuItem
-            // 
-            this.FixSymbolsContextToolStripMenuItem.Enabled = false;
-            this.FixSymbolsContextToolStripMenuItem.Name = "FixSymbolsContextToolStripMenuItem";
-            this.FixSymbolsContextToolStripMenuItem.Size = new System.Drawing.Size(158, 22);
-            this.FixSymbolsContextToolStripMenuItem.Text = "Selected";
-            this.FixSymbolsContextToolStripMenuItem.Click += new System.EventHandler(this.CellFixesSelectedToolStripMenuItem_Click);
-            // 
-            // FixSymbolsTableContextToolStripMenuItem
-            // 
-            this.FixSymbolsTableContextToolStripMenuItem.Enabled = false;
-            this.FixSymbolsTableContextToolStripMenuItem.Name = "FixSymbolsTableContextToolStripMenuItem";
-            this.FixSymbolsTableContextToolStripMenuItem.Size = new System.Drawing.Size(158, 22);
-            this.FixSymbolsTableContextToolStripMenuItem.Text = "Table";
-            this.FixSymbolsTableContextToolStripMenuItem.Click += new System.EventHandler(this.CellFixesTableToolStripMenuItem_Click);
-            // 
-            // toolStripMenuItem5
-            // 
-            this.toolStripMenuItem5.Name = "toolStripMenuItem5";
-            this.toolStripMenuItem5.Size = new System.Drawing.Size(158, 22);
-            this.toolStripMenuItem5.Text = "All";
-            this.toolStripMenuItem5.Click += new System.EventHandler(this.CellFixesAllToolStripMenuItem_Click);
-            // 
-            // selectedForceToolStripMenuItem
-            // 
-            this.selectedForceToolStripMenuItem.Name = "selectedForceToolStripMenuItem";
-            this.selectedForceToolStripMenuItem.Size = new System.Drawing.Size(158, 22);
-            this.selectedForceToolStripMenuItem.Text = "Selected (Force)";
-            this.selectedForceToolStripMenuItem.Click += new System.EventHandler(this.SelectedForceToolStripMenuItem_Click);
             // 
             // OriginalToTransalationContextToolStripMenuItem
             // 

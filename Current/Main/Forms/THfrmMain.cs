@@ -1910,11 +1910,6 @@ namespace TranslationHelper
             }
         }
 
-        private void SelectedForceToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            _ = new FixCellsForce().Selected();
-        }
-
         private void ReloadRulesToolStripMenuItem_Click(object sender, EventArgs e)
         {
             ReloadTranslationRegexRules();
