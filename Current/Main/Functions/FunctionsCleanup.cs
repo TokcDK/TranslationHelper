@@ -127,11 +127,11 @@ namespace TranslationHelper.Data
 
                 //remove project category
                 var CategoryName = T._("Project");
-                foreach(var menu in AppData.Main.CMSFilesList.Items)
+                foreach(var menu in AppData.Main.FilesListMenu.Items)
                 {
                     if(menu is System.Windows.Forms.ToolStripMenuItem t && t.Text== CategoryName)
                     {
-                        AppData.Main.CMSFilesList.Items.Remove(t);
+                        AppData.Main.FilesListMenu.Items.Remove(t);
                         break;
                     }
                 }

@@ -64,9 +64,8 @@
             this.THFiltersDataGridView = new System.Windows.Forms.DataGridView();
             this.THbtnMainResetTable = new System.Windows.Forms.Button();
             this.THFileElementsDataGridView = new System.Windows.Forms.DataGridView();
-            this.CMSFilesList = new System.Windows.Forms.ContextMenuStrip(this.components);
-            this.THFileElementsDataGridViewContextMenuStrip = new System.Windows.Forms.ContextMenuStrip(this.components);
-            this.addToCustomDBToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.FilesListMenu = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.RowMenu = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.FixSymbolsContextToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.FixSymbolsTableContextToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripMenuItem5 = new System.Windows.Forms.ToolStripMenuItem();
@@ -101,7 +100,6 @@
             this.tlpFileElementsFilterAndReset.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.THFiltersDataGridView)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.THFileElementsDataGridView)).BeginInit();
-            this.THFileElementsDataGridViewContextMenuStrip.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.THEditElementsSplitContainer)).BeginInit();
             this.THEditElementsSplitContainer.Panel1.SuspendLayout();
             this.THEditElementsSplitContainer.Panel2.SuspendLayout();
@@ -128,7 +126,122 @@
             this.menuStrip1.Name = "menuStrip1";
             this.menuStrip1.Size = new System.Drawing.Size(790, 24);
             this.menuStrip1.TabIndex = 1;
-            this.menuStrip1.Text = "menuStrip1";
+            this.menuStrip1.Text = "MainMenu";
+            // 
+            // TSMIEnQuotesAll
+            // 
+            this.TSMIEnQuotesAll.Name = "TSMIEnQuotesAll";
+            this.TSMIEnQuotesAll.Size = new System.Drawing.Size(32, 19);
+            // 
+            // TSMIEnQuotesTable
+            // 
+            this.TSMIEnQuotesTable.Name = "TSMIEnQuotesTable";
+            this.TSMIEnQuotesTable.Size = new System.Drawing.Size(32, 19);
+            // 
+            // fixMessagesForAllToolStripMenuItem
+            // 
+            this.fixMessagesForAllToolStripMenuItem.Name = "fixMessagesForAllToolStripMenuItem";
+            this.fixMessagesForAllToolStripMenuItem.Size = new System.Drawing.Size(32, 19);
+            // 
+            // tableToolStripMenuItem
+            // 
+            this.tableToolStripMenuItem.Name = "tableToolStripMenuItem";
+            this.tableToolStripMenuItem.Size = new System.Drawing.Size(32, 19);
+            // 
+            // splitLinesWhichLongerOfLimitALLToolStripMenuItem
+            // 
+            this.splitLinesWhichLongerOfLimitALLToolStripMenuItem.Name = "splitLinesWhichLongerOfLimitALLToolStripMenuItem";
+            this.splitLinesWhichLongerOfLimitALLToolStripMenuItem.Size = new System.Drawing.Size(32, 19);
+            // 
+            // splitLinesWhichLongerOfLimitTableToolStripMenuItem
+            // 
+            this.splitLinesWhichLongerOfLimitTableToolStripMenuItem.Name = "splitLinesWhichLongerOfLimitTableToolStripMenuItem";
+            this.splitLinesWhichLongerOfLimitTableToolStripMenuItem.Size = new System.Drawing.Size(32, 19);
+            // 
+            // allIfExistsFiledirWithNameToolStripMenuItem
+            // 
+            this.allIfExistsFiledirWithNameToolStripMenuItem.Name = "allIfExistsFiledirWithNameToolStripMenuItem";
+            this.allIfExistsFiledirWithNameToolStripMenuItem.Size = new System.Drawing.Size(32, 19);
+            // 
+            // TSMISetOriginalToTranslationAll
+            // 
+            this.TSMISetOriginalToTranslationAll.Name = "TSMISetOriginalToTranslationAll";
+            this.TSMISetOriginalToTranslationAll.Size = new System.Drawing.Size(32, 19);
+            // 
+            // TSMISetOriginalToTranslationTable
+            // 
+            this.TSMISetOriginalToTranslationTable.Name = "TSMISetOriginalToTranslationTable";
+            this.TSMISetOriginalToTranslationTable.Size = new System.Drawing.Size(32, 19);
+            // 
+            // tableToolStripMenuItem2
+            // 
+            this.tableToolStripMenuItem2.Name = "tableToolStripMenuItem2";
+            this.tableToolStripMenuItem2.Size = new System.Drawing.Size(32, 19);
+            // 
+            // allToolStripMenuItem3
+            // 
+            this.allToolStripMenuItem3.Name = "allToolStripMenuItem3";
+            this.allToolStripMenuItem3.Size = new System.Drawing.Size(32, 19);
+            // 
+            // FixCellsSelectedToolStripMenuItem
+            // 
+            this.FixCellsSelectedToolStripMenuItem.Name = "FixCellsSelectedToolStripMenuItem";
+            this.FixCellsSelectedToolStripMenuItem.Size = new System.Drawing.Size(32, 19);
+            // 
+            // FixCellsTableToolStripMenuItem
+            // 
+            this.FixCellsTableToolStripMenuItem.Name = "FixCellsTableToolStripMenuItem";
+            this.FixCellsTableToolStripMenuItem.Size = new System.Drawing.Size(32, 19);
+            // 
+            // allToolStripMenuItem
+            // 
+            this.allToolStripMenuItem.Name = "allToolStripMenuItem";
+            this.allToolStripMenuItem.Size = new System.Drawing.Size(32, 19);
+            // 
+            // toUPPERCASEAllToolStripMenuItem4
+            // 
+            this.toUPPERCASEAllToolStripMenuItem4.Name = "toUPPERCASEAllToolStripMenuItem4";
+            this.toUPPERCASEAllToolStripMenuItem4.Size = new System.Drawing.Size(32, 19);
+            // 
+            // toUPPERCASETableToolStripMenuItem2
+            // 
+            this.toUPPERCASETableToolStripMenuItem2.Name = "toUPPERCASETableToolStripMenuItem2";
+            this.toUPPERCASETableToolStripMenuItem2.Size = new System.Drawing.Size(32, 19);
+            // 
+            // firstCharacterToUppercaseAllToolStripMenuItem
+            // 
+            this.firstCharacterToUppercaseAllToolStripMenuItem.Name = "firstCharacterToUppercaseAllToolStripMenuItem";
+            this.firstCharacterToUppercaseAllToolStripMenuItem.Size = new System.Drawing.Size(32, 19);
+            // 
+            // firstCharacterToUppercaseTableToolStripMenuItem
+            // 
+            this.firstCharacterToUppercaseTableToolStripMenuItem.Name = "firstCharacterToUppercaseTableToolStripMenuItem";
+            this.firstCharacterToUppercaseTableToolStripMenuItem.Size = new System.Drawing.Size(32, 19);
+            // 
+            // allToolStripMenuItem2
+            // 
+            this.allToolStripMenuItem2.Name = "allToolStripMenuItem2";
+            this.allToolStripMenuItem2.Size = new System.Drawing.Size(32, 19);
+            // 
+            // LowercaseTableToolStripMenuItem4
+            // 
+            this.LowercaseTableToolStripMenuItem4.Name = "LowercaseTableToolStripMenuItem4";
+            this.LowercaseTableToolStripMenuItem4.Size = new System.Drawing.Size(32, 19);
+            // 
+            // ClearTableCellsToolStripMenuItem
+            // 
+            this.ClearTableCellsToolStripMenuItem.Name = "ClearTableCellsToolStripMenuItem";
+            this.ClearTableCellsToolStripMenuItem.Size = new System.Drawing.Size(32, 19);
+            // 
+            // ClearAllCellsToolStripMenuItem
+            // 
+            this.ClearAllCellsToolStripMenuItem.Name = "ClearAllCellsToolStripMenuItem";
+            this.ClearAllCellsToolStripMenuItem.Size = new System.Drawing.Size(32, 19);
+            // 
+            // pOFileToolStripMenuItem
+            // 
+            this.pOFileToolStripMenuItem.Name = "pOFileToolStripMenuItem";
+            this.pOFileToolStripMenuItem.Size = new System.Drawing.Size(32, 19);
             // 
             // THsplitContainerFilesElements
             // 
@@ -289,23 +402,16 @@
             this.THFileElementsDataGridView.SelectionChanged += new System.EventHandler(this.THFileElementsDataGridView_SelectionChanged);
             this.THFileElementsDataGridView.Sorted += new System.EventHandler(this.THFileElementsDataGridView_Sorted);
             // 
-            // CMSFilesList
+            // FilesListMenu
             // 
-            this.CMSFilesList.Name = "contextMenuStrip1";
-            this.CMSFilesList.Size = new System.Drawing.Size(61, 4);
-            this.CMSFilesList.Text = "2000";
+            this.FilesListMenu.Name = "contextMenuStrip1";
+            this.FilesListMenu.Size = new System.Drawing.Size(181, 26);
+            this.FilesListMenu.Text = "2000";
             // 
-            // THFileElementsDataGridViewContextMenuStrip
+            // RowMenu
             // 
-            this.THFileElementsDataGridViewContextMenuStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.addToCustomDBToolStripMenuItem});
-            this.THFileElementsDataGridViewContextMenuStrip.Name = "contextMenuStrip1";
-            this.THFileElementsDataGridViewContextMenuStrip.Size = new System.Drawing.Size(68, 26);
-            // 
-            // addToCustomDBToolStripMenuItem
-            // 
-            this.addToCustomDBToolStripMenuItem.Name = "addToCustomDBToolStripMenuItem";
-            this.addToCustomDBToolStripMenuItem.Size = new System.Drawing.Size(67, 22);
+            this.RowMenu.Name = "contextMenuStrip1";
+            this.RowMenu.Size = new System.Drawing.Size(61, 4);
             // 
             // FixSymbolsContextToolStripMenuItem
             // 
@@ -643,7 +749,6 @@
             this.tlpFileElementsFilterAndReset.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.THFiltersDataGridView)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.THFileElementsDataGridView)).EndInit();
-            this.THFileElementsDataGridViewContextMenuStrip.ResumeLayout(false);
             this.THEditElementsSplitContainer.Panel1.ResumeLayout(false);
             this.THEditElementsSplitContainer.Panel2.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.THEditElementsSplitContainer)).EndInit();
@@ -720,8 +825,7 @@
         private System.Windows.Forms.ToolStripMenuItem splitLinesWhichLongerOfLimitALLToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem fixMessagesForAllToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem tableToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem addToCustomDBToolStripMenuItem;
-        internal System.Windows.Forms.ContextMenuStrip CMSFilesList;
+        internal System.Windows.Forms.ContextMenuStrip FilesListMenu;
         private System.Windows.Forms.ToolStripMenuItem toUPPERCASETableToolStripMenuItem2;
         private System.Windows.Forms.ToolStripMenuItem firstCharacterToUppercaseTableToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem LowercaseTableToolStripMenuItem4;
@@ -729,7 +833,7 @@
         private System.Windows.Forms.ToolStripMenuItem ClearAllCellsToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem tableToolStripMenuItem2;
         private System.Windows.Forms.ToolStripMenuItem allToolStripMenuItem3;
-        internal System.Windows.Forms.ContextMenuStrip THFileElementsDataGridViewContextMenuStrip;
+        internal System.Windows.Forms.ContextMenuStrip RowMenu;
         private System.Windows.Forms.ToolStripMenuItem pOFileToolStripMenuItem;
     }
 }

@@ -1392,7 +1392,7 @@ namespace TranslationHelper
                     {
                         var mousePosition = THFileElementsDataGridView.PointToClient(Cursor.Position);
 
-                        THFileElementsDataGridViewContextMenuStrip.Show(THFileElementsDataGridView, mousePosition);
+                        RowMenu.Show(THFileElementsDataGridView, mousePosition);
                     }
                 }
             }
