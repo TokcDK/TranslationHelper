@@ -363,6 +363,7 @@
     <Compile Include="Menus\MainMenus\Edit\MenuItemCompleteRomajiotherLines.cs" />
     <Compile Include="Menus\MainMenus\Edit\MenuItemForceSameTranslationForIdentical.cs" />
     <Compile Include="Menus\MainMenus\Edit\MenuItemExtraFixesAll.cs" />
+    <Compile Include="Menus\MainMenus\Edit\MenuItemAddToCustomDb.cs" />
     <Compile Include="Menus\MainMenus\Edit\MenuItemShowCharCategory.cs" />
     <Compile Include="Menus\MainMenus\Edit\MenuItemRowTextClearAll.cs" />
     <Compile Include="Menus\MainMenus\Edit\MenuItemRowTextClearTable.cs" />
@@ -397,6 +398,13 @@
     <Compile Include="Menus\MainMenus\File\MenuItemOpen.cs" />
     <Compile Include="Menus\MainMenus\File\Other\MainMenuFileSubItemOtherBase.cs" />
     <Compile Include="Menus\MainMenus\MainMenuItemBase.cs" />
+    <Compile Include="Menus\MainMenus\View\MainMenuViewSubItemBase.cs" />
+    <Compile Include="Menus\MainMenus\View\MenuItemOpenTranslationRulesFile - Copy.cs" />
+    <Compile Include="Menus\MainMenus\View\MenuItemOpenTranslationRulesFile.cs" />
+    <Compile Include="Menus\MainMenus\View\MenuItemOpenProjectsDir.cs" />
+    <Compile Include="Menus\MainMenus\View\MenuItemShowCheckboxvalue.cs" />
+    <Compile Include="Menus\MainMenus\View\MenuItemResetColumnSorting.cs" />
+    <Compile Include="Menus\MainMenus\View\MenuItemSetAsDatasourceAll.cs" />
     <Compile Include="Menus\MenusCreator.cs" />
     <Compile Include="Menus\MenusExtensions.cs" />
     <Compile Include="Menus\FileRowMenus\IFileRowItemMenu.cs" />

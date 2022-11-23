@@ -1449,7 +1449,7 @@ namespace TranslationHelper
 
         private void SetColumnSortingToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            AppData.CurrentProject.FilesContent.Tables[THFilesList.GetSelectedIndex()].DefaultView.Sort = string.Empty;
+            
         }
 
         bool WriteDBFileIsBusy;
@@ -1764,11 +1764,6 @@ namespace TranslationHelper
             //}
         }
 
-        private void ShowCheckboxvalueToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            _ = MessageBox.Show(AppSettings.EnableTranslationCache.ToString(CultureInfo.InvariantCulture));
-        }
-
         private void TableCompleteInfoLabel_Click(object sender, EventArgs e)
         {
             FunctionsTable.ShowFirstRowWithEmptyTranslation();
@@ -1949,21 +1944,6 @@ namespace TranslationHelper
             }
         }
 
-        private void OpenProjectsDirToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            FunctionsProcess.OpenProjectsDir();
-        }
-
-        private void OpenTranslationRulesFileToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            if (File.Exists(THSettings.TranslationRegexRulesFilePath)) _ = Process.Start("explorer.exe", THSettings.TranslationRegexRulesFilePath);
-        }
-
-        private void OpenCellFixesFileToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            if (File.Exists(THSettings.CellFixesRegexRulesFilePath)) _ = Process.Start("explorer.exe", THSettings.CellFixesRegexRulesFilePath);
-        }
-
         private void THInfolabel_Click(object sender, EventArgs e)
         {
 
@@ -2025,7 +2005,6 @@ namespace TranslationHelper
 
         private void AddToCustomDBToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            _ = Task.Run(() => new LoadRowDataToCustomDb().Selected()).ConfigureAwait(false);
         }
 
         //Материалы

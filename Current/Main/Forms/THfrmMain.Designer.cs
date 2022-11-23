@@ -36,10 +36,6 @@
             this.fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.EditToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.ViewToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.SetColumnSortingToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.setAsDatasourceAllToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.showCheckboxvalueToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.OpenProjectsDirToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.OpenTranslationRulesFileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.OpenCellFixesFileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.optionsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -80,7 +76,6 @@
             this.THFileElementsDataGridView = new System.Windows.Forms.DataGridView();
             this.CMSFilesList = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.THFileElementsDataGridViewContextMenuStrip = new System.Windows.Forms.ContextMenuStrip(this.components);
-            this.showCharCategoryToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.addToCustomDBToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.FixSymbolsContextToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.FixSymbolsTableContextToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -168,64 +163,11 @@
             // ViewToolStripMenuItem
             // 
             this.ViewToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.SetColumnSortingToolStripMenuItem,
-            this.setAsDatasourceAllToolStripMenuItem,
-            this.showCheckboxvalueToolStripMenuItem,
-            this.OpenProjectsDirToolStripMenuItem,
             this.OpenTranslationRulesFileToolStripMenuItem,
             this.OpenCellFixesFileToolStripMenuItem});
             this.ViewToolStripMenuItem.Name = "ViewToolStripMenuItem";
             this.ViewToolStripMenuItem.Size = new System.Drawing.Size(44, 20);
             this.ViewToolStripMenuItem.Text = "View";
-            // 
-            // SetColumnSortingToolStripMenuItem
-            // 
-            this.SetColumnSortingToolStripMenuItem.Enabled = false;
-            this.SetColumnSortingToolStripMenuItem.Name = "SetColumnSortingToolStripMenuItem";
-            this.SetColumnSortingToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.R)));
-            this.SetColumnSortingToolStripMenuItem.Size = new System.Drawing.Size(227, 22);
-            this.SetColumnSortingToolStripMenuItem.Text = "Reset column sorting";
-            this.SetColumnSortingToolStripMenuItem.Click += new System.EventHandler(this.SetColumnSortingToolStripMenuItem_Click);
-            // 
-            // setAsDatasourceAllToolStripMenuItem
-            // 
-            this.setAsDatasourceAllToolStripMenuItem.Name = "setAsDatasourceAllToolStripMenuItem";
-            this.setAsDatasourceAllToolStripMenuItem.Size = new System.Drawing.Size(227, 22);
-            this.setAsDatasourceAllToolStripMenuItem.Text = "Set as datasource all";
-            this.setAsDatasourceAllToolStripMenuItem.Visible = false;
-            this.setAsDatasourceAllToolStripMenuItem.Click += new System.EventHandler(this.SetAsDatasourceAllToolStripMenuItem_Click);
-            // 
-            // showCheckboxvalueToolStripMenuItem
-            // 
-            this.showCheckboxvalueToolStripMenuItem.Name = "showCheckboxvalueToolStripMenuItem";
-            this.showCheckboxvalueToolStripMenuItem.Size = new System.Drawing.Size(227, 22);
-            this.showCheckboxvalueToolStripMenuItem.Text = "Show checkboxvalue";
-            this.showCheckboxvalueToolStripMenuItem.Visible = false;
-            this.showCheckboxvalueToolStripMenuItem.Click += new System.EventHandler(this.ShowCheckboxvalueToolStripMenuItem_Click);
-            // 
-            // OpenProjectsDirToolStripMenuItem
-            // 
-            this.OpenProjectsDirToolStripMenuItem.Enabled = false;
-            this.OpenProjectsDirToolStripMenuItem.Name = "OpenProjectsDirToolStripMenuItem";
-            this.OpenProjectsDirToolStripMenuItem.Size = new System.Drawing.Size(227, 22);
-            this.OpenProjectsDirToolStripMenuItem.Text = "Open projects dir";
-            this.OpenProjectsDirToolStripMenuItem.Click += new System.EventHandler(this.OpenProjectsDirToolStripMenuItem_Click);
-            // 
-            // OpenTranslationRulesFileToolStripMenuItem
-            // 
-            this.OpenTranslationRulesFileToolStripMenuItem.Enabled = false;
-            this.OpenTranslationRulesFileToolStripMenuItem.Name = "OpenTranslationRulesFileToolStripMenuItem";
-            this.OpenTranslationRulesFileToolStripMenuItem.Size = new System.Drawing.Size(227, 22);
-            this.OpenTranslationRulesFileToolStripMenuItem.Text = "Open translation rules file";
-            this.OpenTranslationRulesFileToolStripMenuItem.Click += new System.EventHandler(this.OpenTranslationRulesFileToolStripMenuItem_Click);
-            // 
-            // OpenCellFixesFileToolStripMenuItem
-            // 
-            this.OpenCellFixesFileToolStripMenuItem.Enabled = false;
-            this.OpenCellFixesFileToolStripMenuItem.Name = "OpenCellFixesFileToolStripMenuItem";
-            this.OpenCellFixesFileToolStripMenuItem.Size = new System.Drawing.Size(227, 22);
-            this.OpenCellFixesFileToolStripMenuItem.Text = "Open cell fixes rules file";
-            this.OpenCellFixesFileToolStripMenuItem.Click += new System.EventHandler(this.OpenCellFixesFileToolStripMenuItem_Click);
             // 
             // optionsToolStripMenuItem
             // 
@@ -550,18 +492,14 @@
             // THFileElementsDataGridViewContextMenuStrip
             // 
             this.THFileElementsDataGridViewContextMenuStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.showCharCategoryToolStripMenuItem,
             this.addToCustomDBToolStripMenuItem});
             this.THFileElementsDataGridViewContextMenuStrip.Name = "contextMenuStrip1";
-            this.THFileElementsDataGridViewContextMenuStrip.Size = new System.Drawing.Size(194, 70);
+            this.THFileElementsDataGridViewContextMenuStrip.Size = new System.Drawing.Size(68, 26);
             // 
             // addToCustomDBToolStripMenuItem
             // 
             this.addToCustomDBToolStripMenuItem.Name = "addToCustomDBToolStripMenuItem";
-            this.addToCustomDBToolStripMenuItem.ShortcutKeys = System.Windows.Forms.Keys.F2;
-            this.addToCustomDBToolStripMenuItem.Size = new System.Drawing.Size(193, 22);
-            this.addToCustomDBToolStripMenuItem.Text = "Add To Custom DB";
-            this.addToCustomDBToolStripMenuItem.Click += new System.EventHandler(this.AddToCustomDBToolStripMenuItem_Click);
+            this.addToCustomDBToolStripMenuItem.Size = new System.Drawing.Size(67, 22);
             // 
             // FixSymbolsContextToolStripMenuItem
             // 
@@ -957,9 +895,6 @@
         internal System.Windows.Forms.ToolStripMenuItem FixSymbolsTableContextToolStripMenuItem;
         internal System.Windows.Forms.ToolStripMenuItem toolStripMenuItem5;
         internal System.Windows.Forms.ToolStripMenuItem allIfExistsFiledirWithNameToolStripMenuItem;
-        internal System.Windows.Forms.ToolStripMenuItem SetColumnSortingToolStripMenuItem;
-        internal System.Windows.Forms.ToolStripMenuItem setAsDatasourceAllToolStripMenuItem;
-        internal System.Windows.Forms.ToolStripMenuItem showCheckboxvalueToolStripMenuItem;
         internal System.Windows.Forms.TextBox THInfoTextBox;
         internal System.Windows.Forms.Label TableCompleteInfoLabel;
         internal System.Windows.Forms.Label TranslationLongestLineLenghtLabel;
@@ -987,10 +922,8 @@
         private System.Windows.Forms.ToolStripMenuItem splitLinesWhichLongerOfLimitALLToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem fixMessagesForAllToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem tableToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem showCharCategoryToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem addToCustomDBToolStripMenuItem;
         internal System.Windows.Forms.ContextMenuStrip CMSFilesList;
-        internal System.Windows.Forms.ToolStripMenuItem OpenProjectsDirToolStripMenuItem;
         internal System.Windows.Forms.ToolStripMenuItem OpenTranslationRulesFileToolStripMenuItem;
         internal System.Windows.Forms.ToolStripMenuItem OpenCellFixesFileToolStripMenuItem;
         internal System.Windows.Forms.ToolStripMenuItem ReloadRulesToolStripMenuItem;
