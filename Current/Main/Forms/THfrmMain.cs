@@ -48,6 +48,8 @@ namespace TranslationHelper
             AppSettings.ApplicationProductName = Application.ProductName;
             AppSettings.NewLine = Environment.NewLine;
 
+            FunctionsMenus.CreateMainMenus(this.menuStrip1);
+
             FunctionsHotkeys.BindShortCuts();
 
             AppData.SetSettings();

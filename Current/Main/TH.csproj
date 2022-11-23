@@ -330,6 +330,7 @@
     <Compile Include="Functions\FunctionsInterfaces.cs" />
     <Compile Include="Functions\FunctionsLoadTranslationDB.cs" />
     <Compile Include="Functions\FunctionsLogs.cs" />
+    <Compile Include="Functions\FunctionsMenus.cs" />
     <Compile Include="Functions\FunctionsMessage.cs" />
     <Compile Include="Functions\FunctionsStringExtensions.cs" />
     <Compile Include="Functions\FunctionsOnlineTranslation.cs" />
