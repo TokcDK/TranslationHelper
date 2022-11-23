@@ -35,10 +35,6 @@
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
             this.fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.EditToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.SetOriginalValueToTranslationToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.allIfExistsFiledirWithNameToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.TSMISetOriginalToTranslationAll = new System.Windows.Forms.ToolStripMenuItem();
-            this.TSMISetOriginalToTranslationTable = new System.Windows.Forms.ToolStripMenuItem();
             this.splitLinesWhichLongestOfLimitToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.splitLinesWhichLongerOfLimitALLToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.splitLinesWhichLongerOfLimitTableToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -49,9 +45,6 @@
             this.fixMessagesForAllToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.tableToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.extraHardFixesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.trimEndToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.tableToolStripMenuItem2 = new System.Windows.Forms.ToolStripMenuItem();
-            this.allToolStripMenuItem3 = new System.Windows.Forms.ToolStripMenuItem();
             this.ViewToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.SetColumnSortingToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.setAsDatasourceAllToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -64,6 +57,11 @@
             this.ReloadRulesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.helpToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.aboutToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.allIfExistsFiledirWithNameToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.TSMISetOriginalToTranslationAll = new System.Windows.Forms.ToolStripMenuItem();
+            this.TSMISetOriginalToTranslationTable = new System.Windows.Forms.ToolStripMenuItem();
+            this.tableToolStripMenuItem2 = new System.Windows.Forms.ToolStripMenuItem();
+            this.allToolStripMenuItem3 = new System.Windows.Forms.ToolStripMenuItem();
             this.FixCellsSelectedToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.FixCellsTableToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.allToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -86,13 +84,11 @@
             this.THFileElementsDataGridView = new System.Windows.Forms.DataGridView();
             this.CMSFilesList = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.THFileElementsDataGridViewContextMenuStrip = new System.Windows.Forms.ContextMenuStrip(this.components);
-            this.OriginalToTransalationContextToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.splitLinesWhichLongerOfLimitToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.smiEnQuotesToJp = new System.Windows.Forms.ToolStripMenuItem();
             this.hardFixesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.showCharCategoryToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.addToCustomDBToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.trimEndToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
             this.FixSymbolsContextToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.FixSymbolsTableContextToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripMenuItem5 = new System.Windows.Forms.ToolStripMenuItem();
@@ -172,73 +168,14 @@
             // EditToolStripMenuItem
             // 
             this.EditToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.SetOriginalValueToTranslationToolStripMenuItem,
             this.splitLinesWhichLongestOfLimitToolStripMenuItem,
             this.TSMIEnQuotes0,
             this.fixMessagesForSelectedToolStripMenuItem,
-            this.extraHardFixesToolStripMenuItem,
-            this.trimEndToolStripMenuItem});
+            this.extraHardFixesToolStripMenuItem});
             this.EditToolStripMenuItem.Enabled = false;
             this.EditToolStripMenuItem.Name = "EditToolStripMenuItem";
             this.EditToolStripMenuItem.Size = new System.Drawing.Size(39, 20);
             this.EditToolStripMenuItem.Text = "Edit";
-            // 
-            // SetOriginalValueToTranslationToolStripMenuItem
-            // 
-            this.SetOriginalValueToTranslationToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.allIfExistsFiledirWithNameToolStripMenuItem,
-            this.TSMISetOriginalToTranslationAll,
-            this.TSMISetOriginalToTranslationTable});
-            this.SetOriginalValueToTranslationToolStripMenuItem.Enabled = false;
-            this.SetOriginalValueToTranslationToolStripMenuItem.Name = "SetOriginalValueToTranslationToolStripMenuItem";
-            this.SetOriginalValueToTranslationToolStripMenuItem.Size = new System.Drawing.Size(237, 22);
-            this.SetOriginalValueToTranslationToolStripMenuItem.Text = "Original=Translation";
-            this.SetOriginalValueToTranslationToolStripMenuItem.Click += new System.EventHandler(this.SetOriginalValueToTranslationToolStripMenuItem_Click);
-            // 
-            // allIfExistsFiledirWithNameToolStripMenuItem
-            // 
-            this.allIfExistsFiledirWithNameToolStripMenuItem.Name = "allIfExistsFiledirWithNameToolStripMenuItem";
-            this.allIfExistsFiledirWithNameToolStripMenuItem.Size = new System.Drawing.Size(230, 22);
-            this.allIfExistsFiledirWithNameToolStripMenuItem.Text = "All, if exists file/dir with name";
-            this.allIfExistsFiledirWithNameToolStripMenuItem.Click += new System.EventHandler(this.AllIfExistsFiledirWithNameToolStripMenuItem_Click);
-            // 
-            // TSMISetOriginalToTranslationAll
-            // 
-            this.TSMISetOriginalToTranslationAll.Name = "TSMISetOriginalToTranslationAll";
-            this.TSMISetOriginalToTranslationAll.Size = new System.Drawing.Size(230, 22);
-            this.TSMISetOriginalToTranslationAll.Text = "All";
-            this.TSMISetOriginalToTranslationAll.Click += new System.EventHandler(this.TSMISetOriginalToTranslationAll_Click);
-            // 
-            // TSMISetOriginalToTranslationTable
-            // 
-            this.TSMISetOriginalToTranslationTable.Name = "TSMISetOriginalToTranslationTable";
-            this.TSMISetOriginalToTranslationTable.Size = new System.Drawing.Size(230, 22);
-            this.TSMISetOriginalToTranslationTable.Text = "Table";
-            this.TSMISetOriginalToTranslationTable.Click += new System.EventHandler(this.TSMISetOriginalToTranslationTable_Click);
-            // 
-            // splitLinesWhichLongestOfLimitToolStripMenuItem
-            // 
-            this.splitLinesWhichLongestOfLimitToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.splitLinesWhichLongerOfLimitALLToolStripMenuItem,
-            this.splitLinesWhichLongerOfLimitTableToolStripMenuItem});
-            this.splitLinesWhichLongestOfLimitToolStripMenuItem.Name = "splitLinesWhichLongestOfLimitToolStripMenuItem";
-            this.splitLinesWhichLongestOfLimitToolStripMenuItem.Size = new System.Drawing.Size(237, 22);
-            this.splitLinesWhichLongestOfLimitToolStripMenuItem.Text = "Split lines which longer of limit";
-            this.splitLinesWhichLongestOfLimitToolStripMenuItem.Click += new System.EventHandler(this.SplitLinesWhichLongestOfLimitToolStripMenuItem_Click);
-            // 
-            // splitLinesWhichLongerOfLimitALLToolStripMenuItem
-            // 
-            this.splitLinesWhichLongerOfLimitALLToolStripMenuItem.Name = "splitLinesWhichLongerOfLimitALLToolStripMenuItem";
-            this.splitLinesWhichLongerOfLimitALLToolStripMenuItem.Size = new System.Drawing.Size(101, 22);
-            this.splitLinesWhichLongerOfLimitALLToolStripMenuItem.Text = "All";
-            this.splitLinesWhichLongerOfLimitALLToolStripMenuItem.Click += new System.EventHandler(this.SplitLinesWhichLongerOfLimitALLToolStripMenuItem_Click);
-            // 
-            // splitLinesWhichLongerOfLimitTableToolStripMenuItem
-            // 
-            this.splitLinesWhichLongerOfLimitTableToolStripMenuItem.Name = "splitLinesWhichLongerOfLimitTableToolStripMenuItem";
-            this.splitLinesWhichLongerOfLimitTableToolStripMenuItem.Size = new System.Drawing.Size(101, 22);
-            this.splitLinesWhichLongerOfLimitTableToolStripMenuItem.Text = "Table";
-            this.splitLinesWhichLongerOfLimitTableToolStripMenuItem.Click += new System.EventHandler(this.SplitLinesWhichLongerOfLimitTableToolStripMenuItem_Click);
             // 
             // TSMIEnQuotes0
             // 
@@ -294,29 +231,6 @@
             this.extraHardFixesToolStripMenuItem.Size = new System.Drawing.Size(237, 22);
             this.extraHardFixesToolStripMenuItem.Text = "Extra Fixes (All)";
             this.extraHardFixesToolStripMenuItem.Click += new System.EventHandler(this.ExtraFixesToolStripMenuItem_Click);
-            // 
-            // trimEndToolStripMenuItem
-            // 
-            this.trimEndToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.tableToolStripMenuItem2,
-            this.allToolStripMenuItem3});
-            this.trimEndToolStripMenuItem.Name = "trimEndToolStripMenuItem";
-            this.trimEndToolStripMenuItem.Size = new System.Drawing.Size(237, 22);
-            this.trimEndToolStripMenuItem.Text = "TrimEnd";
-            // 
-            // tableToolStripMenuItem2
-            // 
-            this.tableToolStripMenuItem2.Name = "tableToolStripMenuItem2";
-            this.tableToolStripMenuItem2.Size = new System.Drawing.Size(101, 22);
-            this.tableToolStripMenuItem2.Text = "Table";
-            this.tableToolStripMenuItem2.Click += new System.EventHandler(this.TableToolStripMenuItem2_Click);
-            // 
-            // allToolStripMenuItem3
-            // 
-            this.allToolStripMenuItem3.Name = "allToolStripMenuItem3";
-            this.allToolStripMenuItem3.Size = new System.Drawing.Size(101, 22);
-            this.allToolStripMenuItem3.Text = "All";
-            this.allToolStripMenuItem3.Click += new System.EventHandler(this.AllToolStripMenuItem3_Click);
             // 
             // ViewToolStripMenuItem
             // 
@@ -419,6 +333,31 @@
             this.aboutToolStripMenuItem.Size = new System.Drawing.Size(126, 22);
             this.aboutToolStripMenuItem.Text = "About";
             this.aboutToolStripMenuItem.Click += new System.EventHandler(this.AboutToolStripMenuItem_Click);
+            // 
+            // allIfExistsFiledirWithNameToolStripMenuItem
+            // 
+            this.allIfExistsFiledirWithNameToolStripMenuItem.Name = "allIfExistsFiledirWithNameToolStripMenuItem";
+            this.allIfExistsFiledirWithNameToolStripMenuItem.Size = new System.Drawing.Size(32, 19);
+            // 
+            // TSMISetOriginalToTranslationAll
+            // 
+            this.TSMISetOriginalToTranslationAll.Name = "TSMISetOriginalToTranslationAll";
+            this.TSMISetOriginalToTranslationAll.Size = new System.Drawing.Size(32, 19);
+            // 
+            // TSMISetOriginalToTranslationTable
+            // 
+            this.TSMISetOriginalToTranslationTable.Name = "TSMISetOriginalToTranslationTable";
+            this.TSMISetOriginalToTranslationTable.Size = new System.Drawing.Size(32, 19);
+            // 
+            // tableToolStripMenuItem2
+            // 
+            this.tableToolStripMenuItem2.Name = "tableToolStripMenuItem2";
+            this.tableToolStripMenuItem2.Size = new System.Drawing.Size(32, 19);
+            // 
+            // allToolStripMenuItem3
+            // 
+            this.allToolStripMenuItem3.Name = "allToolStripMenuItem3";
+            this.allToolStripMenuItem3.Size = new System.Drawing.Size(32, 19);
             // 
             // FixCellsSelectedToolStripMenuItem
             // 
@@ -648,31 +587,13 @@
             // THFileElementsDataGridViewContextMenuStrip
             // 
             this.THFileElementsDataGridViewContextMenuStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.OriginalToTransalationContextToolStripMenuItem,
             this.splitLinesWhichLongerOfLimitToolStripMenuItem,
             this.smiEnQuotesToJp,
             this.hardFixesToolStripMenuItem,
             this.showCharCategoryToolStripMenuItem,
-            this.addToCustomDBToolStripMenuItem,
-            this.trimEndToolStripMenuItem1});
+            this.addToCustomDBToolStripMenuItem});
             this.THFileElementsDataGridViewContextMenuStrip.Name = "contextMenuStrip1";
-            this.THFileElementsDataGridViewContextMenuStrip.Size = new System.Drawing.Size(238, 158);
-            // 
-            // OriginalToTransalationContextToolStripMenuItem
-            // 
-            this.OriginalToTransalationContextToolStripMenuItem.Enabled = false;
-            this.OriginalToTransalationContextToolStripMenuItem.Name = "OriginalToTransalationContextToolStripMenuItem";
-            this.OriginalToTransalationContextToolStripMenuItem.ShortcutKeys = System.Windows.Forms.Keys.F8;
-            this.OriginalToTransalationContextToolStripMenuItem.Size = new System.Drawing.Size(237, 22);
-            this.OriginalToTransalationContextToolStripMenuItem.Text = "Original=Translation";
-            this.OriginalToTransalationContextToolStripMenuItem.Click += new System.EventHandler(this.SetOriginalValueToTranslationToolStripMenuItem_Click);
-            // 
-            // splitLinesWhichLongerOfLimitToolStripMenuItem
-            // 
-            this.splitLinesWhichLongerOfLimitToolStripMenuItem.Name = "splitLinesWhichLongerOfLimitToolStripMenuItem";
-            this.splitLinesWhichLongerOfLimitToolStripMenuItem.Size = new System.Drawing.Size(237, 22);
-            this.splitLinesWhichLongerOfLimitToolStripMenuItem.Text = "Split lines which longer of limit";
-            this.splitLinesWhichLongerOfLimitToolStripMenuItem.Click += new System.EventHandler(this.SplitLinesWhichLongestOfLimitToolStripMenuItem_Click);
+            this.THFileElementsDataGridViewContextMenuStrip.Size = new System.Drawing.Size(238, 136);
             // 
             // smiEnQuotesToJp
             // 
@@ -702,13 +623,6 @@
             this.addToCustomDBToolStripMenuItem.Size = new System.Drawing.Size(237, 22);
             this.addToCustomDBToolStripMenuItem.Text = "Add To Custom DB";
             this.addToCustomDBToolStripMenuItem.Click += new System.EventHandler(this.AddToCustomDBToolStripMenuItem_Click);
-            // 
-            // trimEndToolStripMenuItem1
-            // 
-            this.trimEndToolStripMenuItem1.Name = "trimEndToolStripMenuItem1";
-            this.trimEndToolStripMenuItem1.Size = new System.Drawing.Size(237, 22);
-            this.trimEndToolStripMenuItem1.Text = "TrimEnd";
-            this.trimEndToolStripMenuItem1.Click += new System.EventHandler(this.TrimEndToolStripMenuItem1_Click);
             // 
             // FixSymbolsContextToolStripMenuItem
             // 
@@ -1103,8 +1017,6 @@
         internal System.Windows.Forms.ToolStripMenuItem FixSymbolsContextToolStripMenuItem;
         internal System.Windows.Forms.ToolStripMenuItem FixSymbolsTableContextToolStripMenuItem;
         internal System.Windows.Forms.ToolStripMenuItem toolStripMenuItem5;
-        internal System.Windows.Forms.ToolStripMenuItem SetOriginalValueToTranslationToolStripMenuItem;
-        internal System.Windows.Forms.ToolStripMenuItem OriginalToTransalationContextToolStripMenuItem;
         internal System.Windows.Forms.ToolStripMenuItem splitLinesWhichLongestOfLimitToolStripMenuItem;
         internal System.Windows.Forms.ToolStripMenuItem fixMessagesForSelectedToolStripMenuItem;
         internal System.Windows.Forms.ToolStripMenuItem allIfExistsFiledirWithNameToolStripMenuItem;
@@ -1155,10 +1067,8 @@
         private System.Windows.Forms.ToolStripMenuItem LowercaseTableToolStripMenuItem4;
         private System.Windows.Forms.ToolStripMenuItem ClearTableCellsToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem ClearAllCellsToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem trimEndToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem tableToolStripMenuItem2;
         private System.Windows.Forms.ToolStripMenuItem allToolStripMenuItem3;
-        private System.Windows.Forms.ToolStripMenuItem trimEndToolStripMenuItem1;
         internal System.Windows.Forms.ToolStripMenuItem fileToolStripMenuItem;
         internal System.Windows.Forms.ContextMenuStrip THFileElementsDataGridViewContextMenuStrip;
         private System.Windows.Forms.ToolStripMenuItem pOFileToolStripMenuItem;

@@ -77,8 +77,8 @@ namespace TranslationHelper
         KeyModifiers registerModifiers = KeyModifiers.None;
         private void BindShortCuts()
         {
-            THFileElementsDataGridViewOriginalToTranslationHotkey = new HotKeyRegister(this.Handle, 100, KeyModifiers.None, Keys.F8);
-            THFileElementsDataGridViewOriginalToTranslationHotkey.HotKeyPressed += new EventHandler(SetOriginalValueToTranslationToolStripMenuItem_Click);
+            //THFileElementsDataGridViewOriginalToTranslationHotkey = new HotKeyRegister(this.Handle, 100, KeyModifiers.None, Keys.F8);
+            //THFileElementsDataGridViewOriginalToTranslationHotkey.HotKeyPressed += new EventHandler(SetOriginalValueToTranslationToolStripMenuItem_Click);
         }
 
         /// <summary>
@@ -147,20 +147,13 @@ namespace TranslationHelper
         /// </summary>
         void HotKeyPressed(object sender, EventArgs e)
         {
-            SetOriginalToTranslation();
-
-            //Here is the magic!!!!!!!!'
-
-            //DO SOMETHING COOL!!! Or Just activate this winform
+            //SetOriginalToTranslation();
 
             //if (this.WindowState == FormWindowState.Minimized)
             //{
             //    this.WindowState = FormWindowState.Normal;
             //}
             //this.Activate();
-
-
-
         }
 
         private void SetUIStrings()
@@ -1364,54 +1357,39 @@ namespace TranslationHelper
             _ = new FixCells().Selected();
         }
 
-        private void CellFixesTableToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            _ = new FixCells().TableT();
-        }
+        //private void SetOriginalToTranslation()
+        //{
+        //    int THFileElementsDataGridViewSelectedCellsCount = THFileElementsDataGridView.GetCountOfRowsWithSelectedCellsCount();
+        //    if (THFileElementsDataGridViewSelectedCellsCount > 0)
+        //    {
+        //        try
+        //        {
+        //            int tableIndex = THFilesList.GetSelectedIndex();
+        //            int cind = AppData.CurrentProject.FilesContent.Tables[tableIndex].Columns[THSettings.OriginalColumnName].Ordinal;// Колонка Original
+        //            int cindTrans = AppData.CurrentProject.FilesContent.Tables[tableIndex].Columns[THSettings.TranslationColumnName].Ordinal;// Колонка Original
+        //            int[] selectedRowIndexses = new int[THFileElementsDataGridViewSelectedCellsCount];
+        //            for (int i = 0; i < THFileElementsDataGridViewSelectedCellsCount; i++)
+        //            {
+        //                //координаты ячейки
+        //                selectedRowIndexses[i] = FunctionsTable.GetDGVSelectedRowIndexInDatatable(THFilesList.GetSelectedIndex(), THFileElementsDataGridView.SelectedCells[i].RowIndex);
 
-        private void CellFixesAllToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            _ = new FixCells().AllT();
-        }
+        //            }
+        //            foreach (var rind in selectedRowIndexses)
+        //            {
+        //                string origCellValue = AppData.CurrentProject.FilesContent.Tables[tableIndex].Rows[rind][cind] as string;
+        //                string transCellValue = AppData.CurrentProject.FilesContent.Tables[tableIndex].Rows[rind][cindTrans] + string.Empty;
+        //                if (transCellValue != origCellValue || transCellValue.Length == 0)
+        //                {
+        //                    AppData.CurrentProject.FilesContent.Tables[tableIndex].Rows[rind][cindTrans] = origCellValue;
+        //                }
 
-        private void SetOriginalValueToTranslationToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            _ = new SetOriginalToTranslation().Selected();
-        }
-
-        private void SetOriginalToTranslation()
-        {
-            int THFileElementsDataGridViewSelectedCellsCount = THFileElementsDataGridView.GetCountOfRowsWithSelectedCellsCount();
-            if (THFileElementsDataGridViewSelectedCellsCount > 0)
-            {
-                try
-                {
-                    int tableIndex = THFilesList.GetSelectedIndex();
-                    int cind = AppData.CurrentProject.FilesContent.Tables[tableIndex].Columns[THSettings.OriginalColumnName].Ordinal;// Колонка Original
-                    int cindTrans = AppData.CurrentProject.FilesContent.Tables[tableIndex].Columns[THSettings.TranslationColumnName].Ordinal;// Колонка Original
-                    int[] selectedRowIndexses = new int[THFileElementsDataGridViewSelectedCellsCount];
-                    for (int i = 0; i < THFileElementsDataGridViewSelectedCellsCount; i++)
-                    {
-                        //координаты ячейки
-                        selectedRowIndexses[i] = FunctionsTable.GetDGVSelectedRowIndexInDatatable(THFilesList.GetSelectedIndex(), THFileElementsDataGridView.SelectedCells[i].RowIndex);
-
-                    }
-                    foreach (var rind in selectedRowIndexses)
-                    {
-                        string origCellValue = AppData.CurrentProject.FilesContent.Tables[tableIndex].Rows[rind][cind] as string;
-                        string transCellValue = AppData.CurrentProject.FilesContent.Tables[tableIndex].Rows[rind][cindTrans] + string.Empty;
-                        if (transCellValue != origCellValue || transCellValue.Length == 0)
-                        {
-                            AppData.CurrentProject.FilesContent.Tables[tableIndex].Rows[rind][cindTrans] = origCellValue;
-                        }
-
-                    }
-                }
-                catch
-                {
-                }
-            }
-        }
+        //            }
+        //        }
+        //        catch
+        //        {
+        //        }
+        //    }
+        //}
 
         bool cellchanged;
         public async void SetSameTranslationForSimular(int InputTableIndex, int InputRowIndex, bool forcerun = true, bool forcevalue = false)
@@ -1791,94 +1769,9 @@ namespace TranslationHelper
             _ = MessageBox.Show(AppSettings.EnableTranslationCache.ToString(CultureInfo.InvariantCulture));
         }
 
-        private void SplitLinesWhichLongestOfLimitToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            _ = new SplitLongLines().Selected();
-        }
-
-        private void SplitLinesWhichLongerOfLimitTableToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            _ = new SplitLongLines().TableT();
-
-            FunctionsSounds.GlobalFunctionFinishedWork();
-        }
-
-        private void SplitLinesWhichLongerOfLimitALLToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            _ = new SplitLongLines().AllT();
-
-            FunctionsSounds.GlobalFunctionFinishedWork();
-        }
-
         private void FixMessagesInTheTableToolStripMenuItem_Click(object sender, EventArgs e)
         {
             _ = new FixJpMessagesTranslation().Selected();
-        }
-
-        private void LowercaseAllToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            _ = new ToLowerCaseAll().AllT();
-        }
-
-        private void LowercaseTableToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            _ = new ToLowerCaseAll().TableT();
-        }
-
-        private void UppercaseAllToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            _ = new ToUpperCaseFirst().AllT();
-        }
-        private void UppercaseTableToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            _ = new ToUpperCaseFirst().TableT();
-        }
-
-        private void UPPERCASEallToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            _ = new ToUpperCaseAll().AllT();
-        }
-        private void UPPERCASETableToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            _ = new ToUpperCaseAll().TableT();
-        }
-
-        private void AllIfExistsFiledirWithNameToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            Thread newthread = new Thread(new ParameterizedThreadStart((obj) =>
-            SetOriginalToTranslationIfFileExistsInAnyFolder()
-            ));
-            newthread.Start();
-        }
-
-        private static void SetOriginalToTranslationIfFileExistsInAnyFolder()
-        {
-            string[] ProjectFilesList = Directory.GetFiles(AppData.CurrentProject.SelectedGameDir, "*.*", SearchOption.AllDirectories);
-            for (int i = 0; i < ProjectFilesList.Length; i++)
-            {
-                ProjectFilesList[i] = Path.GetFileNameWithoutExtension(ProjectFilesList[i]);
-            }
-            ProjectFilesList = ProjectFilesList.Distinct().ToArray();
-
-            int cind = AppData.CurrentProject.FilesContent.Tables[0].Columns[THSettings.OriginalColumnName].Ordinal;// Колонка Original
-            int cindTrans = AppData.CurrentProject.FilesContent.Tables[0].Columns[THSettings.TranslationColumnName].Ordinal;// Колонка Original
-
-            int tablesCount = AppData.CurrentProject.FilesContent.Tables.Count;
-            for (int t = 0; t < tablesCount; t++)
-            {
-                int rowsCount = AppData.CurrentProject.FilesContent.Tables[t].Rows.Count;
-                for (int r = 0; r < rowsCount; r++)
-                {
-                    string origCellValue = AppData.CurrentProject.FilesContent.Tables[t].Rows[r][cind] as string;
-                    string transCellValue = AppData.CurrentProject.FilesContent.Tables[t].Rows[r][cindTrans] + string.Empty;
-
-                    if ((transCellValue.Length == 0 || origCellValue != transCellValue) && FunctionsFileFolder.GetAnyFileWithTheNameExist(ProjectFilesList, origCellValue))
-                    {
-                        AppData.CurrentProject.FilesContent.Tables[t].Rows[r][cindTrans] = origCellValue;
-                    }
-                }
-            }
-            System.Media.SystemSounds.Asterisk.Play();
         }
 
         private void TableCompleteInfoLabel_Click(object sender, EventArgs e)
@@ -2150,46 +2043,46 @@ namespace TranslationHelper
             _ = new EnQuotesToJp().TableT();
         }
 
-        /// <summary>
-        /// Byte search in byte array. One of methods from here: https://stackoverflow.com/a/41414219
-        /// </summary>
-        /// <param name="src"></param>
-        /// <param name="pattern"></param>
-        /// <returns></returns>
-        internal static int GetBytesPosition(byte[] src, byte[] pattern)
-        {
-            int index = -1;
+        ///// <summary>
+        ///// Byte search in byte array. One of methods from here: https://stackoverflow.com/a/41414219
+        ///// </summary>
+        ///// <param name="src"></param>
+        ///// <param name="pattern"></param>
+        ///// <returns></returns>
+        //internal static int GetBytesPosition(byte[] src, byte[] pattern)
+        //{
+        //    int index = -1;
 
-            for (int i = 0; i < src.Length; i++)
-            {
-                if (src[i] != pattern[0])
-                {
-                    continue;
-                }
-                else
-                {
-                    bool isContinoue = true;
-                    for (int j = 1; j < pattern.Length; j++)
-                    {
-                        if (src[++i] != pattern[j])
-                        {
-                            isContinoue = true;
-                            break;
-                        }
-                        if (j == pattern.Length - 1)
-                        {
-                            isContinoue = false;
-                        }
-                    }
-                    if (!isContinoue)
-                    {
-                        index = i - (pattern.Length - 1);
-                        break;
-                    }
-                }
-            }
-            return index;
-        }
+        //    for (int i = 0; i < src.Length; i++)
+        //    {
+        //        if (src[i] != pattern[0])
+        //        {
+        //            continue;
+        //        }
+        //        else
+        //        {
+        //            bool isContinoue = true;
+        //            for (int j = 1; j < pattern.Length; j++)
+        //            {
+        //                if (src[++i] != pattern[j])
+        //                {
+        //                    isContinoue = true;
+        //                    break;
+        //                }
+        //                if (j == pattern.Length - 1)
+        //                {
+        //                    isContinoue = false;
+        //                }
+        //            }
+        //            if (!isContinoue)
+        //            {
+        //                index = i - (pattern.Length - 1);
+        //                break;
+        //            }
+        //        }
+        //    }
+        //    return index;
+        //}
 
         private void CharFunctionTest()
         {
@@ -2245,21 +2138,6 @@ namespace TranslationHelper
         private void AddToCustomDBToolStripMenuItem_Click(object sender, EventArgs e)
         {
             _ = Task.Run(() => new LoadRowDataToCustomDb().Selected()).ConfigureAwait(false);
-        }
-
-        private async void TableToolStripMenuItem2_Click(object sender, EventArgs e)
-        {
-            await new TrimEndSpace().TableT();
-        }
-
-        private async void AllToolStripMenuItem3_Click(object sender, EventArgs e)
-        {
-            await new TrimEndSpace().AllT();
-        }
-
-        private void TrimEndToolStripMenuItem1_Click(object sender, EventArgs e)
-        {
-            new TrimEndSpace().Selected();
         }
 
         //Материалы
