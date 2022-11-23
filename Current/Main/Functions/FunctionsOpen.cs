@@ -277,7 +277,7 @@ namespace TranslationHelper.Functions
                 }
             }
 
-            UpdateRecentFiles();
+            FunctionsOpen.UpdateRecentFiles(AppData.RecentFilesMenu);
 
             AppData.CurrentProject.SelectedGameDir = GetCorrectedGameDIr(AppData.CurrentProject.SelectedGameDir);
 
@@ -298,12 +298,12 @@ namespace TranslationHelper.Functions
             }
             //_ = /*THMsg*/MessageBox.Show(ProjectData.CurrentProject.Name() + T._(" loaded") + "!");
 
-            AppData.Main.EditToolStripMenuItem.Enabled = true;
-            AppData.Main.ViewToolStripMenuItem.Enabled = true;
-            AppData.Main.OpenProjectsDirToolStripMenuItem.Enabled = true;
-            AppData.Main.OpenTranslationRulesFileToolStripMenuItem.Enabled = true;
-            AppData.Main.OpenCellFixesFileToolStripMenuItem.Enabled = true;
-            AppData.Main.ReloadRulesToolStripMenuItem.Enabled = true;
+            //AppData.Main.EditToolStripMenuItem.Enabled = true;
+            //AppData.Main.ViewToolStripMenuItem.Enabled = true;
+            //AppData.Main.OpenProjectsDirToolStripMenuItem.Enabled = true;
+            //AppData.Main.OpenTranslationRulesFileToolStripMenuItem.Enabled = true;
+            //AppData.Main.OpenCellFixesFileToolStripMenuItem.Enabled = true;
+            //AppData.Main.ReloadRulesToolStripMenuItem.Enabled = true;
 
             if (AppData.Main.FVariant.Length == 0)
             {
@@ -357,7 +357,7 @@ namespace TranslationHelper.Functions
         /// <summary>
         /// Add last successfully opened project to recent files list
         /// </summary>
-        internal static void UpdateRecentFiles()
+        internal static void UpdateRecentFiles(ToolStripMenuItem container)
         {
             string[] items;
             bool changed = false;
@@ -400,17 +400,17 @@ namespace TranslationHelper.Functions
                 AppData.ConfigIni.SetArrayToSectionValues("RecentFiles", items);
             }
 
-            AddRecentMenuItems(items);
+            AddRecentMenuItems(items, container);
         }
 
-        private static void AddRecentMenuItems(string[] items)
+        private static void AddRecentMenuItems(string[] items, ToolStripMenuItem container)
         {
             var recentMenuName = T._("Recent");
 
             // search old menu
             ToolStripMenuItem category = null;
             bool foundOld = false;
-            foreach (ToolStripMenuItem menuCategory in AppData.Main.fileToolStripMenuItem.DropDownItems)
+            foreach (ToolStripMenuItem menuCategory in container.DropDownItems)
             {
                 if (menuCategory.Text == recentMenuName)
                 {
@@ -443,7 +443,7 @@ namespace TranslationHelper.Functions
                 ItemMenu.Click += RecentFilesOpen_Click;
             }
 
-            if (!foundOld) AppData.Main.Invoke((Action)(() => AppData.Main.fileToolStripMenuItem.DropDownItems.Add(category)));
+            if (!foundOld) AppData.Main.Invoke((Action)(() => container.DropDownItems.Add(category)));
         }
 
         private static void RecentFilesOpen_Click(object sender, EventArgs e) { OpenProject((sender as ToolStripMenuItem).Text); }

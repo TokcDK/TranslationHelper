@@ -37,8 +37,8 @@ namespace TranslationHelper.Functions
         /// <param name="Method">Selected method: a- all tables; t - selected table; s - selected rows</param>
         internal void THOnlineTranslate(int OrigColIndex = 0, int TableIndex = 0, int[] SelectedIndexes = null, string Method = "s"/*ats*/)
         {
-            AppData.Main.Invoke((Action)(() => AppData.Main.translationInteruptToolStripMenuItem.Visible = true));
-            AppData.Main.Invoke((Action)(() => AppData.Main.translationInteruptToolStripMenuItem1.Visible = true));
+            //AppData.Main.Invoke((Action)(() => AppData.Main.translationInteruptToolStripMenuItem.Visible = true));
+            //AppData.Main.Invoke((Action)(() => AppData.Main.translationInteruptToolStripMenuItem1.Visible = true));
             //translationInteruptToolStripMenuItem.Visible = true;
             //translationInteruptToolStripMenuItem1.Visible = true;
 
@@ -92,8 +92,8 @@ namespace TranslationHelper.Functions
                     {
                         //translationInteruptToolStripMenuItem.Visible = false;
                         //translationInteruptToolStripMenuItem1.Visible = false;
-                        AppData.Main.Invoke((Action)(() => AppData.Main.translationInteruptToolStripMenuItem.Visible = false));
-                        AppData.Main.Invoke((Action)(() => AppData.Main.translationInteruptToolStripMenuItem1.Visible = false));
+                        //AppData.Main.Invoke((Action)(() => AppData.Main.translationInteruptToolStripMenuItem.Visible = false));
+                        //AppData.Main.Invoke((Action)(() => AppData.Main.translationInteruptToolStripMenuItem1.Visible = false));
                         AppData.Main.InteruptTranslation = false;
                         Thread.CurrentThread.Abort();
                         return;
@@ -343,7 +343,7 @@ namespace TranslationHelper.Functions
                     FunctionsDBFile.MergeAllDBtoOne();
                 }
 
-                AppData.Main.Invoke((Action)(() => AppData.Main.translationInteruptToolStripMenuItem.Visible = true));
+                //AppData.Main.Invoke((Action)(() => AppData.Main.translationInteruptToolStripMenuItem.Visible = true));
 
                 //using (DataSet THTranslationCache = new DataSet())
                 {
@@ -390,7 +390,7 @@ namespace TranslationHelper.Functions
                             }
                             else if (AppData.Main.InteruptTranslation)
                             {
-                                AppData.Main.Invoke((Action)(() => AppData.Main.translationInteruptToolStripMenuItem.Visible = false));
+                                //AppData.Main.Invoke((Action)(() => AppData.Main.translationInteruptToolStripMenuItem.Visible = false));
                                 FunctionsOnlineCache.Unload();
                                 AppData.Main.ProgressInfo(false);
                                 //Thread.CurrentThread.Abort();

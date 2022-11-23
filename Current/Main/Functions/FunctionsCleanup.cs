@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Runtime;
 using TranslationHelper.Functions;
+using TranslationHelper.Menus.MainMenus.Edit;
 
 namespace TranslationHelper.Data
 {
@@ -58,8 +59,8 @@ namespace TranslationHelper.Data
                 AppData.SelectedFilePath = string.Empty;
 
                 //Reload regex rules
-                FormMain.ReloadTranslationRegexRules();
-                FormMain.ReloadCellFixesRegexRules();
+                FunctionRules.ReloadTranslationRegexRules();
+                FunctionRules.ReloadCellFixesRegexRules();
 
                 //Dispose objects
                 //ProjectData.THFilesElementsDataset.Dispose();
@@ -72,55 +73,55 @@ namespace TranslationHelper.Data
                 AppData.Main.THWorkSpaceSplitContainer.Visible = false;
 
                 //Disable items
-                AppData.Main.EditToolStripMenuItem.Enabled = false;
-                AppData.Main.ViewToolStripMenuItem.Enabled = false;
-                AppData.Main.SaveTranslationToolStripMenuItem.Enabled = false;
-                AppData.Main.WriteTranslationInGameToolStripMenuItem.Enabled = false;
-                AppData.Main.LoadTranslationToolStripMenuItem.Enabled = false;
-                AppData.Main.LoadTrasnlationAsToolStripMenuItem.Enabled = false;
-                AppData.Main.LoadTrasnlationAsForcedToolStripMenuItem.Enabled = false;
-                AppData.Main.SaveTranslationAsToolStripMenuItem.Enabled = false;
-                AppData.Main.SavemenusNOTenabled = true;
-                AppData.Main.THSourceRichTextBox.Enabled = false;
-                AppData.Main.THTargetRichTextBox.Enabled = false;
-                AppData.Main.OpenInWebToolStripMenuItem.Enabled = false;
-                AppData.Main.SelectedToolStripMenuItem1.Enabled = false;
-                AppData.Main.TableToolStripMenuItem1.Enabled = false;
-                AppData.Main.FixCellsSelectedToolStripMenuItem.Enabled = false;
-                AppData.Main.FixCellsTableToolStripMenuItem.Enabled = false;
-                AppData.Main.SetOriginalValueToTranslationToolStripMenuItem.Enabled = false;
-                AppData.Main.CompleteRomajiotherLinesToolStripMenuItem.Enabled = false;
-                AppData.Main.CompleteRomajiotherLinesToolStripMenuItem1.Enabled = false;
-                AppData.Main.ForceSameForSimularToolStripMenuItem.Enabled = false;
-                AppData.Main.ForceSameForSimularToolStripMenuItem1.Enabled = false;
-                AppData.Main.CutToolStripMenuItem1.Enabled = false;
-                AppData.Main.CopyCellValuesToolStripMenuItem.Enabled = false;
-                AppData.Main.PasteCellValuesToolStripMenuItem.Enabled = false;
-                AppData.Main.ClearSelectedCellsToolStripMenuItem.Enabled = false;
-                AppData.Main.ToUPPERCASEToolStripMenuItem.Enabled = false;
-                AppData.Main.FirstCharacterToUppercaseToolStripMenuItem.Enabled = false;
-                AppData.Main.ToLowercaseToolStripMenuItem.Enabled = false;
-                AppData.Main.SetColumnSortingToolStripMenuItem.Enabled = false;
-                AppData.Main.OpenInWebContextToolStripMenuItem.Enabled = false;
-                AppData.Main.TranslateSelectedContextToolStripMenuItem.Enabled = false;
-                AppData.Main.TranslateTableContextToolStripMenuItem.Enabled = false;
-                AppData.Main.FixSymbolsContextToolStripMenuItem.Enabled = false;
-                AppData.Main.FixSymbolsTableContextToolStripMenuItem.Enabled = false;
-                AppData.Main.OriginalToTransalationContextToolStripMenuItem.Enabled = false;
-                AppData.Main.CutToolStripMenuItem.Enabled = false;
-                AppData.Main.CopyCMStripMenuItem.Enabled = false;
-                AppData.Main.PasteToolStripMenuItem.Enabled = false;
-                AppData.Main.CleanSelectedCellsToolStripMenuItem1.Enabled = false;
-                AppData.Main.ToolStripMenuItem14.Enabled = false;
-                AppData.Main.UppercaseToolStripMenuItem.Enabled = false;
-                AppData.Main.LowercaseToolStripMenuItem.Enabled = false;
-                AppData.Main.ExportToolStripMenuItem1.Enabled = false;
-                AppData.Main.OpenProjectsDirToolStripMenuItem.Enabled = false;
-                AppData.Main.OpenTranslationRulesFileToolStripMenuItem.Enabled = false;
-                AppData.Main.OpenCellFixesFileToolStripMenuItem.Enabled = false;
-                AppData.Main.ReloadRulesToolStripMenuItem.Enabled = false;
+                //AppData.Main.EditToolStripMenuItem.Enabled = false;
+                //AppData.Main.ViewToolStripMenuItem.Enabled = false;
+                //AppData.Main.SaveTranslationToolStripMenuItem.Enabled = false;
+                //AppData.Main.WriteTranslationInGameToolStripMenuItem.Enabled = false;
+                //AppData.Main.LoadTranslationToolStripMenuItem.Enabled = false;
+                //AppData.Main.LoadTrasnlationAsToolStripMenuItem.Enabled = false;
+                //AppData.Main.LoadTrasnlationAsForcedToolStripMenuItem.Enabled = false;
+                //AppData.Main.SaveTranslationAsToolStripMenuItem.Enabled = false;
+                //AppData.Main.SavemenusNOTenabled = true;
+                //AppData.Main.THSourceRichTextBox.Enabled = false;
+                //AppData.Main.THTargetRichTextBox.Enabled = false;
+                //AppData.Main.OpenInWebToolStripMenuItem.Enabled = false;
+                //AppData.Main.SelectedToolStripMenuItem1.Enabled = false;
+                //AppData.Main.TableToolStripMenuItem1.Enabled = false;
+                //AppData.Main.FixCellsSelectedToolStripMenuItem.Enabled = false;
+                //AppData.Main.FixCellsTableToolStripMenuItem.Enabled = false;
+                //AppData.Main.SetOriginalValueToTranslationToolStripMenuItem.Enabled = false;
+                //AppData.Main.CompleteRomajiotherLinesToolStripMenuItem.Enabled = false;
+                //AppData.Main.CompleteRomajiotherLinesToolStripMenuItem1.Enabled = false;
+                //AppData.Main.ForceSameForSimularToolStripMenuItem.Enabled = false;
+                //AppData.Main.ForceSameForSimularToolStripMenuItem1.Enabled = false;
+                //AppData.Main.CutToolStripMenuItem1.Enabled = false;
+                //AppData.Main.CopyCellValuesToolStripMenuItem.Enabled = false;
+                //AppData.Main.PasteCellValuesToolStripMenuItem.Enabled = false;
+                //AppData.Main.ClearSelectedCellsToolStripMenuItem.Enabled = false;
+                //AppData.Main.ToUPPERCASEToolStripMenuItem.Enabled = false;
+                //AppData.Main.FirstCharacterToUppercaseToolStripMenuItem.Enabled = false;
+                //AppData.Main.ToLowercaseToolStripMenuItem.Enabled = false;
+                //AppData.Main.SetColumnSortingToolStripMenuItem.Enabled = false;
+                //AppData.Main.OpenInWebContextToolStripMenuItem.Enabled = false;
+                //AppData.Main.TranslateSelectedContextToolStripMenuItem.Enabled = false;
+                //AppData.Main.TranslateTableContextToolStripMenuItem.Enabled = false;
+                //AppData.Main.FixSymbolsContextToolStripMenuItem.Enabled = false;
+                //AppData.Main.FixSymbolsTableContextToolStripMenuItem.Enabled = false;
+                //AppData.Main.OriginalToTransalationContextToolStripMenuItem.Enabled = false;
+                //AppData.Main.CutToolStripMenuItem.Enabled = false;
+                //AppData.Main.CopyCMStripMenuItem.Enabled = false;s
+                //AppData.Main.PasteToolStripMenuItem.Enabled = false;
+                //AppData.Main.CleanSelectedCellsToolStripMenuItem1.Enabled = false;
+                //AppData.Main.ToolStripMenuItem14.Enabled = false;
+                //AppData.Main.UppercaseToolStripMenuItem.Enabled = false;
+                //AppData.Main.LowercaseToolStripMenuItem.Enabled = false;
+                //AppData.Main.ExportToolStripMenuItem1.Enabled = false;
+                //AppData.Main.OpenProjectsDirToolStripMenuItem.Enabled = false;
+                //AppData.Main.OpenTranslationRulesFileToolStripMenuItem.Enabled = false;
+                //AppData.Main.OpenCellFixesFileToolStripMenuItem.Enabled = false;
+                //AppData.Main.ReloadRulesToolStripMenuItem.Enabled = false;
 
-                AppData.Main.runTestGameToolStripMenuItem.Enabled = false;
+                //AppData.Main.runTestGameToolStripMenuItem.Enabled = false;
 
                 AppData.Main.TargetTextBoxLinePositionLabelData.Text = string.Empty;
                 AppData.Main.TargetTextBoxColumnPositionLabelData.Text = string.Empty;

@@ -36,7 +36,7 @@ namespace TranslationHelper.Functions.OnlineTranslation
                     FunctionsDBFile.MergeAllDBtoOne();
                 }
 
-                AppData.Main.Invoke((Action)(() => AppData.Main.translationInteruptToolStripMenuItem.Visible = true));
+                //AppData.Main.Invoke((Action)(() => AppData.Main.translationInteruptToolStripMenuItem.Visible = true));
 
                 //using (DataSet THTranslationCache = new DataSet())
                 {
@@ -83,7 +83,7 @@ namespace TranslationHelper.Functions.OnlineTranslation
                             }
                             else if (AppData.Main.InteruptTranslation)
                             {
-                                AppData.Main.Invoke((Action)(() => AppData.Main.translationInteruptToolStripMenuItem.Visible = false));
+                                //AppData.Main.Invoke((Action)(() => AppData.Main.translationInteruptToolStripMenuItem.Visible = false));
                                 CacheUnloadWhenNeed();
                                 AppData.Main.ProgressInfo(false);
                                 //Thread.CurrentThread.Abort();

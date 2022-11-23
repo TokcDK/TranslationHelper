@@ -71,7 +71,7 @@ namespace TranslationHelper.Functions
                 }
 
                 //add result menu
-                container.Items.Add(menu);
+                if(!container.Items.Contains(menu)) container.Items.Add(menu);
             }
         }
         public static ToolStripMenuItem GetToolStripMenuItem(this MenuStrip toolStripMenuItem, string itemWithText)
