@@ -352,6 +352,8 @@
     <Compile Include="Menus\FilesListMenus\FileListMenuItemCopyName.cs" />
     <Compile Include="Menus\MainMenus\Edit\MainMenuFileSubItemOriginalToTranslation.cs" />
     <Compile Include="Menus\MainMenus\Edit\MainMenuFileSubItemSplitLongLines.cs" />
+    <Compile Include="Menus\MainMenus\Edit\MainMenuFileSubItemFixJpMessagesTranslation.cs" />
+    <Compile Include="Menus\MainMenus\Edit\MainMenuFileSubItemEnQuotesToJp.cs" />
     <Compile Include="Menus\MainMenus\Edit\MainMenuFileSubItemTrimEnd.cs" />
     <Compile Include="Menus\MainMenus\Edit\MainMenuFileSubItemCaseMorphToUpperAll.cs" />
     <Compile Include="Menus\MainMenus\Edit\MainMenuFileSubItemCaseMorphTolower.cs" />
@@ -360,6 +362,8 @@
     <Compile Include="Menus\MainMenus\Edit\MainMenuEditSubBase.cs" />
     <Compile Include="Menus\MainMenus\Edit\MenuItemCompleteRomajiotherLines.cs" />
     <Compile Include="Menus\MainMenus\Edit\MenuItemForceSameTranslationForIdentical.cs" />
+    <Compile Include="Menus\MainMenus\Edit\MenuItemExtraFixesAll.cs" />
+    <Compile Include="Menus\MainMenus\Edit\MenuItemShowCharCategory.cs" />
     <Compile Include="Menus\MainMenus\Edit\MenuItemRowTextClearAll.cs" />
     <Compile Include="Menus\MainMenus\Edit\MenuItemRowTextClearTable.cs" />
     <Compile Include="Menus\MainMenus\Edit\MenuItemRowTextCopyOriginal.cs" />

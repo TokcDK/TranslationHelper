@@ -1689,17 +1689,17 @@ namespace TranslationHelper
                 {
                     ControlsSwitchIsOn = switchon;
                     //System.Media.SystemSounds.Asterisk.Play();
-                    CutToolStripMenuItem1.ShortcutKeys = Keys.Control | Keys.X;
-                    CopyCellValuesToolStripMenuItem.ShortcutKeys = Keys.Control | Keys.C;
-                    PasteCellValuesToolStripMenuItem.ShortcutKeys = Keys.Control | Keys.V;
+                    //CutToolStripMenuItem1.ShortcutKeys = Keys.Control | Keys.X;
+                    //CopyCellValuesToolStripMenuItem.ShortcutKeys = Keys.Control | Keys.C;
+                    //PasteCellValuesToolStripMenuItem.ShortcutKeys = Keys.Control | Keys.V;
                 }
                 else if (ControlsSwitchIsOn)
                 {
                     ControlsSwitchIsOn = switchon;
                     //System.Media.SystemSounds.Hand.Play();
-                    CutToolStripMenuItem1.ShortcutKeys = Keys.None;
-                    CopyCellValuesToolStripMenuItem.ShortcutKeys = Keys.None;
-                    PasteCellValuesToolStripMenuItem.ShortcutKeys = Keys.None;
+                    //CutToolStripMenuItem1.ShortcutKeys = Keys.None;
+                    //CopyCellValuesToolStripMenuItem.ShortcutKeys = Keys.None;
+                    //PasteCellValuesToolStripMenuItem.ShortcutKeys = Keys.None;
                 }
             }
         }
@@ -1769,38 +1769,9 @@ namespace TranslationHelper
             _ = MessageBox.Show(AppSettings.EnableTranslationCache.ToString(CultureInfo.InvariantCulture));
         }
 
-        private void FixMessagesInTheTableToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            _ = new FixJpMessagesTranslation().Selected();
-        }
-
         private void TableCompleteInfoLabel_Click(object sender, EventArgs e)
         {
             FunctionsTable.ShowFirstRowWithEmptyTranslation();
-        }
-
-        private async void ExtraFixesToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            await Task.Run(() => ProceedHardcodedFixes()).ConfigureAwait(false);
-        }
-
-        bool HardcodedFixesExecuting;
-        private void ProceedHardcodedFixes()
-        {
-            if (HardcodedFixesExecuting)
-                return;
-
-            HardcodedFixesExecuting = true;
-
-            _ = new AllHardFixes().AllT();
-
-            HardcodedFixesExecuting = false;
-
-            //clear translation cache
-            if (AppData.OnlineTranslationCache != null)
-            {
-                AppData.OnlineTranslationCache = null;
-            }
         }
 
         private void ReloadRulesToolStripMenuItem_Click(object sender, EventArgs e)
@@ -1985,18 +1956,12 @@ namespace TranslationHelper
 
         private void OpenTranslationRulesFileToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            if (File.Exists(THSettings.TranslationRegexRulesFilePath))
-            {
-                _ = Process.Start("explorer.exe", THSettings.TranslationRegexRulesFilePath);
-            }
+            if (File.Exists(THSettings.TranslationRegexRulesFilePath)) _ = Process.Start("explorer.exe", THSettings.TranslationRegexRulesFilePath);
         }
 
         private void OpenCellFixesFileToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            if (File.Exists(THSettings.CellFixesRegexRulesFilePath))
-            {
-                _ = Process.Start("explorer.exe", THSettings.CellFixesRegexRulesFilePath);
-            }
+            if (File.Exists(THSettings.CellFixesRegexRulesFilePath)) _ = Process.Start("explorer.exe", THSettings.CellFixesRegexRulesFilePath);
         }
 
         private void THInfolabel_Click(object sender, EventArgs e)
@@ -2011,36 +1976,10 @@ namespace TranslationHelper
 
         private void THfrmMain_FormClosed(object sender, FormClosedEventArgs e)
         {
-            if (THFileElementsDataGridViewOriginalToTranslationHotkey != null)
-            {
-                THFileElementsDataGridViewOriginalToTranslationHotkey.Dispose();
-                THFileElementsDataGridViewOriginalToTranslationHotkey = null;
-            }
-        }
+            if (THFileElementsDataGridViewOriginalToTranslationHotkey == null) return;
 
-        private void TSMIEnQuotesToJp_Click(object sender, EventArgs e)
-        {
-            _ = new EnQuotesToJp().Selected();
-        }
-
-        private void TSMISetOriginalToTranslationAll_Click(object sender, EventArgs e)
-        {
-            _ = new SetOriginalToTranslation().AllT();
-        }
-
-        private void TSMISetOriginalToTranslationTable_Click(object sender, EventArgs e)
-        {
-            _ = new SetOriginalToTranslation().TableT();
-        }
-
-        private void TSMIEnQuotesAll_Click(object sender, EventArgs e)
-        {
-            _ = new EnQuotesToJp().AllT();
-        }
-
-        private void TSMIEnQuotesTable_Click(object sender, EventArgs e)
-        {
-            _ = new EnQuotesToJp().TableT();
+            THFileElementsDataGridViewOriginalToTranslationHotkey.Dispose();
+            THFileElementsDataGridViewOriginalToTranslationHotkey = null;
         }
 
         ///// <summary>
@@ -2083,57 +2022,6 @@ namespace TranslationHelper
         //    }
         //    return index;
         //}
-
-        private void CharFunctionTest()
-        {
-            if (THFileElementsDataGridView.SelectedCells.Count == 1 && (THFileElementsDataGridView.SelectedCells[0].Value + string.Empty).Length > 0)
-            {
-                HashSet<char> chars = new HashSet<char>();
-                foreach (var c in (THFileElementsDataGridView.SelectedCells[0].Value + string.Empty))
-                {
-                    if (chars.Contains(c))
-                        continue;
-
-                    _ = MessageBox.Show("'" + c + "' category is " + Char.GetUnicodeCategory(c));
-
-                    _ = chars.Add(c);
-                }
-            }
-
-
-            //foreach (var c in new char[] { '「', '>', '\0', '\n', '\\', '-', '>' })
-            //{
-            //    var c1 = char.IsSymbol(c);
-            //    var c2 = char.IsWhiteSpace(c);
-            //    var c3 = char.IsControl(c);
-            //    var c4 = char.IsSurrogate(c);
-            //    var c5 = char.IsHighSurrogate(c);
-            //    var c6 = char.IsLowSurrogate(c);
-            //    var c7 = char.IsLetterOrDigit(c);
-            //    var c8 = char.IsPunctuation(c);
-            //    var c9 = char.IsSeparator(c);
-            //}
-        }
-
-        private void HardFixesToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            _ = new AllHardFixes().Selected();
-        }
-
-        private void FixMessagesForAllToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            _ = new FixJpMessagesTranslation().AllT();
-        }
-
-        private void TableToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            _ = new FixJpMessagesTranslation().TableT();
-        }
-
-        private void CharFunctionTest(object sender, EventArgs e)
-        {
-            CharFunctionTest();
-        }
 
         private void AddToCustomDBToolStripMenuItem_Click(object sender, EventArgs e)
         {
