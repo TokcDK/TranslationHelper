@@ -159,59 +159,59 @@ namespace TranslationHelper
         private void SetUIStrings()
         {
             //Menu File
-            this.fileToolStripMenuItem.Text = T._("File");
-            //Menu Edit
-            this.EditToolStripMenuItem.Text = T._("Edit");
-            this.tryToTranslateOnlineToolStripMenuItem.Text = T._("Translate Online");
-            this.SelectedToolStripMenuItem1.Text = T._("Selected");
-            this.TableToolStripMenuItem1.Text = T._("Table");
-            this.allToolStripMenuItem1.Text = T._("All");
-            this.translationInteruptToolStripMenuItem.Text = T._("Interupt");
-            this.fixCellSpecialSymbolsToolStripMenuItem.Text = T._("Fix cell special symbols");
-            this.FixCellsSelectedToolStripMenuItem.Text = T._("Selected");
-            this.FixCellsTableToolStripMenuItem.Text = T._("Table");
-            this.allToolStripMenuItem.Text = T._("All");
-            this.SetOriginalValueToTranslationToolStripMenuItem.Text = T._("Translation=Original");
-            this.CompleteRomajiotherLinesToolStripMenuItem.Text = T._("Complete Romaji/Other lines");
-            this.CompleteRomajiotherLinesToolStripMenuItem1.Text = T._("Complete Romaji/Other lines");
-            this.ForceSameForSimularToolStripMenuItem.Text = T._("Force same for simular");
-            this.ForceSameForSimularToolStripMenuItem1.Text = T._("Force same for simular");
-            this.CutToolStripMenuItem1.Text = T._("Cut");
-            this.CopyCellValuesToolStripMenuItem.Text = T._("Copy");
-            this.PasteCellValuesToolStripMenuItem.Text = T._("Paste");
-            this.ClearSelectedCellsToolStripMenuItem.Text = T._("Clear selected cells");
-            this.ToUPPERCASEToolStripMenuItem.Text = T._("UPPERCASE");
-            this.FirstCharacterToUppercaseToolStripMenuItem.Text = T._("Uppercase");
-            this.ToLowercaseToolStripMenuItem.Text = T._("lowercase");
-            this.searchToolStripMenuItem.Text = T._("Search");
-            //Menu View
-            this.ViewToolStripMenuItem.Text = T._("View");
-            this.SetColumnSortingToolStripMenuItem.Text = T._("Reset column sorting");
-            //Menu Options
-            this.optionsToolStripMenuItem.Text = T._("Options");
-            this.settingsToolStripMenuItem.Text = T._("Settings");
-            //Menu Help
-            this.helpToolStripMenuItem.Text = T._("Help");
-            this.aboutToolStripMenuItem.Text = T._("About");
-            //Contex menu
-            this.OpenInWebContextToolStripMenuItem.Text = T._("Open in web");
-            this.toolStripMenuItem6.Text = T._("Translate Online");
-            this.TranslateSelectedContextToolStripMenuItem.Text = T._("Selected");
-            this.TranslateTableContextToolStripMenuItem.Text = T._("Table");
-            this.toolStripMenuItem9.Text = T._("All");
-            this.translationInteruptToolStripMenuItem1.Text = T._("Interupt");
-            this.toolStripMenuItem2.Text = T._("Fix cell special symbols");
-            this.FixSymbolsContextToolStripMenuItem.Text = T._("Selected");
-            this.FixSymbolsTableContextToolStripMenuItem.Text = T._("Table");
-            this.toolStripMenuItem5.Text = T._("All");
-            this.OriginalToTransalationContextToolStripMenuItem.Text = T._("Translation=Original");
-            this.CutToolStripMenuItem.Text = T._("Cut");
-            this.CopyCMStripMenuItem.Text = T._("Copy");
-            this.PasteToolStripMenuItem.Text = T._("Paste");
-            this.CleanSelectedCellsToolStripMenuItem1.Text = T._("Clear selected cells");
-            this.ToolStripMenuItem14.Text = T._("UPPERCASE");
-            this.UppercaseToolStripMenuItem.Text = T._("Uppercase");
-            this.LowercaseToolStripMenuItem.Text = T._("lowercase");
+            //this.fileToolStripMenuItem.Text = T._("File");
+            ////Menu Edit
+            //this.EditToolStripMenuItem.Text = T._("Edit");
+            //this.tryToTranslateOnlineToolStripMenuItem.Text = T._("Translate Online");
+            //this.SelectedToolStripMenuItem1.Text = T._("Selected");
+            //this.TableToolStripMenuItem1.Text = T._("Table");
+            //this.allToolStripMenuItem1.Text = T._("All");
+            //this.translationInteruptToolStripMenuItem.Text = T._("Interupt");
+            //this.fixCellSpecialSymbolsToolStripMenuItem.Text = T._("Fix cell special symbols");
+            //this.FixCellsSelectedToolStripMenuItem.Text = T._("Selected");
+            //this.FixCellsTableToolStripMenuItem.Text = T._("Table");
+            //this.allToolStripMenuItem.Text = T._("All");
+            //this.SetOriginalValueToTranslationToolStripMenuItem.Text = T._("Translation=Original");
+            //this.CompleteRomajiotherLinesToolStripMenuItem.Text = T._("Complete Romaji/Other lines");
+            //this.CompleteRomajiotherLinesToolStripMenuItem1.Text = T._("Complete Romaji/Other lines");
+            //this.ForceSameForSimularToolStripMenuItem.Text = T._("Force same for simular");
+            //this.ForceSameForSimularToolStripMenuItem1.Text = T._("Force same for simular");
+            //this.CutToolStripMenuItem1.Text = T._("Cut");
+            //this.CopyCellValuesToolStripMenuItem.Text = T._("Copy");
+            //this.PasteCellValuesToolStripMenuItem.Text = T._("Paste");
+            //this.ClearSelectedCellsToolStripMenuItem.Text = T._("Clear selected cells");
+            //this.ToUPPERCASEToolStripMenuItem.Text = T._("UPPERCASE");
+            //this.FirstCharacterToUppercaseToolStripMenuItem.Text = T._("Uppercase");
+            //this.ToLowercaseToolStripMenuItem.Text = T._("lowercase");
+            //this.searchToolStripMenuItem.Text = T._("Search");
+            ////Menu View
+            //this.ViewToolStripMenuItem.Text = T._("View");
+            //this.SetColumnSortingToolStripMenuItem.Text = T._("Reset column sorting");
+            ////Menu Options
+            //this.optionsToolStripMenuItem.Text = T._("Options");
+            //this.settingsToolStripMenuItem.Text = T._("Settings");
+            ////Menu Help
+            //this.helpToolStripMenuItem.Text = T._("Help");
+            //this.aboutToolStripMenuItem.Text = T._("About");
+            ////Contex menu
+            //this.OpenInWebContextToolStripMenuItem.Text = T._("Open in web");
+            //this.toolStripMenuItem6.Text = T._("Translate Online");
+            //this.TranslateSelectedContextToolStripMenuItem.Text = T._("Selected");
+            //this.TranslateTableContextToolStripMenuItem.Text = T._("Table");
+            //this.toolStripMenuItem9.Text = T._("All");
+            //this.translationInteruptToolStripMenuItem1.Text = T._("Interupt");
+            //this.toolStripMenuItem2.Text = T._("Fix cell special symbols");
+            //this.FixSymbolsContextToolStripMenuItem.Text = T._("Selected");
+            //this.FixSymbolsTableContextToolStripMenuItem.Text = T._("Table");
+            //this.toolStripMenuItem5.Text = T._("All");
+            //this.OriginalToTransalationContextToolStripMenuItem.Text = T._("Translation=Original");
+            //this.CutToolStripMenuItem.Text = T._("Cut");
+            //this.CopyCMStripMenuItem.Text = T._("Copy");
+            //this.PasteToolStripMenuItem.Text = T._("Paste");
+            //this.CleanSelectedCellsToolStripMenuItem1.Text = T._("Clear selected cells");
+            //this.ToolStripMenuItem14.Text = T._("UPPERCASE");
+            //this.UppercaseToolStripMenuItem.Text = T._("Uppercase");
+            //this.LowercaseToolStripMenuItem.Text = T._("lowercase");
         }
 
         private void THMain_Load(object sender, EventArgs e)
@@ -462,7 +462,7 @@ namespace TranslationHelper
         private void SetOnTHFileElementsDataGridViewWasLoaded()
         {
             ControlsSwitchActivated = true;
-            ControlsSwitchIsOn = (CutToolStripMenuItem1.ShortcutKeys != Keys.None);
+            //ControlsSwitchIsOn = (CutToolStripMenuItem1.ShortcutKeys != Keys.None);
 
             if (THFileElementsDataGridView != null && THFileElementsDataGridView.Columns.Count > 1)
             {
@@ -474,36 +474,36 @@ namespace TranslationHelper
                 THTargetRichTextBox.Enabled = true;
             }
 
-            SelectedToolStripMenuItem1.Enabled = true;
-            TableToolStripMenuItem1.Enabled = true;
-            FixCellsSelectedToolStripMenuItem.Enabled = true;
-            FixCellsTableToolStripMenuItem.Enabled = true;
-            SetOriginalValueToTranslationToolStripMenuItem.Enabled = true;
-            CompleteRomajiotherLinesToolStripMenuItem.Enabled = true;
-            CompleteRomajiotherLinesToolStripMenuItem1.Enabled = true;
-            ForceSameForSimularToolStripMenuItem.Enabled = true;
-            ForceSameForSimularToolStripMenuItem1.Enabled = true;
-            CutToolStripMenuItem1.Enabled = true;
-            CopyCellValuesToolStripMenuItem.Enabled = true;
-            PasteCellValuesToolStripMenuItem.Enabled = true;
-            ClearSelectedCellsToolStripMenuItem.Enabled = true;
-            ToUPPERCASEToolStripMenuItem.Enabled = true;
-            FirstCharacterToUppercaseToolStripMenuItem.Enabled = true;
-            ToLowercaseToolStripMenuItem.Enabled = true;
-            SetColumnSortingToolStripMenuItem.Enabled = true;
-            OpenInWebContextToolStripMenuItem.Enabled = true;
-            TranslateSelectedContextToolStripMenuItem.Enabled = true;
-            TranslateTableContextToolStripMenuItem.Enabled = true;
-            FixSymbolsContextToolStripMenuItem.Enabled = true;
-            FixSymbolsTableContextToolStripMenuItem.Enabled = true;
-            OriginalToTransalationContextToolStripMenuItem.Enabled = true;
-            CutToolStripMenuItem.Enabled = true;
-            CopyCMStripMenuItem.Enabled = true;
-            PasteToolStripMenuItem.Enabled = true;
-            CleanSelectedCellsToolStripMenuItem1.Enabled = true;
-            ToolStripMenuItem14.Enabled = true;
-            UppercaseToolStripMenuItem.Enabled = true;
-            LowercaseToolStripMenuItem.Enabled = true;
+            //SelectedToolStripMenuItem1.Enabled = true;
+            //TableToolStripMenuItem1.Enabled = true;
+            //FixCellsSelectedToolStripMenuItem.Enabled = true;
+            //FixCellsTableToolStripMenuItem.Enabled = true;
+            //SetOriginalValueToTranslationToolStripMenuItem.Enabled = true;
+            //CompleteRomajiotherLinesToolStripMenuItem.Enabled = true;
+            //CompleteRomajiotherLinesToolStripMenuItem1.Enabled = true;
+            //ForceSameForSimularToolStripMenuItem.Enabled = true;
+            //ForceSameForSimularToolStripMenuItem1.Enabled = true;
+            //CutToolStripMenuItem1.Enabled = true;
+            //CopyCellValuesToolStripMenuItem.Enabled = true;
+            //PasteCellValuesToolStripMenuItem.Enabled = true;
+            //ClearSelectedCellsToolStripMenuItem.Enabled = true;
+            //ToUPPERCASEToolStripMenuItem.Enabled = true;
+            //FirstCharacterToUppercaseToolStripMenuItem.Enabled = true;
+            //ToLowercaseToolStripMenuItem.Enabled = true;
+            //SetColumnSortingToolStripMenuItem.Enabled = true;
+            //OpenInWebContextToolStripMenuItem.Enabled = true;
+            //TranslateSelectedContextToolStripMenuItem.Enabled = true;
+            //TranslateTableContextToolStripMenuItem.Enabled = true;
+            //FixSymbolsContextToolStripMenuItem.Enabled = true;
+            //FixSymbolsTableContextToolStripMenuItem.Enabled = true;
+            //OriginalToTransalationContextToolStripMenuItem.Enabled = true;
+            //CutToolStripMenuItem.Enabled = true;
+            //CopyCMStripMenuItem.Enabled = true;
+            //PasteToolStripMenuItem.Enabled = true;
+            //CleanSelectedCellsToolStripMenuItem1.Enabled = true;
+            //ToolStripMenuItem14.Enabled = true;
+            //UppercaseToolStripMenuItem.Enabled = true;
+            //LowercaseToolStripMenuItem.Enabled = true;
         }
 
         private void SetFilterDGV()
