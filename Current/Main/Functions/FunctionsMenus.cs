@@ -76,16 +76,9 @@ namespace TranslationHelper.Functions
         }
         public static ToolStripMenuItem GetToolStripMenuItem(this MenuStrip toolStripMenuItem, string itemWithText)
         {
-            if (!string.IsNullOrWhiteSpace(itemWithText))
-            {
-                foreach (ToolStripMenuItem item in toolStripMenuItem.Items)
-                {
-                    if (item.Text == itemWithText)
-                    {
-                        return item;
-                    }
-                }
-            }
+            if (string.IsNullOrWhiteSpace(itemWithText)) return null;
+
+            foreach (ToolStripMenuItem item in toolStripMenuItem.Items) if (item.Text == itemWithText) return item;
 
             return null;
         }
@@ -101,11 +94,10 @@ namespace TranslationHelper.Functions
         {
             foreach (ToolStripMenuItem item in toolStripMenuItem.Items)
             {
-                if (item.Text == itemWithText)
-                {
-                    foundFoolStripMenuItem = item;
-                    return true;
-                }
+                if (item.Text != itemWithText) continue;
+
+                foundFoolStripMenuItem = item;
+                return true;
             }
 
             foundFoolStripMenuItem = null;
@@ -116,11 +108,10 @@ namespace TranslationHelper.Functions
         {
             foreach (ToolStripMenuItem item in toolStripMenuItem.DropDownItems)
             {
-                if (item.Text == itemWithText)
-                {
-                    foundFoolStripMenuItem = item;
-                    return true;
-                }
+                if (item.Text != itemWithText) continue;
+
+                foundFoolStripMenuItem = item;
+                return true;
             }
 
             foundFoolStripMenuItem = null;
