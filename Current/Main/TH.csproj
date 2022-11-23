@@ -350,6 +350,8 @@
     <Compile Include="Menus\FileRowMenus\FileListMenuItemBase.cs" />
     <Compile Include="Menus\FilesListMenus\FileListMenuItemBase.cs" />
     <Compile Include="Menus\FilesListMenus\FileListMenuItemCopyName.cs" />
+    <Compile Include="Menus\MainMenus\Edit\CaseMorph\MainMenuFileSubItemCaseMorphBase.cs" />
+    <Compile Include="Menus\MainMenus\Edit\CaseMorph\MainMenuFileSubItemCaseMorphToUpperCategory.cs" />
     <Compile Include="Menus\MainMenus\Edit\MainMenuEditSubBase.cs" />
     <Compile Include="Menus\MainMenus\Edit\MenuItemCompleteRomajiotherLines.cs" />
     <Compile Include="Menus\MainMenus\Edit\MenuItemForceSameTranslationForIdentical.cs" />

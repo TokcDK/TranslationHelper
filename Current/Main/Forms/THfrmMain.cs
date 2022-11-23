@@ -1536,28 +1536,7 @@ namespace TranslationHelper
             }
         }
 
-        private void ToUPPERCASEToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            _ = new ToUpperCaseAll().Selected();
-        }
-
-        private void FirstCharacterToUppercaseToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            _ = new ToUpperCaseFirst().Selected();
-        }
-
-        private void TolowercaseToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            _ = new ToLowerCaseAll().Selected();
-        }
-
         internal bool InteruptTranslation;
-        private void InteruptToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            AppSettings.InterruptTtanslation = true;
-            InteruptTranslation = true;
-        }
-
 
         private void THMain_FormClosing(object sender, FormClosingEventArgs e)
         {
@@ -2271,25 +2250,6 @@ namespace TranslationHelper
         private void AddToCustomDBToolStripMenuItem_Click(object sender, EventArgs e)
         {
             _ = Task.Run(() => new LoadRowDataToCustomDb().Selected()).ConfigureAwait(false);
-        }
-
-        private void MakeTranslatedFilecopyForExistOriginalsToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-        }
-
-        private void UPPERCASETableToolStripMenuItem1_Click(object sender, EventArgs e)
-        {
-            _ = new ToUpperCaseAll().TableT();
-        }
-
-        private void UppercaseTableToolStripMenuItem2_Click(object sender, EventArgs e)
-        {
-            _ = new ToUpperCaseFirst().TableT();
-        }
-
-        private void LowercaseTableToolStripMenuItem1_Click(object sender, EventArgs e)
-        {
-            _ = new ToLowerCaseAll().TableT();
         }
 
         private async void TableToolStripMenuItem2_Click(object sender, EventArgs e)

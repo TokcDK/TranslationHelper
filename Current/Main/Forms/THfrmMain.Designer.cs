@@ -89,9 +89,6 @@
             this.THbtnMainResetTable = new System.Windows.Forms.Button();
             this.THFileElementsDataGridView = new System.Windows.Forms.DataGridView();
             this.CMSFilesList = new System.Windows.Forms.ContextMenuStrip(this.components);
-            this.UPPERCASETableToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
-            this.UppercaseTableToolStripMenuItem2 = new System.Windows.Forms.ToolStripMenuItem();
-            this.lowercaseTableToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
             this.THFileElementsDataGridViewContextMenuStrip = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.toolStripMenuItem2 = new System.Windows.Forms.ToolStripMenuItem();
             this.FixSymbolsContextToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -139,7 +136,6 @@
             this.tlpFileElementsFilterAndReset.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.THFiltersDataGridView)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.THFileElementsDataGridView)).BeginInit();
-            this.CMSFilesList.SuspendLayout();
             this.THFileElementsDataGridViewContextMenuStrip.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.THEditElementsSplitContainer)).BeginInit();
             this.THEditElementsSplitContainer.Panel1.SuspendLayout();
@@ -267,81 +263,6 @@
             this.TSMISetOriginalToTranslationTable.Text = "Table";
             this.TSMISetOriginalToTranslationTable.Click += new System.EventHandler(this.TSMISetOriginalToTranslationTable_Click);
             // 
-            // ToUPPERCASEToolStripMenuItem
-            // 
-            this.ToUPPERCASEToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.toUPPERCASEAllToolStripMenuItem4,
-            this.toUPPERCASETableToolStripMenuItem2});
-            this.ToUPPERCASEToolStripMenuItem.Enabled = false;
-            this.ToUPPERCASEToolStripMenuItem.Name = "ToUPPERCASEToolStripMenuItem";
-            this.ToUPPERCASEToolStripMenuItem.Size = new System.Drawing.Size(237, 22);
-            this.ToUPPERCASEToolStripMenuItem.Text = "UPPERCASE";
-            this.ToUPPERCASEToolStripMenuItem.Click += new System.EventHandler(this.ToUPPERCASEToolStripMenuItem_Click);
-            // 
-            // toUPPERCASEAllToolStripMenuItem4
-            // 
-            this.toUPPERCASEAllToolStripMenuItem4.Name = "toUPPERCASEAllToolStripMenuItem4";
-            this.toUPPERCASEAllToolStripMenuItem4.Size = new System.Drawing.Size(101, 22);
-            this.toUPPERCASEAllToolStripMenuItem4.Text = "All";
-            this.toUPPERCASEAllToolStripMenuItem4.Click += new System.EventHandler(this.UPPERCASEallToolStripMenuItem_Click);
-            // 
-            // toUPPERCASETableToolStripMenuItem2
-            // 
-            this.toUPPERCASETableToolStripMenuItem2.Name = "toUPPERCASETableToolStripMenuItem2";
-            this.toUPPERCASETableToolStripMenuItem2.Size = new System.Drawing.Size(101, 22);
-            this.toUPPERCASETableToolStripMenuItem2.Text = "Table";
-            this.toUPPERCASETableToolStripMenuItem2.Click += new System.EventHandler(this.UPPERCASETableToolStripMenuItem_Click);
-            // 
-            // FirstCharacterToUppercaseToolStripMenuItem
-            // 
-            this.FirstCharacterToUppercaseToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.firstCharacterToUppercaseAllToolStripMenuItem,
-            this.firstCharacterToUppercaseTableToolStripMenuItem});
-            this.FirstCharacterToUppercaseToolStripMenuItem.Enabled = false;
-            this.FirstCharacterToUppercaseToolStripMenuItem.Name = "FirstCharacterToUppercaseToolStripMenuItem";
-            this.FirstCharacterToUppercaseToolStripMenuItem.Size = new System.Drawing.Size(237, 22);
-            this.FirstCharacterToUppercaseToolStripMenuItem.Text = "Uppercase";
-            this.FirstCharacterToUppercaseToolStripMenuItem.Click += new System.EventHandler(this.FirstCharacterToUppercaseToolStripMenuItem_Click);
-            // 
-            // firstCharacterToUppercaseAllToolStripMenuItem
-            // 
-            this.firstCharacterToUppercaseAllToolStripMenuItem.Name = "firstCharacterToUppercaseAllToolStripMenuItem";
-            this.firstCharacterToUppercaseAllToolStripMenuItem.Size = new System.Drawing.Size(101, 22);
-            this.firstCharacterToUppercaseAllToolStripMenuItem.Text = "All";
-            this.firstCharacterToUppercaseAllToolStripMenuItem.Click += new System.EventHandler(this.UppercaseAllToolStripMenuItem_Click);
-            // 
-            // firstCharacterToUppercaseTableToolStripMenuItem
-            // 
-            this.firstCharacterToUppercaseTableToolStripMenuItem.Name = "firstCharacterToUppercaseTableToolStripMenuItem";
-            this.firstCharacterToUppercaseTableToolStripMenuItem.Size = new System.Drawing.Size(101, 22);
-            this.firstCharacterToUppercaseTableToolStripMenuItem.Text = "Table";
-            this.firstCharacterToUppercaseTableToolStripMenuItem.Click += new System.EventHandler(this.UppercaseTableToolStripMenuItem_Click);
-            // 
-            // ToLowercaseToolStripMenuItem
-            // 
-            this.ToLowercaseToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.allToolStripMenuItem2,
-            this.LowercaseTableToolStripMenuItem4});
-            this.ToLowercaseToolStripMenuItem.Enabled = false;
-            this.ToLowercaseToolStripMenuItem.Name = "ToLowercaseToolStripMenuItem";
-            this.ToLowercaseToolStripMenuItem.Size = new System.Drawing.Size(237, 22);
-            this.ToLowercaseToolStripMenuItem.Text = "lowercase";
-            this.ToLowercaseToolStripMenuItem.Click += new System.EventHandler(this.TolowercaseToolStripMenuItem_Click);
-            // 
-            // allToolStripMenuItem2
-            // 
-            this.allToolStripMenuItem2.Name = "allToolStripMenuItem2";
-            this.allToolStripMenuItem2.Size = new System.Drawing.Size(101, 22);
-            this.allToolStripMenuItem2.Text = "All";
-            this.allToolStripMenuItem2.Click += new System.EventHandler(this.LowercaseAllToolStripMenuItem_Click);
-            // 
-            // LowercaseTableToolStripMenuItem4
-            // 
-            this.LowercaseTableToolStripMenuItem4.Name = "LowercaseTableToolStripMenuItem4";
-            this.LowercaseTableToolStripMenuItem4.Size = new System.Drawing.Size(101, 22);
-            this.LowercaseTableToolStripMenuItem4.Text = "Table";
-            this.LowercaseTableToolStripMenuItem4.Click += new System.EventHandler(this.LowercaseTableToolStripMenuItem_Click);
-            // 
             // splitLinesWhichLongestOfLimitToolStripMenuItem
             // 
             this.splitLinesWhichLongestOfLimitToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
@@ -433,14 +354,14 @@
             // tableToolStripMenuItem2
             // 
             this.tableToolStripMenuItem2.Name = "tableToolStripMenuItem2";
-            this.tableToolStripMenuItem2.Size = new System.Drawing.Size(180, 22);
+            this.tableToolStripMenuItem2.Size = new System.Drawing.Size(101, 22);
             this.tableToolStripMenuItem2.Text = "Table";
             this.tableToolStripMenuItem2.Click += new System.EventHandler(this.TableToolStripMenuItem2_Click);
             // 
             // allToolStripMenuItem3
             // 
             this.allToolStripMenuItem3.Name = "allToolStripMenuItem3";
-            this.allToolStripMenuItem3.Size = new System.Drawing.Size(180, 22);
+            this.allToolStripMenuItem3.Size = new System.Drawing.Size(101, 22);
             this.allToolStripMenuItem3.Text = "All";
             this.allToolStripMenuItem3.Click += new System.EventHandler(this.AllToolStripMenuItem3_Click);
             // 
@@ -722,34 +643,9 @@
             // 
             // CMSFilesList
             // 
-            this.CMSFilesList.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.UPPERCASETableToolStripMenuItem1,
-            this.UppercaseTableToolStripMenuItem2,
-            this.lowercaseTableToolStripMenuItem1});
             this.CMSFilesList.Name = "contextMenuStrip1";
-            this.CMSFilesList.Size = new System.Drawing.Size(138, 70);
+            this.CMSFilesList.Size = new System.Drawing.Size(61, 4);
             this.CMSFilesList.Text = "2000";
-            // 
-            // UPPERCASETableToolStripMenuItem1
-            // 
-            this.UPPERCASETableToolStripMenuItem1.Name = "UPPERCASETableToolStripMenuItem1";
-            this.UPPERCASETableToolStripMenuItem1.Size = new System.Drawing.Size(137, 22);
-            this.UPPERCASETableToolStripMenuItem1.Text = "UPPERCASE";
-            this.UPPERCASETableToolStripMenuItem1.Click += new System.EventHandler(this.UPPERCASETableToolStripMenuItem1_Click);
-            // 
-            // UppercaseTableToolStripMenuItem2
-            // 
-            this.UppercaseTableToolStripMenuItem2.Name = "UppercaseTableToolStripMenuItem2";
-            this.UppercaseTableToolStripMenuItem2.Size = new System.Drawing.Size(137, 22);
-            this.UppercaseTableToolStripMenuItem2.Text = "Uppercase";
-            this.UppercaseTableToolStripMenuItem2.Click += new System.EventHandler(this.UppercaseTableToolStripMenuItem2_Click);
-            // 
-            // lowercaseTableToolStripMenuItem1
-            // 
-            this.lowercaseTableToolStripMenuItem1.Name = "lowercaseTableToolStripMenuItem1";
-            this.lowercaseTableToolStripMenuItem1.Size = new System.Drawing.Size(137, 22);
-            this.lowercaseTableToolStripMenuItem1.Text = "lowercase";
-            this.lowercaseTableToolStripMenuItem1.Click += new System.EventHandler(this.LowercaseTableToolStripMenuItem1_Click);
             // 
             // THFileElementsDataGridViewContextMenuStrip
             // 
@@ -766,7 +662,7 @@
             this.addToCustomDBToolStripMenuItem,
             this.trimEndToolStripMenuItem1});
             this.THFileElementsDataGridViewContextMenuStrip.Name = "contextMenuStrip1";
-            this.THFileElementsDataGridViewContextMenuStrip.Size = new System.Drawing.Size(238, 246);
+            this.THFileElementsDataGridViewContextMenuStrip.Size = new System.Drawing.Size(238, 268);
             // 
             // toolStripMenuItem2
             // 
@@ -818,30 +714,6 @@
             this.OriginalToTransalationContextToolStripMenuItem.Size = new System.Drawing.Size(237, 22);
             this.OriginalToTransalationContextToolStripMenuItem.Text = "Original=Translation";
             this.OriginalToTransalationContextToolStripMenuItem.Click += new System.EventHandler(this.SetOriginalValueToTranslationToolStripMenuItem_Click);
-            // 
-            // ToolStripMenuItem14
-            // 
-            this.ToolStripMenuItem14.Enabled = false;
-            this.ToolStripMenuItem14.Name = "ToolStripMenuItem14";
-            this.ToolStripMenuItem14.Size = new System.Drawing.Size(237, 22);
-            this.ToolStripMenuItem14.Text = "UPPERCASE";
-            this.ToolStripMenuItem14.Click += new System.EventHandler(this.ToUPPERCASEToolStripMenuItem_Click);
-            // 
-            // UppercaseToolStripMenuItem
-            // 
-            this.UppercaseToolStripMenuItem.Enabled = false;
-            this.UppercaseToolStripMenuItem.Name = "UppercaseToolStripMenuItem";
-            this.UppercaseToolStripMenuItem.Size = new System.Drawing.Size(237, 22);
-            this.UppercaseToolStripMenuItem.Text = "Uppercase";
-            this.UppercaseToolStripMenuItem.Click += new System.EventHandler(this.FirstCharacterToUppercaseToolStripMenuItem_Click);
-            // 
-            // LowercaseToolStripMenuItem
-            // 
-            this.LowercaseToolStripMenuItem.Enabled = false;
-            this.LowercaseToolStripMenuItem.Name = "LowercaseToolStripMenuItem";
-            this.LowercaseToolStripMenuItem.Size = new System.Drawing.Size(237, 22);
-            this.LowercaseToolStripMenuItem.Text = "lowercase";
-            this.LowercaseToolStripMenuItem.Click += new System.EventHandler(this.TolowercaseToolStripMenuItem_Click);
             // 
             // splitLinesWhichLongerOfLimitToolStripMenuItem
             // 
@@ -1204,7 +1076,6 @@
             this.tlpFileElementsFilterAndReset.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.THFiltersDataGridView)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.THFileElementsDataGridView)).EndInit();
-            this.CMSFilesList.ResumeLayout(false);
             this.THFileElementsDataGridViewContextMenuStrip.ResumeLayout(false);
             this.THEditElementsSplitContainer.Panel1.ResumeLayout(false);
             this.THEditElementsSplitContainer.Panel2.ResumeLayout(false);
@@ -1320,9 +1191,6 @@
         private System.Windows.Forms.ToolStripMenuItem LowercaseTableToolStripMenuItem4;
         private System.Windows.Forms.ToolStripMenuItem ClearTableCellsToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem ClearAllCellsToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem UPPERCASETableToolStripMenuItem1;
-        private System.Windows.Forms.ToolStripMenuItem UppercaseTableToolStripMenuItem2;
-        private System.Windows.Forms.ToolStripMenuItem lowercaseTableToolStripMenuItem1;
         private System.Windows.Forms.ToolStripMenuItem trimEndToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem tableToolStripMenuItem2;
         private System.Windows.Forms.ToolStripMenuItem allToolStripMenuItem3;
