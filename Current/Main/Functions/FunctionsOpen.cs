@@ -277,7 +277,7 @@ namespace TranslationHelper.Functions
                 }
             }
 
-            FunctionsOpen.UpdateRecentFiles(AppData.RecentFilesMenu);
+            FunctionsOpen.UpdateRecentFiles();
 
             AppData.CurrentProject.SelectedGameDir = GetCorrectedGameDIr(AppData.CurrentProject.SelectedGameDir);
 
@@ -357,7 +357,7 @@ namespace TranslationHelper.Functions
         /// <summary>
         /// Add last successfully opened project to recent files list
         /// </summary>
-        internal static void UpdateRecentFiles(ToolStripMenuItem container)
+        internal static void UpdateRecentFiles()
         {
             string[] items;
             bool changed = false;
@@ -400,17 +400,17 @@ namespace TranslationHelper.Functions
                 AppData.ConfigIni.SetArrayToSectionValues("RecentFiles", items);
             }
 
-            AddRecentMenuItems(items, container);
+            AddRecentMenuItems(items);
         }
 
-        private static void AddRecentMenuItems(string[] items, ToolStripMenuItem container)
+        private static void AddRecentMenuItems(string[] items)
         {
             var recentMenuName = T._("Recent");
 
             // search old menu
             ToolStripMenuItem category = null;
             bool foundOld = false;
-            foreach (ToolStripMenuItem menuCategory in container.DropDownItems)
+            foreach (ToolStripMenuItem menuCategory in AppData.Main.MainMenuStrip.Items)
             {
                 if (menuCategory.Text == recentMenuName)
                 {
@@ -423,10 +423,7 @@ namespace TranslationHelper.Functions
             //ProjectData.Main.fileToolStripMenuItem.DropDownItems
             if (!foundOld)
             {
-                category = new ToolStripMenuItem
-                {
-                    Text = recentMenuName
-                };
+                category = new ToolStripMenuItem() { Text = recentMenuName };
             }
             else
             {
@@ -435,15 +432,13 @@ namespace TranslationHelper.Functions
 
             foreach (var item in items)
             {
-                var ItemMenu = new ToolStripMenuItem
-                {
-                    Text = item
-                };
+                var ItemMenu = new ToolStripMenuItem() { Text = item };
+
                 category.DropDownItems.Add(ItemMenu);
                 ItemMenu.Click += RecentFilesOpen_Click;
             }
 
-            if (!foundOld) AppData.Main.Invoke((Action)(() => container.DropDownItems.Add(category)));
+            if (!foundOld) AppData.Main.Invoke((Action)(() => AppData.Main.MainMenuStrip.Items.Add(category)));
         }
 
         private static void RecentFilesOpen_Click(object sender, EventArgs e) { OpenProject((sender as ToolStripMenuItem).Text); }

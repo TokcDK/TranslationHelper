@@ -68,8 +68,6 @@ namespace TranslationHelper
                 File.Delete(THSettings.THLogPath);
             }
 
-            FunctionsOpen.UpdateRecentFiles(AppData.RecentFilesMenu);
-
             //Test Проверка ключа Git для планируемой функции использования Git
             //string GitPath = Registry.GetValue("HKEY_LOCAL_MACHINE\\SOFTWARE\\GitForWindows", "InstallPath", null).ToString();
         }
@@ -143,6 +141,9 @@ namespace TranslationHelper
             //Hide some items 
             AppData.Main.tlpTextLenPosInfo.Visible = false;
             AppData.Main.frmMainPanel.Visible = false;
+
+
+            FunctionsOpen.UpdateRecentFiles();
         }
 
         ToolTip THToolTip;
