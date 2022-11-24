@@ -4,6 +4,7 @@ using System.Windows.Forms;
 using TranslationHelper.Data;
 using TranslationHelper.Menus.FileRowMenus;
 using TranslationHelper.Menus.MainMenus;
+using TranslationHelper.Menus.MainMenus.Edit;
 using TranslationHelper.Menus.MenuTypes;
 
 namespace TranslationHelper.Functions

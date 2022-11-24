@@ -403,6 +403,7 @@
     <Compile Include="Menus\MainMenus\File\MenuItemWriteTranslation.cs" />
     <Compile Include="Menus\MainMenus\File\MenuItemOpen.cs" />
     <Compile Include="Menus\MainMenus\File\Other\MainMenuFileSubItemOtherBase.cs" />
+    <Compile Include="Menus\MainMenus\Help\MainMenuHelpCategoryItem.cs" />
     <Compile Include="Menus\MainMenus\Help\MainMenuHelpSubItemBase.cs" />
     <Compile Include="Menus\MainMenus\Help\MenuItemShowAboutWindow.cs" />
     <Compile Include="Menus\MainMenus\MainMenuItemBase.cs" />
