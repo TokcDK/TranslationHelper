@@ -59,7 +59,7 @@ namespace TranslationHelper.Menus.MainMenus.File
             }
 
 
-            if (!changed) return; // write only when changed
+            //if (!changed) return; // write only when changed
 
             // save values in ini
             AppData.ConfigIni.SetArrayToSectionValues("RecentFiles", items);
@@ -76,12 +76,17 @@ namespace TranslationHelper.Menus.MainMenus.File
             // search old menu
             ToolStripMenuItem category = null;
             bool foundOld = false;
+
             foreach (ToolStripMenuItem menuCategory in AppData.Main.MainMenuStrip.Items)
             {
-                if (menuCategory.Text == recentMenuName)
+                if (menuCategory.Text != T._("File")) continue;
+
+                foreach (ToolStripMenuItem sub in menuCategory.DropDownItems)
                 {
+                    if (sub.Text != recentMenuName) continue;
+
                     foundOld = true;
-                    category = menuCategory;
+                    category = sub;
                     break;
                 }
             }
