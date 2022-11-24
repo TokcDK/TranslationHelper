@@ -1,85 +1,217 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
-using TranslationHelper.Formats.RPGMMV.JS;
 using TranslationHelper.Menus.FileRowMenus;
 using TranslationHelper.Menus.MainMenus;
 using TranslationHelper.Menus.MenuTypes;
 
 namespace TranslationHelper.Functions
 {
+    public class MenuData
+    {
+        public string Text;
+        public IMainMenuItem Menu { get; }
+
+        public MenuData(IMainMenuItem menu, string text = "")
+        {
+            Text = menu != null && !string.IsNullOrWhiteSpace(menu.Text)
+                ? menu.Text : text;
+            Menu = menu;
+        }
+
+        public List<MenuData> Childs = new List<MenuData>();
+    }
+
     internal static class FunctionsMenus
     {
         internal static void CreateMainMenus(MenuStrip container)
         {
             var menusData = GetListOfSubClasses.Inherited.GetInterfaceImplimentations<IMainMenuItem>();
 
+            var menusList = new List<MenuData>();
             foreach (var menuData in menusData)
             {
-                if(menuData is IFileRowMenuItem) continue;
-                if(menuData is IChildMenuItem) continue;
+                if (menuData is IFileRowMenuItem) continue;
+                if (menuData is IChildMenuItem) continue;
+                if (menuData is IDefaultMenuItem) continue;
 
+                var item = new MenuData(menuData);
+
+                if (string.IsNullOrWhiteSpace(menuData.ParentMenuName))
+                {
+                    var mainMenu = menusList.FirstOrDefault(m => m.Text == menuData.Text);
+
+                    if (mainMenu == default)
+                    {
+                        menusList.Add(item);
+                    }
+                    else if (mainMenu.Menu is DefaultMainMenu)
+                    {
+                        var mm = new MenuData(menuData)
+                        {
+                            Childs = mainMenu.Childs
+                        };
+
+                        mainMenu = mm; // relink menu for cases when it is main menu with same name
+                    }
+
+                    continue;
+                }
+
+                // create parent
+                var parentMenuItem = menusList.FirstOrDefault(m => m.Text == menuData.ParentMenuName);
+                if (parentMenuItem == default)
+                {
+                    parentMenuItem = new MenuData(new DefaultMainMenu(), menuData.ParentMenuName);
+                }
+
+                // check category
+                if (!string.IsNullOrWhiteSpace(menuData.CategoryName))
+                {
+                    var catMenuItem = parentMenuItem.Childs.FirstOrDefault(m => m.Text == menuData.CategoryName);
+                    if (catMenuItem == default)
+                    {
+                        catMenuItem = new MenuData(new DefaultMainMenu(), menuData.CategoryName);
+                    }
+
+                    catMenuItem.Childs.Add(item);
+
+                    item = catMenuItem; // relink to category
+                }
+
+                if(!parentMenuItem.Childs.Contains(item)) parentMenuItem.Childs.Add(item);
+
+                if (!menusList.Contains(parentMenuItem)) menusList.Add(parentMenuItem);
+            }
+
+            // sort by priority
+            menusList = menusList.OrderBy(m => m.Menu.Priority).ToList();
+            int max = menusList.Count;
+            for (int i = 0; i < max; i++)
+            {
+                var menu = menusList[i];
+
+                SortChilds(menu);
+            }
+
+            foreach (var menuData in menusList)
+            {
                 //Create new menu
                 var menu = new ToolStripMenuItem
                 {
                     Text = menuData.Text,
-                    ToolTipText = menuData.Description
+                    ToolTipText = menuData.Menu.Description,
+                    ShortcutKeys = menuData.Menu.ShortcutKeys
                 };
 
                 //Register click event
-                menu.Click += menuData.OnClick;
+                menu.Click += menuData.Menu.OnClick;
 
-                //check parent menu
-                ToolStripMenuItem parent = null;
-                bool HasParent;
-                if (HasParent = !string.IsNullOrWhiteSpace(menuData.ParentMenuName))
-                    if (!container.Contains(menuData.ParentMenuName, out parent))
-                    {
-                        parent = new ToolStripMenuItem
-                        {
-                            Text = menuData.ParentMenuName
-                        };
-                    }
-
-                //check parent category
-                ToolStripMenuItem category = null;
-                bool HasCategory = !string.IsNullOrWhiteSpace(menuData.CategoryName);
-                if (!string.IsNullOrWhiteSpace(menuData.ParentMenuName) && HasCategory)
-                    if (!parent.Contains(menuData.CategoryName, out category))
-                    {
-                        category = new ToolStripMenuItem
-                        {
-                            Text = menuData.CategoryName
-                        };
-                    }
-
-                //add category and make it current if exist
-                if (HasCategory)
+                foreach (var child in menuData.Childs)
                 {
-                    category.DropDownItems.Add(menu);
-                    menu = category;
+                    menu.DropDownItems.Add(SetChilds(child));
                 }
 
-                //add parent and make it current if exist
-                if (HasParent)
-                {
-                    parent.DropDownItems.Add(menu);
-                    menu = parent;
-                }
-
-                //add result menu
-                if(!container.Items.Contains(menu)) container.Items.Add(menu);
+                container.Items.Add(menu);
             }
 
-            var sortedlist = new List<ToolStripMenuItem>();  
-            foreach (ToolStripMenuItem item in container.Items)
+
+            //foreach (var menuData in menusData)
+            //{
+            //    if (menuData is IFileRowMenuItem) continue;
+            //    if (menuData is IChildMenuItem) continue;
+
+            //    //Create new menu
+            //    var menu = new ToolStripMenuItem
+            //    {
+            //        Text = menuData.Text,
+            //        ToolTipText = menuData.Description
+            //    };
+
+            //    //Register click event
+            //    menu.Click += menuData.OnClick;
+
+            //    //check parent menu
+            //    ToolStripMenuItem parent = null;
+            //    bool HasParent;
+            //    if (HasParent = !string.IsNullOrWhiteSpace(menuData.ParentMenuName))
+            //        if (!container.Contains(menuData.ParentMenuName, out parent))
+            //        {
+            //            parent = new ToolStripMenuItem
+            //            {
+            //                Text = menuData.ParentMenuName
+            //            };
+            //        }
+
+            //    //check parent category
+            //    ToolStripMenuItem category = null;
+            //    bool HasCategory = !string.IsNullOrWhiteSpace(menuData.CategoryName);
+            //    if (!string.IsNullOrWhiteSpace(menuData.ParentMenuName) && HasCategory)
+            //        if (!parent.Contains(menuData.CategoryName, out category))
+            //        {
+            //            category = new ToolStripMenuItem
+            //            {
+            //                Text = menuData.CategoryName
+            //            };
+            //        }
+
+            //    //add category and make it current if exist
+            //    if (HasCategory)
+            //    {
+            //        category.DropDownItems.Add(menu);
+            //        menu = category;
+            //    }
+
+            //    //add parent and make it current if exist
+            //    if (HasParent)
+            //    {
+            //        parent.DropDownItems.Add(menu);
+            //        menu = parent;
+            //    }
+
+            //    //add result menu
+            //    if (!container.Items.Contains(menu)) container.Items.Add(menu);
+            //}
+        }
+
+        private static ToolStripMenuItem SetChilds(MenuData menuData)
+        {
+            //Create new menu
+            var subMenu = new ToolStripMenuItem
             {
-                sortedlist.Add(item);
+                Text = menuData.Text,
+                ToolTipText = menuData.Menu.Description,
+                ShortcutKeys = menuData.Menu.ShortcutKeys
+            };
+
+            //Register click event
+            subMenu.Click += menuData.Menu.OnClick;
+
+            foreach (var child in menuData.Childs)
+            {
+                subMenu.DropDownItems.Add(SetChilds(child));
+            }
+
+            return subMenu;
+        }
+
+        private static void SortChilds(MenuData menu)
+        {
+            if (menu.Childs == null) return;
+
+            int max = menu.Childs.Count;
+            if (max == 0) return;
+
+            menu.Childs = menu.Childs.OrderBy(m => m.Menu.Priority).ToList();
+
+            for (int i = 0; i < max; i++)
+            {
+                var child = menu.Childs[i];
+
+                SortChilds(child);
             }
         }
+
         public static ToolStripMenuItem GetToolStripMenuItem(this MenuStrip toolStripMenuItem, string itemWithText)
         {
             if (string.IsNullOrWhiteSpace(itemWithText)) return null;

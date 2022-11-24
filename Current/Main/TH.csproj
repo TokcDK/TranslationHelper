@@ -350,6 +350,7 @@
     <Compile Include="Functions\OnlineTranslation\TranslationBigBlock.cs" />
     <Compile Include="Functions\OnlineTranslation\TranslationBigBlockMulti.cs" />
     <Compile Include="GlobalSuppressions.cs" />
+    <Compile Include="Menus\DefaultMenu.cs" />
     <Compile Include="Menus\FileRowMenus\FileRowMenuItemBase.cs" />
     <Compile Include="Menus\FilesListMenus\FileListMenuItemBase.cs" />
     <Compile Include="Menus\FilesListMenus\FileListMenuItemCopyName.cs" />
@@ -384,6 +385,7 @@
     <Compile Include="Menus\MainMenus\Edit\Online Translate\MenuItemOnlineTranslateInterupt.cs" />
     <Compile Include="Menus\MainMenus\Edit\Online Translate\MenuItemOnlineTranslateTable.cs" />
     <Compile Include="Menus\MainMenus\Edit\Online Translate\MenuItemOnlineTranslateAll.cs" />
+    <Compile Include="Menus\MainMenus\File\DefaultMainMenu.cs" />
     <Compile Include="Menus\MainMenus\File\Export\MainMenuFileSubItemExportBase.cs" />
     <Compile Include="Menus\MainMenus\File\Import\MainMenuFileSubItemImportBase.cs" />
     <Compile Include="Menus\MainMenus\File\Import\MenuItemExportToRPGMakerTransPatch.cs" />

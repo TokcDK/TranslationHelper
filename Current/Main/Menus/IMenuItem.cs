@@ -47,4 +47,8 @@ namespace TranslationHelper.Menus.MenuTypes
     {
         // detect if not need to add the menu in menus list because it is child menu
     }
+    public interface IDefaultMenuItem
+    {
+        // detect if not need to add the menu in menus list because it is child menu
+    }
 }
