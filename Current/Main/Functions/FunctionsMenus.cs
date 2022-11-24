@@ -34,6 +34,7 @@ namespace TranslationHelper.Functions
                 if (menuData is IFileRowMenuItem) continue;
                 if (menuData is IChildMenuItem) continue;
                 if (menuData is IDefaultMenuItem) continue;
+                if (menuData is IProjectMenuItem) continue;
 
                 var item = new MenuData(menuData);
 

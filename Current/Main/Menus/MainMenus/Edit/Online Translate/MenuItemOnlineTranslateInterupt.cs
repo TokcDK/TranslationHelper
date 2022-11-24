@@ -7,10 +7,11 @@ using System.Threading;
 using TranslationHelper.Data;
 using TranslationHelper.Functions.FileElementsFunctions.Row;
 using TranslationHelper.Menus.FileRowMenus;
+using TranslationHelper.Menus.MenuTypes;
 
 namespace TranslationHelper.Menus.MainMenus.Edit.OnlineTranslate
 {
-    internal class MenuItemOnlineTranslateInterupt : MainMenuFileSubItemOnlineTranslateBase, IFileRowMenuItem
+    internal class MenuItemOnlineTranslateInterupt : MainMenuFileSubItemOnlineTranslateBase, IFileRowMenuItem, IProjectMenuItem
     {
         public override string Text => T._("Interupt");
 

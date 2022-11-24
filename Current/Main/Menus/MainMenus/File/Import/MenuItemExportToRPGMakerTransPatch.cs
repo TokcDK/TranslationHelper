@@ -12,11 +12,12 @@ using TranslationHelper.Formats.RPGMaker.Functions;
 using TranslationHelper.Functions;
 using TranslationHelper.Functions.FileElementsFunctions.Row.ExportFormats;
 using TranslationHelper.Main.Functions;
+using TranslationHelper.Menus.MenuTypes;
 using TranslationHelper.Projects.RPGMTrans;
 
 namespace TranslationHelper.Menus.MainMenus.File.Import
 {
-    internal class MenuItemImportFromPOfile : MainMenuFileSubItemBase
+    internal class MenuItemImportFromPOfile : MainMenuFileSubItemBase, IProjectMenuItem
     {
         public override string Text => T._("Import translation from PO file");
 

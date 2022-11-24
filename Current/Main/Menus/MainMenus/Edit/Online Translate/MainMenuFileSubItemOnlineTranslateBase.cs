@@ -1,6 +1,8 @@
-﻿namespace TranslationHelper.Menus.MainMenus.Edit.OnlineTranslate
+﻿using TranslationHelper.Menus.MenuTypes;
+
+namespace TranslationHelper.Menus.MainMenus.Edit.OnlineTranslate
 {
-    public abstract class MainMenuFileSubItemOnlineTranslateBase : MainMenuEditSubItemBase
+    public abstract class MainMenuFileSubItemOnlineTranslateBase : MainMenuEditSubItemBase, IProjectMenuItem
     {
         public override string CategoryName => T._("Translate online");
     }

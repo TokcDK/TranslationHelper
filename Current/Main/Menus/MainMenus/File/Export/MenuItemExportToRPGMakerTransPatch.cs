@@ -9,11 +9,12 @@ using TranslationHelper.Formats.RPGMaker.Functions;
 using TranslationHelper.Functions;
 using TranslationHelper.Functions.FileElementsFunctions.Row.ExportFormats;
 using TranslationHelper.Main.Functions;
+using TranslationHelper.Menus.MenuTypes;
 using TranslationHelper.Projects.RPGMTrans;
 
 namespace TranslationHelper.Menus.MainMenus.File.Export
 {
-    internal class MenuItemExportToRPGMakerTransPatch : MainMenuFileSubItemExportBase
+    internal class MenuItemExportToRPGMakerTransPatch : MainMenuFileSubItemExportBase, IProjectMenuItem
     {
         public override string Text => T._("Export translation to RPG Maker Trans patch");
 

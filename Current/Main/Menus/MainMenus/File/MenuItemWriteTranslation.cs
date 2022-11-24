@@ -5,10 +5,11 @@ using System.Text;
 using System.Threading.Tasks;
 using TranslationHelper.Data;
 using TranslationHelper.Functions;
+using TranslationHelper.Menus.MenuTypes;
 
 namespace TranslationHelper.Menus.MainMenus.File
 {
-    internal class MenuItemWriteTranslation : MainMenuFileSubItemBase
+    internal class MenuItemWriteTranslation : MainMenuFileSubItemBase, IProjectMenuItem
     {
         public override string Text => T._("Write translation");
 

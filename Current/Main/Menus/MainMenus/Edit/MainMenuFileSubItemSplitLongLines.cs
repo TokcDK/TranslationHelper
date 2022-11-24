@@ -7,7 +7,7 @@ using TranslationHelper.Menus.MenuTypes;
 
 namespace TranslationHelper.Menus.MainMenus.Edit.CaseMorph
 {    
-    public abstract class MainMenuFileSubItemSplitLongLines : MainMenuEditSubItemBase
+    public abstract class MainMenuFileSubItemSplitLongLines : MainMenuEditSubItemBase, IProjectMenuItem
     {
         public override IMenuItem[] Childs => new IMenuItem[1] { new MenuItemCaseMorphSplitLongLinesVariated() };
     }

@@ -16,7 +16,7 @@ namespace TranslationHelper.Menus.MainMenus.Edit.CaseMorph
         public override string CategoryName => T._("Original To Translation");
     }
 
-    public abstract class MainMenuFileSubItemSetOriginalToTranslation : MainMenuFileSubItemSetOriginalToTranslationBase
+    public abstract class MainMenuFileSubItemSetOriginalToTranslation : MainMenuFileSubItemSetOriginalToTranslationBase, IProjectMenuItem
     {
         public override IMenuItem[] Childs => new IMenuItem[2] 
         { 

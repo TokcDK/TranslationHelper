@@ -12,11 +12,12 @@ using TranslationHelper.Functions.FileElementsFunctions.Row.HardFixes;
 using TranslationHelper.Main.Functions;
 using TranslationHelper.Menus.FileRowMenus;
 using TranslationHelper.Menus.MainMenus.File;
+using TranslationHelper.Menus.MenuTypes;
 using TranslationHelper.Projects.RPGMTrans;
 
 namespace TranslationHelper.Menus.MainMenus.Edit
 {
-    internal class MenuItemExtraFixes : MainMenuEditSubItemBase, IFileRowMenuItem
+    internal class MenuItemExtraFixes : MainMenuEditSubItemBase, IFileRowMenuItem, IProjectMenuItem
     {
         public override string Text => T._("Extra Fixes (All)");
 

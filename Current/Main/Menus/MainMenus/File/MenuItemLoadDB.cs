@@ -8,11 +8,12 @@ using TranslationHelper.Data;
 using TranslationHelper.Formats.RPGMaker.Functions;
 using TranslationHelper.Functions;
 using TranslationHelper.Main.Functions;
+using TranslationHelper.Menus.MenuTypes;
 using TranslationHelper.Projects.RPGMTrans;
 
 namespace TranslationHelper.Menus.MainMenus.File
 {
-    internal class MenuItemLoadDB : MainMenuFileSubItemBase
+    internal class MenuItemLoadDB : MainMenuFileSubItemBase, IProjectMenuItem
     {
 
         public override string Text => T._("Load DB");
