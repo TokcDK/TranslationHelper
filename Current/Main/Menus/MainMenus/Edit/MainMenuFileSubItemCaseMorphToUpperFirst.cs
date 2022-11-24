@@ -16,19 +16,8 @@ namespace TranslationHelper.Menus.MainMenus.Edit.CaseMorph
         public override IMenuItem[] Childs => new IMenuItem[1] { new MenuItemCaseMorphUpperVariated() };
     }
 
-    public abstract class MainMenuFileSubItemCaseMorphToUpperBase : IMenuItem, IChildMenuItem
+    public abstract class MainMenuFileSubItemCaseMorphToUpperBase : MenuItemBase, IChildMenuItem
     {
-        public abstract string Text { get; }
-
-        public virtual string Description { get; } = "";
-
-        public virtual string CategoryName => "";
-
-        public virtual Keys ShortcutKeys => Keys.None;
-
-        public abstract void OnClick(object sender, EventArgs e);
-
-        public virtual IMenuItem[] Childs { get; } = null;
     }
 
     internal class MenuItemCaseMorphUpperVariated : MainMenuFileSubItemCaseMorphToUpperBase

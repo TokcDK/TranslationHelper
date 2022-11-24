@@ -39,5 +39,6 @@ namespace TranslationHelper.Menus.MainMenus.File
             FunctionsSounds.SaveDBComplete();
             AppData.Main.ProgressInfo(false);
         }
+        public override int Priority => base.Priority + 15;
     }
 }

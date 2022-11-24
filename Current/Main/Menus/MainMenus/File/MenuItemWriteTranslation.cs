@@ -27,5 +27,6 @@ namespace TranslationHelper.Menus.MainMenus.File
 
             if (AppData.CurrentProject.DontLoadDuplicates) AppData.CurrentProject.TablesLinesDict = null;
         }
+        public override int Priority => base.Priority + 5;
     }
 }

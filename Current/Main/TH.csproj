@@ -388,6 +388,7 @@
     <Compile Include="Menus\MainMenus\File\Import\MainMenuFileSubItemImportBase.cs" />
     <Compile Include="Menus\MainMenus\File\Import\MenuItemExportToRPGMakerTransPatch.cs" />
     <Compile Include="Menus\MainMenus\File\MainMenuFileSubItemBase.cs" />
+    <Compile Include="Menus\MainMenus\File\MenuItemRecent.cs" />
     <Compile Include="Menus\MainMenus\File\Other\MenuItemTestGetXUATranslation.cs" />
     <Compile Include="Menus\MainMenus\File\Export\MenuItemExportToRPGMakerTransPatch.cs" />
     <Compile Include="Menus\MainMenus\File\Other\MenuItemXOREncript.cs" />
@@ -403,6 +404,8 @@
     <Compile Include="Menus\MainMenus\Help\MainMenuHelpSubItemBase.cs" />
     <Compile Include="Menus\MainMenus\Help\MenuItemShowAboutWindow.cs" />
     <Compile Include="Menus\MainMenus\MainMenuItemBase.cs" />
+    <Compile Include="Menus\MainMenus\MenusSortData\IMenusSortData.cs" />
+    <Compile Include="Menus\MainMenus\MenusSortData\MainMenusSortData.cs" />
     <Compile Include="Menus\MainMenus\View\MainMenuViewSubItemBase.cs" />
     <Compile Include="Menus\MainMenus\View\MenuItemReloadRules.cs" />
     <Compile Include="Menus\MainMenus\View\MenuItemOpenSettings.cs" />
@@ -412,6 +415,7 @@
     <Compile Include="Menus\MainMenus\View\MenuItemShowCheckboxvalue.cs" />
     <Compile Include="Menus\MainMenus\View\MenuItemResetColumnSorting.cs" />
     <Compile Include="Menus\MainMenus\View\MenuItemSetAsDatasourceAll.cs" />
+    <Compile Include="Menus\MenuItemBase.cs" />
     <Compile Include="Menus\MenusCreator.cs" />
     <Compile Include="Menus\MenusExtensions.cs" />
     <Compile Include="Menus\FileRowMenus\IFileRowItemMenu.cs" />

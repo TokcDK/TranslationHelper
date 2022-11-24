@@ -10,6 +10,7 @@ using TranslationHelper.Data;
 using TranslationHelper.Extensions;
 using TranslationHelper.Formats;
 using TranslationHelper.Menus;
+using TranslationHelper.Menus.MainMenus.File;
 using TranslationHelper.Projects;
 using TranslationHelper.Projects.ZZZZFormats;
 
@@ -277,7 +278,7 @@ namespace TranslationHelper.Functions
                 }
             }
 
-            FunctionsOpen.UpdateRecentFiles();
+            MenuItemRecent.UpdateRecentFiles();
 
             AppData.CurrentProject.SelectedGameDir = GetCorrectedGameDIr(AppData.CurrentProject.SelectedGameDir);
 
@@ -319,7 +320,7 @@ namespace TranslationHelper.Functions
                 ? AppData.CurrentProject.NewlineSymbol
                 : Environment.NewLine;
 
-            AfterOpenCleaning();
+            MenuItemRecent.AfterOpenCleaning();
 
             AppSettings.ProjectIsOpened = true;
             FunctionsSounds.OpenProjectComplete();
@@ -352,102 +353,6 @@ namespace TranslationHelper.Functions
             foreach (var list in sortedByExt.Values) result.AddRange(list.OrderBy(t => t.TableName));
 
             return result.ToArray();
-        }
-
-        /// <summary>
-        /// Add last successfully opened project to recent files list
-        /// </summary>
-        internal static void UpdateRecentFiles()
-        {
-            string[] items;
-            bool changed = false;
-            if (!AppData.ConfigIni.SectionExistsAndNotEmpty("RecentFiles"))
-            {
-                changed = true;
-                items = new[] { AppData.SelectedFilePath };
-            }
-            else
-            {
-                var values = AppData.ConfigIni.GetSectionValues("RecentFiles").Where(path => File.Exists(path) || Directory.Exists(path)).ToList();
-
-                // max 20 items
-                while (values.Count >= 20)
-                {
-                    changed = true;
-                    values.RemoveAt(values.Count - 1); // remove last when more of limit
-                }
-
-                // check if last value is on first place else update
-                if (!values.Contains(AppData.SelectedFilePath) && !string.IsNullOrWhiteSpace(AppData.SelectedFilePath))
-                {
-                    changed = true;
-                    values.Insert(0, AppData.SelectedFilePath);
-                }
-                else if (values.IndexOf(AppData.SelectedFilePath) > 0)
-                {
-                    changed = true;
-                    values.Remove(AppData.SelectedFilePath);
-                    values.Insert(0, AppData.SelectedFilePath);
-                }
-
-                items = values.ToArray();
-            }
-
-
-            if (changed) // write only when changed
-            {
-                // save values in ini
-                AppData.ConfigIni.SetArrayToSectionValues("RecentFiles", items);
-            }
-
-            AddRecentMenuItems(items);
-        }
-
-        private static void AddRecentMenuItems(string[] items)
-        {
-            var recentMenuName = T._("Recent");
-
-            // search old menu
-            ToolStripMenuItem category = null;
-            bool foundOld = false;
-            foreach (ToolStripMenuItem menuCategory in AppData.Main.MainMenuStrip.Items)
-            {
-                if (menuCategory.Text == recentMenuName)
-                {
-                    foundOld = true;
-                    category = menuCategory;
-                    break;
-                }
-            }
-
-            //ProjectData.Main.fileToolStripMenuItem.DropDownItems
-            if (!foundOld)
-            {
-                category = new ToolStripMenuItem() { Text = recentMenuName };
-            }
-            else
-            {
-                category.DropDownItems.Clear();
-            }
-
-            foreach (var item in items)
-            {
-                var ItemMenu = new ToolStripMenuItem() { Text = item };
-
-                category.DropDownItems.Add(ItemMenu);
-                ItemMenu.Click += RecentFilesOpen_Click;
-            }
-
-            if (!foundOld) AppData.Main.Invoke((Action)(() => AppData.Main.MainMenuStrip.Items.Add(category)));
-        }
-
-        private static void RecentFilesOpen_Click(object sender, EventArgs e) { OpenProject((sender as ToolStripMenuItem).Text); }
-
-        private static void AfterOpenCleaning()
-        {
-            AppData.CurrentProject.TablesLinesDict?.Clear();
-            AppData.ENQuotesToJPLearnDataFoundNext?.Clear();
-            AppData.ENQuotesToJPLearnDataFoundPrev?.Clear();
         }
     }
 }

@@ -21,19 +21,8 @@ namespace TranslationHelper.Menus.MainMenus.Edit.CellFixes
         };
     }
 
-    public abstract class MainMenuFileSubItemCellFixesSubBase : IMenuItem, IChildMenuItem
+    public abstract class MainMenuFileSubItemCellFixesSubBase : MenuItemBase, IChildMenuItem
     {
-        public abstract string Text { get; }
-
-        public virtual string Description { get; } = "";
-
-        public virtual string CategoryName => "";
-
-        public virtual Keys ShortcutKeys => Keys.None;
-
-        public abstract void OnClick(object sender, EventArgs e);
-
-        public virtual IMenuItem[] Childs { get; } = null;
     }
 
     internal class MenuItemCaseCellFixesVariated : MainMenuFileSubItemCellFixesSubBase

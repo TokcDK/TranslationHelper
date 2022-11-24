@@ -73,6 +73,12 @@ namespace TranslationHelper.Functions
                 //add result menu
                 if(!container.Items.Contains(menu)) container.Items.Add(menu);
             }
+
+            var sortedlist = new List<ToolStripMenuItem>();  
+            foreach (ToolStripMenuItem item in container.Items)
+            {
+                sortedlist.Add(item);
+            }
         }
         public static ToolStripMenuItem GetToolStripMenuItem(this MenuStrip toolStripMenuItem, string itemWithText)
         {

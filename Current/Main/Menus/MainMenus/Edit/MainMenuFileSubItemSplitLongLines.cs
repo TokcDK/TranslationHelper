@@ -12,18 +12,8 @@ namespace TranslationHelper.Menus.MainMenus.Edit.CaseMorph
         public override IMenuItem[] Childs => new IMenuItem[1] { new MenuItemCaseMorphSplitLongLinesVariated() };
     }
 
-    public abstract class MainMenuFileSubItemSplitLongLinesBase : IMenuItem, IChildMenuItem
+    public abstract class MainMenuFileSubItemSplitLongLinesBase : MenuItemBase, IChildMenuItem
     {
-        public abstract string Text { get; }
-
-        public virtual string Description { get; } = "";
-        public virtual string CategoryName => "";
-
-        public virtual Keys ShortcutKeys => Keys.None;
-
-        public abstract void OnClick(object sender, EventArgs e);
-
-        public virtual IMenuItem[] Childs { get; } = null;
     }
 
     internal class MenuItemCaseMorphSplitLongLinesVariated : MainMenuFileSubItemCaseMorphToUpperBase

@@ -21,6 +21,7 @@ using TranslationHelper.Functions.FileElementsFunctions.Row.AutoSameForSimular;
 using TranslationHelper.Functions.FileElementsFunctions.Row.HardFixes;
 using TranslationHelper.Functions.FileElementsFunctions.Row.StringCaseMorph;
 using TranslationHelper.Main.Functions;
+using TranslationHelper.Menus.MainMenus.File;
 
 namespace TranslationHelper
 {
@@ -143,7 +144,7 @@ namespace TranslationHelper
             AppData.Main.frmMainPanel.Visible = false;
 
 
-            FunctionsOpen.UpdateRecentFiles();
+            MenuItemRecent.UpdateRecentFiles();
         }
 
         ToolTip THToolTip;
