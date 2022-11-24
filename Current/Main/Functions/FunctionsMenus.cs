@@ -62,7 +62,10 @@ namespace TranslationHelper.Functions
                 var parentMenuItem = menusList.FirstOrDefault(m => m.Text == menuData.ParentMenuName);
                 if (parentMenuItem == default)
                 {
-                    parentMenuItem = new MenuData(new DefaultMainMenu(), menuData.ParentMenuName);
+                    var defMenu = new DefaultMainMenu();
+                    defMenu.Priority += 100;
+
+                    parentMenuItem = new MenuData(defMenu, menuData.ParentMenuName);
                 }
 
                 // check category
@@ -71,7 +74,10 @@ namespace TranslationHelper.Functions
                     var catMenuItem = parentMenuItem.Childs.FirstOrDefault(m => m.Text == menuData.CategoryName);
                     if (catMenuItem == default)
                     {
-                        catMenuItem = new MenuData(new DefaultMainMenu(), menuData.CategoryName);
+                        var defMenu = new DefaultMainMenu();
+                        defMenu.Priority += 100;
+
+                        catMenuItem = new MenuData(defMenu, menuData.CategoryName);
                     }
 
                     catMenuItem.Childs.Add(item);
