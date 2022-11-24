@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Forms;
+using TranslationHelper.Data;
 using TranslationHelper.Menus.FileRowMenus;
 using TranslationHelper.Menus.MainMenus;
 using TranslationHelper.Menus.MenuTypes;
@@ -31,10 +32,14 @@ namespace TranslationHelper.Functions
             var menusList = new List<MenuData>();
             foreach (var menuData in menusData)
             {
-                if (menuData is IFileRowMenuItem) continue;
-                if (menuData is IChildMenuItem) continue;
                 if (menuData is IDefaultMenuItem) continue;
-                if (menuData is IProjectMenuItem) continue;
+
+                if (AppData.CurrentProject == null)
+                {
+                    if (menuData is IFileRowMenuItem) continue;
+                    if (menuData is IChildMenuItem) continue;
+                    if (menuData is IProjectMenuItem) continue;
+                }
 
                 var item = new MenuData(menuData);
 
