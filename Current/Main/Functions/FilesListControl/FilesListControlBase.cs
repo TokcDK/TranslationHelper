@@ -4,7 +4,7 @@ namespace TranslationHelper.Functions.FilesListControl
 {
     abstract class FilesListControlBase
     {
-        public abstract object FilesListControl { get; protected set; }
+        public abstract Control FilesListControl { get; protected set; }
 
         /// <summary>
         /// add new <paramref name="item"/> to the files list 

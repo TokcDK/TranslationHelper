@@ -11,7 +11,7 @@ namespace TranslationHelper.Functions.FilesListControl
     {
         ListBox _listBox;
 
-        public override object FilesListControl { get => _listBox; protected set => _listBox = value as ListBox; }
+        public override Control FilesListControl { get => _listBox; protected set => _listBox = value as ListBox; }
 
         public override bool Focused => _listBox.Focused;
 
