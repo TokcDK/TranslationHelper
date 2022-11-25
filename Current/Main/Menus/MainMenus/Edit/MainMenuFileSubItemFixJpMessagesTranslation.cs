@@ -6,35 +6,34 @@ using TranslationHelper.Functions.FileElementsFunctions.Row.StringCaseMorph;
 
 namespace TranslationHelper.Menus.MainMenus.Edit.CaseMorph
 {
-    public abstract class MainMenuFileSubItemFixJpMessagesTranslation : MainMenuEditSubItemBase
-    {
-        public override IMenuItem[] Childs => new IMenuItem[1] { new MenuItemCaseMorphFixJpMessagesTranslationVariated() };
-    }
-
-    public abstract class MainMenuFileSubItemFixJpMessagesTranslationBase : MenuItemBase, IChildMenuItem
-    {
-    }
-
-    internal class MenuItemCaseMorphFixJpMessagesTranslationVariated : MainMenuFileSubItemCaseMorphToUpperBase
+    public class MainMenuFileSubItemFixJpMessagesTranslation : MainMenuEditSubItemBase
     {
         public override string Text => T._("FixJpMessagesTranslation");
+        public override IMenuItem[] Childs => new IMenuItem[1] { new MenuItemCaseMorphFixJpMessagesTranslationVariated() };
 
-        public override string Description => T._("FixJpMessagesTranslation");
+        public override void OnClick(object sender, EventArgs e) { }
+    }
 
-        public override void OnClick(object sender, EventArgs e)
+
+    internal class MenuItemCaseMorphFixJpMessagesTranslationVariated : AllTableRowsChildMenuBase
+    {
+        public override string Text => T._("JP->EN");
+
+        public override string Description => T._("Corrects japanese state message translation by static translations list");
+
+        protected override void OnAll(object sender, EventArgs e)
         {
-            if (AppData.THFilesList.SelectedItems.Count == AppData.THFilesList.Items.Count)
-            {
-                _ = new FixJpMessagesTranslation().AllT();
-            }
-            else if (AppData.Main.THFileElementsDataGridView.Rows.Count == AppData.Main.THFileElementsDataGridView.SelectedRows.Count)
-            {
-                _ = new FixJpMessagesTranslation().TableT();
-            }
-            else
-            {
-                _ = new FixJpMessagesTranslation().Selected();
-            }
+            _ = new FixJpMessagesTranslation().AllT();
+        }
+
+        protected override void OnRows(object sender, EventArgs e)
+        {
+            new FixJpMessagesTranslation().Rows();
+        }
+
+        protected override void OnTable(object sender, EventArgs e)
+        {
+            _ = new FixJpMessagesTranslation().TableT();
         }
     }
 }

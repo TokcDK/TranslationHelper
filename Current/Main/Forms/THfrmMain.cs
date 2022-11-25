@@ -1269,7 +1269,7 @@ namespace TranslationHelper
 
         private void CellFixesSelectedToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            _ = new FixCells().Selected();
+            _ = new FixCells().Rows();
         }
 
         //private void SetOriginalToTranslation()

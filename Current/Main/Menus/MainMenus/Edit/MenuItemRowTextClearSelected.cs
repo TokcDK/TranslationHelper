@@ -27,7 +27,7 @@ namespace TranslationHelper.Menus.MainMenus.Edit
         {
             if (AppSettings.IsRowInEditMode) return;
 
-            _ = new ClearCells().Selected();
+            _ = new ClearCells().Rows();
         }
 
         public override Keys ShortcutKeys => Keys.Control | Keys.D;

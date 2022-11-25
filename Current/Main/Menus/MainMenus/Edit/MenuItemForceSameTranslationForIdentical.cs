@@ -24,7 +24,7 @@ namespace TranslationHelper.Menus.MainMenus.Edit
 
         public override async void OnClick(object sender, EventArgs e)
         {
-            await Task.Run(() => new AutoSameForSimularForce().Selected()).ConfigureAwait(false);
+            await Task.Run(() => new AutoSameForSimularForce().Rows()).ConfigureAwait(false);
         }
     }
 }

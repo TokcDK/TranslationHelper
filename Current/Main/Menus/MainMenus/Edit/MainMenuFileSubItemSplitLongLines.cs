@@ -6,35 +6,37 @@ using TranslationHelper.Functions.FileElementsFunctions.Row.StringCaseMorph;
 
 namespace TranslationHelper.Menus.MainMenus.Edit.CaseMorph
 {
-    public abstract class MainMenuFileSubItemSplitLongLines : MainMenuEditSubItemBase, IProjectMenuItem
+    public class MainMenuFileSubItemSplitLongLines : MainMenuEditSubItemBase, IProjectMenuItem
     {
         public override IMenuItem[] Childs => new IMenuItem[1] { new MenuItemCaseMorphSplitLongLinesVariated() };
+
+        public override string Text => T._("Split Long Lines");
+
+        public override void OnClick(object sender, EventArgs e)
+        {
+        }
     }
 
-    public abstract class MainMenuFileSubItemSplitLongLinesBase : MenuItemBase, IChildMenuItem
-    {
-    }
 
-    internal class MenuItemCaseMorphSplitLongLinesVariated : MainMenuFileSubItemCaseMorphToUpperBase
+    internal class MenuItemCaseMorphSplitLongLinesVariated : AllTableRowsChildMenuBase
     {
         public override string Text => T._("Split Long Lines");
 
         public override string Description => T._("Split row text lines if text is length is longer of linit");
 
-        public override void OnClick(object sender, EventArgs e)
+        protected override void OnAll(object sender, EventArgs e)
         {
-            if (AppData.THFilesList.SelectedItems.Count == AppData.THFilesList.Items.Count)
-            {
-                _ = new SplitLongLines().AllT();
-            }
-            else if (AppData.Main.THFileElementsDataGridView.Rows.Count == AppData.Main.THFileElementsDataGridView.SelectedRows.Count)
-            {
-                _ = new SplitLongLines().TableT();
-            }
-            else
-            {
-                _ = new SplitLongLines().Selected();
-            }
+            _ = new SplitLongLines().AllT();
+        }
+
+        protected override void OnRows(object sender, EventArgs e)
+        {
+            new SplitLongLines().Rows();
+        }
+
+        protected override void OnTable(object sender, EventArgs e)
+        {
+            _ = new SplitLongLines().TableT();
         }
     }
 }

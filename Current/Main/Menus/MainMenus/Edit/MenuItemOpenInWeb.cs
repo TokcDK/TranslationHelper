@@ -24,7 +24,7 @@ namespace TranslationHelper.Menus.MainMenus.Edit
 
         public override void OnClick(object sender, EventArgs e)
         {
-            _ = new OpenInWeb().Selected();
+            _ = new OpenInWeb().Rows();
         }
 
         public override int Order => base.Order - 1000;

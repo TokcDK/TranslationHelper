@@ -145,7 +145,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
         /// proceed 1 or more of selected rows
         /// </summary>
         /// <returns></returns>
-        internal bool Selected()
+        internal bool Rows()
         {
             if (!IsOkSelected()) return false;
 

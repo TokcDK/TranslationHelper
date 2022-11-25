@@ -23,7 +23,9 @@ namespace TranslationHelper.Menus.MainMenus.Edit
 
         public override void OnClick(object sender, EventArgs e)
         {
-            _ = Task.Run(() => new LoadRowDataToCustomDb().Selected()).ConfigureAwait(false);
+            if (!AppSettings.IsFileContentFocused) return;
+
+            _ = Task.Run(() => new LoadRowDataToCustomDb().Rows()).ConfigureAwait(false);
         }
     }
 }

@@ -6,103 +6,59 @@ using TranslationHelper.Functions.FileElementsFunctions.Row.StringCaseMorph;
 
 namespace TranslationHelper.Menus.MainMenus.Edit.CellFixes
 {
-    public abstract class MainMenuFileSubItemCellFixesBase : MainMenuEditSubItemBase
+    public class MainMenuFileSubItemCellFixesBase : MainMenuEditSubItemBase
     {
-        public override string CategoryName => T._("CellFixes");
-    }
+        public override string Text => T._("Cell Fixes");
 
-    public abstract class MainMenuFileSubItemCellFixes : MainMenuFileSubItemCellFixesBase
-    {
-        public override IMenuItem[] Childs => new IMenuItem[2] 
-        { 
+        public override void OnClick(object sender, EventArgs e) { }
+        public override IMenuItem[] Childs => new IMenuItem[2]
+        {
             new MenuItemCaseCellFixesVariated(),
             new MenuItemCaseCellFixesVariatedForce()
         };
     }
 
-    public abstract class MainMenuFileSubItemCellFixesSubBase : MenuItemBase, IChildMenuItem
-    {
-    }
-
-    internal class MenuItemCaseCellFixesVariated : MainMenuFileSubItemCellFixesSubBase
+    internal class MenuItemCaseCellFixesVariated : AllTableRowsChildMenuBase
     {
         public override string Text => T._("Cell Fixes");
 
         public override string Description => T._("Fix cells by regex rules");
 
-        public override void OnClick(object sender, EventArgs e)
-        {
-            if (AppData.THFilesList.SelectedItems.Count == AppData.THFilesList.Items.Count)
-            {
-                _ = new ToUpperCaseFirst().AllT();
-            }
-            else if (AppData.Main.THFileElementsDataGridView.Rows.Count == AppData.Main.THFileElementsDataGridView.SelectedRows.Count)
-            {
-                _ = new ToUpperCaseFirst().TableT();
-            }
-            else
-            {
-                _ = new ToUpperCaseFirst().Selected();
-            }
-        }
-    }
-
-    internal class MenuItemCaseCellFixesVariatedForce : MainMenuFileSubItemCellFixesSubBase
-    {
-        public override string Text => T._("Cell Fixes (Force)");
-
-        public override string Description => T._("Force fix cells by regex rules");
-
-        public override void OnClick(object sender, EventArgs e)
-        {
-            if (AppData.THFilesList.SelectedItems.Count == AppData.THFilesList.Items.Count)
-            {
-                _ = new FixCellsForce().AllT();
-            }
-            else if (AppData.Main.THFileElementsDataGridView.Rows.Count == AppData.Main.THFileElementsDataGridView.SelectedRows.Count)
-            {
-                _ = new FixCellsForce().TableT();
-            }
-            else
-            {
-                _ = new FixCellsForce().Selected();
-            }
-        }
-    }
-
-    internal class MenuItemCellFixesAll : MainMenuFileSubItemCellFixesSubBase
-    {
-        public override string Text => T._("All");
-
-        public override string Description => T._("Cell Fixes for all");
-
-        public override void OnClick(object sender, EventArgs e)
+        protected override void OnAll(object sender, EventArgs e)
         {
             _ = new FixCells().AllT();
         }
-    }
 
-    internal class MenuItemCellFixesTable : MainMenuFileSubItemCellFixesSubBase
-    {
-        public override string Text => T._("Table");
+        protected override void OnRows(object sender, EventArgs e)
+        {
+             new FixCells().Rows();
+        }
 
-        public override string Description => T._("Cell Fixes for selected tables");
-
-        public override void OnClick(object sender, EventArgs e)
+        protected override void OnTable(object sender, EventArgs e)
         {
             _ = new FixCells().TableT();
         }
     }
 
-    internal class MenuItemCellFixesSelected : MainMenuFileSubItemCellFixesSubBase
+    internal class MenuItemCaseCellFixesVariatedForce : AllTableRowsChildMenuBase
     {
-        public override string Text => T._("Row");
+        public override string Text => T._("Cell Fixes (Force)");
 
-        public override string Description => T._("Cell Fixes for selected rows");
+        public override string Description => T._("Force fix cells by regex rules");
 
-        public override void OnClick(object sender, EventArgs e)
+        protected override void OnAll(object sender, EventArgs e)
         {
-            _ = new FixCells().Selected();
+            _ = new FixCellsForce().AllT();
+        }
+
+        protected override void OnRows(object sender, EventArgs e)
+        {
+            new FixCellsForce().Rows();
+        }
+
+        protected override void OnTable(object sender, EventArgs e)
+        {
+            _ = new FixCellsForce().TableT();
         }
     }
 }

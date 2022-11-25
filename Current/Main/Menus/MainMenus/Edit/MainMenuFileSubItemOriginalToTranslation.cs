@@ -7,53 +7,47 @@ using TranslationHelper.Data;
 using TranslationHelper.Functions.FileElementsFunctions.Row;
 using TranslationHelper.Functions.FileElementsFunctions.Row.StringCaseMorph;
 using TranslationHelper.Main.Functions;
+using TranslationHelper.Menus.FileRowMenus;
+using TranslationHelper.Menus.FilesListMenus;
 
 namespace TranslationHelper.Menus.MainMenus.Edit.CaseMorph
 {
-    public abstract class MainMenuFileSubItemSetOriginalToTranslationBase : MainMenuEditSubItemBase
+    public class MainMenuFileSubItemSetOriginalToTranslationCategory : MainMenuEditSubItemBase, IFileRowMenuItem, IFileListMenuItem, IProjectMenuItem
     {
-        public override string CategoryName => T._("Original To Translation");
-    }
-
-    public abstract class MainMenuFileSubItemSetOriginalToTranslation : MainMenuFileSubItemSetOriginalToTranslationBase, IProjectMenuItem
-    {
+        public override string Text => T._("Original To Translation");
         public override IMenuItem[] Childs => new IMenuItem[2]
-        { 
+        {
             new MenuItemCaseMorphSetOriginalToTranslationVariated(),
-            new MenuItemCaseMorphSetOriginalToTranslationForExistFiles() 
+            new MenuItemCaseMorphSetOriginalToTranslationForExistFiles()
         };
+
+        public override void OnClick(object sender, EventArgs e) { }
     }
 
-    public abstract class MainMenuFileSubItemSetOriginalToTranslationSubBase : MenuItemBase, IChildMenuItem
-    {
-    }
-
-    internal class MenuItemCaseMorphSetOriginalToTranslationVariated : MainMenuFileSubItemSetOriginalToTranslationSubBase
+    internal class MenuItemCaseMorphSetOriginalToTranslationVariated : AllTableRowsChildMenuBase
     {
         public override string Text => T._("Original=Translation");
 
         public override string Description => T._("Set rows translation equal to original");
 
-        public override void OnClick(object sender, EventArgs e)
+        protected override void OnAll(object sender, EventArgs e)
         {
-            if (AppData.THFilesList.SelectedItems.Count == AppData.THFilesList.Items.Count)
-            {
-                _ = new SetOriginalToTranslation().AllT();
-            }
-            else if (AppData.Main.THFileElementsDataGridView.Rows.Count == AppData.Main.THFileElementsDataGridView.SelectedRows.Count)
-            {
-                _ = new SetOriginalToTranslation().TableT();
-            }
-            else
-            {
-                _ = new SetOriginalToTranslation().Selected();
-            }
+            _ = new SetOriginalToTranslation().AllT();
+        }
+
+        protected override void OnRows(object sender, EventArgs e)
+        {
+            new SetOriginalToTranslation().Rows();
+        }
+
+        protected override void OnTable(object sender, EventArgs e)
+        {
+            _ = new SetOriginalToTranslation().TableT();
         }
 
         public override Keys ShortcutKeys => Keys.F8;
     }
-
-    internal class MenuItemCaseMorphSetOriginalToTranslationForExistFiles : MainMenuFileSubItemSetOriginalToTranslationSubBase
+    internal class MenuItemCaseMorphSetOriginalToTranslationForExistFiles : ChildMenuBaseBase
     {
         public override string Text => T._("All, if exists file/dir with name");
 

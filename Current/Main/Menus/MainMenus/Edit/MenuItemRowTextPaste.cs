@@ -26,7 +26,7 @@ namespace TranslationHelper.Menus.MainMenus.Edit
         {
             if (AppSettings.DGVCellInEditMode) AppData.Main.ControlsSwitch(); //если ячейка в режиме редактирования выключение действий для ячеек при выходе из режима редактирования  
 
-            new PasteTranslation().Selected();
+            new PasteTranslation().Rows();
         }
 
         public override Keys ShortcutKeys => Keys.Control | Keys.V;

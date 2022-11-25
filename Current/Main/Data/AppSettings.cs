@@ -52,6 +52,8 @@
         public static bool IsFileContentFocused { get => AppData.Main.THFileElementsDataGridView.Focused; }
         public static bool IsRowInEditMode { get => (IsFileContentFocused && AppData.Main.THFileElementsDataGridView.IsCurrentCellInEditMode) || AppData.Main.THTargetRichTextBox.Focused; }
         public static bool IsFilesListFocused { get => AppData.FilesListControl.Focused; }
-
+        public static bool IsProcessAll { get => IsFilesListFocused && AppData.THFilesList.SelectedItems.Count == AppData.THFilesList.Items.Count; }
+        public static bool IsProcessTable { get => IsFilesListFocused && AppData.THFilesList.SelectedItems.Count > 0; }
+        public static bool IsProcessSelected { get => IsFileOpened && IsFileContentFocused; }
     }
 }

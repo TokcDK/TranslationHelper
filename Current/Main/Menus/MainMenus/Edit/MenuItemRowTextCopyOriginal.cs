@@ -26,7 +26,7 @@ namespace TranslationHelper.Menus.MainMenus.Edit
         {
             if (!IsValidToCopy()) return;
 
-            new CopyOriginals().Selected();
+            new CopyOriginals().Rows();
         }
 
         public override Keys ShortcutKeys => Keys.Control | Keys.Shift | Keys.C;

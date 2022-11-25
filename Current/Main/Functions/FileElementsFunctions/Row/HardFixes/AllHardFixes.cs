@@ -30,7 +30,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row.HardFixes
 
             foreach (var hardfix in HardFixesList)
             {
-                if (SelectedRow != null ? hardfix.Selected(SelectedRow) : hardfix.Selected())
+                if (SelectedRow != null ? hardfix.Selected(SelectedRow) : hardfix.Rows())
                 {
                     ret = true;
                 }
