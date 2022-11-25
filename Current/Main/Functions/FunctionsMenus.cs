@@ -31,17 +31,6 @@ namespace TranslationHelper.Functions
     {
         internal static void CreateMenus()
         {
-            var main = AppData.Main.MainMenus.Items;
-            var files = AppData.Main.FilesListMenus.Items;
-            var rows = AppData.Main.RowMenus.Items;
-
-            var tcData = new (Type type, ToolStripItemCollection collection)[3]
-            {
-                ( typeof(IMainMenuItem),  AppData.Main.MainMenus.Items ),
-                ( typeof(IFileListMenuItem), AppData.Main.FilesListMenus.Items ),
-                ( typeof(IFileRowMenuItem), AppData.Main.RowMenus.Items ),
-            };
-
             AddMainMenus(AppData.Main.MainMenus.Items);
 
             var fileListMenus = GetListOfSubClasses.Inherited.GetInterfaceImplimentations<IFileListMenuItem>();
@@ -55,14 +44,7 @@ namespace TranslationHelper.Functions
             var menusList = new List<MenuData>();
             foreach (var menuData in menusData)
             {
-                if (menuData is IDefaultMenuItem) continue;
-
-                if (AppData.CurrentProject == null)
-                {
-                    if (menuData is IFileRowMenuItem) continue;
-                    if (menuData is IChildMenuItem) continue;
-                    if (menuData is IProjectMenuItem) continue;
-                }
+                if (!IsValidMenuItem(menuData)) continue;
 
                 var item = new MenuData(menuData);
 
@@ -98,14 +80,7 @@ namespace TranslationHelper.Functions
             var menusList = new List<MenuData>();
             foreach (var menuData in menusData)
             {
-                if (menuData is IDefaultMenuItem) continue;
-
-                if (AppData.CurrentProject == null)
-                {
-                    if (menuData is IFileRowMenuItem) continue;
-                    if (menuData is IChildMenuItem) continue;
-                    if (menuData is IProjectMenuItem) continue;
-                }
+                if (!IsValidMenuItem(menuData)) continue;
 
                 var item = new MenuData(menuData);
 
@@ -222,6 +197,20 @@ namespace TranslationHelper.Functions
             //    //add result menu
             //    if (!container.Items.Contains(menu)) container.Items.Add(menu);
             //}
+        }
+
+        private static bool IsValidMenuItem(IMenuItem menuData)
+        {
+            if (menuData is IDefaultMenuItem) return false;
+
+            if (AppData.CurrentProject == null)
+            {
+                if (menuData is IFileRowMenuItem) return false;
+                if (menuData is IChildMenuItem) return false;
+                if (menuData is IProjectMenuItem) return false;
+            }
+
+            return true;
         }
 
         private static void CreateMenusByList(ToolStripItemCollection menuItems, List<MenuData> menusList)
