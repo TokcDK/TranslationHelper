@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Forms;
 using TranslationHelper.Data;
 using TranslationHelper.Formats.RPGMaker.Functions;
 using TranslationHelper.Functions;
@@ -28,5 +29,7 @@ namespace TranslationHelper.Menus.MainMenus.Edit
         }
 
         public override int Order => base.Order - 1000;
+
+        public override Keys ShortcutKeys => Keys.F12;
     }
 }

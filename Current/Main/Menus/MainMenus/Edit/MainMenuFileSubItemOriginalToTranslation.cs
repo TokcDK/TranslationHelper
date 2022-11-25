@@ -18,7 +18,7 @@ namespace TranslationHelper.Menus.MainMenus.Edit.CaseMorph
 
     public abstract class MainMenuFileSubItemSetOriginalToTranslation : MainMenuFileSubItemSetOriginalToTranslationBase, IProjectMenuItem
     {
-        public override IMenuItem[] Childs => new IMenuItem[2] 
+        public override IMenuItem[] Childs => new IMenuItem[2]
         { 
             new MenuItemCaseMorphSetOriginalToTranslationVariated(),
             new MenuItemCaseMorphSetOriginalToTranslationForExistFiles() 
@@ -50,6 +50,8 @@ namespace TranslationHelper.Menus.MainMenus.Edit.CaseMorph
                 _ = new SetOriginalToTranslation().Selected();
             }
         }
+
+        public override Keys ShortcutKeys => Keys.F8;
     }
 
     internal class MenuItemCaseMorphSetOriginalToTranslationForExistFiles : MainMenuFileSubItemSetOriginalToTranslationSubBase

@@ -26,7 +26,11 @@ namespace TranslationHelper.Menus.MainMenus.Edit
 
         public override void OnClick(object sender, EventArgs e)
         {
+            if (AppSettings.IsRowInEditMode) return;
+
             _ = new ClearCells().Selected();
         }
+
+        public override Keys ShortcutKeys => Keys.Delete;
     }
 }

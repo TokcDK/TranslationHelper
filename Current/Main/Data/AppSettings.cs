@@ -50,6 +50,7 @@
         public static bool SearchRowIssueOptionsCheckProjectSpecific { get; set; } = true;
         public static bool IsFileOpened { get => AppData.Main.THFileElementsDataGridView.DataSource != null; }
         public static bool IsFileContentFocused { get => AppData.Main.THFileElementsDataGridView.Focused; }
+        public static bool IsRowInEditMode { get => (IsFileContentFocused && AppData.Main.THFileElementsDataGridView.IsCurrentCellInEditMode) || AppData.Main.THTargetRichTextBox.Focused; }
         public static bool IsFilesListFocused { get => AppData.FilesListControl.Focused; }
 
     }
