@@ -6,10 +6,11 @@ using System.Text;
 using System.Threading;
 using TranslationHelper.Functions.FileElementsFunctions.Row;
 using TranslationHelper.Menus.FileRowMenus;
+using TranslationHelper.Menus.FilesListMenus;
 
 namespace TranslationHelper.Menus.MainMenus.Edit.OnlineTranslate
 {
-    internal class MenuItemOnlineTranslateTable : MenuItemOnlineTranslateAll, IFileRowMenuItem, IProjectMenuItem
+    internal class MenuItemOnlineTranslateTable : MenuItemOnlineTranslateAll, IFileRowMenuItem, IFileListMenuItem, IProjectMenuItem
     {
         public override string Text => T._("Table");
 

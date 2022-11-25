@@ -84,7 +84,7 @@ namespace TranslationHelper.Functions
                 if (!menusList.Contains(item)) menusList.Add(item);
             }
 
-            SortByPriority(menusList);
+            SortByPriority(ref menusList);
             CreateMenusByList(menuItems, menusList);
         }
 
@@ -155,7 +155,7 @@ namespace TranslationHelper.Functions
                 if (!menusList.Contains(parentMenuItem)) menusList.Add(parentMenuItem);
             }
 
-            SortByPriority(menusList);
+            SortByPriority(ref menusList);
             CreateMenusByList(menuItems, menusList);
 
 
@@ -257,7 +257,7 @@ namespace TranslationHelper.Functions
             }
         }
 
-        private static void SortByPriority(List<MenuData> menusList)
+        private static void SortByPriority(ref List<MenuData> menusList)
         {
             menusList = menusList.OrderBy(m => m.Menu.Order).ToList();
             int max = menusList.Count;

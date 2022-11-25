@@ -2,10 +2,11 @@
 using System.Threading;
 using TranslationHelper.Functions.FileElementsFunctions.Row;
 using TranslationHelper.Menus.FileRowMenus;
+using TranslationHelper.Menus.FilesListMenus;
 
 namespace TranslationHelper.Menus.MainMenus.Edit.OnlineTranslate
 {
-    internal class MenuItemOnlineTranslateAll : MainMenuFileSubItemOnlineTranslateBase, IFileRowMenuItem, IProjectMenuItem
+    internal class MenuItemOnlineTranslateAll : MainMenuFileSubItemOnlineTranslateBase, IFileRowMenuItem, IFileListMenuItem, IProjectMenuItem
     {
         public override int Order => base.Order - 500;
 
