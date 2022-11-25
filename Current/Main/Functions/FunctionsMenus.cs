@@ -1,8 +1,11 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Windows.Forms;
 using TranslationHelper.Data;
 using TranslationHelper.Menus.FileRowMenus;
+using TranslationHelper.Menus.FilesListMenus;
 using TranslationHelper.Menus.MainMenus;
 using TranslationHelper.Menus.MainMenus.Edit;
 using TranslationHelper.Menus.MenuTypes;
@@ -12,9 +15,9 @@ namespace TranslationHelper.Functions
     public class MenuData
     {
         public string Text;
-        public IMainMenuItem Menu { get; }
+        public IMenuItem Menu { get; }
 
-        public MenuData(IMainMenuItem menu, string text = "")
+        public MenuData(IMenuItem menu, string text = "")
         {
             Text = menu != null && !string.IsNullOrWhiteSpace(menu.Text)
                 ? menu.Text : text;
@@ -26,8 +29,70 @@ namespace TranslationHelper.Functions
 
     internal static class FunctionsMenus
     {
-        internal static void CreateMainMenus(MenuStrip container)
+        internal static void CreateMenus()
         {
+            var main = AppData.Main.MainMenus.Items;
+            var files = AppData.Main.FilesListMenus.Items;
+            var rows = AppData.Main.RowMenus.Items;
+
+            var tcData = new (Type type, ToolStripItemCollection collection)[3]
+            {
+                ( typeof(IMainMenuItem),  AppData.Main.MainMenus.Items ),
+                ( typeof(IFileListMenuItem), AppData.Main.FilesListMenus.Items ),
+                ( typeof(IFileRowMenuItem), AppData.Main.RowMenus.Items ),
+            };
+
+            AddMainMenus(AppData.Main.MainMenus.Items);
+
+            var fileListMenus = GetListOfSubClasses.Inherited.GetInterfaceImplimentations<IFileListMenuItem>();
+            AddMenus(AppData.Main.FilesListMenus.Items, fileListMenus);
+            
+            var rowMenus = GetListOfSubClasses.Inherited.GetInterfaceImplimentations<IFileRowMenuItem>();
+            AddMenus(AppData.Main.FilesListMenus.Items, rowMenus);
+        }
+        private static void AddMenus(ToolStripItemCollection menuItems, IEnumerable<IMenuItem> menusData)
+        {
+            var menusList = new List<MenuData>();
+            foreach (var menuData in menusData)
+            {
+                if (menuData is IDefaultMenuItem) continue;
+
+                if (AppData.CurrentProject == null)
+                {
+                    if (menuData is IFileRowMenuItem) continue;
+                    if (menuData is IChildMenuItem) continue;
+                    if (menuData is IProjectMenuItem) continue;
+                }
+
+                var item = new MenuData(menuData);
+
+                // check category
+                if (!string.IsNullOrWhiteSpace(menuData.CategoryName))
+                {
+                    var catMenuItem = menusList.FirstOrDefault(m => m.Text == menuData.CategoryName);
+                    if (catMenuItem == default)
+                    {
+                        var defMenu = new DefaultMainMenu();
+                        defMenu.Priority += 100;
+
+                        catMenuItem = new MenuData(defMenu, menuData.CategoryName);
+                    }
+
+                    catMenuItem.Childs.Add(item);
+
+                    item = catMenuItem; // relink to category
+                }
+
+                if (!menusList.Contains(item)) menusList.Add(item);
+            }
+
+            SortByPriority(menusList);
+            CreateMenusByList(menuItems, menusList);
+        }
+
+        private static void AddMainMenus(ToolStripItemCollection menuItems)
+        {
+
             var menusData = GetListOfSubClasses.Inherited.GetInterfaceImplimentations<IMainMenuItem>();
 
             var menusList = new List<MenuData>();
@@ -92,41 +157,13 @@ namespace TranslationHelper.Functions
                     item = catMenuItem; // relink to category
                 }
 
-                if(!parentMenuItem.Childs.Contains(item)) parentMenuItem.Childs.Add(item);
+                if (!parentMenuItem.Childs.Contains(item)) parentMenuItem.Childs.Add(item);
 
                 if (!menusList.Contains(parentMenuItem)) menusList.Add(parentMenuItem);
             }
 
-            // sort by priority
-            menusList = menusList.OrderBy(m => m.Menu.Priority).ToList();
-            int max = menusList.Count;
-            for (int i = 0; i < max; i++)
-            {
-                var menu = menusList[i];
-
-                SortChilds(menu);
-            }
-
-            foreach (var menuData in menusList)
-            {
-                //Create new menu
-                var menu = new ToolStripMenuItem
-                {
-                    Text = menuData.Text,
-                    ToolTipText = menuData.Menu.Description,
-                    ShortcutKeys = menuData.Menu.ShortcutKeys
-                };
-
-                //Register click event
-                menu.Click += menuData.Menu.OnClick;
-
-                foreach (var child in menuData.Childs)
-                {
-                    menu.DropDownItems.Add(SetChilds(child));
-                }
-
-                container.Items.Add(menu);
-            }
+            SortByPriority(menusList);
+            CreateMenusByList(menuItems, menusList);
 
 
             //foreach (var menuData in menusData)
@@ -185,6 +222,42 @@ namespace TranslationHelper.Functions
             //    //add result menu
             //    if (!container.Items.Contains(menu)) container.Items.Add(menu);
             //}
+        }
+
+        private static void CreateMenusByList(ToolStripItemCollection menuItems, List<MenuData> menusList)
+        {
+            foreach (var menuData in menusList)
+            {
+                //Create new menu
+                var menu = new ToolStripMenuItem
+                {
+                    Text = menuData.Text,
+                    ToolTipText = menuData.Menu.Description,
+                    ShortcutKeys = menuData.Menu.ShortcutKeys
+                };
+
+                //Register click event
+                menu.Click += menuData.Menu.OnClick;
+
+                foreach (var child in menuData.Childs)
+                {
+                    menu.DropDownItems.Add(SetChilds(child));
+                }
+
+                menuItems.Add(menu);
+            }
+        }
+
+        private static void SortByPriority(List<MenuData> menusList)
+        {
+            menusList = menusList.OrderBy(m => m.Menu.Priority).ToList();
+            int max = menusList.Count;
+            for (int i = 0; i < max; i++)
+            {
+                var menu = menusList[i];
+
+                SortChilds(menu);
+            }
         }
 
         private static ToolStripMenuItem SetChilds(MenuData menuData)

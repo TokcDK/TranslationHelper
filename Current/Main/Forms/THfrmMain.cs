@@ -49,7 +49,7 @@ namespace TranslationHelper
             AppSettings.ApplicationProductName = Application.ProductName;
             AppSettings.NewLine = Environment.NewLine;
 
-            FunctionsMenus.CreateMainMenus(this.MainMenu);
+            FunctionsMenus.CreateMainMenus(this.MainMenus);
 
             FunctionsHotkeys.BindShortCuts();
 
@@ -1312,7 +1312,7 @@ namespace TranslationHelper
                     {
                         var mousePosition = THFileElementsDataGridView.PointToClient(Cursor.Position);
 
-                        RowMenu.Show(THFileElementsDataGridView, mousePosition);
+                        RowMenus.Show(THFileElementsDataGridView, mousePosition);
                     }
                 }
             }

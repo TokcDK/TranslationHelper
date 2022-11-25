@@ -108,7 +108,7 @@ namespace TranslationHelper.Functions.FilesListControl
                 if (item >= 0)
                 {
                     //_listBox.SetSelectedIndex(item);
-                    AppData.Main.FilesListMenu.Show(_listBox, e.Location);
+                    AppData.Main.FilesListMenus.Show(_listBox, e.Location);
                 }
             }
         }

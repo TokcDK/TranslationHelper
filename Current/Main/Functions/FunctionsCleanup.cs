@@ -128,11 +128,11 @@ namespace TranslationHelper.Data
 
                 //remove project category
                 var CategoryName = T._("Project");
-                foreach(var menu in AppData.Main.FilesListMenu.Items)
+                foreach(var menu in AppData.Main.FilesListMenus.Items)
                 {
                     if(menu is System.Windows.Forms.ToolStripMenuItem t && t.Text== CategoryName)
                     {
-                        AppData.Main.FilesListMenu.Items.Remove(t);
+                        AppData.Main.FilesListMenus.Items.Remove(t);
                         break;
                     }
                 }

@@ -32,7 +32,7 @@
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle3 = new System.Windows.Forms.DataGridViewCellStyle();
-            this.MainMenu = new System.Windows.Forms.MenuStrip();
+            this.MainMenus = new System.Windows.Forms.MenuStrip();
             this.allToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.THsplitContainerFilesElements = new System.Windows.Forms.SplitContainer();
             this.THFilesListPanel = new System.Windows.Forms.Panel();
@@ -42,8 +42,8 @@
             this.THFiltersDataGridView = new System.Windows.Forms.DataGridView();
             this.THbtnMainResetTable = new System.Windows.Forms.Button();
             this.THFileElementsDataGridView = new System.Windows.Forms.DataGridView();
-            this.FilesListMenu = new System.Windows.Forms.ContextMenuStrip(this.components);
-            this.RowMenu = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.FilesListMenus = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.RowMenus = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.selectedForceToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.THEditElementsSplitContainer = new System.Windows.Forms.SplitContainer();
             this.THSourceRichTextBox = new System.Windows.Forms.RichTextBox();
@@ -95,13 +95,13 @@
             this.tlpTextLenPosInfo.SuspendLayout();
             this.SuspendLayout();
             // 
-            // MainMenu
+            // MainMenus
             // 
-            this.MainMenu.Location = new System.Drawing.Point(0, 0);
-            this.MainMenu.Name = "MainMenu";
-            this.MainMenu.Size = new System.Drawing.Size(790, 24);
-            this.MainMenu.TabIndex = 1;
-            this.MainMenu.Text = "MainMenu";
+            this.MainMenus.Location = new System.Drawing.Point(0, 0);
+            this.MainMenus.Name = "MainMenus";
+            this.MainMenus.Size = new System.Drawing.Size(790, 24);
+            this.MainMenus.TabIndex = 1;
+            this.MainMenus.Text = "MainMenu";
             // 
             // allToolStripMenuItem
             // 
@@ -267,16 +267,16 @@
             this.THFileElementsDataGridView.SelectionChanged += new System.EventHandler(this.THFileElementsDataGridView_SelectionChanged);
             this.THFileElementsDataGridView.Sorted += new System.EventHandler(this.THFileElementsDataGridView_Sorted);
             // 
-            // FilesListMenu
+            // FilesListMenus
             // 
-            this.FilesListMenu.Name = "contextMenuStrip1";
-            this.FilesListMenu.Size = new System.Drawing.Size(61, 4);
-            this.FilesListMenu.Text = "2000";
+            this.FilesListMenus.Name = "contextMenuStrip1";
+            this.FilesListMenus.Size = new System.Drawing.Size(61, 4);
+            this.FilesListMenus.Text = "2000";
             // 
-            // RowMenu
+            // RowMenus
             // 
-            this.RowMenu.Name = "contextMenuStrip1";
-            this.RowMenu.Size = new System.Drawing.Size(61, 4);
+            this.RowMenus.Name = "contextMenuStrip1";
+            this.RowMenus.Size = new System.Drawing.Size(61, 4);
             // 
             // selectedForceToolStripMenuItem
             // 
@@ -582,9 +582,9 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(790, 509);
             this.Controls.Add(this.frmMainPanel);
-            this.Controls.Add(this.MainMenu);
+            this.Controls.Add(this.MainMenus);
             this.DoubleBuffered = true;
-            this.MainMenuStrip = this.MainMenu;
+            this.MainMenuStrip = this.MainMenus;
             this.Name = "FormMain";
             this.Text = "Translation Helper by DenisK";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.THMain_FormClosing);
@@ -626,7 +626,6 @@
         }
 
         #endregion
-        private System.Windows.Forms.MenuStrip MainMenu;
         private System.Windows.Forms.SplitContainer THsplitContainerFilesElements;
         private System.Windows.Forms.SplitContainer THEditElementsSplitContainer;
         private System.Windows.Forms.SplitContainer THInfoEditSplitContainer;
@@ -658,8 +657,9 @@
         private System.Windows.Forms.Panel THFilesListPanel;
         internal System.Windows.Forms.Panel frmMainPanel;
         internal System.Windows.Forms.SplitContainer THWorkSpaceSplitContainer;
-        internal System.Windows.Forms.ContextMenuStrip FilesListMenu;
-        internal System.Windows.Forms.ContextMenuStrip RowMenu;
+        internal System.Windows.Forms.ContextMenuStrip FilesListMenus;
+        internal System.Windows.Forms.ContextMenuStrip RowMenus;
+        internal System.Windows.Forms.MenuStrip MainMenus;
     }
 }
 

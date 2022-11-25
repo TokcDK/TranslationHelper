@@ -278,6 +278,8 @@ namespace TranslationHelper.Functions
                 }
             }
 
+            FunctionsMenus.CreateMenus();
+
             MenuItemRecent.UpdateRecentFiles();
 
             AppData.CurrentProject.SelectedGameDir = GetCorrectedGameDIr(AppData.CurrentProject.SelectedGameDir);
