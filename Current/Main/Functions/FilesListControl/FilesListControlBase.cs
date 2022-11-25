@@ -60,5 +60,10 @@ namespace TranslationHelper.Functions.FilesListControl
         /// </summary>
         /// <param name="drawMode"></param>
         public virtual void SetDrawMode(DrawMode drawMode) { }
+
+        /// <summary>
+        /// Is focused the control
+        /// </summary>
+        public abstract bool Focused { get; }
     }
 }

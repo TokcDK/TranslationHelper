@@ -7,11 +7,13 @@ using TranslationHelper.Main.Functions;
 
 namespace TranslationHelper.Functions.FilesListControl
 {
-    class FilesListControlListBox : FilesListControlBase
+    class FilesListControlListBox : FilesListControlBase, IDisposable
     {
         ListBox _listBox;
 
         public override object FilesListControl { get => _listBox; protected set => _listBox = value as ListBox; }
+
+        public override bool Focused => _listBox.Focused;
 
         public FilesListControlListBox()
         {
@@ -174,5 +176,7 @@ namespace TranslationHelper.Functions.FilesListControl
 
             e.DrawFocusRectangle();
         }
+
+        public void Dispose() { if (!_listBox.IsDisposed) _listBox.Dispose(); }
     }
 }
