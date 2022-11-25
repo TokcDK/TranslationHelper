@@ -310,6 +310,8 @@ namespace TranslationHelper
                 CheckFilterDGV(); //Apply filters if they is not empty
 
                 UpdateTextboxes();
+
+                FunctionsMenus.CreateMenus();
             }
             catch (Exception)
             {

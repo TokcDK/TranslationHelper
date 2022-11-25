@@ -41,6 +41,7 @@ namespace TranslationHelper.Functions
             var rowMenus = GetListOfSubClasses.Inherited.GetInterfaceImplimentations<IFileRowMenuItem>();
             AddMenus(AppData.Main.RowMenus.Items, rowMenus);
         }
+
         private static void AddMenus(ToolStripItemCollection menuItems, IEnumerable<IMenuItem> menusData)
         {
             menuItems.Clear();
@@ -214,6 +215,8 @@ namespace TranslationHelper.Functions
                 if (menuData is IChildMenuItem) return false;
                 if (menuData is IProjectMenuItem) return false;
             }
+
+            if (!AppSettings.IsFileOpened && menuData is IFileRowMenuItem) return false;
 
             return true;
         }
