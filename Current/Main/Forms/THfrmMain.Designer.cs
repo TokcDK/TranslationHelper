@@ -43,7 +43,6 @@
             this.THbtnMainResetTable = new System.Windows.Forms.Button();
             this.THFileElementsDataGridView = new System.Windows.Forms.DataGridView();
             this.FilesListMenus = new System.Windows.Forms.ContextMenuStrip(this.components);
-            this.RowMenus = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.selectedForceToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.THEditElementsSplitContainer = new System.Windows.Forms.SplitContainer();
             this.THSourceRichTextBox = new System.Windows.Forms.RichTextBox();
@@ -66,6 +65,7 @@
             this.tlpFrmMain = new System.Windows.Forms.TableLayoutPanel();
             this.tlpWorkInfo = new System.Windows.Forms.TableLayoutPanel();
             this.tlpTextLenPosInfo = new System.Windows.Forms.TableLayoutPanel();
+            this.RowMenus = new System.Windows.Forms.ContextMenuStrip(this.components);
             ((System.ComponentModel.ISupportInitialize)(this.THsplitContainerFilesElements)).BeginInit();
             this.THsplitContainerFilesElements.Panel1.SuspendLayout();
             this.THsplitContainerFilesElements.Panel2.SuspendLayout();
@@ -272,11 +272,6 @@
             this.FilesListMenus.Name = "contextMenuStrip1";
             this.FilesListMenus.Size = new System.Drawing.Size(61, 4);
             this.FilesListMenus.Text = "2000";
-            // 
-            // RowMenus
-            // 
-            this.RowMenus.Name = "contextMenuStrip1";
-            this.RowMenus.Size = new System.Drawing.Size(61, 4);
             // 
             // selectedForceToolStripMenuItem
             // 
@@ -574,6 +569,11 @@
             this.tlpTextLenPosInfo.Size = new System.Drawing.Size(257, 20);
             this.tlpTextLenPosInfo.TabIndex = 8;
             // 
+            // RowMenus
+            // 
+            this.RowMenus.Name = "contextMenuStrip1";
+            this.RowMenus.Size = new System.Drawing.Size(181, 26);
+            // 
             // FormMain
             // 
             this.AccessibleDescription = "Program help with translation of some RPG games";
@@ -658,8 +658,8 @@
         internal System.Windows.Forms.Panel frmMainPanel;
         internal System.Windows.Forms.SplitContainer THWorkSpaceSplitContainer;
         internal System.Windows.Forms.ContextMenuStrip FilesListMenus;
-        internal System.Windows.Forms.ContextMenuStrip RowMenus;
         internal System.Windows.Forms.MenuStrip MainMenus;
+        internal System.Windows.Forms.ContextMenuStrip RowMenus;
     }
 }
 

@@ -39,7 +39,7 @@ namespace TranslationHelper.Functions
             AddMenus(AppData.Main.FilesListMenus.Items, fileListMenus);
             
             var rowMenus = GetListOfSubClasses.Inherited.GetInterfaceImplimentations<IFileRowMenuItem>();
-            AddMenus(AppData.Main.FilesListMenus.Items, rowMenus);
+            AddMenus(AppData.Main.RowMenus.Items, rowMenus);
         }
         private static void AddMenus(ToolStripItemCollection menuItems, IEnumerable<IMenuItem> menusData)
         {
