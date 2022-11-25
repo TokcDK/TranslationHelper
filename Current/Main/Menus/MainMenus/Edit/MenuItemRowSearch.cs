@@ -20,6 +20,8 @@ namespace TranslationHelper.Menus.MainMenus.Edit
 {
     internal class MenuItemRowSearch : MainMenuEditSubItemBase, IProjectMenuItem
     {
+        public override int Priority => base.Priority - 200;
+
         public override string Text => T._("Search");
 
         public override string Description => T._("Open search Window");

@@ -8,6 +8,8 @@ namespace TranslationHelper.Menus.MainMenus.Edit.OnlineTranslate
 {
     internal class MenuItemOnlineTranslateAll : MainMenuFileSubItemOnlineTranslateBase, IFileRowMenuItem, IProjectMenuItem
     {
+        public override int Priority => base.Priority - 500;
+
         public override string Text => T._("All");
 
         public override string Description => T._("Translate all rows");
