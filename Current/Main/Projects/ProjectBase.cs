@@ -754,16 +754,14 @@ namespace TranslationHelper.Projects
         /// Main menus which need to be added for the project
         /// </summary>
         /// <returns></returns>
-        internal virtual IMainMenuItem[] MainMenuItemMenusList() { return Array.Empty<IMainMenuItem>(); }
-        /// <summary>
-        /// Files list item menus which must be added for the project
-        /// </summary>
-        /// <returns></returns>
-        internal virtual IFileListMenuItem[] FilesListItemMenusList() { return Array.Empty<IFileListMenuItem>(); }
-        /// <summary>
-        /// FileRow menus which must be added for the project
-        /// </summary>
-        /// <returns></returns>
-        internal virtual IFileRowMenuItem[] FileRowItemMenusList() { return Array.Empty<IFileRowMenuItem>(); }
+        internal virtual IMainMenuItem[] MainMenuItemMenusList => Array.Empty<IMainMenuItem>();         /// <summary>
+                                                                                                        /// Files list item menus which must be added for the project
+                                                                                                        /// </summary>
+                                                                                                        /// <returns></returns>
+        internal virtual IFileListMenuItem[] FilesListItemMenusList => Array.Empty<IFileListMenuItem>();         /// <summary>
+                                                                                                                 /// FileRow menus which must be added for the project
+                                                                                                                 /// </summary>
+                                                                                                                 /// <returns></returns>
+        internal virtual IFileRowMenuItem[] FileRowItemMenusList => Array.Empty<IFileRowMenuItem>();
     }
 }

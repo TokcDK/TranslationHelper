@@ -116,9 +116,6 @@ namespace TranslationHelper.Projects.WolfRPG
             return translation;
         }
 
-        internal override IFileRowMenuItem[] FileRowItemMenusList()
-        {
-            return new IFileRowMenuItem[] { new AddToStandaloneContextList() };
-        }
+        internal override IFileRowMenuItem[] FileRowItemMenusList => new IFileRowMenuItem[] { new AddToStandaloneContextList() };
     }
 }

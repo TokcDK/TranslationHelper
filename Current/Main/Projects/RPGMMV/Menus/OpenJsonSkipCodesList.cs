@@ -2,11 +2,12 @@
 using System.Diagnostics;
 using System.IO;
 using TranslationHelper.Data;
+using TranslationHelper.Menus;
 using TranslationHelper.Menus.FilesListMenus;
 
 namespace TranslationHelper.Projects.RPGMMV.Menus
 {
-    class OpenJsonSkipCodesList : FileListMenuItemBase
+    class OpenJsonSkipCodesList : FileListMenuItemBase, IProjectSpecifiedMenuItem
     {
         public override string Text => "[" + AppData.CurrentProject.Name+ "]" + T._(" Open SkipCodesList");
 

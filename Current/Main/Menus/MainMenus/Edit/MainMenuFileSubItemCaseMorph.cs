@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Windows.Forms;
 using TranslationHelper.Functions.FileElementsFunctions.Row.StringCaseMorph;
+using TranslationHelper.Menus.FileRowMenus;
+using TranslationHelper.Menus.FilesListMenus;
 
 namespace TranslationHelper.Menus.MainMenus.Edit
 {
-    public class MainMenuFileSubItemCaseMorph : MainMenuEditSubItemBase
+    public class MainMenuFileSubItemCaseMorph : MainMenuEditSubItemBase, IFileListMenuItem, IFileRowMenuItem, IProjectMenuItem
     {
         public override string Text => T._("Case Morph");
 

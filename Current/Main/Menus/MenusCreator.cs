@@ -22,8 +22,8 @@ namespace TranslationHelper.Menus
 
             foreach (var parent in new Dictionary<ContextMenuStrip, IMenuItem[]>()
             {
-                { AppData.Main.FilesListMenus, AppData.CurrentProject.FilesListItemMenusList() },
-                { AppData.Main.RowMenus, AppData.CurrentProject.FileRowItemMenusList() }
+                { AppData.Main.FilesListMenus, AppData.CurrentProject.FilesListItemMenusList },
+                { AppData.Main.RowMenus, AppData.CurrentProject.FileRowItemMenusList }
             })
             {
                 var contextMenuParent = parent.Key;

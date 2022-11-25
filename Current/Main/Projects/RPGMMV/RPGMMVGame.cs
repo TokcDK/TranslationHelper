@@ -513,15 +513,12 @@ namespace TranslationHelper.Projects.RPGMMV
             return str;
         }
 
-        internal override IFileListMenuItem[] FilesListItemMenusList()
-        {
-            return new IFileListMenuItem[]
+        internal override IFileListMenuItem[] FilesListItemMenusList => new IFileListMenuItem[]
             {
                 new AddToSkipJS(),
                 new SkipJSFileOpen(),
                 new OpenJsonSkipCodesList(),
             };
-        }
 
         internal override bool IsValidForTranslation(string inputString)
         {

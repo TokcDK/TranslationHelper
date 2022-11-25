@@ -4,12 +4,13 @@ using System.IO;
 using System.Text;
 using System.Windows.Forms;
 using TranslationHelper.Data;
+using TranslationHelper.Menus;
 using TranslationHelper.Menus.FileRowMenus;
 using TranslationHelper.Menus.FilesListMenus;
 
 namespace TranslationHelper.Projects.WolfRPG.Menus
 {
-    class AddToStandaloneContextList : FileRowMenuItemBase
+    class AddToStandaloneContextList : FileRowMenuItemBase, IProjectSpecifiedMenuItem
     {
         public override string Text => "Add standalone context";
 

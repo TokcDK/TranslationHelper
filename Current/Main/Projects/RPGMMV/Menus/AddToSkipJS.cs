@@ -4,11 +4,12 @@ using System.IO;
 using System.Linq;
 using TranslationHelper.Data;
 using TranslationHelper.Extensions;
+using TranslationHelper.Menus;
 using TranslationHelper.Menus.FilesListMenus;
 
 namespace TranslationHelper.Projects.RPGMMV.Menus
 {
-    class AddToSkipJS : FileListMenuItemBase
+    class AddToSkipJS : FileListMenuItemBase, IProjectSpecifiedMenuItem
     {
         public override string Text => "[" + AppData.CurrentProject.Name+ "]" + T._("Skip JS");
 

@@ -6,6 +6,9 @@ using System.Threading.Tasks;
 
 namespace TranslationHelper.Menus.MainMenus
 {
+    /// <summary>
+    /// Determine to use the menu item as one of main menus or submenus
+    /// </summary>
     public interface IMainMenuItem : IMenuItem
     {
         /// <summary>

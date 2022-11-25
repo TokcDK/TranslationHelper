@@ -3,10 +3,12 @@ using System.Windows.Forms;
 using TranslationHelper.Data;
 using TranslationHelper.Functions.FileElementsFunctions.Row;
 using TranslationHelper.Functions.FileElementsFunctions.Row.StringCaseMorph;
+using TranslationHelper.Menus.FileRowMenus;
+using TranslationHelper.Menus.FilesListMenus;
 
 namespace TranslationHelper.Menus.MainMenus.Edit.CellFixes
 {
-    public class MainMenuFileSubItemCellFixesBase : MainMenuEditSubItemBase
+    public class MainMenuFileSubItemCellFixesBase : MainMenuEditSubItemBase, IFileListMenuItem, IFileRowMenuItem, IProjectMenuItem
     {
         public override string Text => T._("Cell Fixes");
 

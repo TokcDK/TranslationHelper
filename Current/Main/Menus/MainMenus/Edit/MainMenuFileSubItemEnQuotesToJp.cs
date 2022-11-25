@@ -3,10 +3,12 @@ using System.Windows.Forms;
 using TranslationHelper.Data;
 using TranslationHelper.Functions.FileElementsFunctions.Row;
 using TranslationHelper.Functions.FileElementsFunctions.Row.StringCaseMorph;
+using TranslationHelper.Menus.FileRowMenus;
+using TranslationHelper.Menus.FilesListMenus;
 
 namespace TranslationHelper.Menus.MainMenus.Edit.CaseMorph
 {
-    public class MainMenuFileSubItemEnQuotesToJp : MainMenuEditSubItemBase
+    public class MainMenuFileSubItemEnQuotesToJp : MainMenuEditSubItemBase, IFileListMenuItem, IFileRowMenuItem, IProjectMenuItem
     {
         public override IMenuItem[] Childs => new IMenuItem[1] { new MenuItemCaseMorphEnQuotesToJpVariated() };
 

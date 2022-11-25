@@ -3,6 +3,9 @@ using System.Windows.Forms;
 
 namespace TranslationHelper.Menus
 {
+    /// <summary>
+    /// <see cref="IMenuItem"/> based abstract class with default values for some properties
+    /// </summary>
     public abstract class MenuItemBase : IMenuItem
     {
         public virtual string ParentMenuName => "";

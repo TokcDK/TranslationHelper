@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Forms;
 using TranslationHelper.Data;
@@ -8,7 +6,6 @@ using TranslationHelper.Menus;
 using TranslationHelper.Menus.FileRowMenus;
 using TranslationHelper.Menus.FilesListMenus;
 using TranslationHelper.Menus.MainMenus;
-using TranslationHelper.Menus.MainMenus.Edit;
 
 namespace TranslationHelper.Functions
 {
@@ -42,14 +39,30 @@ namespace TranslationHelper.Functions
     {
         internal static void CreateMenus()
         {
-            AddMainMenus(AppData.Main.MainMenus.Items);
+            var proj = AppData.CurrentProject;
+            bool isProjOpen = proj != null;
 
-            if (AppData.CurrentProject == null) return;
+            var mainMenus = GetListOfSubClasses.Inherited.GetInterfaceImplimentations<IMainMenuItem>().Where(m => !(m is IProjectSpecifiedMenuItem));
+            if (isProjOpen && proj.MainMenuItemMenusList != null && proj.MainMenuItemMenusList.Length > 0)
+            {
+                mainMenus = mainMenus.Concat(proj.MainMenuItemMenusList);
+            }
+            AddMainMenus(AppData.Main.MainMenus.Items, mainMenus);
 
-            var fileListMenus = GetListOfSubClasses.Inherited.GetInterfaceImplimentations<IFileListMenuItem>();
+            if (!isProjOpen) return;
+
+            var fileListMenus = GetListOfSubClasses.Inherited.GetInterfaceImplimentations<IFileListMenuItem>().Where(m => !(m is IProjectSpecifiedMenuItem));
+            if (proj.FilesListItemMenusList != null && proj.FilesListItemMenusList.Length > 0)
+            {
+                fileListMenus = fileListMenus.Concat(proj.FilesListItemMenusList);
+            }
             AddMenus(AppData.Main.FilesListMenus.Items, fileListMenus);
-            
-            var rowMenus = GetListOfSubClasses.Inherited.GetInterfaceImplimentations<IFileRowMenuItem>();
+
+            var rowMenus = GetListOfSubClasses.Inherited.GetInterfaceImplimentations<IFileRowMenuItem>().Where(m => !(m is IProjectSpecifiedMenuItem));
+            if (proj.FileRowItemMenusList != null && proj.FileRowItemMenusList.Length > 0)
+            {
+                rowMenus = rowMenus.Concat(proj.FileRowItemMenusList);
+            }
             AddMenus(AppData.Main.RowMenus.Items, rowMenus);
         }
 
@@ -88,11 +101,9 @@ namespace TranslationHelper.Functions
             CreateMenusByList(menuItems, menusList);
         }
 
-        private static void AddMainMenus(ToolStripItemCollection menuItems)
+        private static void AddMainMenus(ToolStripItemCollection menuItems, IEnumerable<IMainMenuItem> menusData)
         {
             menuItems.Clear();
-
-            var menusData = GetListOfSubClasses.Inherited.GetInterfaceImplimentations<IMainMenuItem>();
 
             var menusList = new List<MenuData>();
             foreach (var menuData in menusData)

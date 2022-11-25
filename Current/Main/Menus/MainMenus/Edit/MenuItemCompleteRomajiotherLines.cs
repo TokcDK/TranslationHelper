@@ -15,7 +15,7 @@ using TranslationHelper.Projects.RPGMTrans;
 
 namespace TranslationHelper.Menus.MainMenus.Edit
 {
-    internal class MenuItemCompleteRomajiotherLines : MainMenuEditSubItemBase, IFileRowMenuItem, IProjectMenuItem
+    internal class MenuItemCompleteRomajiotherLines : MainMenuEditSubItemBase, IProjectMenuItem
     {
         public override string Text => T._("Complete Romajio/Other lines");
 
