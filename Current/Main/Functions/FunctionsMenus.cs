@@ -60,7 +60,7 @@ namespace TranslationHelper.Functions
                     if (catMenuItem == default)
                     {
                         var defMenu = new DefaultMainMenu();
-                        defMenu.Priority += 100;
+                        defMenu.Order += 100;
 
                         catMenuItem = new MenuData(defMenu, menuData.CategoryName);
                     }
@@ -116,7 +116,7 @@ namespace TranslationHelper.Functions
                 if (parentMenuItem == default)
                 {
                     var defMenu = new DefaultMainMenu();
-                    defMenu.Priority += 100;
+                    defMenu.Order += 100;
 
                     parentMenuItem = new MenuData(defMenu, menuData.ParentMenuName);
                 }
@@ -128,7 +128,7 @@ namespace TranslationHelper.Functions
                     if (catMenuItem == default)
                     {
                         var defMenu = new DefaultMainMenu();
-                        defMenu.Priority += 100;
+                        defMenu.Order += 100;
 
                         catMenuItem = new MenuData(defMenu, menuData.CategoryName);
                     }
@@ -247,7 +247,7 @@ namespace TranslationHelper.Functions
 
         private static void SortByPriority(List<MenuData> menusList)
         {
-            menusList = menusList.OrderBy(m => m.Menu.Priority).ToList();
+            menusList = menusList.OrderBy(m => m.Menu.Order).ToList();
             int max = menusList.Count;
             for (int i = 0; i < max; i++)
             {
@@ -285,7 +285,7 @@ namespace TranslationHelper.Functions
             int max = menu.Childs.Count;
             if (max == 0) return;
 
-            menu.Childs = menu.Childs.OrderBy(m => m.Menu.Priority).ToList();
+            menu.Childs = menu.Childs.OrderBy(m => m.Menu.Order).ToList();
 
             for (int i = 0; i < max; i++)
             {

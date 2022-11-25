@@ -20,6 +20,6 @@ namespace TranslationHelper.Menus
 
         public virtual IMenuItem[] Childs { get; } = null;
 
-        public virtual int Priority { get; set; } = 10;
+        public virtual int Order { get; set; } = 10;
     }
 }

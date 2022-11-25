@@ -8,6 +8,6 @@ namespace TranslationHelper.Menus.MainMenus
     {
         public override string ParentMenuName => "";
 
-        public override int Priority => base.Priority + 10;
+        public override int Order => base.Order + 10;
     }
 }

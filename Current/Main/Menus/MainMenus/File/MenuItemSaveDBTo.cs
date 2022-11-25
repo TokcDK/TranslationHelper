@@ -59,6 +59,6 @@ namespace TranslationHelper.Menus.MainMenus.File
                 AppData.Main.ProgressInfo(false);
             }
         }
-        public override int Priority => base.Priority + 16;
+        public override int Order => base.Order + 16;
     }
 }

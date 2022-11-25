@@ -17,7 +17,7 @@ namespace TranslationHelper.Menus.MainMenus.File
         public override string Description => T._("Recent oened paths");
 
         public override void OnClick(object sender, EventArgs e) { }
-        public override int Priority => base.Priority + 999;
+        public override int Order => base.Order + 999;
 
         /// <summary>
         /// Add last successfully opened project to recent files list

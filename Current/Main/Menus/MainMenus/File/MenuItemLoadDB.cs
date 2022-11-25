@@ -26,6 +26,6 @@ namespace TranslationHelper.Menus.MainMenus.File
             AppData.Main.LoadDB();
             //AppData.Main.Invoke((Action)(() => AppData.Main.LoadTranslationToolStripMenuItem.Enabled = true));
         }
-        public override int Priority => base.Priority + 10;
+        public override int Order => base.Order + 10;
     }
 }

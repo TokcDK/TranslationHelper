@@ -6,7 +6,7 @@ namespace TranslationHelper.Menus.MainMenus.Edit
     {
         public override string CategoryName => "";
         public override string Text => T._("Help");
-        public override int Priority => base.Priority + 999;
+        public override int Order => base.Order + 999;
 
         public override void OnClick(object sender, EventArgs e) {}
     }

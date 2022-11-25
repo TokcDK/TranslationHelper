@@ -41,7 +41,7 @@ namespace TranslationHelper.Menus.MenuTypes
         /// <summary>
         /// Priority of the menu
         /// </summary>
-        int Priority { get; set; }
+        int Order { get; set; }
     }
     public interface IChildMenuItem
     {

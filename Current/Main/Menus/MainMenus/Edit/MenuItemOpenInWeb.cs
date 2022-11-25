@@ -27,6 +27,6 @@ namespace TranslationHelper.Menus.MainMenus.Edit
             _ = new OpenInWeb().Selected();
         }
 
-        public override int Priority => base.Priority - 1000;
+        public override int Order => base.Order - 1000;
     }
 }

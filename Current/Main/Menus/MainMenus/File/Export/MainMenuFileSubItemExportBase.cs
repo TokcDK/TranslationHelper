@@ -3,6 +3,6 @@
     public abstract class MainMenuFileSubItemExportBase : MainMenuFileSubItemBase
     {
         public override string CategoryName => T._("Export");
-        public override int Priority => base.Priority + 50;
+        public override int Order => base.Order + 50;
     }
 }

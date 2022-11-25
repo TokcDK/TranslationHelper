@@ -24,6 +24,6 @@ namespace TranslationHelper.Menus.MainMenus.File
         {
             AppData.Main.LoadDBAs();
         }
-        public override int Priority => base.Priority + 11;
+        public override int Order => base.Order + 11;
     }
 }

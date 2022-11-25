@@ -3,6 +3,6 @@
     public abstract class MainMenuFileSubItemImportBase : MainMenuFileSubItemBase
     {
         public override string CategoryName => T._("Import");
-        public override int Priority => base.Priority + 60;
+        public override int Order => base.Order + 60;
     }
 }

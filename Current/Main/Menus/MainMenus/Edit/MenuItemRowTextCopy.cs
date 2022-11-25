@@ -38,6 +38,6 @@ namespace TranslationHelper.Menus.MainMenus.Edit
         }
         public override Keys ShortcutKeys => Keys.Control | Keys.C;
 
-        public override int Priority => base.Priority - 100;
+        public override int Order => base.Order - 100;
     }
 }

@@ -20,7 +20,7 @@ namespace TranslationHelper.Menus.MainMenus.Edit
 {
     internal class MenuItemRowSearch : MainMenuEditSubItemBase, IProjectMenuItem
     {
-        public override int Priority => base.Priority - 200;
+        public override int Order => base.Order - 200;
 
         public override string Text => T._("Search");
 
