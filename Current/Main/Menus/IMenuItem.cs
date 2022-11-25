@@ -43,15 +43,15 @@ namespace TranslationHelper.Menus
         /// </summary>
         int Order { get; set; }
     }
-    public interface IChildMenuItem
+    public interface IChildMenuItem : IMenuItem
     {
         // detect if not need to add the menu in menus list because it is child menu
     }
-    public interface IDefaultMenuItem
+    public interface IDefaultMenuItem : IMenuItem
     {
         // detect if not need to add the menu in menus list because it is child menu
     }
-    public interface IProjectMenuItem
+    public interface IProjectMenuItem : IMenuItem
     {
         // detect if not need to add the menu in menus list because it is child menu
     }
