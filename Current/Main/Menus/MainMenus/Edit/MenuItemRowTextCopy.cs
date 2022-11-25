@@ -37,5 +37,7 @@ namespace TranslationHelper.Menus.MainMenus.Edit
             return AppData.Main.THFileElementsDataGridView != null && AppData.Main.THFileElementsDataGridView.SelectedCells.Count > 0;
         }
         public override Keys ShortcutKeys => Keys.Control | Keys.C;
+
+        public override int Priority => base.Priority - 100;
     }
 }

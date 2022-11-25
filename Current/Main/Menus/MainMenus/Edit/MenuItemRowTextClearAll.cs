@@ -19,7 +19,8 @@ namespace TranslationHelper.Menus.MainMenus.Edit
 {
     internal class MenuItemRowTextClearAll : MainMenuEditSubItemBase, IFileRowMenuItem, IProjectMenuItem
     {
-        public override string Text => T._("Clear all");
+        public override string CategoryName => T._("Clear");
+        public override string Text => T._("All");
 
         public override string Description => T._("Clear translation in all tables");
 

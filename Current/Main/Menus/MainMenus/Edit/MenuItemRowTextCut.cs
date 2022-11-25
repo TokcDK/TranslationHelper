@@ -43,5 +43,6 @@ namespace TranslationHelper.Menus.MainMenus.Edit
         }
 
         public override Keys ShortcutKeys => Keys.Control | Keys.X;
+        public override int Priority => base.Priority + 22;
     }
 }

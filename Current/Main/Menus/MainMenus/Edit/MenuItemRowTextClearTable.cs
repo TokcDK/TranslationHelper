@@ -20,7 +20,9 @@ namespace TranslationHelper.Menus.MainMenus.Edit
 {
     internal class MenuItemRowTextClearTable : MainMenuEditSubItemBase, IFileRowMenuItem, IFileListMenuItem, IProjectMenuItem
     {
-        public override string Text => T._("Clear table");
+        public override string CategoryName => T._("Clear");
+
+        public override string Text => T._("Table");
 
         public override string Description => T._("Clear translation in selected tables");
 

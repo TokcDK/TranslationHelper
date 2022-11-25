@@ -19,7 +19,8 @@ namespace TranslationHelper.Menus.MainMenus.Edit
 {
     internal class MenuItemRowTextClearSelected : MainMenuEditSubItemBase, IFileRowMenuItem, IProjectMenuItem
     {
-        public override string Text => T._("Clear selected");
+        public override string CategoryName => T._("Clear");
+        public override string Text => T._("Selected");
 
         public override string Description => T._("Clear translation in selected rows");
 
