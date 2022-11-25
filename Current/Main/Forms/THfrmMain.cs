@@ -312,6 +312,13 @@ namespace TranslationHelper
                 UpdateTextboxes();
 
                 FunctionsMenus.CreateMenus();
+
+                // bind textboxes to cells
+                AppData.Main.THSourceRichTextBox.DataBindings.Clear();
+                AppData.Main.THSourceRichTextBox.DataBindings.Add(new Binding("Text", AppData.Main.THFileElementsDataGridView.DataSource, THSettings.OriginalColumnName, true));
+                /AppData.Main.THTargetRichTextBox.DataBindings.Clear();
+                AppData.Main.THTargetRichTextBox.DataBindings.Add(new Binding("Text", AppData.Main.THFileElementsDataGridView.DataSource, THSettings.TranslationColumnName, true));
+
             }
             catch (Exception)
             {
@@ -388,8 +395,8 @@ namespace TranslationHelper
 
             if (THFileElementsDataGridView != null && THFileElementsDataGridView.Columns.Count > 1)
             {
-                THFileElementsDataGridView.Columns[THSettings.OriginalColumnName].HeaderText = T._("Original");//THMainDGVOriginalColumnName;
-                THFileElementsDataGridView.Columns[THSettings.TranslationColumnName].HeaderText = T._("Translation");//THMainDGVTranslationColumnName;
+                THFileElementsDataGridView.Columns[THSettings.OriginalColumnName].HeaderText = T._(THSettings.OriginalColumnName);//THMainDGVOriginalColumnName;
+                THFileElementsDataGridView.Columns[THSettings.TranslationColumnName].HeaderText = T._(THSettings.TranslationColumnName);//THMainDGVTranslationColumnName;
                 THFileElementsDataGridView.Columns[THSettings.OriginalColumnName].ReadOnly = true;
                 THFiltersDataGridView.Enabled = true;
                 THSourceRichTextBox.Enabled = true;
@@ -469,6 +476,12 @@ namespace TranslationHelper
             {
                 if (THFileElementsDataGridView.CurrentCell == null) return;
 
+                //// bind textboxes to cells
+                //AppData.Main.THSourceRichTextBox.DataBindings.Clear();
+                //AppData.Main.THSourceRichTextBox.DataBindings.Add(new Binding("Text", AppData.Main.THFileElementsDataGridView.DataSource, THSettings.OriginalColumnName, true));
+                //AppData.Main.THTargetRichTextBox.DataBindings.Clear();
+                //AppData.Main.THTargetRichTextBox.DataBindings.Add(new Binding("Text", AppData.Main.THFileElementsDataGridView.DataSource, THSettings.TranslationColumnName, true));
+
                 var tableIndex = AppSettings.THFilesListSelectedIndex = THFilesList.GetSelectedIndex();
                 if (tableIndex == -1) return;
 
@@ -480,6 +493,10 @@ namespace TranslationHelper
 
                 var realrowIndex = AppSettings.DGVSelectedRowRealIndex = FunctionsTable.GetDGVSelectedRowIndexInDatatable(tableIndex, rowIndex);
                 if (realrowIndex == -1) return;
+
+                UpdateRowInfo(tableIndex, columnIndex, realrowIndex);
+
+                return;
 
                 if (THFileElementsDataGridView.DataSource == null || rowIndex == -1 || tableIndex == -1)
                 {
@@ -544,12 +561,6 @@ namespace TranslationHelper
 
                 THInfoTextBox.Text = string.Empty;
 
-                string SelectedCellValue;
-                if ((SelectedCellValue = THFileElementsDataGridView.Rows[rowIndex].Cells[columnIndex].Value + string.Empty).Length == 0)
-                {
-                    return;
-                }
-
                 //gem furigana
                 //https://github.com/helephant/Gem
                 //var furigana = new Furigana(THFileElementsDataGridView.Rows[e.RowIndex].Cells[e.ColumnIndex].Value.ToString());
@@ -557,25 +568,36 @@ namespace TranslationHelper
                 //THInfoTextBox.Text += furigana.Expression + "\r\n";
                 //THInfoTextBox.Text += furigana.Hiragana + "\r\n";
                 //THInfoTextBox.Text += furigana.ReadingHtml + "\r\n";
-
-                if (AppData.CurrentProject.FilesContentInfo != null && AppData.CurrentProject.FilesContentInfo.Tables.Count > tableIndex && AppData.CurrentProject.FilesContentInfo.Tables[tableIndex].Rows.Count > rowIndex)
-                {
-                    THInfoTextBox.Text += T._("rowinfo:") + Environment.NewLine + AppData.CurrentProject.FilesContentInfo.Tables[tableIndex].Rows[rowIndex][0];
-                }
-
-                THInfoTextBox.Text += Environment.NewLine + T._("Selected bytes length") + ":" + " UTF8" + "=" + Encoding.UTF8.GetByteCount(SelectedCellValue) + "/932" + "=" + Encoding.GetEncoding(932).GetByteCount(SelectedCellValue);
-
-                if (AppData.CurrentProject.Name == "RPG Maker MV")
-                {
-                    THInfoTextBox.Text += Environment.NewLine + Environment.NewLine + T._("Several strings also can be in Plugins.js in 'www\\js' folder and referred plugins in plugins folder.");
-                }
-                THInfoTextBox.Text += Environment.NewLine + Environment.NewLine;
-                THInfoTextBox.Text += FunctionsRomajiKana.GetLangsOfString(SelectedCellValue, "all"); //Show all detected languages count info
-                //--------Считывание значения ячейки в текстовое поле 1
             }
-            catch
+            catch (Exception ex)
             {
             }
+        }
+
+        private void UpdateRowInfo(int tableIndex, int columnIndex, int rowIndex)
+        {
+            string selectedCellValue;
+            if ((selectedCellValue = THFileElementsDataGridView.Rows[rowIndex].Cells[columnIndex].Value + string.Empty).Length == 0)
+            {
+                return;
+            }
+
+            if (AppData.CurrentProject.FilesContentInfo != null && AppData.CurrentProject.FilesContentInfo.Tables.Count > tableIndex && AppData.CurrentProject.FilesContentInfo.Tables[tableIndex].Rows.Count > rowIndex)
+            {
+                THInfoTextBox.Text += T._("rowinfo:") + Environment.NewLine + AppData.CurrentProject.FilesContentInfo.Tables[tableIndex].Rows[rowIndex][0];
+            }
+
+            THInfoTextBox.Text += Environment.NewLine + T._("Selected bytes length") + ":" + " UTF8" + "=" + Encoding.UTF8.GetByteCount(selectedCellValue) + "/932" + "=" + Encoding.GetEncoding(932).GetByteCount(selectedCellValue);
+
+            if (AppData.CurrentProject.Name == "RPG Maker MV")
+            {
+                THInfoTextBox.Text += Environment.NewLine + Environment.NewLine + T._("Several strings also can be in Plugins.js in 'www\\js' folder and referred plugins in plugins folder.");
+            }
+            THInfoTextBox.Text += Environment.NewLine + Environment.NewLine;
+
+
+            THInfoTextBox.Text += FunctionsRomajiKana.GetLangsOfString(selectedCellValue, "all"); //Show all detected languages count info
+                                                                                                  //--------Считывание значения ячейки в текстовое поле 1
         }
 
         //https://stackoverflow.com/a/31150444
@@ -1619,16 +1641,10 @@ namespace TranslationHelper
 
         private void THFileElementsDataGridView_CellClick(object sender, DataGridViewCellEventArgs e)
         {
-            if (!AppSettings.ProjectIsOpened)
-                return;
+            if (!AppSettings.ProjectIsOpened) return;
+            if (ControlsSwitchActivated) return;
 
-            if (ControlsSwitchActivated)
-            {
-            }
-            else
-            {
-                ControlsSwitch(true);//не включалось копирование в ячейку, при копировании с гугла назад
-            }
+            ControlsSwitch(true);//не включалось копирование в ячейку, при копировании с гугла назад
 
             ShowNonEmptyRowsCount();//Show how many rows have translation
         }
@@ -1664,10 +1680,10 @@ namespace TranslationHelper
 
         private void THTargetRichTextBox_TextChanged(object sender, EventArgs e)
         {
-            if (!AppSettings.DGVCellInEditMode && (sender as RichTextBox).Focused && THFileElementsDataGridView.CurrentRow.Index > -1)
-            {
-                THFileElementsDataGridView.Rows[AppSettings.DGVSelectedRowIndex].Cells[THSettings.TranslationColumnName].Value = (sender as RichTextBox).Text;
-            }
+            //if (!AppSettings.DGVCellInEditMode && (sender as RichTextBox).Focused && THFileElementsDataGridView.CurrentRow.Index > -1)
+            //{
+            //    THFileElementsDataGridView.Rows[AppSettings.DGVSelectedRowIndex].Cells[THSettings.TranslationColumnName].Value = (sender as RichTextBox).Text;
+            //}
 
             TranslationLongestLineLenghtLabel.Text = FunctionsString.GetLongestLineLength((sender as RichTextBox).Text).ToString(CultureInfo.InvariantCulture);
             if (!tlpTextLenPosInfo.Visible)

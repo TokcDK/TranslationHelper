@@ -99,7 +99,7 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Extensions\Class1.cs" />
+    <Compile Include="Extensions\CustomAttributeExtractorExtensions.cs" />
     <Compile Include="Interfaces\ISetting.cs" />
     <Compile Include="Interfaces\IAppSettings.cs" />
     <Compile Include="Interfaces\SettingsGroups\IToolsSettings.cs" />
