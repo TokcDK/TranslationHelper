@@ -31,6 +31,6 @@ namespace TranslationHelper.Menus.MainMenus.Edit
             _ = new ClearCells().Selected();
         }
 
-        public override Keys ShortcutKeys => Keys.Delete;
+        public override Keys ShortcutKeys => Keys.Control | Keys.D;
     }
 }
