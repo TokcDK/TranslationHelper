@@ -32,7 +32,7 @@
         public static int DGVSelectedRowIndex { get; set; } = -1;
         public static int DGVSelectedRowRealIndex { get; set; } = -1;
         public static int DGVSelectedColumnIndex { get; set; } = -1;
-        public static bool ProjectIsOpened { get; set; } = false;
+        public static bool ProjectIsOpened { get => AppData.CurrentProject != null; }
         public static bool DGVCellInEditMode { get; set; } = false;
         public static bool DBTryToCheckLinesOfEachMultilineValue { get; set; } = true;
         public static bool ApplyFixesOnTranslation { get; set; } = true;

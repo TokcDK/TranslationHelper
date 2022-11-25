@@ -324,7 +324,7 @@ namespace TranslationHelper.Functions
 
             MenuItemRecent.AfterOpenCleaning();
 
-            AppSettings.ProjectIsOpened = true;
+            //AppSettings.ProjectIsOpened = true;
             FunctionsSounds.OpenProjectComplete();
 
             FunctionsLoadTranslationDB.LoadTranslationIfNeed();

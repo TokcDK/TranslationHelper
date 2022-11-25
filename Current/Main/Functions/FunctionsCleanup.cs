@@ -37,7 +37,7 @@ namespace TranslationHelper.Data
                 //}
 
                 //to prevent some autooperations while project will not be opened
-                AppSettings.ProjectIsOpened = false;
+                //AppSettings.ProjectIsOpened = false;
 
                 //Reset vars
                 AppData.Main.Text = "Translation Helper";
