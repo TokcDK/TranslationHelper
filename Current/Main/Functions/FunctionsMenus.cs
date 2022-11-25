@@ -33,6 +33,8 @@ namespace TranslationHelper.Functions
         {
             AddMainMenus(AppData.Main.MainMenus.Items);
 
+            if (AppData.CurrentProject == null) return;
+
             var fileListMenus = GetListOfSubClasses.Inherited.GetInterfaceImplimentations<IFileListMenuItem>();
             AddMenus(AppData.Main.FilesListMenus.Items, fileListMenus);
             
@@ -41,6 +43,8 @@ namespace TranslationHelper.Functions
         }
         private static void AddMenus(ToolStripItemCollection menuItems, IEnumerable<IMenuItem> menusData)
         {
+            menuItems.Clear();
+
             var menusList = new List<MenuData>();
             foreach (var menuData in menusData)
             {
@@ -74,6 +78,7 @@ namespace TranslationHelper.Functions
 
         private static void AddMainMenus(ToolStripItemCollection menuItems)
         {
+            menuItems.Clear();
 
             var menusData = GetListOfSubClasses.Inherited.GetInterfaceImplimentations<IMainMenuItem>();
 
