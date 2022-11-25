@@ -22,6 +22,17 @@ namespace TranslationHelper.Functions
             Text = menu != null && !string.IsNullOrWhiteSpace(menu.Text)
                 ? menu.Text : text;
             Menu = menu;
+
+            if (menu.Childs == null) return;
+
+            // add menu childs to data
+            foreach (var child in menu.Childs)
+            {
+                var childData = new MenuData(child);
+                if (Childs.Contains(childData)) continue;
+
+                Childs.Add(childData);
+            }
         }
 
         public List<MenuData> Childs = new List<MenuData>();
@@ -90,6 +101,7 @@ namespace TranslationHelper.Functions
 
                 var item = new MenuData(menuData);
 
+                // when no parent, add as main menus and continue
                 if (string.IsNullOrWhiteSpace(menuData.ParentMenuName))
                 {
                     var mainMenu = menusList.FirstOrDefault(m => m.Text == menuData.Text);
