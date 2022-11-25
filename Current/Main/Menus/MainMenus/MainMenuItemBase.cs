@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Windows.Forms;
-using TranslationHelper.Menus.MenuTypes;
+using TranslationHelper.Menus;
 
 namespace TranslationHelper.Menus.MainMenus
 {
