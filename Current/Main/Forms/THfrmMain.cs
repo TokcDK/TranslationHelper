@@ -316,7 +316,7 @@ namespace TranslationHelper
                 // bind textboxes to cells
                 AppData.Main.THSourceRichTextBox.DataBindings.Clear();
                 AppData.Main.THSourceRichTextBox.DataBindings.Add(new Binding("Text", AppData.Main.THFileElementsDataGridView.DataSource, THSettings.OriginalColumnName, true));
-                /AppData.Main.THTargetRichTextBox.DataBindings.Clear();
+                AppData.Main.THTargetRichTextBox.DataBindings.Clear();
                 AppData.Main.THTargetRichTextBox.DataBindings.Add(new Binding("Text", AppData.Main.THFileElementsDataGridView.DataSource, THSettings.TranslationColumnName, true));
 
             }
