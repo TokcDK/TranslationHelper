@@ -6,7 +6,6 @@ using System.Text;
 using System.Threading;
 using TranslationHelper.Functions.FileElementsFunctions.Row;
 using TranslationHelper.Menus.FileRowMenus;
-using TranslationHelper.Menus.MenuTypes;
 
 namespace TranslationHelper.Menus.MainMenus.Edit.OnlineTranslate
 {

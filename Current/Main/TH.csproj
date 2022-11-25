@@ -380,6 +380,7 @@
     <Compile Include="Menus\MainMenus\Edit\MenuItemRowTextPaste.cs" />
     <Compile Include="Menus\MainMenus\Edit\MenuItemRowTextCut.cs" />
     <Compile Include="Menus\MainMenus\Edit\MenuItemOpenInWeb.cs" />
+    <Compile Include="Menus\MainMenus\Edit\Online Translate\MainMenuFileSubItemOnlineTranslateCategory.cs" />
     <Compile Include="Menus\MainMenus\Edit\Online Translate\MainMenuFileSubItemOnlineTranslateBase.cs" />
     <Compile Include="Menus\MainMenus\Edit\Online Translate\MenuItemOnlineTranslateSelected.cs" />
     <Compile Include="Menus\MainMenus\Edit\Online Translate\MenuItemOnlineTranslateInterupt.cs" />

@@ -7,7 +7,6 @@ using TranslationHelper.Data;
 using TranslationHelper.Functions.FileElementsFunctions.Row;
 using TranslationHelper.Functions.FileElementsFunctions.Row.StringCaseMorph;
 using TranslationHelper.Main.Functions;
-using TranslationHelper.Menus.MenuTypes;
 
 namespace TranslationHelper.Menus.MainMenus.Edit.CaseMorph
 {

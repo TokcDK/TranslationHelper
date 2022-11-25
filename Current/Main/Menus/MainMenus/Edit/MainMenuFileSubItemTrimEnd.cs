@@ -3,10 +3,9 @@ using System.Windows.Forms;
 using TranslationHelper.Data;
 using TranslationHelper.Functions.FileElementsFunctions.Row;
 using TranslationHelper.Functions.FileElementsFunctions.Row.StringCaseMorph;
-using TranslationHelper.Menus.MenuTypes;
 
 namespace TranslationHelper.Menus.MainMenus.Edit.CaseMorph
-{    
+{
     public abstract class MainMenuFileSubItemTrimEnd : MainMenuEditSubItemBase, IProjectMenuItem
     {
         public override IMenuItem[] Childs => new IMenuItem[1] { new MenuItemCaseMorphTrimEndVariated() };

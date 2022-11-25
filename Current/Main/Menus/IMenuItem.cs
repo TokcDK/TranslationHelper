@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Windows.Forms;
 
-namespace TranslationHelper.Menus.MenuTypes
+namespace TranslationHelper.Menus
 {
     public interface IMenuItem
     {

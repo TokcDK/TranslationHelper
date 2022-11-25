@@ -5,7 +5,6 @@ using System.Text;
 using System.Threading.Tasks;
 using TranslationHelper.Data;
 using TranslationHelper.Functions;
-using TranslationHelper.Menus.MenuTypes;
 
 namespace TranslationHelper.Menus.MainMenus.File
 {

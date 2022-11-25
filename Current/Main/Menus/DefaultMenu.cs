@@ -5,7 +5,6 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using TranslationHelper.Menus.MainMenus;
-using TranslationHelper.Menus.MenuTypes;
 
 namespace TranslationHelper.Menus
 {

@@ -1,6 +1,4 @@
-﻿using TranslationHelper.Menus.MenuTypes;
-
-namespace TranslationHelper.Menus.MainMenus.Edit
+﻿namespace TranslationHelper.Menus.MainMenus.Edit
 {
     public abstract class MainMenuEditSubItemBase : MainMenuItemBase, IProjectMenuItem
     {

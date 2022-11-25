@@ -1,6 +1,4 @@
-﻿using TranslationHelper.Menus.MenuTypes;
-
-namespace TranslationHelper.Menus.MainMenus.Edit.OnlineTranslate
+﻿namespace TranslationHelper.Menus.MainMenus.Edit.OnlineTranslate
 {
     public abstract class MainMenuFileSubItemOnlineTranslateBase : MainMenuEditSubItemBase, IProjectMenuItem
     {

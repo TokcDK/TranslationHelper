@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Windows.Forms;
 using TranslationHelper.Data;
-using TranslationHelper.Menus.MenuTypes;
 
 namespace TranslationHelper.Menus
 {

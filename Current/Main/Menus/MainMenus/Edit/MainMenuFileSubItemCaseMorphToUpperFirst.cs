@@ -2,7 +2,6 @@
 using System.Windows.Forms;
 using TranslationHelper.Data;
 using TranslationHelper.Functions.FileElementsFunctions.Row.StringCaseMorph;
-using TranslationHelper.Menus.MenuTypes;
 
 namespace TranslationHelper.Menus.MainMenus.Edit.CaseMorph
 {
