@@ -20,6 +20,9 @@ namespace TestTHConfig
             rootFlowLayoutPanel.Dock = DockStyle.Fill;
             rootFlowLayoutPanel.FlowDirection = FlowDirection.TopDown;
 
+            rootPanel.Controls.Add(rootFlowLayoutPanel);
+            this.Controls.Add(rootPanel);
+
             var settingsType = THConfig.StaticSettings.Settings.GetType();
 
             this.AutoSizeMode = AutoSizeMode.GrowAndShrink;
@@ -46,6 +49,7 @@ namespace TestTHConfig
                 {
                     var flp = new FlowLayoutPanel();
                     flp.AutoSize = true;
+                    flp.Dock = DockStyle.Fill;
 
                     var lbl = new Label();
                     lbl.AutoSize = true;
@@ -61,15 +65,10 @@ namespace TestTHConfig
 
                     flp.Controls.Add(lbl);
                     flp.Controls.Add(tbx);
-                    flp.Dock = DockStyle.Fill;
 
                     rootFlowLayoutPanel.Controls.Add(flp);
                 }
             }
-
-            rootPanel.Controls.Add(rootFlowLayoutPanel);
-
-            this.Controls.Add(rootPanel);
         }
     }
 }
