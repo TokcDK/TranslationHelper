@@ -29,7 +29,7 @@ namespace TranslationHelper.Menus.MainMenus.Edit
             new CopyOriginals().Rows();
         }
 
-        public override Keys ShortcutKeys => Keys.Control | Keys.Shift | Keys.C;
+        //public override Keys ShortcutKeys => Keys.Control | Keys.Shift | Keys.C;
 
         public override int Order => base.Order - 99;
     }
