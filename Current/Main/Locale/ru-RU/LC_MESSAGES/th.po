@@ -1,0 +1,490 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"POT-Creation-Date: 2020-04-25 21:09+0500\n"
+"PO-Revision-Date: 2020-04-25 21:23+0500\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"Language: ru\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 2.0.6\n"
+"X-Poedit-Basepath: ../../../\n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n"
+"%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
+"X-Poedit-KeywordsList: T._\n"
+"X-Poedit-SearchPath-0: .\n"
+
+#: THAbout.Designer.cs:45
+msgid "THAboutTextBox.Text"
+msgstr ""
+
+#: THAbout.cs:17
+msgid "Translation Helper by DenisK (c) 2019"
+msgstr "Translation Helper от DenisK (c) 2019"
+
+#: THAbout.cs:17
+msgid "Utility which helps in translation of some RPGMaker and other games."
+msgstr "Утилита, которая помогает в переводе некоторых RPGMaker и прочих игр."
+
+#: THAbout.cs:17
+msgid "Currently can help to translate:"
+msgstr "В настоящее время может помочь с переводом:"
+
+#: THAbout.cs:17
+msgid "RPG Maker Trans Patch and all games with it"
+msgstr "RPG Maker Trans Patch и все поддерживаемые им игры"
+
+#: THAbout.cs:17
+msgid "RPG Maker MV games or they json files with string"
+msgstr "RPG Maker MV игры и их json файлы"
+
+#: THAbout.cs:17
+msgid "Not encrypted games on KiriKiri engine and they files"
+msgstr "Незашифрованные игры на движке KiriKiri и их файлы"
+
+#: THAbout.cs:17
+msgid "Credits"
+msgstr "Благодарности"
+
+#: THAbout.cs:17
+msgid "Aleph Fell(Habisain) for RPGMakerTrans"
+msgstr "Aleph Fell(Habisain) за RPGMakerTrans"
+
+#: THMain.cs:138
+msgid "File"
+msgstr "Файл"
+
+#: THMain.cs:139
+msgid "Open"
+msgstr "Открыть"
+
+#: THMain.cs:140
+msgid "Save"
+msgstr "Сохранить"
+
+#: THMain.cs:141
+msgid "Save As"
+msgstr "Сохранить как"
+
+#: THMain.cs:142
+msgid "Write translation"
+msgstr "Записать перевод"
+
+#: THMain.cs:143
+msgid "Save translation"
+msgstr "Сохранить перевод"
+
+#: THMain.cs:144
+msgid "Save Translation as"
+msgstr "Сохранить перевод как"
+
+#: THMain.cs:145
+msgid "Load Translation"
+msgstr "Загрузить перевод"
+
+#: THMain.cs:146
+msgid "Load Translation as"
+msgstr "Загрузить перевод как"
+
+#: THMain.cs:147
+msgid "Test"
+msgstr "Тест"
+
+#: THMain.cs:149
+msgid "Edit"
+msgstr "Правка"
+
+#: THMain.cs:150
+msgid "Open in Web"
+msgstr "Открыть в Web"
+
+#: THMain.cs:151 THMain.cs:184
+msgid "Translate Online"
+msgstr "Онлайн-перевод"
+
+#: THMain.cs:152 THMain.cs:157 THMain.cs:185 THMain.cs:190
+msgid "Selected"
+msgstr "Выбраное"
+
+#: THMain.cs:153 THMain.cs:158 THMain.cs:186 THMain.cs:191 THSearch.cs:40
+msgid "Table"
+msgstr "Таблица"
+
+#: THMain.cs:154 THMain.cs:159 THMain.cs:187 THMain.cs:192
+msgid "All"
+msgstr "Все"
+
+#: THMain.cs:155 THMain.cs:188
+msgid "Interupt"
+msgstr "Прервать"
+
+#: THMain.cs:156 THMain.cs:189
+msgid "Fix cell special symbols"
+msgstr "Исправить спецсимволы"
+
+#: THMain.cs:160 THMain.cs:193
+msgid "Translation=Original"
+msgstr "Перевод=Оригинал"
+
+#: THMain.cs:161 THMain.cs:162
+msgid "Complete Romaji/Other lines"
+msgstr "Завершить ромаджи/прочие строки"
+
+#: THMain.cs:163 THMain.cs:164
+msgid "Force same for simular"
+msgstr "Автоперевод для похожих (все)"
+
+#: THMain.cs:165 THMain.cs:194
+msgid "Cut"
+msgstr "Вырезать"
+
+#: THMain.cs:166 THMain.cs:195
+msgid "Copy"
+msgstr "Копировать"
+
+#: THMain.cs:167 THMain.cs:196
+msgid "Paste"
+msgstr "Вставить"
+
+#: THMain.cs:168 THMain.cs:197
+msgid "Clear selected cells"
+msgstr "Очистить выбранные"
+
+#: THMain.cs:169 THMain.cs:198
+msgid "UPPERCASE"
+msgstr "ВЕРХНИЙ"
+
+#: THMain.cs:170 THMain.cs:199
+msgid "Uppercase"
+msgstr "Верхний"
+
+#: THMain.cs:171 THMain.cs:200
+msgid "lowercase"
+msgstr "нижний"
+
+#: THMain.cs:172
+msgid "Search"
+msgstr "Поиск"
+
+#: THMain.cs:174
+msgid "View"
+msgstr "Вид"
+
+#: THMain.cs:175
+msgid "Reset column sorting"
+msgstr "Сброс сортировки колонок"
+
+#: THMain.cs:177
+msgid "Options"
+msgstr "Опции"
+
+#: THMain.cs:178 THSettings.cs:39
+msgid "Settings"
+msgstr "Настройки"
+
+#: THMain.cs:180
+msgid "Help"
+msgstr "Помощь"
+
+#: THMain.cs:181
+msgid "About"
+msgstr "О программе"
+
+#: THMain.cs:183
+msgid "Open in web"
+msgstr "Открыть в Web"
+
+#: THMain.cs:231
+msgid "Resets filters and tab sorting"
+msgstr "Сбрасывает фильтры и сортировку столбцов"
+
+#: THMain.cs:232
+msgid "Filters for columns of main table"
+msgstr "Фильтры для колонок главной таблицы"
+
+#: THMain.cs:233
+msgid ""
+"Shows overal number of completed lines.\n"
+"Click to show first untranslated."
+msgstr ""
+"Отображает общее число переведенных строк.\n"
+"Нажмите для выбора первой непереведенной."
+
+#: THMain.cs:510
+msgid "Original"
+msgstr "Оригинал"
+
+#: THMain.cs:511
+msgid "Translation"
+msgstr "Перевод"
+
+#: THMain.cs:660
+msgid "rowinfo:"
+msgstr "информация о строке:"
+
+#: THMain.cs:665
+msgid ""
+"Several strings also can be in Plugins.js in 'www\\js' folder and referred "
+"plugins in plugins folder."
+msgstr ""
+"Некоторые строки также могут быть в файле Plugins.js в папке 'www\\js' и "
+"ссылаемых плагинах папки plugins."
+
+#: THMain.cs:758
+msgid "working.."
+msgstr "работаю.."
+
+#: THMain.cs:793
+msgid "Save complete!"
+msgstr "Сохранение завершено!"
+
+#: THMain.cs:1105 THMain.cs:1961
+msgid "Saving"
+msgstr "Сохранение"
+
+#: THMain.cs:1236
+msgid "Reading DB File"
+msgstr "Чтение файла БД"
+
+#: THMain.cs:2586
+msgid "Finished"
+msgstr "Завершено"
+
+#: THSearch.cs:35 THSearch.cs:52
+msgid "Find and Replace"
+msgstr "Поиск и замена"
+
+#: THSearch.cs:37
+msgid "Search Mode"
+msgstr "Режим поиска"
+
+#: THSearch.cs:38
+msgid "Normal"
+msgstr "Нормальный"
+
+#: THSearch.cs:39
+msgid "Range"
+msgstr "Диапазон"
+
+#: THSearch.cs:41
+msgid "Anywhere"
+msgstr "Везде"
+
+#: THSearch.cs:42
+msgid "Method"
+msgstr "Метод"
+
+#: THSearch.cs:43
+msgid "Find in Original and Paste to Translation"
+msgstr "Поиск в Оригинале и вставка в Перевод"
+
+#: THSearch.cs:44
+msgid "Find and Replace in Translation"
+msgstr "Поиск и замена в переводе"
+
+#: THSearch.cs:45
+msgid "Match Case"
+msgstr "Учитывать регистр"
+
+#: THSearch.cs:46
+msgid "Find All"
+msgstr "Искать все"
+
+#: THSearch.cs:47
+msgid "Find Next"
+msgstr "Искать далее"
+
+#: THSearch.cs:48
+msgid "Replace"
+msgstr "Заменить"
+
+#: THSearch.cs:49 THSearch.cs:811
+msgid "Replace All"
+msgstr "Заменить все"
+
+#: THSearch.cs:50
+msgid "Find what:"
+msgstr "Искать:"
+
+#: THSearch.cs:51
+msgid "Replace with:"
+msgstr "Заменить на:"
+
+#: THSearch.cs:346 THSearch.cs:835
+msgid "Found "
+msgstr "Найдено "
+
+#: THSearch.cs:346 THSearch.cs:835
+msgid " records"
+msgstr " записей"
+
+#: THSearch.cs:355 THSearch.cs:868
+msgid "Nothing Found"
+msgstr "Ничего не найдено"
+
+#: THSearch.cs:811
+msgid "Confirmation"
+msgstr "Подтверждение"
+
+#: THSettings.cs:26
+msgid "Full recursive scan while translation DB loading (slower)"
+msgstr "Рекурсивное сканирование при загрузке БД перевода (медленнее)"
+
+#: THSettings.cs:27
+msgid "char limit of line length (for line split functions)"
+msgstr "Лимит букв для строки (для разбиения строк)"
+
+#: THSettings.cs:28
+msgid "General"
+msgstr "Основные"
+
+#: THSettings.cs:30
+msgid "Optimizations"
+msgstr "Оптимизация"
+
+#: THSettings.cs:32
+msgid "Compression for DB files:"
+msgstr "Сжатие для файлов БД:"
+
+#: THSettings.cs:33
+msgid "Do not load string if it has more of next romaji percent - "
+msgstr "Не грузить строку, если процент romaji больше - "
+
+#: THSettings.cs:34
+msgid "Tools"
+msgstr "Инструменты"
+
+#: THSettings.cs:35
+msgid "Autotranslation for simular"
+msgstr "Автоперевод для похожих"
+
+#: THSettings.cs:36
+msgid "Enable online translation cache."
+msgstr "Кеш онлайн-перевода."
+
+#: THSettings.cs:38
+msgid "Web service link for manual translation (F12):"
+msgstr "Ссылка на Web-сервис для ручного перевода (F12):"
+
+#: THSettings.cs:62
+msgid ""
+"In time of DB loading will be checked all DB lines for each line of table "
+"for translation."
+msgstr ""
+"При загрузке перевода будет проверяться вся БД для каждой строки таблицы.\n"
+"Полезно, к примеру, при загрузке перевода из других БД."
+
+#: THSettings.cs:64
+msgid ""
+"String will not be loaded for translation if this string contains romaji "
+"characters in text more of specified percent."
+msgstr ""
+"Строка не будет загружена для перевода, если содержит ромаджи символы более "
+"указанного процента."
+
+#: THSettings.cs:68
+msgid ""
+"Format for DB files: standard not compressed xml and compressed xml for both "
+"other"
+msgstr "Формат файлов БД: xml без сжатия и сжатый xml для двух других"
+
+#: THSettings.cs:70
+msgid ""
+"Automatically will be translated all almost identical cells with same "
+"original."
+msgstr ""
+"Автоматически будут переведены все наиболее похожие строки с таким же "
+"оригиналом."
+
+#: THSettings.cs:71
+msgid ""
+"Will save online translation result in cache db to use it in next time for "
+"same values instead of attemp to connect to service."
+msgstr ""
+"Сохранит онлайн-перевод в БД кеша для использования в следующий раз для "
+"таких же строк, вместо попыток подключиться к сервису."
+
+#: THSettings.cs:72
+msgid ""
+"Web site which wil be opened by pressing F12 key with added selected table "
+"cells values. Can be any here Google, Yandex, DeepL or other."
+msgstr ""
+"Веб-сайт, который будет открыт нажатием F12, с добавлением выбранных "
+"значений ячеек. Можно добавить что угодно здесь^ Google, Yandex, DeepL и "
+"прочие."
+
+#~ msgid "Run Test RPGMaker MV Game"
+#~ msgstr "Тестовый запуск игры RPGMaker MV"
+
+#~ msgid "opening.."
+#~ msgstr "открытие.."
+
+#~ msgid "Problem with source opening. Try to report to devs about it."
+#~ msgstr ""
+#~ "Проблема с открытием источника. Попробуйте сообщить разработчикам об этом."
+
+#~ msgid " loaded"
+#~ msgstr " загружено"
+
+#~ msgid "Found already extracted files in work dir. Continue with them?"
+#~ msgstr "Найдены уже распакованные файлы в рабочей папке. Продолжить с ними?"
+
+#~ msgid "Found extracted files"
+#~ msgstr "Найдены распакованные файлы"
+
+#~ msgid "Variable>Must be Identical in all files>Only A-Za-z0-9"
+#~ msgstr "Переменная>Должно быть Идентично во всех файлах>Только A-Za-z0-9"
+
+#~ msgid "Nothing to add"
+#~ msgstr "Нечего добавлять"
+
+#~ msgid "opening file: "
+#~ msgstr "открытие файла: "
+
+#~ msgid "contains: "
+#~ msgstr "содержит: "
+
+#~ msgid "finished"
+#~ msgstr "завершено"
+
+#~ msgid "saving file: "
+#~ msgstr "сохранение файла: "
+
+#~ msgid "loading translation"
+#~ msgstr "загрузка перевода"
+
+#~ msgid "Writing: "
+#~ msgstr "Запись: "
+
+#~ msgid "Already in process.."
+#~ msgstr "Уже в процессе.."
+
+#~ msgid "translating"
+#~ msgstr "переводится"
+
+#~ msgid "getting translation: "
+#~ msgstr "получение перевода: "
+
+#~ msgid "Select cell first"
+#~ msgstr "Сначала выберете ячейки"
+
+#~ msgid "loading"
+#~ msgstr "загрузка"
+
+#~ msgid "Problem with loading"
+#~ msgstr "Проблема при загрузке"
+
+#~ msgid "Translation  Helper support:"
+#~ msgstr "Поддержка Translation  Helper:"
+
+#~ msgid "Original=Translation"
+#~ msgstr "Перевод=Оригинал"
+
+#~ msgid ""
+#~ "Is true while online translating. Will be used both with other chars "
+#~ "like .!/? and other same"
+#~ msgstr ""
+#~ "Включить при переводе. Будет использовано вместе с такими символами "
+#~ "как .!/? и прочими такого рода"
