@@ -52,7 +52,6 @@ namespace TranslationHelper.Menus.MainMenus.Edit
         private static bool CheckAndCopySelectedTextToClipboardDeselect(TextBoxBase tb)
         {
             if (string.IsNullOrEmpty(tb.SelectedText)) return false;
-            if (tb.ReadOnly) return false;
 
             Clipboard.SetDataObject(tb.SelectedText); // copy selected text to clipboard
 
