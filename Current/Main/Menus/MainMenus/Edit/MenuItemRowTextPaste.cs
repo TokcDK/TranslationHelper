@@ -24,9 +24,27 @@ namespace TranslationHelper.Menus.MainMenus.Edit
 
         public override void OnClick(object sender, EventArgs e)
         {
+            if (!Clipboard.ContainsText()) return;
+
+            if (AppData.Main.THTargetRichTextBox.Focused && CheckAndPasteSelectedTextToClipboardDeselect(AppData.Main.THTargetRichTextBox))
+            {
+            }
+            else if (AppData.Main.THFileElementsDataGridView.EditingControl is TextBox tb && CheckAndPasteSelectedTextToClipboardDeselect(tb))
+            {
+            }
+
             if (AppSettings.DGVCellInEditMode) AppData.Main.ControlsSwitch(); //если ячейка в режиме редактирования выключение действий для ячеек при выходе из режима редактирования  
 
             new PasteTranslation().Rows();
+        }
+
+        private bool CheckAndPasteSelectedTextToClipboardDeselect(TextBoxBase tb)
+        {
+            if (tb.ReadOnly) return false;
+
+            tb.SelectedText = Clipboard.GetText();
+
+            return true;
         }
 
         public override Keys ShortcutKeys => Keys.Control | Keys.V;

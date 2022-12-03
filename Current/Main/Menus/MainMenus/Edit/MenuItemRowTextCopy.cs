@@ -49,13 +49,14 @@ namespace TranslationHelper.Menus.MainMenus.Edit
             }
         }
 
-        private static bool CheckAndCopySelectedTextToClipboardDeselect(TextBoxBase textBox)
+        private static bool CheckAndCopySelectedTextToClipboardDeselect(TextBoxBase tb)
         {
-            if (string.IsNullOrEmpty(textBox.SelectedText)) return false;
+            if (string.IsNullOrEmpty(tb.SelectedText)) return false;
+            if (tb.ReadOnly) return false;
 
-            Clipboard.SetDataObject(textBox.SelectedText); // copy selected text to clipboard
+            Clipboard.SetDataObject(tb.SelectedText); // copy selected text to clipboard
 
-            textBox.DeselectAll(); // deselect text to show it was copied
+            tb.DeselectAll(); // deselect text to show it was copied
 
             return true;
         }
