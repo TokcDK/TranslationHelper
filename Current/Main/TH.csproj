@@ -518,6 +518,8 @@
     <None Include="..\..\.editorconfig">
       <Link>.editorconfig</Link>
     </None>
+    <None Include="Locale\ru-RU\LC_MESSAGES\th.mo" />
+    <None Include="Locale\ru-RU\LC_MESSAGES\th.po" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
@@ -637,7 +639,7 @@
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>
-    </PostBuildEvent>
+    <PostBuildEvent>ROBOCOPY "$(ProjectDir)Locale " "$(TargetDir)Locale " /MIR
+if %25errorlevel%25 leq 4 exit 0 else exit %25errorlevel%25</PostBuildEvent>
   </PropertyGroup>
 </Project>
