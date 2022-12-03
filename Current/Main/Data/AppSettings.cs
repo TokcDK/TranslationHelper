@@ -33,7 +33,7 @@
         public static int DGVSelectedRowRealIndex { get; set; } = -1;
         public static int DGVSelectedColumnIndex { get; set; } = -1;
         public static bool ProjectIsOpened { get => AppData.CurrentProject != null; }
-        public static bool DGVCellInEditMode { get; set; } = false;
+        public static bool DGVCellInEditMode { get => IsRowInEditMode; }
         public static bool DBTryToCheckLinesOfEachMultilineValue { get; set; } = true;
         public static bool ApplyFixesOnTranslation { get; set; } = true;
         public static bool UseAllDBFilesForOnlineTranslationForAll { get; set; } = true;
@@ -50,7 +50,8 @@
         public static bool SearchRowIssueOptionsCheckProjectSpecific { get; set; } = true;
         public static bool IsFileOpened { get => AppData.Main.THFileElementsDataGridView.DataSource != null; }
         public static bool IsFileContentFocused { get => AppData.Main.THFileElementsDataGridView.Focused; }
-        public static bool IsRowInEditMode { get => (IsFileContentFocused && AppData.Main.THFileElementsDataGridView.IsCurrentCellInEditMode) || AppData.Main.THTargetRichTextBox.Focused; }
+        public static bool IsEditTextBoxFocused { get => AppData.Main.THTargetRichTextBox.Focused; }
+        public static bool IsRowInEditMode { get => (IsFileContentFocused && AppData.Main.THFileElementsDataGridView.IsCurrentCellInEditMode) || IsEditTextBoxFocused; }
         public static bool IsFilesListFocused { get => AppData.FilesListControl.Focused; }
         public static bool IsProcessAll { get => IsFilesListFocused && AppData.THFilesList.SelectedItems.Count == AppData.THFilesList.Items.Count; }
         public static bool IsProcessTable { get => IsFilesListFocused && AppData.THFilesList.SelectedItems.Count > 0; }

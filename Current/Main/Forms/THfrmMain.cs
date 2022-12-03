@@ -1544,21 +1544,21 @@ namespace TranslationHelper
         internal static bool DGVCellInEditMode
         {
             get => AppSettings.DGVCellInEditMode;
-            set => AppSettings.DGVCellInEditMode = value;
+            //set => AppSettings.DGVCellInEditMode = value;
         }
 
         private void THFileElementsDataGridView_CellBeginEdit(object sender, DataGridViewCellCancelEventArgs e)
         {
-            DGVCellInEditMode = true;
+            //DGVCellInEditMode = true;
             //отключение действий для ячеек при входе в режим редктирования
-            ControlsSwitch();
+            //ControlsSwitch();
         }
 
         private void THFileElementsDataGridView_CellEndEdit(object sender, DataGridViewCellEventArgs e)
         {
-            DGVCellInEditMode = false;
+            //DGVCellInEditMode = false;
             //влючение действий для ячеек при выходе из режима редктирования
-            ControlsSwitch(true);
+            //ControlsSwitch(true);
         }
 
         private void THSourceRichTextBox_MouseEnter(object sender, EventArgs e)
