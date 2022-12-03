@@ -32,7 +32,16 @@ namespace TranslationHelper.Formats.RPGMMV
                 {
                     if (OpenFileMode)
                     {
-                        ParseData.Ret = AddRowData(r.Result("$1"), T._("GameFont.\r\nFont must be installed in system or file placed in folder %GAME%\\www\\fonts\\ \r\n or use absolute path. \r\n Change font to smaller is more preferable than line split function\r\nexamples:\r\nWin7:c:/windows/fonts/browa.ttf\r\nWin10: %LocalAppData%/Microsoft/Windows/Fonts/browa.ttf"), isCheckInput: false);
+                        ParseData.Ret = AddRowData(r.Result("$1"), T._(
+                            "GameFont.\nValue in Translation field must be exist font css file name or path.\n" +
+                            "If it is exists, it will be copied into %GAME%\\www\\fonts\\.\n" +
+                            "If value is font file name, it will be searching in system fonts folder location." +
+                            "Useful to change font when need to reduce size of text in game if need." +
+                            "Examples:" +
+                            "browa.ttf\n" +
+                            "c:/windows/fonts/browa.ttf\n" +
+                            "%LocalAppData%/Microsoft/Windows/Fonts/browa.ttf" +
+                            ""), isCheckInput: false);
 
                         return KeywordActionAfter.Break;
                     }
