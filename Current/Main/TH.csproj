@@ -628,7 +628,7 @@
       <Project>{fd599904-9718-4faf-a7b0-48f5d1be39e0}</Project>
       <Name>GetListOfSubClasses</Name>
     </ProjectReference>
-    <ProjectReference Include="K:\0GIT\[TokcDK]\LC\LibsCollection\INIFileMan\INIFileMan.csproj">
+    <ProjectReference Include="K:\0GIT\[TokcDK]\LibsCollection\Net4\INIFileMan\INIFileMan.csproj">
       <Project>{40ac8009-cecd-44d0-b564-96e07237fd1a}</Project>
       <Name>INIFileMan</Name>
     </ProjectReference>
