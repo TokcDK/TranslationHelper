@@ -250,7 +250,11 @@ namespace TranslationHelper.Projects
             var filesList = getNewestFiles ? GetNewestFilesList(DirForSearch, mask) : DirForSearch.EnumerateFiles(mask, searchOption);
             Parallel.ForEach(filesList, file =>
             {
-                if (File.Exists(file.FullName + ".bak")) RestoreFile(file.FullName);
+                if (OpenFileMode && File.Exists(file.FullName + ".bak")) RestoreFile(file.FullName);
+                if (SaveFileMode 
+                && !File.Exists(file.FullName + ".bak")
+                && !file.DirectoryName.IsAnyParentPathInTheList(BakPaths)) // maybe parent was backed up
+                    BackupFile(file.FullName);
 
                 //skip exclusions
                 if (/*exclusions != null &&*/ file.FullName.ContainsAnyFromArray(exclusions)) return;
@@ -278,7 +282,7 @@ namespace TranslationHelper.Projects
                 // add to bak paths for default backup
                 if (OpenFileMode && isOpenSuccess 
                 && !BakPaths.Contains(file.FullName)
-                && !file.DirectoryName.IsAnyParentPathInTheList(BakPaths))
+                && !file.FullName.IsAnyParentPathInTheList(BakPaths))
                     BakPaths.Add(file.FullName);
             });
 
