@@ -247,7 +247,7 @@ namespace TranslationHelper.Projects
 
             var ret = false;
             var existsTables = AppData.CurrentProject.FilesContent.Tables;
-            var filesList = getNewestFiles ? GetNewestFilesList(DirForSearch, mask) : DirForSearch.EnumerateFiles(mask, searchOption);
+            var filesList = getNewestFiles ? ProjectTools.GetNewestFilesList(DirForSearch, mask) : DirForSearch.EnumerateFiles(mask, searchOption);
             Parallel.ForEach(filesList, file =>
             {
                 if (OpenFileMode && File.Exists(file.FullName + ".bak")) RestoreFile(file.FullName);
@@ -289,28 +289,6 @@ namespace TranslationHelper.Projects
             AppData.Main.ProgressInfo(false);
 
             return ret;
-        }
-        protected static List<FileInfo> GetNewestFilesList(DirectoryInfo dir, string mask = "*.*")
-        {
-            var newestfiles = new Dictionary<string, FileInfo>();
-
-            foreach (var file in dir.EnumerateFiles(mask, SearchOption.AllDirectories))
-            {
-                var name = file.Name;
-                bool isAlreadyContains = newestfiles.ContainsKey(name);
-                if (isAlreadyContains)
-                {
-                    if (file.LastWriteTime <= newestfiles[name].LastWriteTime) continue;
-
-                    newestfiles[name] = file;
-                }
-                else
-                {
-                    newestfiles.Add(name, file);
-                }
-            }
-
-            return newestfiles.Values.ToList();
         }
 
         /// <summary>
