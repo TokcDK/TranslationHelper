@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace TranslationHelper.Formats.RPGMMV
 {
@@ -14,12 +16,12 @@ namespace TranslationHelper.Formats.RPGMMV
                 return KeywordActionAfter.Continue; // comment
             }
 
-            var t = string.Join("\r\n", GetLines());
+            var t = $"{ParseData.Line}\r\n{string.Join("\r\n", GetLines())}";
             AddRowData(ref t);
 
             SaveModeAddLine();
 
-            return base.ParseStringFileLine();
+            return KeywordActionAfter.Continue;
         }
 
         private IEnumerable<string> GetLines()

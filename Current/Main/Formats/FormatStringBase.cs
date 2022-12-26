@@ -82,7 +82,7 @@ namespace TranslationHelper.Formats
         /// <returns></returns>
         protected virtual KeywordActionAfter ParseStringFileLine()
         {
-            return KeywordActionAfter.Break;
+            return KeywordActionAfter.Continue;
         }
 
         bool firstline = true;
