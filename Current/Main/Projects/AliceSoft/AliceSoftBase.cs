@@ -18,12 +18,12 @@ namespace TranslationHelper.Projects.AliceSoft
 
         internal override string ProjectDBFolderName => "AliceSoft";
 
-        internal override bool BakCreate()
+        public override bool BakCreate()
         {
             return ProjectToolsBackup.BackupRestorePaths(Directory.GetFiles(AppData.CurrentProject.SelectedGameDir, "*.ain"));
         }
 
-        internal override bool BakRestore()
+        public override bool BakRestore()
         {
             return ProjectToolsBackup.BackupRestorePaths(Directory.GetFiles(AppData.CurrentProject.SelectedGameDir, "*.ain"));
         }

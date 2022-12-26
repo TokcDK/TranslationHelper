@@ -457,6 +457,7 @@
     <Compile Include="Projects\EAGLS\sc_.cs" />
     <Compile Include="Projects\IdolManager\IdolManager.cs" />
     <Compile Include="Projects\IProject.cs" />
+    <Compile Include="Projects\IProjectBackupUser.cs" />
     <Compile Include="Projects\IrisField\HowToBuildAMagnificentNationGame.cs" />
     <Compile Include="Projects\IrisField\HowToMakeTrueSlavesRiseofaDarkEmpireGame.cs" />
     <Compile Include="Projects\IrisField\IrisFieldGameBase.cs" />

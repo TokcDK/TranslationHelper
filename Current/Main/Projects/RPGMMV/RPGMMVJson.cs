@@ -94,12 +94,12 @@ namespace TranslationHelper.Projects.RPGMMV
             return ParseProjectFiles(true);
         }
 
-        internal override bool BakCreate()
+        public override bool BakCreate()
         {
             return false;
         }
 
-        internal override bool BakRestore()
+        public override bool BakRestore()
         {
             return false;
         }

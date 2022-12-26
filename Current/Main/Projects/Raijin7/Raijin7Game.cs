@@ -58,7 +58,7 @@ namespace TranslationHelper.Projects
             return ret;
         }
 
-        internal override bool BakCreate()
+        public override bool BakCreate()
         {
             return ProjectToolsBackup.BackupRestorePaths(new[] { 
                 Path.Combine(Path.GetDirectoryName(AppData.SelectedFilePath), "eve"),
@@ -70,7 +70,7 @@ namespace TranslationHelper.Projects
         /// Will restore made buckup of project translating original files<br/>if any code exit here and buckup exists<br/>else will return false
         /// </summary>
         /// <returns></returns>
-        internal override bool BakRestore()
+        public override bool BakRestore()
         {
             return ProjectToolsBackup.BackupRestorePaths(new[] {
                 Path.Combine(Path.GetDirectoryName(AppData.SelectedFilePath), "eve"),

@@ -332,14 +332,14 @@ namespace TranslationHelper.Projects.RPGMMV
         /// <summary>
         /// data, font and js folders
         /// </summary>
-        internal override List<string> BakPaths { get; set; } = new List<string>()
+        public override List<string> BakPaths { get; set; } = new List<string>()
         {
                 @".\www\data",
                 @".\www\fonts",
                 @".\www\js"
         };
 
-        internal override bool BakCreate()
+        public override bool BakCreate()
         {
             if (string.IsNullOrWhiteSpace(WWWDir)) WWWDir = Path.Combine(AppData.CurrentProject.SelectedDir, HasWWWDir ? "www" : "");
 
@@ -386,7 +386,7 @@ namespace TranslationHelper.Projects.RPGMMV
             //return true;
         }
 
-        internal override bool BakRestore()
+        public override bool BakRestore()
         {
             if (string.IsNullOrWhiteSpace(WWWDir)) WWWDir = Path.Combine(AppData.CurrentProject.SelectedDir, HasWWWDir ? "www" : "");
 

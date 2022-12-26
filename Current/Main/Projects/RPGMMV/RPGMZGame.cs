@@ -33,7 +33,7 @@ namespace TranslationHelper.Projects.RPGMMV
             };
         }
 
-        internal override List<string> BakPaths => new List<string>(2)
+        public override List<string> BakPaths => new List<string>(2)
         {
                 @".\data",
                 //@".\fonts",

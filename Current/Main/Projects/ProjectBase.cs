@@ -11,7 +11,7 @@ using TranslationHelper.Menus.MainMenus;
 
 namespace TranslationHelper.Projects
 {
-    public abstract class ProjectBase : IProject
+    public abstract class ProjectBase : IProject, IProjectBackupUser
     {
         protected ProjectBase()
         {
@@ -398,13 +398,13 @@ namespace TranslationHelper.Projects
         /// When empty, will be added all files parsed in OpenSaveFilesBase
         /// </summary>
         /// <returns></returns>
-        internal virtual List<string> BakPaths { get; set; } = new List<string>();
+        public virtual List<string> BakPaths { get; set; } = new List<string>();
 
         /// <summary>
         /// Must make buckup of project translating original files<br/>if any code exit here else will return false
         /// </summary>
         /// <returns></returns>
-        internal virtual bool BakCreate()
+        public virtual bool BakCreate()
         {
             return ProjectToolsBackup.BackupRestorePaths(BakPaths);
         }
@@ -413,7 +413,7 @@ namespace TranslationHelper.Projects
         /// Will restore made buckup of project translating original files<br/>if any code exit here and buckup exists<br/>else will return false
         /// </summary>
         /// <returns></returns>
-        internal virtual bool BakRestore()
+        public virtual bool BakRestore()
         {
             return ProjectToolsBackup.BackupRestorePaths(BakPaths, false);
         }

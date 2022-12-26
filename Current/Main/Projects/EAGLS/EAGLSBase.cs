@@ -106,7 +106,7 @@ namespace TranslationHelper.Projects.EAGLS
         protected string SCPACKpak;
         protected string SCPACKidx;
         protected string WorkTXTDir;
-        internal override bool BakCreate()
+        public override bool BakCreate()
         {
             return ProjectToolsBackup.BackupRestorePaths(new[]
             {
@@ -116,7 +116,7 @@ namespace TranslationHelper.Projects.EAGLS
             }, true);
         }
 
-        internal override bool BakRestore()
+        public override bool BakRestore()
         {
             return ProjectToolsBackup.BackupRestorePaths(new[]
             {

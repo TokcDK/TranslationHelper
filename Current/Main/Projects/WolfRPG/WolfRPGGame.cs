@@ -216,7 +216,7 @@ namespace TranslationHelper.Projects.WolfRPG
 
         readonly string[] _projectTranslatableFilesExtensionMasks = new[] { "*.mps", "*.dat", "*.project" };
         string TranslatedDirPath => Path.Combine(THSettings.WorkDirPath, ProjectDBFolderName, Path.GetFileName(AppData.CurrentProject.SelectedGameDir), "translated");
-        internal override bool BakCreate()
+        public override bool BakCreate()
         {
             //.mps,.dat,.project using in patcher
             var translatedDir = new DirectoryInfo(TranslatedDirPath);
@@ -224,7 +224,7 @@ namespace TranslationHelper.Projects.WolfRPG
             return translatedDir.Exists && ProjectToolsBackup.BackupRestorePaths(filePaths.Concat(new[] { Path.Combine(AppData.CurrentProject.SelectedGameDir, "data", "Evtext") }));
         }
 
-        internal override bool BakRestore()
+        public override bool BakRestore()
         {
             foreach (var bak in Directory.EnumerateFiles(Path.GetDirectoryName(AppData.SelectedFilePath), "*.wolf.bak", SearchOption.AllDirectories))
             {

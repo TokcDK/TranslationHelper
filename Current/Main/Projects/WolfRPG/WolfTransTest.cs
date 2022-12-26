@@ -29,12 +29,12 @@ namespace TranslationHelper.Projects.WolfRPG
         }
 
 
-        internal override bool BakCreate()
+        public override bool BakCreate()
         {
             return ProjectToolsBackup.BackupRestorePaths(new[] { Path.Combine(AppData.CurrentProject.SelectedGameDir, "Data", "Evtext") });
         }
 
-        internal override bool BakRestore()
+        public override bool BakRestore()
         {
             return ProjectToolsBackup.BackupRestorePaths(new[] { Path.Combine(AppData.CurrentProject.SelectedGameDir, "Data", "Evtext") });
         }

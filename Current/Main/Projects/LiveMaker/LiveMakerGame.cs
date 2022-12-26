@@ -286,7 +286,7 @@ namespace TranslationHelper.Projects.LiveMaker
             return false;
         }
 
-        internal override bool BakCreate()
+        public override bool BakCreate()
         {
             var bakData = Directory.GetFiles(Path.Combine(AppData.CurrentProject.ProjectWorkDir, "output"), "*.lsb");
 
@@ -305,7 +305,7 @@ namespace TranslationHelper.Projects.LiveMaker
             return ProjectToolsBackup.BackupRestorePaths(bakData);
         }
 
-        internal override bool BakRestore()
+        public override bool BakRestore()
         {
             string[] bakData = new string[1];
 
