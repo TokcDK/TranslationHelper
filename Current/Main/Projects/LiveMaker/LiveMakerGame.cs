@@ -302,7 +302,7 @@ namespace TranslationHelper.Projects.LiveMaker
                 bakData = bakData.Union(Directory.GetFiles(Path.Combine(AppData.CurrentProject.ProjectWorkDir, "Extracted", "LNS"), "*.lns", SearchOption.AllDirectories)).ToArray();
             }
 
-            return BackupRestorePaths(bakData);
+            return ProjectTools.BackupRestorePaths(bakData);
         }
 
         internal override bool BakRestore()
@@ -326,7 +326,7 @@ namespace TranslationHelper.Projects.LiveMaker
                 bakData = bakData.Union(Directory.GetFiles(Path.Combine(AppData.CurrentProject.ProjectWorkDir, "Extracted", "LNS"), "*.lns", SearchOption.AllDirectories)).ToArray();
             }
 
-            return BackupRestorePaths(bakData, false);
+            return ProjectTools.BackupRestorePaths(bakData, false);
         }
 
         internal override string OnlineTranslationProjectSpecificPretranslationAction(string o, string t, int tind = -1, int rind = -1)

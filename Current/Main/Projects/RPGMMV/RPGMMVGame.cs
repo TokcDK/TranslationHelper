@@ -332,7 +332,7 @@ namespace TranslationHelper.Projects.RPGMMV
         /// <summary>
         /// data, font and js folders
         /// </summary>
-        protected override List<string> BakPaths { get; set; } = new List<string>()
+        internal override List<string> BakPaths { get; set; } = new List<string>()
         {
                 @".\www\data",
                 @".\www\fonts",
@@ -345,7 +345,7 @@ namespace TranslationHelper.Projects.RPGMMV
 
             BakRestore();
 
-            return BackupRestorePaths(BakPaths);
+            return ProjectTools.BackupRestorePaths(BakPaths);
 
             //old
             //RestoreFromBakIfNeedData();
@@ -396,7 +396,7 @@ namespace TranslationHelper.Projects.RPGMMV
                 RestoreFromBakIfNeedJS((JSBase)Activator.CreateInstance(JS));
             }
 
-            return BackupRestorePaths(BakPaths, false);
+            return ProjectTools.BackupRestorePaths(BakPaths, false);
         }
 
         /// <summary>

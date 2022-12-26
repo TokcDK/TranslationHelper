@@ -71,12 +71,12 @@ namespace TranslationHelper.Projects.Liar_soft
 
         internal override bool BakCreate()
         {
-            return BackupRestorePaths(new[] { @".\scr.xfl" });
+            return ProjectTools.BackupRestorePaths(new[] { @".\scr.xfl" });
         }
 
         internal override bool BakRestore()
         {
-            return BackupRestorePaths(new[] { @".\scr.xfl" }, false);
+            return ProjectTools.BackupRestorePaths(new[] { @".\scr.xfl" }, false);
         }
     }
 }

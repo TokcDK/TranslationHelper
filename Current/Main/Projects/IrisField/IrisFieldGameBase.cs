@@ -89,12 +89,12 @@ namespace TranslationHelper.Projects.IrisField
 
         internal override bool BakCreate()
         {
-            return BackupRestorePaths(BackupPaths);
+            return ProjectTools.BackupRestorePaths(BackupPaths);
         }
 
         internal override bool BakRestore()
         {
-            return BackupRestorePaths(BackupPaths, false);
+            return ProjectTools.BackupRestorePaths(BackupPaths, false);
         }
     }
 }

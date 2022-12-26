@@ -3,14 +3,8 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Data;
 using System.IO;
-using System.Linq;
 using System.Text.RegularExpressions;
-using System.Threading.Tasks;
-using System.Windows.Automation.Provider;
 using TranslationHelper.Data;
-using TranslationHelper.Extensions;
-using TranslationHelper.Formats;
-using TranslationHelper.Functions;
 using TranslationHelper.Menus.FileRowMenus;
 using TranslationHelper.Menus.FilesListMenus;
 using TranslationHelper.Menus.MainMenus;
@@ -487,14 +481,16 @@ namespace TranslationHelper.Projects
         /// Main menus which need to be added for the project
         /// </summary>
         /// <returns></returns>
-        internal virtual IMainMenuItem[] MainMenuItemMenusList => Array.Empty<IMainMenuItem>();         /// <summary>
-                                                                                                        /// Files list item menus which must be added for the project
-                                                                                                        /// </summary>
-                                                                                                        /// <returns></returns>
-        internal virtual IFileListMenuItem[] FilesListItemMenusList => Array.Empty<IFileListMenuItem>();         /// <summary>
-                                                                                                                 /// FileRow menus which must be added for the project
-                                                                                                                 /// </summary>
-                                                                                                                 /// <returns></returns>
+        internal virtual IMainMenuItem[] MainMenuItemMenusList => Array.Empty<IMainMenuItem>();
+        /// <summary>
+        /// Files list item menus which must be added for the project
+        /// </summary>
+        /// <returns></returns>
+        internal virtual IFileListMenuItem[] FilesListItemMenusList => Array.Empty<IFileListMenuItem>();
+        /// <summary>
+        /// FileRow menus which must be added for the project
+        /// </summary>
+        /// <returns></returns>
         internal virtual IFileRowMenuItem[] FileRowItemMenusList => Array.Empty<IFileRowMenuItem>();
 
         /// <summary>

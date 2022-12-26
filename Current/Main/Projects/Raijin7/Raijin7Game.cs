@@ -60,7 +60,7 @@ namespace TranslationHelper.Projects
 
         internal override bool BakCreate()
         {
-            return BackupRestorePaths(new[] { 
+            return ProjectTools.BackupRestorePaths(new[] { 
                 Path.Combine(Path.GetDirectoryName(AppData.SelectedFilePath), "eve"),
                 Path.Combine(Path.GetDirectoryName(AppData.SelectedFilePath), "csv")
             });
@@ -72,7 +72,7 @@ namespace TranslationHelper.Projects
         /// <returns></returns>
         internal override bool BakRestore()
         {
-            return BackupRestorePaths(new[] {
+            return ProjectTools.BackupRestorePaths(new[] {
                 Path.Combine(Path.GetDirectoryName(AppData.SelectedFilePath), "eve"),
                 Path.Combine(Path.GetDirectoryName(AppData.SelectedFilePath), "csv")
             }

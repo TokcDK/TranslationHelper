@@ -136,12 +136,12 @@ namespace TranslationHelper.Projects.NScript
 
         internal override bool BakCreate()
         {
-            return BackupFile(Path.Combine(AppData.CurrentProject.SelectedGameDir, "nscript.dat"));
+            return ProjectTools.BackupFile(Path.Combine(AppData.CurrentProject.SelectedGameDir, "nscript.dat"));
         }
 
         internal override bool BakRestore()
         {
-            return RestoreFile(Path.Combine(AppData.CurrentProject.SelectedGameDir, "nscript.dat"));
+            return ProjectTools.RestoreFile(Path.Combine(AppData.CurrentProject.SelectedGameDir, "nscript.dat"));
         }
     }
 }

@@ -20,12 +20,12 @@ namespace TranslationHelper.Projects.AliceSoft
 
         internal override bool BakCreate()
         {
-            return BackupRestorePaths(Directory.GetFiles(AppData.CurrentProject.SelectedGameDir, "*.ain"));
+            return ProjectTools.BackupRestorePaths(Directory.GetFiles(AppData.CurrentProject.SelectedGameDir, "*.ain"));
         }
 
         internal override bool BakRestore()
         {
-            return BackupRestorePaths(Directory.GetFiles(AppData.CurrentProject.SelectedGameDir, "*.ain"));
+            return ProjectTools.BackupRestorePaths(Directory.GetFiles(AppData.CurrentProject.SelectedGameDir, "*.ain"));
         }
 
         internal override string NewlineSymbol => "\\n";
