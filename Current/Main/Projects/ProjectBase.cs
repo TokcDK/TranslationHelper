@@ -189,7 +189,7 @@ namespace TranslationHelper.Projects
         /// <returns></returns>
         protected bool OpenSaveFilesBase(string DirForSearch, List<Type> formatType, string[] masks = null, bool getNewestFiles = false)
         {
-            return ProjectTools.OpenSaveFilesBase(this, new DirectoryInfo(DirForSearch), formatType, masks, getNewestFiles);
+            return ProjectToolsOpenSave.OpenSaveFilesBase(this, new DirectoryInfo(DirForSearch), formatType, masks, getNewestFiles);
         }
 
         /// <summary>
@@ -198,7 +198,7 @@ namespace TranslationHelper.Projects
         /// <returns></returns>
         protected bool OpenSaveFilesBase(string DirForSearch, Type formatType, string mask = "*")
         {
-            return ProjectTools.OpenSaveFilesBase(this, new DirectoryInfo(DirForSearch), formatType, mask);
+            return ProjectToolsOpenSave.OpenSaveFilesBase(this, new DirectoryInfo(DirForSearch), formatType, mask);
         }
 
         /// <summary>
@@ -210,7 +210,7 @@ namespace TranslationHelper.Projects
         /// <returns></returns>
         protected bool OpenSaveFilesBase(DirectoryInfo DirForSearch, List<Type> format, string[] masks = null, bool getNewestFiles = false)
         {
-            return ProjectTools.OpenSaveFilesBase(this, DirForSearch, format, masks, getNewestFiles);
+            return ProjectToolsOpenSave.OpenSaveFilesBase(this, DirForSearch, format, masks, getNewestFiles);
         }
 
         /// <summary>
@@ -219,7 +219,7 @@ namespace TranslationHelper.Projects
         /// <returns></returns>
         protected bool OpenSaveFilesBase(DirectoryInfo DirForSearch, Type formatType, string mask = "*", bool getNewestFiles = false, string[] exclusions = null, SearchOption searchOption = SearchOption.AllDirectories)
         {
-            return ProjectTools.OpenSaveFilesBase(this, DirForSearch, formatType, mask, getNewestFiles);
+            return ProjectToolsOpenSave.OpenSaveFilesBase(this, DirForSearch, formatType, mask, getNewestFiles);
         }
 
         /// <summary>
@@ -445,7 +445,7 @@ namespace TranslationHelper.Projects
         /// <returns></returns>
         internal virtual bool BakCreate()
         {
-            return ProjectTools.BackupRestorePaths(BakPaths);
+            return ProjectToolsBackup.BackupRestorePaths(BakPaths);
         }
 
         /// <summary>
@@ -454,7 +454,7 @@ namespace TranslationHelper.Projects
         /// <returns></returns>
         internal virtual bool BakRestore()
         {
-            return ProjectTools.BackupRestorePaths(BakPaths, false);
+            return ProjectToolsBackup.BackupRestorePaths(BakPaths, false);
         }
 
         /// <summary>

@@ -479,6 +479,8 @@
     <Compile Include="Projects\NScript\NScriptGame.cs" />
     <Compile Include="Projects\ProjectBase.cs" />
     <Compile Include="Projects\ProjectTools.cs" />
+    <Compile Include="Projects\ProjectToolsBackup.cs" />
+    <Compile Include="Projects\ProjectToolsOpenSave.cs" />
     <Compile Include="Projects\Raijin7\Raijin7Game.cs" />
     <Compile Include="Projects\RJ263914\RJ263914OLD.cs" />
     <Compile Include="Projects\RPGMaker\RPGMGame.cs" />

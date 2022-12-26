@@ -345,7 +345,7 @@ namespace TranslationHelper.Projects.RPGMMV
 
             BakRestore();
 
-            return ProjectTools.BackupRestorePaths(BakPaths);
+            return ProjectToolsBackup.BackupRestorePaths(BakPaths);
 
             //old
             //RestoreFromBakIfNeedData();
@@ -396,7 +396,7 @@ namespace TranslationHelper.Projects.RPGMMV
                 RestoreFromBakIfNeedJS((JSBase)Activator.CreateInstance(JS));
             }
 
-            return ProjectTools.BackupRestorePaths(BakPaths, false);
+            return ProjectToolsBackup.BackupRestorePaths(BakPaths, false);
         }
 
         /// <summary>
