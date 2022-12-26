@@ -165,73 +165,45 @@ namespace TranslationHelper.Formats
         /// <summary>
         /// Add table to work dataset
         /// </summary>
-        protected void AddTables()
+        protected void InitTableContent()
         {
-            if (!string.IsNullOrEmpty(GetOpenFilePath())) AddTables(FileName);
+            if (string.IsNullOrEmpty(GetOpenFilePath())) return;
+
+            InitTableContent(FileName);
         }
 
         /// <summary>
         /// Main table with row data
         /// </summary>
-        DataTable Data;
+        internal DataTable Data;
         /// <summary>
         /// info table for info box
         /// </summary>
-        DataTable Info;
+        internal DataTable Info;
 
         /// <summary>
         /// Add table to work dataset
         /// </summary>
         /// <param name="tablename"></param>
         /// <param name="extraColumns"></param>
-        internal void AddTables(string tablename, string[] extraColumns = null)
+        internal void InitTableContent(string tablename, string[] extraColumns = null)
         {
-            if (Data == null)
+            if (Data != null) return;
+
+            Data = new DataTable { TableName = tablename };
+
+            Data.Columns.Add(THSettings.OriginalColumnName);
+            Data.Columns.Add(THSettings.TranslationColumnName);
+
+            if (extraColumns != null && extraColumns.Length > 0)
             {
-                Data = new DataTable
-                {
-                    TableName = tablename
-                };
-                Data.Columns.Add(THSettings.OriginalColumnName);
-                Data.Columns.Add(THSettings.TranslationColumnName);
-
-                if (extraColumns != null && extraColumns.Length > 0)
-                {
-                    foreach (var columnName in extraColumns)
-                    {
-                        Data.Columns.Add(columnName);
-                    }
-                }
-
-                Info = new DataTable
-                {
-                    TableName = tablename
-                };
-                Info.Columns.Add("Info");
+                foreach (var columnName in extraColumns) 
+                    Data.Columns.Add(columnName);
             }
 
-            //var tables = ProjectData.THFilesElementsDataset.Tables;
-            //if (!tables.Contains(tablename))
-            //{
-            //    tables.Add(tablename);
-            //    var table = tables[tablename];
-            //    table.Columns.Add(THSettings.OriginalColumnName);
-            //    table.Columns.Add(THSettings.TranslationColumnName);
+            Info = new DataTable { TableName = tablename };
 
-            //    if (extraColumns != null && extraColumns.Length > 0)
-            //    {
-            //        foreach (var columnName in extraColumns)
-            //        {
-            //            table.Columns.Add(columnName);
-            //        }
-            //    }
-            //}
-            //var tablesInfo = ProjectData.THFilesElementsDatasetInfo.Tables;
-            //if (!tablesInfo.Contains(tablename))
-            //{
-            //    tablesInfo.Add(tablename);
-            //    tablesInfo[tablename].Columns.Add("Info");
-            //}
+            Info.Columns.Add("Info");
         }
 
         /// <summary>
@@ -382,30 +354,9 @@ namespace TranslationHelper.Formats
                 AppData.CurrentProject.AddFileData(Data);
                 AppData.CurrentProject.AddFileInfo(Info);
 
-                //#if DEBUG
-                //                ProjectData.Main.Invoke((Action)(() => ProjectData.AddTableData(TableData)));
-                //                ProjectData.Main.Invoke((Action)(() => ProjectData.AddTableInfo(TableInfo)));
-                //#else
-                //                ProjectData.AddTableData(TableData);
-                //                ProjectData.AddTableInfo(TableInfo);
-                //#endif
-
                 return true;
             }
-            else
-            {
-                //if (ProjectData.THFilesElementsDataset.Tables.Contains(tablename))
-                //{
-                //ProjectData.THFilesElementsDataset.Tables.Remove(tablename); // remove table if was no items added
-                //}
-
-                //if (ProjectData.THFilesElementsDatasetInfo.Tables.Contains(tablename))
-                //{
-                //ProjectData.THFilesElementsDatasetInfo.Tables.Remove(tablename); // remove table if was no items added
-                //}
-
-                return false;
-            }
+            else return false;
         }
 
         /// <summary>
@@ -428,7 +379,7 @@ namespace TranslationHelper.Formats
 
             if (SaveFileMode && !AppData.THFilesList.Items.Contains(FileName)) return false;
 
-            if (OpenFileMode) AddTables();
+            if (OpenFileMode) InitTableContent();
 
             if (SaveFileMode) SplitTableCellValuesAndTheirLinesToDictionary(FileName, false, false);
 
@@ -449,10 +400,7 @@ namespace TranslationHelper.Formats
         /// <returns></returns>
         protected bool ParseFile()
         {
-            if (!FilePreOpenActions())
-            {
-                return false;
-            }
+            if (!FilePreOpenActions()) return false;
 
             FileOpen();
 
@@ -477,14 +425,7 @@ namespace TranslationHelper.Formats
         /// <returns></returns>
         protected virtual bool FilePostOpen()
         {
-            if (OpenFileMode)
-            {
-                return CheckTablesContent(FileName);
-            }
-            else
-            {
-                return WriteFileData();
-            }
+            return OpenFileMode ? CheckTablesContent(FileName) : WriteFileData();
         }
 
         protected virtual bool WriteFileData(string filePath = "") => false;
@@ -540,18 +481,14 @@ namespace TranslationHelper.Formats
         /// <param name="onlyOneTable">Parse only <paramref name="tableName"/></param>
         internal void SplitTableCellValuesAndTheirLinesToDictionary(string tableName, bool makeLinesCountEqual = false, bool onlyOneTable = false)
         {
-            if (!AppData.CurrentProject.DontLoadDuplicates) // skip if do not load duplicates option is disabled
-            {
-                return;
-            }
+            // skip if do not load duplicates option is disabled
+            if (!AppData.CurrentProject.DontLoadDuplicates) return;
 
             if (!FirstPassOfDictionaryFilling && !TablesLinesDictFilled && !onlyOneTable)
             {
+                // wait until dictionary will be filled
                 int i = 20;
-                while (!TablesLinesDictFilled && --i > 0) // wait until dictionary will be filled
-                {
-                    Thread.Sleep(100);
-                }
+                while (!TablesLinesDictFilled && --i > 0) Thread.Sleep(100);
 
                 return; // return when filled
             }
@@ -572,14 +509,7 @@ namespace TranslationHelper.Formats
                     AppData.CurrentProject.TablesLinesDict.Clear();
                 }
             }
-            else
-            {
-                if (TablesLinesDictFilled /*|| ProjectData.CurrentProject.TablesLinesDict != null && ProjectData.CurrentProject.TablesLinesDict.Count > 0*/)
-                {
-                    return;
-                }
-            }
-
+            else if (TablesLinesDictFilled) return;
 
             foreach (DataTable Table in AppData.CurrentProject.FilesContent.Tables)
             {
@@ -721,14 +651,6 @@ namespace TranslationHelper.Formats
                             }
                         }
                     }
-                    //foreach (string line in Original.SplitToLines())
-                    //{
-                    //    if (!TableLines.ContainsKey(line) && TranslationLines[lineNumber].Length > 0 && TranslationLines[lineNumber] != line)
-                    //    {
-                    //        TableLines.Add(line, TranslationLines[lineNumber]);
-                    //    }
-                    //    lineNumber++;
-                    //}
                 }
 
                 if (onlyOneTable)
@@ -841,9 +763,8 @@ namespace TranslationHelper.Formats
         /// <returns></returns>
         protected virtual string FixInvalidSymbols(string str)
         {
-            return str
-                .Replace("\u200b", string.Empty)//remove zero-length-space (can be produced by online translator)
-                ;
+            //remove zero-length-space (can be produced by online translator)
+            return str.Replace("\u200b", string.Empty);
         }
     }
 }
