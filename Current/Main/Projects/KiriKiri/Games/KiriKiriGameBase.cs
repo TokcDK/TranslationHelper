@@ -79,7 +79,7 @@ namespace TranslationHelper.Projects.KiriKiri.Games
 
             formats = formats ?? FormatType();
 
-            if (OpenSaveFilesBase(dir, formats, masks, true))
+            if (ProjectToolsOpenSave.OpenSaveFilesBase(this, dir, formats, masks, true))
             {
                 ret = true;
             }

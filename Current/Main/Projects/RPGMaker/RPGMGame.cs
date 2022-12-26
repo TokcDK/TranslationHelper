@@ -68,7 +68,7 @@ namespace TranslationHelper.Projects
         {
             patchdir = Path.Combine(AppData.CurrentProject.ProjectWorkDir, Path.GetFileName(AppData.CurrentProject.SelectedGameDir) + "_patch");
 
-            return OpenSaveFilesBase(patchdir, typeof(TXTv3), "*.txt");
+            return ProjectToolsOpenSave.OpenSaveFilesBase(this, patchdir, typeof(TXTv3), "*.txt");
         }
 
         private bool Patching()
@@ -344,15 +344,15 @@ namespace TranslationHelper.Projects
 
         public override bool Save()
         {
-            OpenSaveFilesBase(patchdir, typeof(TXTv3), "*.txt");//not need to check return value here
+            ProjectToolsOpenSave.OpenSaveFilesBase(this, patchdir, typeof(TXTv3), "*.txt");//not need to check return value here
 
             return Patching();
-            //return OpenSaveFilesBase(patchdir, new TXT(), "*.txt") && Patching();
+            //return ProjectToolsOpenSave.OpenSaveFilesBase(this, patchdir, new TXT(), "*.txt") && Patching();
         }
 
         internal override void PreSaveDB()
         {
-            OpenSaveFilesBase(patchdir, typeof(TXTv3), "*.txt");
+            ProjectToolsOpenSave.OpenSaveFilesBase(this, patchdir, typeof(TXTv3), "*.txt");
         }
 
         internal override void AfterTranslationWriteActions()

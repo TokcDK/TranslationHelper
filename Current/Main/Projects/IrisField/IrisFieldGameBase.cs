@@ -55,7 +55,7 @@ namespace TranslationHelper.Projects.IrisField
 
             AppData.Main.ProgressInfo(true, Path.GetFileName(AppData.SelectedFilePath));
             var openPath = new DirectoryInfo(Path.GetDirectoryName(AppData.SelectedFilePath));
-            if (OpenSaveFilesBase(openPath, GameExeFormatType, GameExeName + ".exe", searchOption: SearchOption.TopDirectoryOnly))
+            if (ProjectToolsOpenSave.OpenSaveFilesBase(this, openPath, GameExeFormatType, GameExeName + ".exe", searchOption: SearchOption.TopDirectoryOnly))
             {
                 ret = true;
             }
@@ -64,7 +64,7 @@ namespace TranslationHelper.Projects.IrisField
             if (!Directory.Exists(openPath.FullName + ".skip") && !File.Exists(openPath.FullName + ".skip"))
             {
                 var txtFormat = typeof(Formats.IrisField.TXT);
-                if (OpenSaveFilesBase(openPath, txtFormat, "*.txt"))
+                if (ProjectToolsOpenSave.OpenSaveFilesBase(this, openPath, txtFormat, "*.txt"))
                 {
                     ret = true;
                 }

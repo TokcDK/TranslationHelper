@@ -24,12 +24,12 @@ namespace TranslationHelper.Projects
 
         public override bool Open()
         {
-            return OpenSaveFilesBase(Path.GetDirectoryName(AppData.SelectedFilePath), typeof(TXTv3), "*.txt");
+            return ProjectToolsOpenSave.OpenSaveFilesBase(this, Path.GetDirectoryName(AppData.SelectedFilePath), typeof(TXTv3), "*.txt");
         }
 
         public override bool Save()
         {
-            return OpenSaveFilesBase(Path.GetDirectoryName(AppData.SelectedFilePath), typeof(TXTv3), "*.txt");
+            return ProjectToolsOpenSave.OpenSaveFilesBase(this, Path.GetDirectoryName(AppData.SelectedFilePath), typeof(TXTv3), "*.txt");
         }
     }
 }

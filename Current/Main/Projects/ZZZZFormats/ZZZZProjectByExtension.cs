@@ -84,7 +84,7 @@ namespace TranslationHelper.Projects.ZZZZFormats
                 getAll = true;
             }
 
-            return OpenSaveFilesBase(new DirectoryInfo(dir), Format.GetType(), getAll ? "*" + ext : Path.GetFileName(Format.FilePath), false, searchOption: SearchOption.TopDirectoryOnly);
+            return ProjectToolsOpenSave.OpenSaveFilesBase(this, new DirectoryInfo(dir), Format.GetType(), getAll ? "*" + ext : Path.GetFileName(Format.FilePath), false, searchOption: SearchOption.TopDirectoryOnly);
         }
     }
 }

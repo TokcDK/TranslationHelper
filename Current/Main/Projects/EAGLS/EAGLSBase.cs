@@ -95,12 +95,12 @@ namespace TranslationHelper.Projects.EAGLS
 
         protected bool OpenFiles()
         {
-            return OpenSaveFilesBase(WorkTXTDir, typeof(SC_TXT), scriptsMask);
+            return ProjectToolsOpenSave.OpenSaveFilesBase(this, WorkTXTDir, typeof(SC_TXT), scriptsMask);
         }
 
         protected bool SaveFiles()
         {
-            return OpenSaveFilesBase(WorkTXTDir, typeof(SC_TXT), scriptsMask);
+            return ProjectToolsOpenSave.OpenSaveFilesBase(this, WorkTXTDir, typeof(SC_TXT), scriptsMask);
         }
 
         protected string SCPACKpak;

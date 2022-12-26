@@ -184,45 +184,6 @@ namespace TranslationHelper.Projects
         public abstract bool Save();
 
         /// <summary>
-        /// open or save project files
-        /// </summary>
-        /// <returns></returns>
-        protected bool OpenSaveFilesBase(string DirForSearch, List<Type> formatType, string[] masks = null, bool getNewestFiles = false)
-        {
-            return ProjectToolsOpenSave.OpenSaveFilesBase(this, new DirectoryInfo(DirForSearch), formatType, masks, getNewestFiles);
-        }
-
-        /// <summary>
-        /// open or save project files
-        /// </summary>
-        /// <returns></returns>
-        protected bool OpenSaveFilesBase(string DirForSearch, Type formatType, string mask = "*")
-        {
-            return ProjectToolsOpenSave.OpenSaveFilesBase(this, new DirectoryInfo(DirForSearch), formatType, mask);
-        }
-
-        /// <summary>
-        /// open save project files for several file formats/masks
-        /// </summary>
-        /// <param name="DirForSearch"></param>
-        /// <param name="format"></param>
-        /// <param name="masks"></param>
-        /// <returns></returns>
-        protected bool OpenSaveFilesBase(DirectoryInfo DirForSearch, List<Type> format, string[] masks = null, bool getNewestFiles = false)
-        {
-            return ProjectToolsOpenSave.OpenSaveFilesBase(this, DirForSearch, format, masks, getNewestFiles);
-        }
-
-        /// <summary>
-        /// open or save project files
-        /// </summary>
-        /// <returns></returns>
-        protected bool OpenSaveFilesBase(DirectoryInfo DirForSearch, Type formatType, string mask = "*", bool getNewestFiles = false, string[] exclusions = null, SearchOption searchOption = SearchOption.AllDirectories)
-        {
-            return ProjectToolsOpenSave.OpenSaveFilesBase(this, DirForSearch, formatType, mask, getNewestFiles);
-        }
-
-        /// <summary>
         /// Project folder name to locate files in DB and Work folders
         /// </summary>
         /// <returns></returns>
@@ -338,25 +299,6 @@ namespace TranslationHelper.Projects
 
         int mcArrNum;
 
-        /// <summary>
-        /// Path for selected game dir which is translating
-        /// </summary>
-        internal string SelectedGameDir;
-        /// <summary>
-        /// Path for selected dir where to translate.
-        /// In most causes it is game's dir.
-        /// </summary>
-        internal string SelectedDir;
-        /// <summary>
-        /// Path for selected dir where to translate.
-        /// In most causes it is game's dir.
-        /// </summary>
-        internal string OpenedFilesDir;
-        /// <summary>
-        /// Path to dir where project's files are located
-        /// </summary>
-        internal string ProjectWorkDir;
-
         internal string RestoreVARS(string str)
         {
             if (HideVARSMatchCollectionsList == null || HideVARSMatchCollectionsList.Count == 0 || !str.Contains("VAR") || HideVARSMatchCollectionsList[mcArrNum].Count == 0)
@@ -380,6 +322,25 @@ namespace TranslationHelper.Projects
             }
             return str;
         }
+
+        /// <summary>
+        /// Path for selected game dir which is translating
+        /// </summary>
+        internal string SelectedGameDir;
+        /// <summary>
+        /// Path for selected dir where to translate.
+        /// In most causes it is game's dir.
+        /// </summary>
+        internal string SelectedDir;
+        /// <summary>
+        /// Path for selected dir where to translate.
+        /// In most causes it is game's dir.
+        /// </summary>
+        internal string OpenedFilesDir;
+        /// <summary>
+        /// Path to dir where project's files are located
+        /// </summary>
+        internal string ProjectWorkDir;
 
         /// <summary>
         /// Project specific skip rules for Online Translation. Skip line when True

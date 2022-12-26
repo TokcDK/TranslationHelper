@@ -109,13 +109,13 @@ namespace TranslationHelper.Projects.RPGMMV
         {
             bool ret = false;
             var mvdatadir = new DirectoryInfo(Path.Combine(WWWDir, "data"));
-            if (OpenSaveFilesBase(mvdatadir, typeof(ExternMessageCSV), "*.csv")) ret = true;
+            if (ProjectToolsOpenSave.OpenSaveFilesBase(this, mvdatadir, typeof(ExternMessageCSV), "*.csv")) ret = true;
 
             mvdatadir = new DirectoryInfo(Path.Combine(mvdatadir.FullName, "tes"));
-            if (OpenSaveFilesBase(mvdatadir, typeof(JsonEventCommandsList), "*.json")) ret = true;
+            if (ProjectToolsOpenSave.OpenSaveFilesBase(this, mvdatadir, typeof(JsonEventCommandsList), "*.json")) ret = true;
 
             mvdatadir = new DirectoryInfo(Path.Combine(WWWDir, "scenarios"));
-            if (OpenSaveFilesBase(mvdatadir, typeof(StopCVPluginTXT), "*.txt")) ret = true;
+            if (ProjectToolsOpenSave.OpenSaveFilesBase(this, mvdatadir, typeof(StopCVPluginTXT), "*.txt")) ret = true;
 
             return ret;
         }
@@ -123,7 +123,7 @@ namespace TranslationHelper.Projects.RPGMMV
         protected virtual bool ParseJsons()
         {
             var mvdatadir = new DirectoryInfo(Path.GetDirectoryName(Path.Combine(WWWDir, "data/")));
-            return OpenSaveFilesBase(mvdatadir, MVJsonFormats(), MVJsonFormatsMasks());
+            return ProjectToolsOpenSave.OpenSaveFilesBase(this, mvdatadir, MVJsonFormats(), MVJsonFormatsMasks());
             //foreach (FileInfo file in mvdatadir.GetFiles("*.json")) try { if (ParseRPGMakerMVjson(file.FullName)) isAnyFileCompleted = true; } catch { }
         }
 

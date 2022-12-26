@@ -23,7 +23,7 @@ namespace TranslationHelper.Projects.IdolManager.Mod
 
             var infos = FileInfos(rootDir).Concat(ParamInfos(rootDir));
 
-            foreach (var info in infos) if (info.i.Exists && OpenSaveFilesBase(info.i.DirectoryName, info.t, mask: info.i.Name)) ret = true;
+            foreach (var info in infos) if (info.i.Exists && ProjectToolsOpenSave.OpenSaveFilesBase(this, info.i.DirectoryName, info.t, mask: info.i.Name)) ret = true;
 
             return ret;
         }

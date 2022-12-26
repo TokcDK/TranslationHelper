@@ -30,7 +30,7 @@ namespace TranslationHelper.Projects.WolfRPG
             var OrigFolder = Path.Combine(THSettings.WorkDirPath
                 , AppData.CurrentProject.ProjectDBFolderName                , Path.GetFileName(AppData.CurrentProject.SelectedGameDir));
             var patchdir = Path.Combine(OrigFolder, "patch");
-            bool[] b = new bool[2] { OpenSaveFilesBase(new DirectoryInfo(patchdir), typeof(Formats.WolfRPG.WolfTrans.TXT), "*.txt"), OpenSaveFilesBase(Path.Combine(AppData.CurrentProject.SelectedGameDir, "data", "Evtext"), typeof(Formats.WolfRPG.EvTextTXT), "*.txt") };
+            bool[] b = new bool[2] { ProjectToolsOpenSave.OpenSaveFilesBase(this, new DirectoryInfo(patchdir), typeof(Formats.WolfRPG.WolfTrans.TXT), "*.txt"), ProjectToolsOpenSave.OpenSaveFilesBase(this, Path.Combine(AppData.CurrentProject.SelectedGameDir, "data", "Evtext"), typeof(Formats.WolfRPG.EvTextTXT), "*.txt") };
             return b.Any(b1 => b1 == true);
         }
 

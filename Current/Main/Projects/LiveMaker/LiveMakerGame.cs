@@ -26,7 +26,7 @@ namespace TranslationHelper.Projects.LiveMaker
 
         public override bool Open()
         {
-            return ExtractRes() && OpenSaveFilesBase(Path.Combine(AppData.CurrentProject.ProjectWorkDir, "Extracted"), Format(), Mask(), false);
+            return ExtractRes() && ProjectToolsOpenSave.OpenSaveFilesBase(this, Path.Combine(AppData.CurrentProject.ProjectWorkDir, "Extracted"), Format(), Mask(), false);
         }
         protected List<System.Type> Format()
         {
@@ -159,7 +159,7 @@ namespace TranslationHelper.Projects.LiveMaker
 
         public override bool Save()
         {
-            return OpenSaveFilesBase(Path.Combine(AppData.CurrentProject.ProjectWorkDir, "Extracted"), Format(), Mask())
+            return ProjectToolsOpenSave.OpenSaveFilesBase(this, Path.Combine(AppData.CurrentProject.ProjectWorkDir, "Extracted"), Format(), Mask())
                 && WriteTranslation();
         }
 

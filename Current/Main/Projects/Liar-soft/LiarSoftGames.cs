@@ -47,7 +47,7 @@ namespace TranslationHelper.Projects.Liar_soft
             }
 
             //open or save txt/gsc
-            var ret = OpenSaveFilesBase(dir, typeof(GSCTXT), "*.txt");
+            var ret = ProjectToolsOpenSave.OpenSaveFilesBase(this, dir, typeof(GSCTXT), "*.txt");
 
             if(SaveFileMode && ret)
             {
