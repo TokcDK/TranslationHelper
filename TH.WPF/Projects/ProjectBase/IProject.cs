@@ -11,18 +11,18 @@
         /// Conditions to determine if the project can open selected file or folder
         /// </summary>
         /// <returns></returns>
-        bool IsValid();
+        bool IsValid(string selectedPath);
 
         /// <summary>
         /// Open actions for the project
         /// </summary>
         /// <returns></returns>
-        bool Open();
+        bool Open(string selectedPath);
 
         /// <summary>
         /// Save actions for the project
         /// </summary>
         /// <returns></returns>
-        bool Save();
+        bool Save(string selectedPath);
     }
 }

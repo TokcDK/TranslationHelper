@@ -6,17 +6,17 @@ namespace ProjectTest1
     {
         public string Title => "Test project 1";
 
-        public bool IsValid()
+        public bool IsValid(string selectedPath)
         {
             return true;
         }
 
-        public bool Open()
+        public bool Open(string selectedPath)
         {
             throw new NotImplementedException();
         }
 
-        public bool Save()
+        public bool Save(string selectedPath)
         {
             throw new NotImplementedException();
         }
