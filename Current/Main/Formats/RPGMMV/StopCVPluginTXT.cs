@@ -14,7 +14,10 @@ namespace TranslationHelper.Formats.RPGMMV
                 return KeywordActionAfter.Continue; // comment
             }
 
-            var t = $"{ParseData.Line}\r\n{string.Join("\r\n", GetLines())}";
+            var extraLines = string.Join("\r\n", GetLines());
+            if (!string.IsNullOrEmpty(extraLines)) extraLines = "\r\n" + extraLines;
+
+            var t = $"{ParseData.Line}{extraLines}";
             if (AddRowData(ref t) && SaveFileMode)
             {
                 ParseData.Line = t + "\r\n" + ParseData.Line;
