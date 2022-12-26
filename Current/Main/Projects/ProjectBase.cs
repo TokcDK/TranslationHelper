@@ -250,6 +250,8 @@ namespace TranslationHelper.Projects
             var filesList = getNewestFiles ? GetNewestFilesList(DirForSearch, mask) : DirForSearch.EnumerateFiles(mask, searchOption);
             Parallel.ForEach(filesList, file =>
             {
+                if (File.Exists(file.FullName + ".bak")) RestoreFile(file.FullName);
+
                 //skip exclusions
                 if (/*exclusions != null &&*/ file.FullName.ContainsAnyFromArray(exclusions)) return;
 
@@ -271,12 +273,13 @@ namespace TranslationHelper.Projects
                 {
                     if (OpenFileMode ? (isOpenSuccess = format.Open()) : format.Save()) ret = true;
                 }
-                catch (Exception ex)
-                { 
-                }
+                catch { }
 
                 // add to bak paths for default backup
-                if (OpenFileMode && isOpenSuccess && !BakPaths.Contains(file.FullName)) BakPaths.Add(file.FullName);
+                if (OpenFileMode && isOpenSuccess 
+                && !BakPaths.Contains(file.FullName)
+                && file.DirectoryName.IsAnyParentPathInTheList(BakPaths))
+                    BakPaths.Add(file.FullName);
             });
 
             AppData.Main.ProgressInfo(false);
