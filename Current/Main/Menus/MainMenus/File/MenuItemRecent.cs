@@ -24,6 +24,8 @@ namespace TranslationHelper.Menus.MainMenus.File
         /// </summary>
         internal static void UpdateRecentFiles()
         {
+            if (AppData.ConfigIni == null) return;
+
             string[] items;
             bool changed = false;
             if (!AppData.ConfigIni.SectionExistsAndNotEmpty("RecentFiles"))

@@ -6,6 +6,7 @@ using TranslationHelper.Menus;
 using TranslationHelper.Menus.FileRowMenus;
 using TranslationHelper.Menus.FilesListMenus;
 using TranslationHelper.Menus.MainMenus;
+using TranslationHelper.Menus.MainMenus.File;
 
 namespace TranslationHelper.Functions
 {
@@ -49,6 +50,8 @@ namespace TranslationHelper.Functions
                 mainMenus = mainMenus.Concat(proj.MainMenuItemMenusList);
             }
             AddMainMenus(AppData.Main.MainMenus.Items, mainMenus);
+
+            MenuItemRecent.UpdateRecentFiles();
         }
         internal static void CreateFilesListMenus()
         {

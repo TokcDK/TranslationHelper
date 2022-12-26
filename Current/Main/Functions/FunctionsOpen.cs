@@ -281,8 +281,6 @@ namespace TranslationHelper.Functions
             FunctionsMenus.CreateMainMenus();
             FunctionsMenus.CreateFilesListMenus();
 
-            MenuItemRecent.UpdateRecentFiles();
-
             AppData.CurrentProject.SelectedGameDir = GetCorrectedGameDIr(AppData.CurrentProject.SelectedGameDir);
 
             if (AppData.CurrentProject.Name.Contains("RPG Maker game with RPGMTransPatch") || AppData.CurrentProject.Name.Contains("KiriKiri game"))
