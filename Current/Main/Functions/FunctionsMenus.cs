@@ -37,33 +37,65 @@ namespace TranslationHelper.Functions
 
     internal static class FunctionsMenus
     {
-        internal static void CreateMenus()
+        internal static void CreateMainMenus()
         {
             var proj = AppData.CurrentProject;
             bool isProjOpen = proj != null;
 
-            var mainMenus = GetListOfSubClasses.Inherited.GetInterfaceImplimentations<IMainMenuItem>().Where(m => !(m is IProjectSpecifiedMenuItem));
+            var mainMenus = GetListOfSubClasses.Inherited.GetInterfaceImplimentations<IMainMenuItem>()
+                .Where(m => !(m is IProjectSpecifiedMenuItem));
             if (isProjOpen && proj.MainMenuItemMenusList != null && proj.MainMenuItemMenusList.Length > 0)
             {
                 mainMenus = mainMenus.Concat(proj.MainMenuItemMenusList);
             }
             AddMainMenus(AppData.Main.MainMenus.Items, mainMenus);
+        }
+        internal static void CreateFilesListMenus()
+        {
+            var proj = AppData.CurrentProject;
+            bool isProjOpen = proj != null;
 
             if (!isProjOpen) return;
 
-            var fileListMenus = GetListOfSubClasses.Inherited.GetInterfaceImplimentations<IFileListMenuItem>().Where(m => !(m is IProjectSpecifiedMenuItem));
+            var fileListMenus = GetListOfSubClasses.Inherited.GetInterfaceImplimentations<IFileListMenuItem>()
+                .Where(m => !(m is IProjectSpecifiedMenuItem));
             if (proj.FilesListItemMenusList != null && proj.FilesListItemMenusList.Length > 0)
             {
                 fileListMenus = fileListMenus.Concat(proj.FilesListItemMenusList);
             }
             AddMenus(AppData.Main.FilesListMenus.Items, fileListMenus);
+        }
 
-            var rowMenus = GetListOfSubClasses.Inherited.GetInterfaceImplimentations<IFileRowMenuItem>().Where(m => !(m is IProjectSpecifiedMenuItem));
+        internal static void CreateFileRowMenus()
+        {
+            var proj = AppData.CurrentProject;
+            bool isProjOpen = proj != null;
+
+            if (!isProjOpen) return;
+
+            bool isCached = proj.RowMenusCache != null;
+            if (!isCached)
+            {
+                CreateMainMenus();
+                CreateFilesListMenus();
+            }
+
+            var rowMenus = isCached ? proj.RowMenusCache : 
+                (proj.RowMenusCache = GetListOfSubClasses.Inherited.GetInterfaceImplimentations<IFileRowMenuItem>()
+                .Where(m => !(m is IProjectSpecifiedMenuItem)).ToArray());
             if (proj.FileRowItemMenusList != null && proj.FileRowItemMenusList.Length > 0)
             {
-                rowMenus = rowMenus.Concat(proj.FileRowItemMenusList);
+                proj.RowMenusCache = proj.RowMenusCache.Concat(proj.FileRowItemMenusList).ToArray();
             }
-            AddMenus(AppData.Main.RowMenus.Items, rowMenus);
+            AddMenus(AppData.Main.RowMenus.Items, proj.RowMenusCache);
+        }
+        internal static void CreateMenus()
+        {
+            CreateMainMenus();
+
+            CreateFilesListMenus();
+
+            CreateFileRowMenus();
         }
 
         private static void AddMenus(ToolStripItemCollection menuItems, IEnumerable<IMenuItem> menusData)

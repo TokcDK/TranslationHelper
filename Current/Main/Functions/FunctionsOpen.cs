@@ -278,7 +278,8 @@ namespace TranslationHelper.Functions
                 }
             }
 
-            FunctionsMenus.CreateMenus();
+            FunctionsMenus.CreateMainMenus();
+            FunctionsMenus.CreateFilesListMenus();
 
             MenuItemRecent.UpdateRecentFiles();
 

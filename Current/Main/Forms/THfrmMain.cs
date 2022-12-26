@@ -49,7 +49,7 @@ namespace TranslationHelper
             AppSettings.ApplicationProductName = Application.ProductName;
             AppSettings.NewLine = Environment.NewLine;
 
-            FunctionsMenus.CreateMenus();
+            FunctionsMenus.CreateMainMenus();
 
             FunctionsHotkeys.BindShortCuts();
 
@@ -311,7 +311,7 @@ namespace TranslationHelper
 
                 UpdateTextboxes();
 
-                FunctionsMenus.CreateMenus();
+                FunctionsMenus.CreateFileRowMenus();
 
                 // bind textboxes to cells
                 AppData.Main.THSourceRichTextBox.DataBindings.Clear();

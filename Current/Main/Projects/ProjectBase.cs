@@ -763,5 +763,10 @@ namespace TranslationHelper.Projects
                                                                                                                  /// </summary>
                                                                                                                  /// <returns></returns>
         internal virtual IFileRowMenuItem[] FileRowItemMenusList => Array.Empty<IFileRowMenuItem>();
+
+        /// <summary>
+        /// Row menus cache for project to not search them each time
+        /// </summary>
+        public IFileRowMenuItem[] RowMenusCache { get; internal set; } = null;
     }
 }
