@@ -10,7 +10,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		.editorconfig = .editorconfig
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GetListOfSubClasses", "K:\0GIT\[TokcDK]\LC\LibsCollection\GetListOfSubClasses\GetListOfSubClasses.csproj", "{FD599904-9718-4FAF-A7B0-48F5D1BE39E0}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GetListOfSubClasses", "K:\0GIT\[TokcDK]\LC\LibsCollection\Net4\GetListOfSubClasses\GetListOfSubClasses.csproj", "{FD599904-9718-4FAF-A7B0-48F5D1BE39E0}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Using", "Using", "{82EBA20C-9643-4BDE-91E1-9F800109A39C}"
 EndProject
@@ -34,7 +34,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "THCore", "THCore\THCore.csp
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Current", "Current", "{FF5D029E-60F0-45E0-AF24-985FC27812BB}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CheckForEmptyDir", "K:\0GIT\[TokcDK]\LC\LibsCollection\CheckForEmptyDir\CheckForEmptyDir.csproj", "{636976FE-5FFE-4E17-BCB1-7B858A78A8A3}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CheckForEmptyDir", "K:\0GIT\[TokcDK]\LC\LibsCollection\Net4\CheckForEmptyDir\CheckForEmptyDir.csproj", "{636976FE-5FFE-4E17-BCB1-7B858A78A8A3}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "WPF", "WPF", "{CAEFDE73-0A8F-4FE7-B016-FCBA9400D255}"
 EndProject
