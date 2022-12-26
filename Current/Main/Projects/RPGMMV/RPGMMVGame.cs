@@ -52,13 +52,12 @@ namespace TranslationHelper.Projects.RPGMMV
         }
         internal override bool LineSplitProjectSpecificSkipForLine(string o, string t, int tind = -1, int rind = -1)
         {
-            if (tind != -1 && rind != -1)
+            if (tind == -1 || rind == -1) return false;
+
+            string cell = AppData.CurrentProject.FilesContentInfo.Tables[tind].Rows[rind][0] + string.Empty;
+            if (cell.Contains("Code=655") || cell.Contains("Code=355") /*|| ProjectData.THFilesElementsDataset.Tables[tind].TableName.ToUpperInvariant().EndsWith(".JS")*/)
             {
-                string cell = AppData.CurrentProject.FilesContentInfo.Tables[tind].Rows[rind][0] + string.Empty;
-                if (cell.Contains("Code=655") || cell.Contains("Code=355") /*|| ProjectData.THFilesElementsDataset.Tables[tind].TableName.ToUpperInvariant().EndsWith(".JS")*/)
-                {
-                    return true;
-                }
+                return true;
             }
             return false;
         }
@@ -97,7 +96,7 @@ namespace TranslationHelper.Projects.RPGMMV
                 if (ParseJsons()) isAnyFileCompleted = true;
 
                 //other strings
-                if (ParseOther()) isAnyFileCompleted = true;
+                if (ParsePluginsStrings()) isAnyFileCompleted = true;
             }
             catch { }
 
@@ -105,10 +104,16 @@ namespace TranslationHelper.Projects.RPGMMV
             return isAnyFileCompleted;
         }
 
-        private bool ParseOther()
+        private bool ParsePluginsStrings()
         {
+            bool ret = false;
             var mvdatadir = new DirectoryInfo(Path.GetDirectoryName(Path.Combine(WWWDir, "data/")));
-            return OpenSaveFilesBase(mvdatadir, typeof(ExternMessageCSV), "*.csv");
+            if (OpenSaveFilesBase(mvdatadir, typeof(ExternMessageCSV), "*.csv")) ret = true;
+
+            mvdatadir = new DirectoryInfo(Path.Combine(WWWDir, "scenarios"));
+            if (OpenSaveFilesBase(mvdatadir, typeof(StopCVPluginTXT), "*.txt")) ret = true;
+
+            return ret;
         }
 
         protected virtual bool ParseJsons()
