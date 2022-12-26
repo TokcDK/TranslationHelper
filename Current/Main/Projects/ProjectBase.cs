@@ -278,7 +278,7 @@ namespace TranslationHelper.Projects
                 // add to bak paths for default backup
                 if (OpenFileMode && isOpenSuccess 
                 && !BakPaths.Contains(file.FullName)
-                && file.DirectoryName.IsAnyParentPathInTheList(BakPaths))
+                && !file.DirectoryName.IsAnyParentPathInTheList(BakPaths))
                     BakPaths.Add(file.FullName);
             });
 
