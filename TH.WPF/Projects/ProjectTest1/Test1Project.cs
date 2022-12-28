@@ -1,4 +1,5 @@
-﻿using ProjectBase;
+﻿using FormatBase;
+using ProjectBase;
 
 namespace ProjectTest1
 {
@@ -6,17 +7,19 @@ namespace ProjectTest1
     {
         public string Title => "Test project 1";
 
-        public bool IsValid(string selectedPath)
-        {
-            return true;
-        }
+        public List<FileData>? Files => null;
 
-        public bool Open(string selectedPath)
+        public bool IsValid(FileInfo selectedFilePath)
         {
             throw new NotImplementedException();
         }
 
-        public bool Save(string selectedPath)
+        public bool TryOpen(FileInfo selectedFilePath)
+        {
+            throw new NotImplementedException();
+        }
+
+        public bool TrySave()
         {
             throw new NotImplementedException();
         }
