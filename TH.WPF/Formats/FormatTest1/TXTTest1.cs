@@ -10,12 +10,12 @@ namespace FormatTest1
 
         public List<StringData> StringsList => new List<StringData>();
 
-        public bool Open(FileInfo Path)
+        public bool TryOpen(FileInfo Path)
         {
             throw new NotImplementedException();
         }
 
-        public bool Save(FileInfo Path)
+        public bool TrySave(FileInfo Path)
         {
             throw new NotImplementedException();
         }

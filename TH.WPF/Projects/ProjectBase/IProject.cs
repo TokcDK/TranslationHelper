@@ -34,7 +34,7 @@ namespace ProjectBase
         /// <summary>
         /// Result list of files with strings
         /// </summary>
-        List<FileData>? Files { get; }
+        List<FileData>? FilesList { get; }
     }
 
     public class FileData

@@ -7,7 +7,7 @@ namespace ProjectTest1
     {
         public string Title => "Test project 1";
 
-        public List<FileData>? Files => null;
+        public List<FileData>? FilesList => null;
 
         public bool IsValid(FileInfo selectedFilePath)
         {

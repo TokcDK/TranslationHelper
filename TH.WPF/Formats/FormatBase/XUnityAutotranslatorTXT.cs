@@ -9,7 +9,7 @@
         public List<StringData> StringsList => new();
 
         FileInfo? OpenPath;
-        public bool Open(FileInfo Path)
+        public bool TryOpen(FileInfo Path)
         {
             OpenPath = Path;
 
@@ -53,7 +53,7 @@
             }
         }
 
-        public bool Save(FileInfo Path)
+        public bool TrySave(FileInfo Path)
         {
             if (OpenPath == null) return false;
             if (!OpenPath.Exists) return false;
