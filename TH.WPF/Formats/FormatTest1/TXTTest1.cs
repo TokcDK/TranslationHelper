@@ -10,6 +10,11 @@ namespace FormatTest1
 
         protected override ParseLineRetType ParseLine()
         {
+            if (Line!.StartsWith('@')) return ParseLineRetType.Continue; // command
+            if (Line.StartsWith('#')) return ParseLineRetType.Continue; // comment
+
+            Add(Line);
+
             return ParseLineRetType.Continue;
         }
     }
