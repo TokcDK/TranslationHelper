@@ -8,10 +8,8 @@ namespace FormatTest1
 
         public override string Description => "test format 1";
 
-        protected override ParseLineRetType ParseLine(string? line)
+        protected override ParseLineRetType ParseLine()
         {
-
-
             return ParseLineRetType.Continue;
         }
     }
