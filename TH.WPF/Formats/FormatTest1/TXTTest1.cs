@@ -15,7 +15,7 @@ namespace FormatTest1
             throw new NotImplementedException();
         }
 
-        public bool TrySave(FileInfo Path)
+        public bool TrySave(FileInfo? Path)
         {
             throw new NotImplementedException();
         }

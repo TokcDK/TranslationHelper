@@ -1,4 +1,5 @@
 ﻿using FormatBase;
+using FormatTest1;
 using ProjectBase;
 
 namespace ProjectTest1
@@ -11,17 +12,20 @@ namespace ProjectTest1
 
         public bool IsValid(FileInfo selectedFilePath)
         {
-            throw new NotImplementedException();
+            return string.Equals(selectedFilePath.Extension, ".txt", StringComparison.InvariantCultureIgnoreCase);
         }
 
+        TXTTest1? _f;
         public bool TryOpen(FileInfo selectedFilePath)
         {
-            throw new NotImplementedException();
+            _f = new TXTTest1();
+            var b = _f.TryOpen(selectedFilePath);
+            return b && _f.StringsList != null && f.StringsList.Count > 0;
         }
 
         public bool TrySave()
         {
-            throw new NotImplementedException();
+            return _f != null && _f.TrySave(null);
         }
     }
 }

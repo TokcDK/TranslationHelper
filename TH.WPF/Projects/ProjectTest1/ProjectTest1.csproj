@@ -7,6 +7,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\Formats\FormatTest1\FormatTest1.csproj" />
     <ProjectReference Include="..\ProjectBase\ProjectBase.csproj" />
   </ItemGroup>
 
