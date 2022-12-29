@@ -18,13 +18,13 @@
         /// Open actions to parse file with this parser
         /// </summary>
         /// <returns></returns>
-        bool TryOpen(FileInfo Path);
+        bool TryOpen(FileInfo sourceFileIfo);
 
         /// <summary>
-        /// Save actions to parse file with this parser. Save also have path for case if need to save to specific path.
+        /// Save actions to parse file with this parser. Save also have path for case if need to save to specific path not equal to <seealso cref="TryOpen(FileInfo)"/>.
         /// </summary>
         /// <returns></returns>
-        bool TrySave(FileInfo? Path);
+        bool TrySave(FileInfo? targetFileInfo);
 
         // out
         /// <summary>
