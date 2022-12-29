@@ -1,6 +1,7 @@
 ﻿namespace FormatBase
 {
     // in: path to file to try parse
+    // out: list of extracted strings
     public interface IFormat
     {
         /// <summary>
@@ -25,6 +26,7 @@
         /// <returns></returns>
         bool TrySave(FileInfo? Path);
 
+        // out
         /// <summary>
         /// List of strings
         /// </summary>
