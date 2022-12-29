@@ -51,7 +51,7 @@
 
         protected string? ReadLine()
         {
-            return Line = ReadLine();
+            return Line = SR!.ReadLine();
         }
 
         protected virtual bool ParseLines(StreamReader sr)
