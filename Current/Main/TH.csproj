@@ -341,7 +341,6 @@
     <Compile Include="Functions\FunctionsOnlineCache.cs" />
     <Compile Include="Functions\FunctionsSounds.cs" />
     <Compile Include="Functions\FunctionsStringsFixes.cs" />
-    <Compile Include="appSettings\AppSettings.cs" />
     <Compile Include="appSettings\Sections\General\CheckBox\SAutotranslationForSimular.cs" />
     <Compile Include="appSettings\SettingsBase.cs" />
     <Compile Include="appSettings\Sections\Tools\Tools.cs" />

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
 using System.Text.RegularExpressions;
+using TranslationHelper.Data;
 
 namespace TranslationHelper.Formats.RPGMMV
 {
@@ -90,7 +91,7 @@ namespace TranslationHelper.Formats.RPGMMV
                 return ParseData.Ret;
             }
 
-            var targetFontsDirPath = Path.Combine(Data.AppData.CurrentProject.SelectedGameDir, "www", "Fonts");
+            var targetFontsDirPath = Path.Combine(AppData.CurrentProject.SelectedGameDir, "www", "Fonts");
 
             if (!Directory.Exists(Path.GetDirectoryName(targetFontsDirPath))) return ParseData.Ret;
 
