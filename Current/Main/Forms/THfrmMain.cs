@@ -569,9 +569,7 @@ namespace TranslationHelper
                 //THInfoTextBox.Text += furigana.Hiragana + "\r\n";
                 //THInfoTextBox.Text += furigana.ReadingHtml + "\r\n";
             }
-            catch (Exception ex)
-            {
-            }
+            catch { }
         }
 
         private void UpdateRowInfo(int tableIndex, int columnIndex, int rowIndex)
@@ -581,6 +579,8 @@ namespace TranslationHelper
             {
                 return;
             }
+
+            THInfoTextBox.Text = string.Empty;
 
             if (AppData.CurrentProject.FilesContentInfo != null && AppData.CurrentProject.FilesContentInfo.Tables.Count > tableIndex && AppData.CurrentProject.FilesContentInfo.Tables[tableIndex].Rows.Count > rowIndex)
             {
