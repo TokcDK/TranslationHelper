@@ -1715,27 +1715,20 @@ namespace TranslationHelper
         /// </summary>
         private void ReselectCellSelectedBeforeSorting()
         {
-            if (SelectedRowRealIndex > -1)
+            if (SelectedRowRealIndex == -1) return;
+
+            int fileIndex = AppSettings.THFilesListSelectedIndex;
+            foreach (DataGridViewRow row in THFileElementsDataGridView.Rows)
             {
-                foreach (DataGridViewRow row in THFileElementsDataGridView.Rows)
-                {
-                    int rowindex;
-                    int realrowindex;
-                    //int i = AppSettings.DGVSelectedRowIndex;
-                    //int r = AppSettings.DGVSelectedRowRealIndex;
-                    if (SelectedRowRealIndex ==
-                        (realrowindex = FunctionsTable.GetDGVSelectedRowIndexInDatatable(
-                        AppSettings.THFilesListSelectedIndex,
-                        rowindex = row.Index))
-                        )
-                    {
-                        FunctionsTable.ShowSelectedRow(THFilesList.GetSelectedIndex(), AppSettings.DGVSelectedColumnIndex, rowindex);
-                        AppSettings.DGVSelectedRowIndex = rowindex;
-                        AppSettings.DGVSelectedRowRealIndex = realrowindex;
-                        SelectedRowRealIndex = realrowindex;
-                        break;
-                    }
-                }
+                int realrowindex = FunctionsTable.GetDGVSelectedRowIndexInDatatable(fileIndex, row.Index);
+                if (SelectedRowRealIndex != realrowindex) continue;
+
+                int rowindex;
+                AppSettings.DGVSelectedRowIndex = rowindex = row.Index;
+                AppSettings.DGVSelectedRowRealIndex = realrowindex;
+                FunctionsTable.ShowSelectedRow(THFilesList.GetSelectedIndex(), AppSettings.DGVSelectedColumnIndex, rowindex);
+                SelectedRowRealIndex = realrowindex;
+                break;
             }
         }
 
