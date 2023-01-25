@@ -74,7 +74,7 @@ namespace TranslationHelper.Formats.NScriptGame.nscript.dat
                             if (SetTranslation(ref trans) && !string.IsNullOrEmpty(trans) && str != trans)
                             {
                                 int ind;
-                                array[i] = array[i].Remove(ind = array[i].IndexOf(str), str.Length).Insert(ind, FixInvalidSymbols('`' + trans + '`'));
+                                array[i] = array[i].Remove(ind = array[i].IndexOf(str), str.Length).Insert(ind, FixInvalidSymbols(trans));
                             }
                         }
                     }
@@ -124,7 +124,7 @@ namespace TranslationHelper.Formats.NScriptGame.nscript.dat
                 //.Replace("8", "８")
                 //.Replace("9", "９")
                 ;
-            return str;
+            return '`' + str + '`';
         }
 
         protected override string AddRowDataPreAddOriginalStringMod(string str)
@@ -136,14 +136,12 @@ namespace TranslationHelper.Formats.NScriptGame.nscript.dat
         {
             return new List<ParsePatternData>()
             {
-                new ParsePatternData( @"\[([^\]]+)\]「[^」]+」" ),
-                new ParsePatternData( @"\[[^\]]+\]「([^」]+)」" ),
-                //{"csel",@"\""([^\""]+)\"",\*[^a-z0-9_]+" },
-                //{"*",@"\""([^\""]+)\"",\*[^a-z0-9_]+" },
-                new ParsePatternData( @"\""([^\%\$\:\,\+/\n\\\""]+)\""" ),
-                //if %tekihei_04 > 0 && %dame04 = 0 : dwave 1,"sound\se-miss.wav" :　――ミス！　$194にダメージを与えられない！\ : goto *tekidame_yoke00
-                new ParsePatternData( @":([^\n\"",><;:\\]+)\\" ),
+                new ParsePatternData( @"csel \""([^\""]+)\""", info: "selection" ),
                 new ParsePatternData( @"if (( && )?\%[^\=\>\<]+[\=\>\<]+[0-9a-zA-Z\""\']+)+ ([^\&a-zA-Z].+)", group: 3 ),
+                new ParsePatternData( @"\[([^\]]+)\]「[^」]+」", info: "speaker name" ),
+                new ParsePatternData( @"\[[^\]]+\]「([^」]+)」", info: "speaker's text" ),
+                new ParsePatternData( @"\""([^\%\$\:\,\+/\n\\\""]+)\""", info: "quoted string" ),
+                new ParsePatternData( @":([^\n\"",><;:\\]+)\\", info: "any text" ),
             };
         }
 
