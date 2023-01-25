@@ -4,7 +4,6 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using TranslationHelper.Data;
 using TranslationHelper.Extensions;
-using TranslationHelper.Main.Functions;
 
 namespace TranslationHelper.Formats.NScriptGame.nscript.dat
 {
@@ -70,7 +69,7 @@ namespace TranslationHelper.Formats.NScriptGame.nscript.dat
                         }
                         else
                         {
-                            var trans=str;
+                            var trans = str;
                             if (SetTranslation(ref trans) && !string.IsNullOrEmpty(trans) && str != trans)
                             {
                                 int ind;
@@ -124,7 +123,7 @@ namespace TranslationHelper.Formats.NScriptGame.nscript.dat
                 //.Replace("8", "８")
                 //.Replace("9", "９")
                 ;
-            return '`' + str + '`';
+            return (str.StartsWith("`") ? "" : "`") + str + (str.EndsWith("`") ? "" : "`");
         }
 
         protected override string AddRowDataPreAddOriginalStringMod(string str)
