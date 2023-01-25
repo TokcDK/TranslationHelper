@@ -15,7 +15,7 @@ namespace TranslationHelper.tests
                 f.Filter = "dat|*.dat";
 
                 if (f.ShowDialog() != DialogResult.OK) return;
-                if (string.Equals(Path.GetExtension(f.FileName), ".dat"
+                if (!string.Equals(Path.GetExtension(f.FileName), ".dat"
                     , StringComparison.InvariantCultureIgnoreCase)) return;
 
                 var nscripttxt = Encoding.GetEncoding(932).GetString(File.ReadAllBytes(f.FileName).XorUnxor())/*.Replace("\n", Environment.NewLine)*/;
@@ -31,7 +31,7 @@ namespace TranslationHelper.tests
                 f.Filter = "txt|*.txt";
 
                 if (f.ShowDialog() != DialogResult.OK) return;
-                if (string.Equals(Path.GetExtension(f.FileName), ".txt"
+                if (!string.Equals(Path.GetExtension(f.FileName), ".txt"
                     , StringComparison.InvariantCultureIgnoreCase)) return;
 
                 var filecontent = File.ReadAllText(f.FileName, Encoding.GetEncoding(932));
