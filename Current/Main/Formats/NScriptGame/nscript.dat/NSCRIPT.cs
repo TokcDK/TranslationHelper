@@ -110,7 +110,9 @@ namespace TranslationHelper.Formats.NScriptGame.nscript.dat
                 .Replace(".", "。")
                 .Replace(",", "、")
                 .Replace('+', '＋')
-                .Replace("\"", "")
+                .Replace('+', '＋')
+                .Replace("@", "")
+                .Replace("/", "")
                 //.Replace("0", "０")
                 //.Replace("1", "１")
                 //.Replace("2", "２")
@@ -140,7 +142,8 @@ namespace TranslationHelper.Formats.NScriptGame.nscript.dat
                 //{"*",@"\""([^\""]+)\"",\*[^a-z0-9_]+" },
                 {"\"",@"\""([^\%\$\:\,\+/\n\\\""]+)\""" },
                 //if %tekihei_04 > 0 && %dame04 = 0 : dwave 1,"sound\se-miss.wav" :　――ミス！　$194にダメージを与えられない！\ : goto *tekidame_yoke00
-                {":",@":([^\n\"",><;:\\]+)\\" }
+                {":",@":([^\n\"",><;:\\]+)\\" },
+                {"if ","" }
 
             };
         }
