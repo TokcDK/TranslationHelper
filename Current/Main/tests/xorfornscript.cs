@@ -11,6 +11,9 @@ namespace TranslationHelper.tests
         {
             using (var f = new OpenFileDialog())
             {
+                f.Title = "Select nscript.dat";
+                f.Filter = "dat|*.dat";
+
                 if (f.ShowDialog() != DialogResult.OK) return;
                 if (string.Equals(Path.GetExtension(f.FileName), ".dat"
                     , StringComparison.InvariantCultureIgnoreCase)) return;
@@ -25,6 +28,7 @@ namespace TranslationHelper.tests
             using (var f = new OpenFileDialog())
             {
                 f.Title = "Select nscript.dat.txt";
+                f.Filter = "txt|*.txt";
 
                 if (f.ShowDialog() != DialogResult.OK) return;
                 if (string.Equals(Path.GetExtension(f.FileName), ".txt"
