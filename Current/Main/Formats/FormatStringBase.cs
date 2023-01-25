@@ -256,6 +256,8 @@ namespace TranslationHelper.Formats
                     var trans = str;
                     if (IsValidString(str) && SetTranslation(ref trans) && trans != str)
                     {
+                        trans = FixInvalidSymbols(trans);
+
                         ParseData.Line = ParseData.Line.Remove(mc[m].Index, mc[m].Value.Length).Insert(mc[m].Index, mc[m].Value.Replace(str, FixInvalidSymbols(trans)));
                         ParseData.Ret = true;
                         IsSet = true;

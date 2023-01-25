@@ -685,9 +685,9 @@ namespace TranslationHelper.Formats
             {
                 var currentTableName = FileName;
                 var pretranslatedOriginal = valueToTranslate;
-                if (AppData.CurrentProject.OriginalsTableRowCoordinates[valueToTranslate].ContainsKey(currentTableName))
+                if (AppData.CurrentProject.OriginalsTableRowCoordinates[valueToTranslate].TryGetValue(currentTableName, out var table))
                 {
-                    if (AppData.CurrentProject.OriginalsTableRowCoordinates[valueToTranslate][currentTableName].Contains(RowNumber))
+                    if (table.Contains(RowNumber))
                     {
                         isTranslated = SetIfTranslated(currentTableName, RowNumber, pretranslatedOriginal, existsTranslation, ref valueToTranslate);
 
@@ -697,7 +697,7 @@ namespace TranslationHelper.Formats
                     {
                         AppData.AppLog.LogToFile("Warning! Row not found. row number=" + RowNumber + ". table name=" + FileName + ".valueToTranslate:\r\n" + valueToTranslate + "\r\nexistsTranslation:\r\n" + existsTranslation);
 
-                        foreach (var rowIndex in AppData.CurrentProject.OriginalsTableRowCoordinates[valueToTranslate][currentTableName])
+                        foreach (var rowIndex in table)
                         {
                             isTranslated = SetIfTranslated(currentTableName, rowIndex, pretranslatedOriginal, existsTranslation, ref valueToTranslate);
 

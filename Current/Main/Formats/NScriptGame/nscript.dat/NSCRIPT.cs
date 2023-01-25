@@ -95,6 +95,8 @@ namespace TranslationHelper.Formats.NScriptGame.nscript.dat
 
         protected override string FixInvalidSymbols(string str)
         {
+            str = base.FixInvalidSymbols(str);
+
             str = str
                 .Replace('[', '【')
                 .Replace(']', '】')
@@ -103,10 +105,12 @@ namespace TranslationHelper.Formats.NScriptGame.nscript.dat
                 //.Replace("'", "`")
                 .Replace("!", "！")
                 .Replace("?", "？")
+                .Replace("?", "？")
                 .Replace(';', '；')
                 .Replace(':', '：')
                 .Replace('*', '＊')
                 .Replace(".", "。")
+                .Replace("'", "")
                 .Replace(",", "、")
                 .Replace('+', '＋')
                 .Replace('+', '＋')
