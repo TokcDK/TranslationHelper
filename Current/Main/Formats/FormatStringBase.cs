@@ -184,7 +184,7 @@ namespace TranslationHelper.Formats
         /// <returns></returns>
         protected bool ParsePattern(string pattern)
         {
-            return ParsePattern(new KeyValuePair<string, string>("", pattern), false);
+            return ParsePattern(new ParsePatternData(pattern));
         }
 
         /// <summary>
@@ -192,9 +192,23 @@ namespace TranslationHelper.Formats
         /// first string = string which line contains. 
         /// second string = regex patter from which will be get/set first element $1
         /// </summary>
-        protected virtual Dictionary<string, string> Patterns()
+        protected virtual List<ParsePatternData> Patterns()
         {
-            return new Dictionary<string, string>();
+            return new List<ParsePatternData>();
+        }
+
+        public class ParsePatternData
+        {
+            public ParsePatternData(string pattern, int group = 1, string info = "")
+            {
+                Pattern = pattern;
+                Group = group;
+                Info = info;
+            }
+
+            public string Info { get; }
+            public string Pattern { get; set; }
+            public int Group { get; set; } = 1;
         }
 
         /// <summary>
@@ -215,14 +229,14 @@ namespace TranslationHelper.Formats
         /// </summary>
         /// <param name="pattern">Key - Part of line for find in line, Value - regex pattern</param>
         /// <returns></returns>
-        protected bool ParsePattern(KeyValuePair<string, string> pattern, bool useInlineSearch = true)
+        protected bool ParsePattern(ParsePatternData pattern)
         {
-            if (useInlineSearch && ParseData.Line.IndexOf(pattern.Key) == -1 || !Regex.IsMatch(ParseData.Line, pattern.Value, RegexOptions.Compiled))
+            if (!Regex.IsMatch(ParseData.Line, pattern.Pattern, RegexOptions.Compiled))
             {
                 return false;
             }
 
-            var mc = Regex.Matches(ParseData.Line, pattern.Value, RegexOptions.Compiled);
+            var mc = Regex.Matches(ParseData.Line, pattern.Pattern, RegexOptions.Compiled);
             if (mc.Count <= 0) return false;
 
             var IsSet = false;
@@ -230,15 +244,15 @@ namespace TranslationHelper.Formats
             {
                 foreach (Match m in mc)
                 {
-                    var str = m.Result("$1");
-                    IsSet = AddRowData(str, useInlineSearch ? pattern.Key : T._("Extracted with") + ":" + pattern.Value, isCheckInput: true);
+                    var str = m.Groups[pattern.Group].Value;
+                    IsSet = AddRowData(str, pattern.Info, isCheckInput: true);
                 }
             }
             else
             {
                 for (int m = mc.Count - 1; m >= 0; m--)
                 {
-                    var str = mc[m].Result("$1");
+                    var str = mc[m].Groups[pattern.Group].Value;
                     var trans = str;
                     if (IsValidString(str) && SetTranslation(ref trans) && trans != str)
                     {

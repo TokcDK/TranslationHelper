@@ -74,7 +74,7 @@ namespace TranslationHelper.Formats.NScriptGame.nscript.dat
                             if (SetTranslation(ref trans) && !string.IsNullOrEmpty(trans) && str != trans)
                             {
                                 int ind;
-                                array[i] = array[i].Remove(ind = array[i].IndexOf(str), str.Length).Insert(ind, '`' + FixInvalidSymbols(trans) + '`');
+                                array[i] = array[i].Remove(ind = array[i].IndexOf(str), str.Length).Insert(ind, FixInvalidSymbols('`' + trans + '`'));
                             }
                         }
                     }
@@ -132,17 +132,18 @@ namespace TranslationHelper.Formats.NScriptGame.nscript.dat
             return (str = str.TrimEnd()).EndsWith("\\") ? str.Remove(str.Length - 1, 1) : str;
         }
 
-        protected override Dictionary<string, string> Patterns()
+        protected override List<ParsePatternData> Patterns()
         {
-            return new Dictionary<string, string>
+            return new List<ParsePatternData>()
             {
-                {"[",@"\[([^\]]+)\]「[^」]+」" },
-                {"」",@"\[[^\]]+\]「([^」]+)」" },
+                new ParsePatternData( @"\[([^\]]+)\]「[^」]+」" ),
+                new ParsePatternData( @"\[[^\]]+\]「([^」]+)」" ),
                 //{"csel",@"\""([^\""]+)\"",\*[^a-z0-9_]+" },
                 //{"*",@"\""([^\""]+)\"",\*[^a-z0-9_]+" },
-                {"\"",@"\""([^\%\$\:\,\+/\n\\\""]+)\""" },
+                new ParsePatternData( @"\""([^\%\$\:\,\+/\n\\\""]+)\""" ),
                 //if %tekihei_04 > 0 && %dame04 = 0 : dwave 1,"sound\se-miss.wav" :　――ミス！　$194にダメージを与えられない！\ : goto *tekidame_yoke00
-                {":",@":([^\n\"",><;:\\]+)\\" }
+                new ParsePatternData( @":([^\n\"",><;:\\]+)\\" ),
+                new ParsePatternData( @"if (( && )?\%[^\=\>\<]+[\=\>\<]+[0-9a-zA-Z\""\']+)+ ([^\&a-zA-Z].+)", group: 3 ),
             };
         }
 

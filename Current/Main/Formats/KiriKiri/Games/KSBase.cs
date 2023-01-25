@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using System.Text.RegularExpressions;
 using TranslationHelper.Data;
 
@@ -14,72 +15,41 @@ namespace TranslationHelper.Formats.KiriKiri.Games
 
         protected const string waitSymbol = "[待]";
         protected const string newlineSymbol = "[落]";
-        protected override Dictionary<string, string> Patterns()
+        protected override List<ParsePatternData> Patterns()
         {
-            return new Dictionary<string, string>()
-           {
-            { "*", //*prologue1|プロローグ
-                @"^\*[^\|]+\|(.+)$" },
-            { "tf.gameText[", //	tf.gameText[608] = "トータルスコア : %d point";
-                @"\s*tf\.gameText\[[ 0-9]{1,5}\] \= \""([^\""]+)\""\;\s*(\/\/.+)?" },
-            { "drawText", //.drawText(730, 314, "出入口", 0xFFFFFF) , .drawText(15, 14, "お名前（任意）", clBtnText)
-                @"\.drawText\([^,]+, [^,]+, \""([^\""]+)\""[^,]*, [^\)]+\)" },
-            { "caption", //caption = "text"
-                @"caption \= \""([^\""]{1,30})\""" },
-            { "KAGMenu",
-                @"new KAGMenuItem\([^,]+, \""([^\""]+)\""[^,]*," },
-            { "KAGMenuItem",
-                @"new KAGMenuItem\([^,]+, '([^']+)'[^,]*," },
-            { "helpText",
-                @"helpText\[[0-9]{1,5}\] \= \""([^\""]+)\""" },
-            { " emb=",
-                @" emb\=\""([^\""]{1,260})\""" },
-            { "drawGpWindow",
-                @"\[eval exp\=\""drawGpWindow\([^']*'([^']+)'[^\""]*\""\]" },
-            { "drawAnswer",
-                @"\[eval exp\=\""drawAnswer\('([^']+)',[^\""]*\""\]" },
-            { "useSkillEffect",
-                @"\[eval exp\=\""useSkillEffect\('([^']+)'" },
-            { "\"name\"=>\"",
-                @"\""name\""\=>\""([^\""]+)\""" },
-            { "name",
-                @"\[[A-Za-z_]+ name \= \""([^\""\]]+)\""\]" },
-            { "\"explanation\"=>\"",
-                @"\""explanation\""\=>\""([^\""]+)\""" },
-            { "text = \"",
-                @"text \= \""([^\""]{1,260})\""" },
-            { "text2 = \"",
-                @"text2 \= \""([^\""]{1,260})\""" },
-            { "text += \"",
-                @"text \+\= \""([^\""]{1,260})\""" },
-            { "drawMessage",
-                @"drawMessage\('fore', '([^']+)', '[^']*', '[^']*'\)" },
-            { "drawMessage(",
-                @"drawMessage\('fore', '[^']*', '([^']+)', '[^']*'\)" },
-            { "drawMessage('",
-                @"drawMessage\('fore', '[^']*', '[^']*', '([^']+)'\)" },
-            { ".drawText",
-                @"\.drawText\([^,]+, [^,]+, '([^']+)'" },
-            { "emb exp=\"",
-                @"\[emb exp\=\""'([^']+)'" },
-            { "eval exp=\"",
-                @"\[eval exp\=\""[^\=]+\='([^']+)'[^\""]*\""" },
-            { "[nowait]",
-                @"\[nowait\]([^(\[endnowait\])]+)\[endnowait\]" },
-            //[link target=*run]テスト実行[endlink] / [link target=*cancel]タイトルに戻る[endlink][r]
-            { "link ",
-                @"\[link [^\]]+\]([^\[]+)\[endlink\]" },
-            { "[C_SELECT ",
-                @"\[C_SELECT [^\]]+\]([^\[]+)\[endlink\]" },
-            { "[選択肢 emb=\"",
-                @"\[選択肢 emb\=\""([^\""]+)\""" },
-            { "'=>'",
-                @"'[^']+'\=\>'([^']+)'" },
-            { "\"",
-                @"\""[^\""']+\""" },
-            { "'",
-                @"'[^']+'" }
-           };
+            return new List<ParsePatternData>()
+                   {
+                     new ParsePatternData( @"^\*[^\|]+\|(.+)$", info: "label like *prologue1|プロローグ" ),
+                     new ParsePatternData( @"\s*tf\.gameText\[[ 0-9]{1,5}\] \= \""([^\""]+)\""\;\s*(\/\/.+)?", info: "tf.gameText[: //	tf.gameText[608] = \"トータルスコア : %d point\";" ),
+                     new ParsePatternData( @"\.drawText\([^,]+, [^,]+, \""([^\""]+)\""[^,]*, [^\)]+\)", info: "drawText: //.drawText(730, 314, \"出入口\", 0xFFFFFF) , .drawText(15, 14, \"お名前（任意）\", clBtnText)" ),
+                     new ParsePatternData( @"caption \= \""([^\""]{1,30})\""", info: "caption: //caption = \"text\"" ),
+                     new ParsePatternData( @"new KAGMenuItem\([^,]+, \""([^\""]+)\""[^,]*,", info: "KAGMenu:" ),
+                     new ParsePatternData( @"new KAGMenuItem\([^,]+, '([^']+)'[^,]*,", info: "KAGMenuItem:" ),
+                     new ParsePatternData( @"helpText\[[0-9]{1,5}\] \= \""([^\""]+)\""", info: "helpText:" ),
+                     new ParsePatternData( @" emb\=\""([^\""]{1,260})\""", info: " emb=:" ),
+                     new ParsePatternData( @"\[eval exp\=\""drawGpWindow\([^']*'([^']+)'[^\""]*\""\]", info: "drawGpWindow:" ),
+                     new ParsePatternData( @"\[eval exp\=\""drawAnswer\('([^']+)',[^\""]*\""\]", info: "drawAnswer:" ),
+                     new ParsePatternData( @"\[eval exp\=\""useSkillEffect\('([^']+)'", info: "useSkillEffect:" ),
+                     new ParsePatternData( @"\""name\""\=>\""([^\""]+)\""", info: "\"name\"=>\":" ),
+                     new ParsePatternData( @"\[[A-Za-z_]+ name \= \""([^\""\]]+)\""\]", info: "name:" ),
+                     new ParsePatternData( @"\""explanation\""\=>\""([^\""]+)\""", info: "\"explanation\"=>\":" ),
+                     new ParsePatternData( @"text \= \""([^\""]{1,260})\""", info: "text = \":" ),
+                     new ParsePatternData( @"text2 \= \""([^\""]{1,260})\""", info: "text2 = \":" ),
+                     new ParsePatternData( @"text \+\= \""([^\""]{1,260})\""", info: "text += \":" ),
+                     new ParsePatternData( @"drawMessage\('fore', '([^']+)', '[^']*', '[^']*'\)", info: "drawMessage:" ),
+                     new ParsePatternData( @"drawMessage\('fore', '[^']*', '([^']+)', '[^']*'\)", info: "drawMessage(:" ),
+                     new ParsePatternData( @"drawMessage\('fore', '[^']*', '[^']*', '([^']+)'\)", info: "drawMessage(':" ),
+                     new ParsePatternData( @"\.drawText\([^,]+, [^,]+, '([^']+)'", info: ".drawText:" ),
+                     new ParsePatternData( @"\[emb exp\=\""'([^']+)'", info: "emb exp=\":" ),
+                     new ParsePatternData( @"\[eval exp\=\""[^\=]+\='([^']+)'[^\""]*\""", info: "eval exp=\":" ),
+                     new ParsePatternData( @"\[nowait\]([^(\[endnowait\])]+)\[endnowait\]", info: "[nowait]:" ),
+                     new ParsePatternData( @"\[link [^\]]+\]([^\[]+)\[endlink\]", info: "link :" ),
+                     new ParsePatternData( @"\[C_SELECT [^\]]+\]([^\[]+)\[endlink\]", info: "[C_SELECT :" ),
+                     new ParsePatternData( @"\[選択肢 emb\=\""([^\""]+)\""", info: "[選択肢 emb=\":" ),
+                     new ParsePatternData( @"'[^']+'\=\>'([^']+)'", info: "'=>':" ),
+                     new ParsePatternData( @"\""[^\""']+\""", info: "\":" ),
+                     new ParsePatternData( @"'[^']+'", info: "':" ),
+                   };
         }
         //protected bool OpenSaveKS(bool OpenKS = true)
         //{
@@ -534,14 +504,7 @@ namespace TranslationHelper.Formats.KiriKiri.Games
 
         private bool ContainsNoPatterns(string str)
         {
-            foreach (var p in Patterns())
-            {
-                if (str.Contains(p.Key) && Regex.IsMatch(str, p.Value))
-                {
-                    return true;
-                }
-            }
-            return false;
+            return Patterns().Any(p => Regex.IsMatch(str, p.Pattern));
         }
 
         protected readonly string RubyTextRegex = "\\[ruby text\\=\\\"([^\\\"]*)\\\"\\]";

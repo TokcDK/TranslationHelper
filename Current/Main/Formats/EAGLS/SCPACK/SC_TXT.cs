@@ -22,14 +22,12 @@ namespace TranslationHelper.Formats.EAGLS.SCPACK
         {
             return ParseFile(); //OpenSC();
         }
-        protected override Dictionary<string, string> Patterns()
+        protected override List<ParsePatternData> Patterns()
         {
-            return new Dictionary<string, string>()
+            return new List<ParsePatternData>()
             {
-                { "#",
-                    StringPatternNames },
-                { "&",
-                    StringPattern },
+                new ParsePatternData( StringPatternNames ),
+                new ParsePatternData( StringPattern ),
                 //{ "(\"",
                 //    @"[0-9]{1,6}\(\""[^\""]*\"",\""([^\""\r\n]+)\""\)" }, // 52(":NameSuffix","大地"),
                 //{ "\")",
@@ -42,7 +40,7 @@ namespace TranslationHelper.Formats.EAGLS.SCPACK
             var file = ParseData.Reader.ReadToEnd();
             foreach (var pattern in Patterns())
             {
-                var mc = Regex.Matches(file, pattern.Value);
+                var mc = Regex.Matches(file, pattern.Pattern);
                 if (mc.Count == 0)
                 {
                     continue;
