@@ -127,8 +127,23 @@ namespace TranslationHelper.Formats.RPGMMV.JsonType
                     {
                         if (command.Parameters[i] is string s)
                         {
-                            if (AddRowData(ref s, isSave ? "" : info + $"\r\nCommand code: {command.Code}{RPGMVUtils.GetCodeName(command.Code)}\r\n Parameter #: {i}") && SaveFileMode)
+                            var isScriptCommand = command.Code == 355 || command.Code == 655;
+                            var commentStr = "";
+                            if (isScriptCommand)
                             {
+                                var comment = s.IndexOf("//");
+                                if (comment != -1)
+                                {
+                                    commentStr = s.Substring(comment);
+                                    s = s.Remove(comment);
+                                }
+                            }
+
+                            var commentInfo = isScriptCommand && string.IsNullOrWhiteSpace(commentStr) ? "" : $"\r\nComment:{commentStr}";
+                            if (AddRowData(ref s, isSave ? "" : info + $"\r\nCommand code: {command.Code}{RPGMVUtils.GetCodeName(command.Code)}\r\n Parameter #: {i}{commentInfo}") && SaveFileMode)
+                            {
+                                if (isScriptCommand) s = s + commentStr;
+
                                 command.Parameters[i] = s;
                             }
                         }
