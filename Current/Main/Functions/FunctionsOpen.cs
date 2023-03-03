@@ -181,7 +181,12 @@ namespace TranslationHelper.Functions
 
             int selectedIndex = -1;
             var foundForm = new FoundTypesbyExtensionForm(); // use form from formats
-            foreach (var type in foundTypes) foundForm.listBox1.Items.Add(type.FullName);
+            foreach (var type in foundTypes)
+            {
+                var inst = (IProject)Activator.CreateInstance(type);
+                var instName = !string.IsNullOrWhiteSpace(inst.Name) ? inst.Name : type.FullName;
+                foundForm.listBox1.Items.Add(instName);
+            }
 
             var result = foundForm.ShowDialog();
             if (result == DialogResult.OK) selectedIndex = foundForm.SelectedTypeIndex;

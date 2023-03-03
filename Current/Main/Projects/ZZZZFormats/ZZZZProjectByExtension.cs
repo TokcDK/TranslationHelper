@@ -20,8 +20,8 @@ namespace TranslationHelper.Projects.ZZZZFormats
 
         internal override bool IsValid()
         {
-            var fileExt = Path.GetExtension(AppData.SelectedFilePath);            
-            foreach (var formatType in GetFormatTypes(typeof(FormatBase))) 
+            var fileExt = Path.GetExtension(AppData.SelectedFilePath);
+            foreach (var formatType in GetFormatTypes(typeof(FormatBase)))
                 if (IsValidFormat(formatType, fileExt)) return true;
 
             return false;
@@ -29,26 +29,26 @@ namespace TranslationHelper.Projects.ZZZZFormats
 
         private static IEnumerable<Type> GetFormatTypes(Type type)
         {
-            foreach(var fType in 
+            foreach (var fType in
                 GetListOfSubClasses.Inherited.GetInheritedTypes(type)) yield return fType;
         }
 
         private static bool IsValidFormat(Type formatType, string fileExt)
         {
             var format = (IFormat)Activator.CreateInstance(formatType);
-            
+
             return string.Equals(format.Extension, fileExt, StringComparison.InvariantCultureIgnoreCase);
         }
 
         FormatBase Format;
 
-        public override string Name => string.IsNullOrWhiteSpace(Format.Name) ? Format.Extension: Format.Name;
+        public override string Name => Format == null ? T._("Try open file by extension") : string.IsNullOrWhiteSpace(Format.Name) ? Format.Extension : Format.Name;
 
         public override bool Open()
         {
             var fileExt = Path.GetExtension(AppData.SelectedFilePath);
             var foundTypes = new List<Type>();
-            foreach (var formatType in GetFormatTypes(typeof(FormatBase))) 
+            foreach (var formatType in GetFormatTypes(typeof(FormatBase)))
                 if (IsValidFormat(formatType, fileExt)) foundTypes.Add(formatType);
 
             if (foundTypes.Count == 0) return false;
