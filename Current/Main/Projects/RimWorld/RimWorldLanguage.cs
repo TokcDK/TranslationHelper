@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using TranslationHelper.Formats.RimWorld;
 using TranslationHelper.Formats.zzzOtherFormat;
@@ -7,6 +8,14 @@ namespace TranslationHelper.Projects.RimWorld
 {
     internal class RimWorldLanguage : ProjectBase
     {
+        public RimWorldLanguage()
+        {
+            HideVarsBase = new Dictionary<string, string>()
+            {
+                { "[", @"\[[a-z0-9-_]+\]" }
+            };
+        }
+
         public override string Name => "RimWorld mod language dir";
 
         public override bool Open()
