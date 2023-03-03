@@ -91,6 +91,7 @@
     <Reference Include="WindowsFormsIntegration" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="appSettings\Sections\General\ComboBox\STargetLanguage.cs" />
     <Compile Include="appSettings\Sections\General\ComboBox\SSourceLanguage.cs" />
     <Compile Include="appSettings\Sections\Optimizations\CheckBox\SDontLoadDuplicates.cs" />
     <Compile Include="appSettings\Sections\Optimizations\CheckBox\SIgnoreOrigEqualTransLines.cs" />

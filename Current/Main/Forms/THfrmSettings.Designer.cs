@@ -31,6 +31,8 @@
             this.THSettingsTabControl = new System.Windows.Forms.TabControl();
             this.THSettingsMainTabPage = new System.Windows.Forms.TabPage();
             this.panel1 = new System.Windows.Forms.Panel();
+            this.label2 = new System.Windows.Forms.Label();
+            this.SourceLanguageComboBox = new System.Windows.Forms.ComboBox();
             this.LineCharLimitTextBox = new System.Windows.Forms.TextBox();
             this.THOptionLineCharLimitLabel = new System.Windows.Forms.Label();
             this.THOptionAutotranslationForSimularCheckBox = new System.Windows.Forms.CheckBox();
@@ -60,8 +62,8 @@
             this.label1 = new System.Windows.Forms.Label();
             this.THSettingsWebTranslationLinkTextBox = new System.Windows.Forms.TextBox();
             this.cbxWebTranslatorsSelector = new System.Windows.Forms.ComboBox();
-            this.SourceLanguageComboBox = new System.Windows.Forms.ComboBox();
-            this.label2 = new System.Windows.Forms.Label();
+            this.label3 = new System.Windows.Forms.Label();
+            this.TargetLanguageComboBox = new System.Windows.Forms.ComboBox();
             this.THSettingsTabControl.SuspendLayout();
             this.THSettingsMainTabPage.SuspendLayout();
             this.panel1.SuspendLayout();
@@ -96,6 +98,8 @@
             // 
             // panel1
             // 
+            this.panel1.Controls.Add(this.label3);
+            this.panel1.Controls.Add(this.TargetLanguageComboBox);
             this.panel1.Controls.Add(this.label2);
             this.panel1.Controls.Add(this.SourceLanguageComboBox);
             this.panel1.Controls.Add(this.LineCharLimitTextBox);
@@ -108,11 +112,29 @@
             this.panel1.Size = new System.Drawing.Size(518, 373);
             this.panel1.TabIndex = 7;
             // 
+            // label2
+            // 
+            this.label2.AutoSize = true;
+            this.label2.Location = new System.Drawing.Point(6, 77);
+            this.label2.Name = "label2";
+            this.label2.Size = new System.Drawing.Size(95, 13);
+            this.label2.TabIndex = 18;
+            this.label2.Text = "Source Language:";
+            // 
+            // SourceLanguageComboBox
+            // 
+            this.SourceLanguageComboBox.FormattingEnabled = true;
+            this.SourceLanguageComboBox.Location = new System.Drawing.Point(106, 74);
+            this.SourceLanguageComboBox.Name = "SourceLanguageComboBox";
+            this.SourceLanguageComboBox.Size = new System.Drawing.Size(121, 21);
+            this.SourceLanguageComboBox.TabIndex = 17;
+            this.SourceLanguageComboBox.SelectionChangeCommitted += new System.EventHandler(this.SourceLanguageComboBox_SelectionChangeCommitted);
+            // 
             // LineCharLimitTextBox
             // 
             this.LineCharLimitTextBox.Location = new System.Drawing.Point(5, 49);
             this.LineCharLimitTextBox.Name = "LineCharLimitTextBox";
-            this.LineCharLimitTextBox.Size = new System.Drawing.Size(35, 21);
+            this.LineCharLimitTextBox.Size = new System.Drawing.Size(35, 20);
             this.LineCharLimitTextBox.TabIndex = 16;
             this.LineCharLimitTextBox.Text = "60";
             this.LineCharLimitTextBox.TextChanged += new System.EventHandler(this.LineCharLimitTextBox_TextChanged);
@@ -122,7 +144,7 @@
             this.THOptionLineCharLimitLabel.AutoSize = true;
             this.THOptionLineCharLimitLabel.Location = new System.Drawing.Point(46, 52);
             this.THOptionLineCharLimitLabel.Name = "THOptionLineCharLimitLabel";
-            this.THOptionLineCharLimitLabel.Size = new System.Drawing.Size(227, 13);
+            this.THOptionLineCharLimitLabel.Size = new System.Drawing.Size(218, 13);
             this.THOptionLineCharLimitLabel.TabIndex = 15;
             this.THOptionLineCharLimitLabel.Text = "char limit of line length (for line split functions)";
             // 
@@ -133,7 +155,7 @@
             this.THOptionAutotranslationForSimularCheckBox.CheckState = System.Windows.Forms.CheckState.Checked;
             this.THOptionAutotranslationForSimularCheckBox.Location = new System.Drawing.Point(5, 3);
             this.THOptionAutotranslationForSimularCheckBox.Name = "THOptionAutotranslationForSimularCheckBox";
-            this.THOptionAutotranslationForSimularCheckBox.Size = new System.Drawing.Size(153, 17);
+            this.THOptionAutotranslationForSimularCheckBox.Size = new System.Drawing.Size(146, 17);
             this.THOptionAutotranslationForSimularCheckBox.TabIndex = 14;
             this.THOptionAutotranslationForSimularCheckBox.Text = "Autotranslation for simular";
             this.THOptionAutotranslationForSimularCheckBox.UseVisualStyleBackColor = true;
@@ -144,7 +166,7 @@
             this.THOptionFullComprasionDBloadCheckBox.AutoSize = true;
             this.THOptionFullComprasionDBloadCheckBox.Location = new System.Drawing.Point(5, 26);
             this.THOptionFullComprasionDBloadCheckBox.Name = "THOptionFullComprasionDBloadCheckBox";
-            this.THOptionFullComprasionDBloadCheckBox.Size = new System.Drawing.Size(290, 17);
+            this.THOptionFullComprasionDBloadCheckBox.Size = new System.Drawing.Size(286, 17);
             this.THOptionFullComprasionDBloadCheckBox.TabIndex = 0;
             this.THOptionFullComprasionDBloadCheckBox.Text = "Full recursive scan while translation DB loading (slower)";
             this.THOptionFullComprasionDBloadCheckBox.UseVisualStyleBackColor = true;
@@ -198,7 +220,7 @@
             this.THOptionIgnoreOrigEqualTransLinesCheckBox.CheckState = System.Windows.Forms.CheckState.Checked;
             this.THOptionIgnoreOrigEqualTransLinesCheckBox.Location = new System.Drawing.Point(3, 62);
             this.THOptionIgnoreOrigEqualTransLinesCheckBox.Name = "THOptionIgnoreOrigEqualTransLinesCheckBox";
-            this.THOptionIgnoreOrigEqualTransLinesCheckBox.Size = new System.Drawing.Size(182, 17);
+            this.THOptionIgnoreOrigEqualTransLinesCheckBox.Size = new System.Drawing.Size(176, 17);
             this.THOptionIgnoreOrigEqualTransLinesCheckBox.TabIndex = 9;
             this.THOptionIgnoreOrigEqualTransLinesCheckBox.Text = "Ignore Original=Translation lines";
             this.THOptionIgnoreOrigEqualTransLinesCheckBox.UseVisualStyleBackColor = true;
@@ -209,7 +231,7 @@
             this.label5.AutoSize = true;
             this.label5.Location = new System.Drawing.Point(321, 8);
             this.label5.Name = "label5";
-            this.label5.Size = new System.Drawing.Size(18, 13);
+            this.label5.Size = new System.Drawing.Size(15, 13);
             this.label5.TabIndex = 8;
             this.label5.Text = "%";
             // 
@@ -234,7 +256,7 @@
             this.THOptionDontLoadStringIfRomajiPercentForTranslationCheckBox.CheckState = System.Windows.Forms.CheckState.Checked;
             this.THOptionDontLoadStringIfRomajiPercentForTranslationCheckBox.Location = new System.Drawing.Point(401, 7);
             this.THOptionDontLoadStringIfRomajiPercentForTranslationCheckBox.Name = "THOptionDontLoadStringIfRomajiPercentForTranslationCheckBox";
-            this.THOptionDontLoadStringIfRomajiPercentForTranslationCheckBox.Size = new System.Drawing.Size(79, 17);
+            this.THOptionDontLoadStringIfRomajiPercentForTranslationCheckBox.Size = new System.Drawing.Size(78, 17);
             this.THOptionDontLoadStringIfRomajiPercentForTranslationCheckBox.TabIndex = 6;
             this.THOptionDontLoadStringIfRomajiPercentForTranslationCheckBox.Text = "Translation";
             this.THOptionDontLoadStringIfRomajiPercentForTranslationCheckBox.UseVisualStyleBackColor = true;
@@ -259,7 +281,7 @@
             this.THOptionDBCompressionCheckBox.CheckState = System.Windows.Forms.CheckState.Checked;
             this.THOptionDBCompressionCheckBox.Location = new System.Drawing.Point(3, 30);
             this.THOptionDBCompressionCheckBox.Name = "THOptionDBCompressionCheckBox";
-            this.THOptionDBCompressionCheckBox.Size = new System.Drawing.Size(146, 17);
+            this.THOptionDBCompressionCheckBox.Size = new System.Drawing.Size(143, 17);
             this.THOptionDBCompressionCheckBox.TabIndex = 4;
             this.THOptionDBCompressionCheckBox.Text = "Compression for DB files:";
             this.THOptionDBCompressionCheckBox.UseVisualStyleBackColor = true;
@@ -271,7 +293,7 @@
             this.DontLoadStringIfRomajiPercentNumberTextBox.MaxLength = 3;
             this.DontLoadStringIfRomajiPercentNumberTextBox.Name = "DontLoadStringIfRomajiPercentNumberTextBox";
             this.DontLoadStringIfRomajiPercentNumberTextBox.ShortcutsEnabled = false;
-            this.DontLoadStringIfRomajiPercentNumberTextBox.Size = new System.Drawing.Size(24, 21);
+            this.DontLoadStringIfRomajiPercentNumberTextBox.Size = new System.Drawing.Size(24, 20);
             this.DontLoadStringIfRomajiPercentNumberTextBox.TabIndex = 2;
             this.DontLoadStringIfRomajiPercentNumberTextBox.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             this.DontLoadStringIfRomajiPercentNumberTextBox.WordWrap = false;
@@ -284,7 +306,7 @@
             this.THOptionDontLoadStringIfRomajiPercentCheckBox.CheckState = System.Windows.Forms.CheckState.Checked;
             this.THOptionDontLoadStringIfRomajiPercentCheckBox.Location = new System.Drawing.Point(3, 7);
             this.THOptionDontLoadStringIfRomajiPercentCheckBox.Name = "THOptionDontLoadStringIfRomajiPercentCheckBox";
-            this.THOptionDontLoadStringIfRomajiPercentCheckBox.Size = new System.Drawing.Size(296, 17);
+            this.THOptionDontLoadStringIfRomajiPercentCheckBox.Size = new System.Drawing.Size(284, 17);
             this.THOptionDontLoadStringIfRomajiPercentCheckBox.TabIndex = 1;
             this.THOptionDontLoadStringIfRomajiPercentCheckBox.Text = "Do not load string if it has more of next romaji percent - ";
             this.THOptionDontLoadStringIfRomajiPercentCheckBox.UseVisualStyleBackColor = true;
@@ -328,7 +350,7 @@
             this.cbSearchRowIssueOptionsCheckProjectSpecific.CheckState = System.Windows.Forms.CheckState.Checked;
             this.cbSearchRowIssueOptionsCheckProjectSpecific.Location = new System.Drawing.Point(28, 182);
             this.cbSearchRowIssueOptionsCheckProjectSpecific.Name = "cbSearchRowIssueOptionsCheckProjectSpecific";
-            this.cbSearchRowIssueOptionsCheckProjectSpecific.Size = new System.Drawing.Size(162, 17);
+            this.cbSearchRowIssueOptionsCheckProjectSpecific.Size = new System.Drawing.Size(163, 17);
             this.cbSearchRowIssueOptionsCheckProjectSpecific.TabIndex = 21;
             this.cbSearchRowIssueOptionsCheckProjectSpecific.Text = "Check project specific issues";
             this.cbSearchRowIssueOptionsCheckProjectSpecific.UseVisualStyleBackColor = true;
@@ -341,7 +363,7 @@
             this.cbSearchRowIssueOptionsCheckAnyLineTranslatable.CheckState = System.Windows.Forms.CheckState.Checked;
             this.cbSearchRowIssueOptionsCheckAnyLineTranslatable.Location = new System.Drawing.Point(28, 159);
             this.cbSearchRowIssueOptionsCheckAnyLineTranslatable.Name = "cbSearchRowIssueOptionsCheckAnyLineTranslatable";
-            this.cbSearchRowIssueOptionsCheckAnyLineTranslatable.Size = new System.Drawing.Size(191, 17);
+            this.cbSearchRowIssueOptionsCheckAnyLineTranslatable.Size = new System.Drawing.Size(189, 17);
             this.cbSearchRowIssueOptionsCheckAnyLineTranslatable.TabIndex = 20;
             this.cbSearchRowIssueOptionsCheckAnyLineTranslatable.Text = "Check if any line can be translated";
             this.cbSearchRowIssueOptionsCheckAnyLineTranslatable.UseVisualStyleBackColor = true;
@@ -354,7 +376,7 @@
             this.cbSearchRowIssueOptionsCheckNonRomaji.CheckState = System.Windows.Forms.CheckState.Checked;
             this.cbSearchRowIssueOptionsCheckNonRomaji.Location = new System.Drawing.Point(28, 113);
             this.cbSearchRowIssueOptionsCheckNonRomaji.Name = "cbSearchRowIssueOptionsCheckNonRomaji";
-            this.cbSearchRowIssueOptionsCheckNonRomaji.Size = new System.Drawing.Size(134, 17);
+            this.cbSearchRowIssueOptionsCheckNonRomaji.Size = new System.Drawing.Size(132, 17);
             this.cbSearchRowIssueOptionsCheckNonRomaji.TabIndex = 19;
             this.cbSearchRowIssueOptionsCheckNonRomaji.Text = "Check non romaji exist";
             this.cbSearchRowIssueOptionsCheckNonRomaji.UseVisualStyleBackColor = true;
@@ -367,7 +389,7 @@
             this.cbSearchRowIssueOptionsCheckActors.CheckState = System.Windows.Forms.CheckState.Checked;
             this.cbSearchRowIssueOptionsCheckActors.Location = new System.Drawing.Point(28, 136);
             this.cbSearchRowIssueOptionsCheckActors.Name = "cbSearchRowIssueOptionsCheckActors";
-            this.cbSearchRowIssueOptionsCheckActors.Size = new System.Drawing.Size(118, 17);
+            this.cbSearchRowIssueOptionsCheckActors.Size = new System.Drawing.Size(119, 17);
             this.cbSearchRowIssueOptionsCheckActors.TabIndex = 18;
             this.cbSearchRowIssueOptionsCheckActors.Text = "Check Actor names";
             this.cbSearchRowIssueOptionsCheckActors.UseVisualStyleBackColor = true;
@@ -378,7 +400,7 @@
             this.SearchRowIssueOptionsLabel.AutoSize = true;
             this.SearchRowIssueOptionsLabel.Location = new System.Drawing.Point(8, 97);
             this.SearchRowIssueOptionsLabel.Name = "SearchRowIssueOptionsLabel";
-            this.SearchRowIssueOptionsLabel.Size = new System.Drawing.Size(154, 13);
+            this.SearchRowIssueOptionsLabel.Size = new System.Drawing.Size(153, 13);
             this.SearchRowIssueOptionsLabel.TabIndex = 17;
             this.SearchRowIssueOptionsLabel.Text = "Search Row issue find options:";
             // 
@@ -396,7 +418,7 @@
             this.SettingsAutosaveTimeoutValueTextBox.MaxLength = 3;
             this.SettingsAutosaveTimeoutValueTextBox.Name = "SettingsAutosaveTimeoutValueTextBox";
             this.SettingsAutosaveTimeoutValueTextBox.ShortcutsEnabled = false;
-            this.SettingsAutosaveTimeoutValueTextBox.Size = new System.Drawing.Size(33, 21);
+            this.SettingsAutosaveTimeoutValueTextBox.Size = new System.Drawing.Size(33, 20);
             this.SettingsAutosaveTimeoutValueTextBox.TabIndex = 14;
             this.SettingsAutosaveTimeoutValueTextBox.Text = "300";
             this.SettingsAutosaveTimeoutValueTextBox.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
@@ -410,7 +432,7 @@
             this.SettingsAutosaveEnabledCheckBox.CheckState = System.Windows.Forms.CheckState.Checked;
             this.SettingsAutosaveEnabledCheckBox.Location = new System.Drawing.Point(8, 66);
             this.SettingsAutosaveEnabledCheckBox.Name = "SettingsAutosaveEnabledCheckBox";
-            this.SettingsAutosaveEnabledCheckBox.Size = new System.Drawing.Size(158, 17);
+            this.SettingsAutosaveEnabledCheckBox.Size = new System.Drawing.Size(156, 17);
             this.SettingsAutosaveEnabledCheckBox.TabIndex = 13;
             this.SettingsAutosaveEnabledCheckBox.Text = "Enable autosave. Timeout -";
             this.SettingsAutosaveEnabledCheckBox.UseVisualStyleBackColor = true;
@@ -423,7 +445,7 @@
             this.THOptionEnableTranslationCacheCheckBox.CheckState = System.Windows.Forms.CheckState.Checked;
             this.THOptionEnableTranslationCacheCheckBox.Location = new System.Drawing.Point(8, 3);
             this.THOptionEnableTranslationCacheCheckBox.Name = "THOptionEnableTranslationCacheCheckBox";
-            this.THOptionEnableTranslationCacheCheckBox.Size = new System.Drawing.Size(178, 17);
+            this.THOptionEnableTranslationCacheCheckBox.Size = new System.Drawing.Size(177, 17);
             this.THOptionEnableTranslationCacheCheckBox.TabIndex = 12;
             this.THOptionEnableTranslationCacheCheckBox.Text = "Enable online translation cache.";
             this.THOptionEnableTranslationCacheCheckBox.UseVisualStyleBackColor = true;
@@ -435,7 +457,7 @@
             this.label1.AutoSize = true;
             this.label1.Location = new System.Drawing.Point(7, 23);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(225, 13);
+            this.label1.Size = new System.Drawing.Size(219, 13);
             this.label1.TabIndex = 8;
             this.label1.Text = "Web service link for manual translation (F12):";
             // 
@@ -445,7 +467,7 @@
             this.THSettingsWebTranslationLinkTextBox.Margin = new System.Windows.Forms.Padding(0);
             this.THSettingsWebTranslationLinkTextBox.Name = "THSettingsWebTranslationLinkTextBox";
             this.THSettingsWebTranslationLinkTextBox.ScrollBars = System.Windows.Forms.ScrollBars.Horizontal;
-            this.THSettingsWebTranslationLinkTextBox.Size = new System.Drawing.Size(491, 21);
+            this.THSettingsWebTranslationLinkTextBox.Size = new System.Drawing.Size(491, 20);
             this.THSettingsWebTranslationLinkTextBox.TabIndex = 7;
             this.THSettingsWebTranslationLinkTextBox.Text = "https://translate.google.com/?ie=UTF-8&op=translate&sl={from}&tl={to}&text={text}" +
     "";
@@ -468,23 +490,23 @@
             this.cbxWebTranslatorsSelector.TabIndex = 15;
             this.cbxWebTranslatorsSelector.SelectedIndexChanged += new System.EventHandler(this.comboBox1_SelectedIndexChanged);
             // 
-            // SourceLanguageComboBox
+            // label3
             // 
-            this.SourceLanguageComboBox.FormattingEnabled = true;
-            this.SourceLanguageComboBox.Location = new System.Drawing.Point(106, 74);
-            this.SourceLanguageComboBox.Name = "SourceLanguageComboBox";
-            this.SourceLanguageComboBox.Size = new System.Drawing.Size(121, 21);
-            this.SourceLanguageComboBox.TabIndex = 17;
-            this.SourceLanguageComboBox.SelectionChangeCommitted += new System.EventHandler(this.SourceLanguageComboBox_SelectionChangeCommitted);
+            this.label3.AutoSize = true;
+            this.label3.Location = new System.Drawing.Point(6, 104);
+            this.label3.Name = "label3";
+            this.label3.Size = new System.Drawing.Size(92, 13);
+            this.label3.TabIndex = 20;
+            this.label3.Text = "Target Language:";
             // 
-            // label2
+            // TargetLanguageComboBox
             // 
-            this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(6, 77);
-            this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(94, 13);
-            this.label2.TabIndex = 18;
-            this.label2.Text = "Source Language:";
+            this.TargetLanguageComboBox.FormattingEnabled = true;
+            this.TargetLanguageComboBox.Location = new System.Drawing.Point(106, 101);
+            this.TargetLanguageComboBox.Name = "TargetLanguageComboBox";
+            this.TargetLanguageComboBox.Size = new System.Drawing.Size(121, 21);
+            this.TargetLanguageComboBox.TabIndex = 19;
+            this.TargetLanguageComboBox.SelectionChangeCommitted += new System.EventHandler(this.TargetLanguageComboBox_SelectionChangeCommitted);
             // 
             // THfrmSettings
             // 
@@ -548,5 +570,7 @@
         internal System.Windows.Forms.CheckBox cbSearchRowIssueOptionsCheckProjectSpecific;
         private System.Windows.Forms.Label label2;
         public System.Windows.Forms.ComboBox SourceLanguageComboBox;
+        private System.Windows.Forms.Label label3;
+        public System.Windows.Forms.ComboBox TargetLanguageComboBox;
     }
 }

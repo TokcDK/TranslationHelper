@@ -432,5 +432,10 @@ namespace TranslationHelper
         {
             SetValue((sender as ComboBox).Name);
         }
+
+        private void TargetLanguageComboBox_SelectionChangeCommitted(object sender, EventArgs e)
+        {
+            SetValue((sender as ComboBox).Name);
+        }
     }
 }

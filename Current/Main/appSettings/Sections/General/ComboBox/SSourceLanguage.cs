@@ -12,9 +12,9 @@ namespace TranslationHelper.INISettings
         {
             if (AppData.Settings.SourceLanguageComboBox.Items.Count == 0)
             {
-                AppData.Settings.SourceLanguageComboBox.DataSource = TranslatorsBase.Languages;
+                AppData.Settings.SourceLanguageComboBox.DataSource = TranslatorsBase.SourceLanguages;
             }
-            AppData.Settings.SourceLanguageComboBox.SelectedIndex = TranslatorsBase.Languages.IndexOf(AppSettings.OnlineTranslationSourceLanguage);
+            AppData.Settings.SourceLanguageComboBox.SelectedIndex = TranslatorsBase.SourceLanguages.IndexOf(AppSettings.OnlineTranslationSourceLanguage);
         }
 
         internal override string Key => "SourceLanguage";
