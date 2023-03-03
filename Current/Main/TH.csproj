@@ -121,6 +121,7 @@
     <Compile Include="Formats\Glitch Pitch\Idol Manager\Mod\Params_json.cs" />
     <Compile Include="Formats\Glitch Pitch\Idol Manager\Mod\Params_json_c.cs" />
     <Compile Include="Formats\IFormat.cs" />
+    <Compile Include="Formats\RimWorld\RimWorldLanguageDataXML.cs" />
     <Compile Include="Formats\RPGMakerVX\RVData2\Actors.rvdata2.cs" />
     <Compile Include="Formats\RPGMakerVX\RVData2\RVDATA2.cs" />
     <Compile Include="Formats\RPGMMV\JsonType\JsonEventCommandsList.cs" />
@@ -482,6 +483,7 @@
     <Compile Include="Projects\ProjectToolsBackup.cs" />
     <Compile Include="Projects\ProjectToolsOpenSave.cs" />
     <Compile Include="Projects\Raijin7\Raijin7Game.cs" />
+    <Compile Include="Projects\RimWorld\RimWorldLanguage.cs" />
     <Compile Include="Projects\RJ263914\RJ263914OLD.cs" />
     <Compile Include="Projects\RPGMaker\RPGMGame.cs" />
     <Compile Include="Projects\RPGMaker\RPGMGameOLD.cs" />
