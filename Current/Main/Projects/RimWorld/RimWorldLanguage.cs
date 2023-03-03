@@ -4,6 +4,7 @@ using System.IO;
 using TranslationHelper.Formats.RimWorld;
 using TranslationHelper.Formats.zzzOtherFormat;
 using TranslationHelper.Menus.MainMenus;
+using TranslationHelper.Projects.RPGMMV.Menus;
 
 namespace TranslationHelper.Projects.RimWorld
 {
@@ -128,6 +129,6 @@ namespace TranslationHelper.Projects.RimWorld
             return variantName;
         }
 
-        internal override IMainMenuItem[] MainMenuItemMenusList => new IMainMenuItem[1] {  };
+        internal override IMainMenuItem[] MainMenuItemMenusList => new IMainMenuItem[1] { new MainMenuTryReadEnglishTranslations() };
     }
 }

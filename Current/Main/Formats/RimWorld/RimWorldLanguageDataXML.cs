@@ -19,6 +19,9 @@ namespace TranslationHelper.Formats.RimWorld
 
                 var s = el.InnerText;
 
+                if (string.IsNullOrWhiteSpace(el.Name)) continue;
+                if (string.IsNullOrWhiteSpace(el.InnerText)) continue;
+
                 if (AddRowData(ref s, "Element: \"" + el.Name + "\"") && SaveFileMode)
                 {
                     el.InnerText = s;
