@@ -12,7 +12,7 @@ namespace TranslationHelper.Projects.RimWorld
         {
             HideVarsBase = new Dictionary<string, string>()
             {
-                { "[", @"\[[a-z0-9-_]+\]" }
+                { "[", @"\[[a-zA-Z0-9-_]+\]" }
             };
         }
 
