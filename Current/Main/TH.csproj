@@ -485,6 +485,7 @@
     <Compile Include="Projects\ProjectToolsOpenSave.cs" />
     <Compile Include="Projects\Raijin7\Raijin7Game.cs" />
     <Compile Include="Projects\RimWorld\RimWorldLanguage.cs" />
+    <Compile Include="Projects\RimWorld\MainMenuTryReadEnglishTranslations.cs" />
     <Compile Include="Projects\RJ263914\RJ263914OLD.cs" />
     <Compile Include="Projects\RPGMaker\RPGMGame.cs" />
     <Compile Include="Projects\RPGMaker\RPGMGameOLD.cs" />
