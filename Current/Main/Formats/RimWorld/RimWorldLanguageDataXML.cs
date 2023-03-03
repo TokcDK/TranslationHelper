@@ -1,13 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.IO;
 using System.Xml;
-using System.Xml.Linq;
-using HtmlAgilityPack;
-using TranslationHelper.Data;
 
 namespace TranslationHelper.Formats.RimWorld
 {
@@ -27,13 +19,13 @@ namespace TranslationHelper.Formats.RimWorld
 
                 var s = el.InnerText;
 
-                if (AddRowData(ref s, el.Name) && SaveFileMode)
+                if (AddRowData(ref s, "Element: \"" + el.Name + "\"") && SaveFileMode)
                 {
                     el.InnerText = s;
                 }
             }
 
-            if(SaveFileMode && ParseData.Ret) ParseData.ResultForWrite.Append(xmldoc.Value);
+            if (SaveFileMode && ParseData.Ret) ParseData.ResultForWrite.Append(xmldoc.Value);
         }
     }
 }
