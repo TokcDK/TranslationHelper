@@ -129,6 +129,6 @@ namespace TranslationHelper.Projects.RimWorld
             return variantName;
         }
 
-        internal override IMainMenuItem[] MainMenuItemMenusList => new IMainMenuItem[1] { new MainMenuTryReadEnglishTranslations() };
+        internal override IMainMenuItem[] MainMenuItemMenusList => new IMainMenuItem[1] { new MainMenuTryImportStringsFrom() };
     }
 }
