@@ -1,4 +1,6 @@
-﻿namespace TranslationHelper.Data
+﻿using System.IO;
+
+namespace TranslationHelper.Data
 {
     public static class AppSettings
     {
@@ -23,7 +25,7 @@
         public static string RPGMTransPatchVersion { get; set; } = "3";
         public static string THSelectedSourceType { get; set; } = "";
         public static int THFilesListSelectedIndex { get; set; } = 0;
-        public static string THTranslationCachePath { get; set; } = "";
+        public static string THTranslationCachePath { get; set; } = Path.Combine(THSettings.DBDirPathByLanguage, "THTranslationCache");
         public static bool EnableTranslationCache { get; set; } = true;
         public static string ProjectNewLineSymbol { get; set; } = "\r\n";
         public static string NewLine { get; set; } = "\r\n";

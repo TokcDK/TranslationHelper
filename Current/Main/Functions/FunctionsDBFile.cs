@@ -104,6 +104,7 @@ namespace TranslationHelper.Main.Functions
         {
             var DBFormat = FunctionsInterfaces.GetCurrentDBFormat();
             dbFilePath = useOriginaldbFilePath ? dbFilePath : Path.Combine(Path.GetDirectoryName(dbFilePath), Path.GetFileNameWithoutExtension(dbFilePath) + "." + DBFormat.Ext);
+            Directory.CreateDirectory(Path.GetDirectoryName(dbFilePath));
             using (var fs = new FileStream(dbFilePath, read ? FileMode.Open : FileMode.Create))
             {
                 Stream s;
@@ -161,8 +162,8 @@ namespace TranslationHelper.Main.Functions
 
         internal static string GetProjectDBFolder()
         {
-            string ret = string.Empty;
-            if (AppData.CurrentProject != null) ret = AppData.CurrentProject.ProjectDBFolderName;
+            string projectDirName = string.Empty;
+            if (AppData.CurrentProject != null) projectDirName = AppData.CurrentProject.ProjectDBFolderName;
             //else if (ProjectData.CurrentProject.Name().Contains("RPG Maker MV"))
             //{
             //    ret = "RPGMakerMV";
@@ -172,10 +173,10 @@ namespace TranslationHelper.Main.Functions
             //    ret = "RMakerTranPGsPatch";
             //}
 
-            ret = Path.Combine(Application.StartupPath, "DB", ret.Length > 0 ? ret : "Other");
-            Directory.CreateDirectory(ret);
+            projectDirName = Path.Combine(THSettings.DBDirPathByLanguage, projectDirName.Length > 0 ? projectDirName : "Other");
+            Directory.CreateDirectory(projectDirName);
 
-            return ret;
+            return projectDirName;
         }
 
         internal static string GetDBFileName(bool saveAs = false)
@@ -552,7 +553,7 @@ namespace TranslationHelper.Main.Functions
         {
             if (AppData.AllDBmerged == null) AppData.AllDBmerged = new Dictionary<string, string>();
 
-            var newestFilesList = GetNewestFIlesList(THSettings.DBDirPath);
+            var newestFilesList = GetNewestFIlesList(THSettings.DBDirPathByLanguage);
 
             object _dbDataSetToDictionaryAddLocker = new object();
             Parallel.ForEach(newestFilesList, dbFile =>

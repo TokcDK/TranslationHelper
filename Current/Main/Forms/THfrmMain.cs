@@ -855,7 +855,7 @@ namespace TranslationHelper
             {
                 AutosaveActivated = true;
 
-                dbpath = Path.Combine(Application.StartupPath, "DB");
+                dbpath = THSettings.DBDirPathByLanguage;
                 string dbfilename = Path.GetFileNameWithoutExtension(AppData.CurrentProject.SelectedDir) + "_autosave";
                 string autosavepath = Path.Combine(dbpath, "Auto", dbfilename + ".bak1" + ".cmx");
                 if (File.Exists(autosavepath))

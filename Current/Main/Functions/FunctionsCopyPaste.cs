@@ -11,14 +11,21 @@ namespace TranslationHelper.Main.Functions
     {
         public static void CopyToClipboard(DataGridView THFileElementsDataGridView)
         {
-            //Copy to clipboard
-            DataObject dataObj = THFileElementsDataGridView.GetClipboardContent();
-            if (dataObj == null)
+            try
             {
+                //Copy to clipboard
+                DataObject dataObj = THFileElementsDataGridView.GetClipboardContent();
+                if (dataObj == null)
+                {
+                }
+                else
+                {
+                    Clipboard.SetDataObject(dataObj);
+                }
             }
-            else
+            catch
             {
-                Clipboard.SetDataObject(dataObj);
+
             }
         }
 

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Runtime.CompilerServices;
+using System.Windows.Forms;
 using TranslationHelper.Properties;
 
 namespace TranslationHelper.Data
@@ -27,7 +28,8 @@ namespace TranslationHelper.Data
 
         internal static string DBDirName => "DB";
 
-        internal static string DBDirPath => Path.Combine(ApplicationStartupPath, DBDirName);
+        internal static string DBDirPath => Path.Combine(Application.StartupPath, DBDirName);
+        internal static string DBDirPathByLanguage => Path.Combine(DBDirPath, THSettings.SourceLanguage, THSettings.TargetLanguage);
 
 
         internal static string RPGMakerTransDirName => "rpgmakertrans";
