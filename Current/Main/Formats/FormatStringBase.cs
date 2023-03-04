@@ -294,11 +294,25 @@ namespace TranslationHelper.Formats
                 if (ParseData.ResultForWrite.Length <= 0) return false;
                 if (FunctionsFileFolder.FileInUse(GetSaveFilePath())) return false;
 
-                File.WriteAllText(filePath.Length > 0 ? filePath : AppData.CurrentProject.IsSaveToSourceFile ? base.GetOpenFilePath() : GetSaveFilePath(), ParseData.ResultForWrite.ToString(), WriteEncoding());
+                DoWriteFile();
                 return true;
             }
             catch { }
             return false;
+        }
+
+        protected override bool DoWriteFile(string filePath = "")
+        {
+            try
+            {
+                File.WriteAllText(filePath.Length > 0 ? filePath : AppData.CurrentProject.IsSaveToSourceFile ? base.GetOpenFilePath() : GetSaveFilePath(), ParseData.ResultForWrite.ToString(), WriteEncoding());
+            }
+            catch
+            {
+                return false;
+            }
+
+            return true;
         }
 
         protected override void SetTranslationIsTranslatedAction()

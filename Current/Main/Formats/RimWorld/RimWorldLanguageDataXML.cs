@@ -1,5 +1,6 @@
 ﻿using System.IO;
 using System.Xml;
+using System.Xml.Linq;
 
 namespace TranslationHelper.Formats.RimWorld
 {
@@ -9,9 +10,15 @@ namespace TranslationHelper.Formats.RimWorld
 
         protected override void ParseFileContent()
         {
-            XmlDocument xmldoc = new XmlDocument();
-            FileStream fs = new FileStream(FilePath, FileMode.Open, FileAccess.Read);
-            xmldoc.Load(fs);
+            var xmldoc = new XmlDocument
+            {
+                PreserveWhitespace = true
+            };
+            using (var fs = new FileStream(FilePath, FileMode.Open, FileAccess.Read))
+            {
+                xmldoc.Load(fs);
+            }
+
             var languageDataNode = xmldoc.GetElementsByTagName("LanguageData");
             foreach (XmlNode subnode in languageDataNode[0].ChildNodes)
             {
@@ -28,7 +35,7 @@ namespace TranslationHelper.Formats.RimWorld
                 }
             }
 
-            if (SaveFileMode && ParseData.Ret) ParseData.ResultForWrite.Append(xmldoc.Value);
+            if (SaveFileMode && ParseData.Ret) ParseData.ResultForWrite.Append(xmldoc.OuterXml);
         }
     }
 }

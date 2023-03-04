@@ -7,6 +7,7 @@ using System.Threading;
 using TranslationHelper.Data;
 using TranslationHelper.Extensions;
 using TranslationHelper.Functions;
+using WolfTrans.Net.Parsers.Events.Map.Event;
 
 namespace TranslationHelper.Formats
 {
@@ -428,7 +429,18 @@ namespace TranslationHelper.Formats
             return OpenFileMode ? CheckTablesContent(FileName) : WriteFileData();
         }
 
+        /// <summary>
+        /// Check if can write and then <seealso cref="DoWriteFile(string)"/>
+        /// </summary>
+        /// <param name="filePath"></param>
+        /// <returns></returns>
         protected virtual bool WriteFileData(string filePath = "") => false;
+        /// <summary>
+        /// Do write file here after it was checked in <seealso cref="WriteFileData(string)"/>
+        /// </summary>
+        /// <param name="filePath"></param>
+        /// <returns></returns>
+        protected virtual bool DoWriteFile(string filePath = "") => false;
 
         /// <summary>
         /// Check string if it is valid for add to work table.
