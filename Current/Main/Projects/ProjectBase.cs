@@ -5,6 +5,7 @@ using System.Data;
 using System.IO;
 using System.Text.RegularExpressions;
 using TranslationHelper.Data;
+using TranslationHelper.Main.Functions;
 using TranslationHelper.Menus.FileRowMenus;
 using TranslationHelper.Menus.FilesListMenus;
 using TranslationHelper.Menus.MainMenus;
@@ -436,7 +437,7 @@ namespace TranslationHelper.Projects
         /// <summary>
         /// here can be set actions to execute after write of translation
         /// </summary>
-        internal virtual void AfterTranslationWriteActions() { System.Diagnostics.Process.Start("explorer.exe", AppData.CurrentProject.SelectedDir); }
+        internal virtual void AfterTranslationWriteActions() { FunctionsProcess.OpenProjectsDir(); }
 
         /// <summary>
         /// Main menus which need to be added for the project

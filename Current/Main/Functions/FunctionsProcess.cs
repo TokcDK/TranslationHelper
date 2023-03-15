@@ -110,7 +110,7 @@ namespace TranslationHelper.Main.Functions
             {
                 folder = AppData.CurrentProject.SelectedDir;
             }
-            Process.Start("explorer.exe", folder);
+            Process.Start("explorer.exe", "\"" + folder + "\"");
         }
 
         /// <summary>
