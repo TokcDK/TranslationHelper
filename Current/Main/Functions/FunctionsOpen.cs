@@ -184,7 +184,7 @@ namespace TranslationHelper.Functions
             foreach (var type in foundTypes)
             {
                 var inst = (IProject)Activator.CreateInstance(type);
-                var instName = !string.IsNullOrWhiteSpace(inst.Name) ? inst.Name : type.FullName;
+                var instName = !string.IsNullOrWhiteSpace(inst.Name) ? inst.Name + " (" + type.FullName + ")" : type.FullName;
                 foundForm.listBox1.Items.Add(instName);
             }
 
