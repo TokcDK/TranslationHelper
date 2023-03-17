@@ -305,7 +305,11 @@ namespace TranslationHelper.Formats
         {
             try
             {
-                File.WriteAllText(filePath.Length > 0 ? filePath : AppData.CurrentProject.IsSaveToSourceFile ? base.GetOpenFilePath() : GetSaveFilePath(), ParseData.ResultForWrite.ToString(), WriteEncoding());
+                filePath = filePath.Length > 0 ? filePath : AppData.CurrentProject.IsSaveToSourceFile ? base.GetOpenFilePath() : GetSaveFilePath();
+                if (!AppData.CurrentProject.IsSaveToSourceFile) Directory.CreateDirectory(Path.GetDirectoryName(filePath));
+                var content = ParseData.ResultForWrite.ToString();
+                var encoding = WriteEncoding();
+                File.WriteAllText(filePath, content, encoding);
             }
             catch
             {
