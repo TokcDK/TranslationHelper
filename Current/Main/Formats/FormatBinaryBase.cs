@@ -103,21 +103,22 @@ namespace TranslationHelper.Formats
 
         protected override bool WriteFileData(string filePath = "")
         {
+            return SaveFileMode // save mode
+                && ParseData.Ret // something translated
+                && ParseData.NewBinaryForWrite.Count > 0 // new bynary is not empty
+                && !FunctionsFileFolder.FileInUse(GetSaveFilePath())
+                && DoWriteFile(filePath);
+        }
+
+        protected override bool DoWriteFile(string filePath = "")
+        {
             try
             {
-                if (SaveFileMode // save mode
-                    && ParseData.Ret // something translated
-                    && ParseData.NewBinaryForWrite.Count > 0 // new bynary is not empty
-                    && !FunctionsFileFolder.FileInUse(GetSaveFilePath()) // file is not locked
-                    )
-                {
-                    File.WriteAllBytes(GetSaveFilePath(), ParseData.NewBinaryForWrite.ToArray());
-                    return true;
-                }
+                File.WriteAllBytes(GetSaveFilePath(), ParseData.NewBinaryForWrite.ToArray());
+                return true;
             }
             catch
             {
-
             }
             return false;
         }

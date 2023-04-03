@@ -210,20 +210,20 @@ namespace TranslationHelper.Formats
         /// <summary>
         /// Add string to table with options. In save mode will replace RowData with translation
         /// </summary>
-        /// <param name="RowData">reference to original string</param>
-        /// <param name="RowInfo">info about the string</param>
+        /// <param name="rowData">reference to original string</param>
+        /// <param name="rowInfo">info about the string</param>
         /// <returns></returns>
-        internal bool AddRowData(ref string RowData, string RowInfo = "", bool CheckInput = true, string existsTranslation = null)
+        internal bool AddRowData(ref string rowData, string rowInfo = "", bool isCheckInput = true, string existsTranslation = null)
         {
             if (OpenFileMode)
             {
-                return AddRowData(FileName, RowData, RowInfo, CheckInput);
+                return AddRowData(FileName, rowData, rowInfo, isCheckInput);
             }
             else
             {
-                if (CheckInput && !IsValidString(RowData)) return false;
+                if (isCheckInput && !IsValidString(rowData)) return false;
 
-                return SetTranslation(ref RowData, existsTranslation);
+                return SetTranslation(ref rowData, existsTranslation);
             }
         }
 
@@ -434,7 +434,7 @@ namespace TranslationHelper.Formats
         /// </summary>
         /// <param name="filePath"></param>
         /// <returns></returns>
-        protected virtual bool WriteFileData(string filePath = "") => false;
+        protected virtual bool WriteFileData(string filePath = "") => DoWriteFile(filePath);
         /// <summary>
         /// Do write file here after it was checked in <seealso cref="WriteFileData(string)"/>
         /// </summary>

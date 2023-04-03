@@ -10,16 +10,21 @@ namespace TranslationHelper.Projects.RPGMVXAce
 {
     internal class RPGMakerVXFromUnpackedData : ProjectBase
     {
-        public override string Name => "RPG Maker VX Ace .rvdata2 from Unpacked Data (WIP!)";
+        public override string Name => "RPG Maker VX Ace -Unpacked Data-";
 
-        public override bool Open()
-        {
-            return ProjectToolsOpenSave.OpenSaveFilesBase(this, Path.Combine(Path.GetDirectoryName(Data.AppData.SelectedFilePath),"Data"), typeof(RVDATA2), "*.rvdata2");
-        }
+        internal override string ProjectDBFolderName => "RPGMakerVXAce";
 
-        public override bool Save()
+        public override bool Open() { return OpenSave(); }
+
+        public override bool Save() { return OpenSave(); }
+
+        bool OpenSave()
         {
-            return false;
+            return ProjectToolsOpenSave
+                .OpenSaveFilesBase(this, 
+                Path.Combine(Path.GetDirectoryName(Data.AppData.SelectedFilePath), "Data"), 
+                typeof(RVDATA2), 
+                "*.rvdata2");
         }
 
         internal override bool IsValid()

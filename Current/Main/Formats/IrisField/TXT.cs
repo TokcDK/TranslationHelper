@@ -135,7 +135,7 @@ namespace TranslationHelper.Formats.IrisField
                 var choiceMatch = Regex.Match(choice, _choiceTextExtractionRegex);
                 var choiceText = choiceMatch.Groups[1].Value;
 
-                if (AddRowData(RowData: ref choiceText, RowInfo: "Choice: " + i) && SaveFileMode)
+                if (AddRowData(rowData: ref choiceText, rowInfo: "Choice: " + i) && SaveFileMode)
                 {
                     // only when translated
                     choiceText = choiceText.Replace(' ', '_'); // need to remove spaces in choice variants

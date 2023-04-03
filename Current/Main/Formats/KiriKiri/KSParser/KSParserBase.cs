@@ -517,7 +517,7 @@ namespace TranslationHelper.Formats.TyranoBuilder.Extracted
                             }
                             else
                             {
-                                AddRowData(ref value, "(Line part)\r\n" + ParseData.Line, CheckInput: true);
+                                AddRowData(ref value, "(Line part)\r\n" + ParseData.Line, isCheckInput: true);
                             }
 
                             parts.Add(value);
