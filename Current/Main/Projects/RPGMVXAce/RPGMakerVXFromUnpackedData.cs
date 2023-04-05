@@ -32,7 +32,7 @@ namespace TranslationHelper.Projects.RPGMVXAce
             var parent = Path.GetDirectoryName(Data.AppData.SelectedFilePath);
             var data = Path.Combine(parent, "Data");
 
-            return Directory.Exists(data) && File.Exists(Path.Combine(data, "System.rvdata2"));
+            return Directory.Exists(data) && Directory.EnumerateFiles(data, "*.rvdata2").Any();
         }
     }
 }
