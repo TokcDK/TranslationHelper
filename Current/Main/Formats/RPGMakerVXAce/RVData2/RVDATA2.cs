@@ -17,14 +17,14 @@ namespace TranslationHelper.Formats.RPGMakerVX.RVData2
         {
             bool isScripts = string.Equals(Path.GetFileNameWithoutExtension(FilePath), "scripts", StringComparison.InvariantCultureIgnoreCase);
 
-            _parser = new Parser();
-            foreach (var stringData in _parser.EnumerateStrings(FilePath))
+            if (isScripts)
             {
-                if (isScripts)
+                var parser = new ScriptsParser(FilePath);
+                foreach(var script in parser.EnumerateScripts())
                 {
                     // parse all strings inside quotes in script content
 
-                    var scriptContentToChange = stringData.Text;
+                    var scriptContentToChange = script.Content.Text;
                     if (scriptContentToChange.Length == 0) continue;
 
                     var mc = Regex.Matches(scriptContentToChange, /*@"[\""']([^\""'\r\n]+)[\""']"*/
@@ -42,7 +42,7 @@ namespace TranslationHelper.Formats.RPGMakerVX.RVData2
                         var m = mc[i];
                         var s = m.Groups[1].Value;
 
-                        if (AddRowData(ref s, stringData.Info.ToString()) && SaveFileMode)
+                        if (AddRowData(ref s, $"Script: {script.Title.Text}") && SaveFileMode)
                         {
                             isChanged = true;
                             scriptContentToChange = scriptContentToChange
@@ -51,18 +51,30 @@ namespace TranslationHelper.Formats.RPGMakerVX.RVData2
                         }
                     }
 
-                    if (isChanged && SaveFileMode) stringData.Text = scriptContentToChange;
+                    if (isChanged && SaveFileMode) script.Content.Text = scriptContentToChange;
                 }
-                else
-                {
-                    string s = stringData.Text;
-                    if (AddRowData(ref s, stringData.Info.ToString()) && SaveFileMode)
-                    {
-                        stringData.Text = s;
-                    }
-                }
-
             }
+            else
+            {
+                _parser = new Parser();
+                foreach (var stringData in _parser.EnumerateStrings(FilePath))
+                {
+                    if (isScripts)
+                    {
+                        continue;
+                    }
+                    else
+                    {
+                        string s = stringData.Text;
+                        if (AddRowData(ref s, stringData.Info.ToString()) && SaveFileMode)
+                        {
+                            stringData.Text = s;
+                        }
+                    }
+
+                }
+            }
+
         }
         protected override bool TrySave()
         {

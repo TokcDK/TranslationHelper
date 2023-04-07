@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using Alphaleonis.Win32.Filesystem;
-using Microsoft.Scripting.Utils;
 using TranslationHelper.Formats.Glitch_Pitch.IdolManager.Mod;
 
 namespace TranslationHelper.Projects.IdolManager.Mod
