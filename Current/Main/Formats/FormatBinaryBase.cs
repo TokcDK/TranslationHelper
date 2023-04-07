@@ -114,13 +114,18 @@ namespace TranslationHelper.Formats
         {
             try
             {
-                File.WriteAllBytes(GetSaveFilePath(), ParseData.NewBinaryForWrite.ToArray());
+                File.WriteAllBytes(GetSaveFilePath(), GetFileBytes());
                 return true;
             }
             catch
             {
             }
             return false;
+        }
+
+        protected virtual byte[] GetFileBytes()
+        {
+            return ParseData.NewBinaryForWrite.ToArray();
         }
 
         protected override void SetTranslationIsTranslatedAction()
