@@ -91,8 +91,8 @@ namespace TranslationHelper.Formats.RPGMakerVX.RVData2
             }
             else
             {
-                _parser = new Parser();
-                foreach (var stringData in _parser.EnumerateStrings(FilePath))
+                _parser = new Parser(FilePath);
+                foreach (var stringData in _parser.EnumerateStrings())
                 {
                     if (_isScripts)
                     {
@@ -138,7 +138,7 @@ namespace TranslationHelper.Formats.RPGMakerVX.RVData2
 
                     base.DoWriteFile(filePath);
                 }
-                else _parser.Write(FilePath);
+                else _parser.Write();
 
                 return true;
             }
