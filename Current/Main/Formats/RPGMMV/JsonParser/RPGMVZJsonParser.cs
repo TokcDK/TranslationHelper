@@ -23,7 +23,7 @@ namespace TranslationHelper.Formats.RPGMMV.JsonParser
             if (SkipCodesCount != excludedCodesCount)
             {
                 SkipCodesCount = excludedCodesCount;
-                RPGMVUtils.GetSkipCodes(ExcludedCodes);
+                RPGMUtils.GetSkipCodes(ExcludedCodes);
             }
 
             base.Init();
@@ -48,7 +48,7 @@ namespace TranslationHelper.Formats.RPGMMV.JsonParser
                 Format.AddRowData(tablename: JsonName, rowData: tokenValue, rowInfo: "JsonPath: "
                     + Environment.NewLine
                     + jsonValue.Path
-                    + (HasCurCode ? Environment.NewLine + "Code=" + CurrentEventCode + RPGMVUtils.GetCodeName(CurrentEventCode) : string.Empty)
+                    + (HasCurCode ? Environment.NewLine + "Code=" + CurrentEventCode + RPGMUtils.GetCodeName(CurrentEventCode) : string.Empty)
                     , isCheckInput: false);
             }
             else
@@ -199,7 +199,7 @@ namespace TranslationHelper.Formats.RPGMMV.JsonParser
                     Format.AddRowData(tablename: JsonName, rowData: fullmessage, rowInfo: "JsonPath: "
                         + Environment.NewLine
                         + jsonObject.Path
-                        + (HasCurCode ? Environment.NewLine + "Code=" + CurrentEventCode + RPGMVUtils.GetCodeName(CurrentEventCode) : string.Empty)
+                        + (HasCurCode ? Environment.NewLine + "Code=" + CurrentEventCode + RPGMUtils.GetCodeName(CurrentEventCode) : string.Empty)
                         , isCheckInput: true);
 
                     AddToStats();

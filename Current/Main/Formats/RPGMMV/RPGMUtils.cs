@@ -9,7 +9,7 @@ using TranslationHelper.Extensions;
 
 namespace TranslationHelper.Formats.RPGMMV
 {
-    public static class RPGMVUtils
+    public static class RPGMUtils
     {
         public static void GetSkipCodes(this Dictionary<int, string> excludedCodes)
         {

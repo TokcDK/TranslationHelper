@@ -250,7 +250,7 @@
     <Compile Include="Formats\RPGMMV\Other\ExternMessageCSV.cs" />
     <Compile Include="Formats\RPGMMV\RPGMMVBase.cs" />
     <Compile Include="Formats\RPGMMV\JsonParser\RPGMVZJsonParser.cs" />
-    <Compile Include="Formats\RPGMMV\RPGMVUtils.cs" />
+    <Compile Include="Formats\RPGMMV\RPGMUtils.cs" />
     <Compile Include="Formats\RPGMTransPatch\PatchTXTBase.cs" />
     <Compile Include="Formats\RPGMTransPatch\RPGMKTRANSPATCH.cs" />
     <Compile Include="Formats\RPGMTransPatch\RPGMTransOther.cs" />

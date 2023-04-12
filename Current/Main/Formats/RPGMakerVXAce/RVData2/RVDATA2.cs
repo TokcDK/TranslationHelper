@@ -2,6 +2,7 @@
 using System.IO;
 using System.Text.RegularExpressions;
 using RPGMakerVXRVData2Assistant;
+using TranslationHelper.Formats.RPGMMV;
 using TranslationHelper.Main.Functions;
 
 namespace TranslationHelper.Formats.RPGMakerVX.RVData2
@@ -17,7 +18,8 @@ namespace TranslationHelper.Formats.RPGMakerVX.RVData2
 
         protected override void FileOpen()
         {
-            _isScripts = string.Equals(Path.GetFileNameWithoutExtension(FilePath), "scripts", StringComparison.InvariantCultureIgnoreCase);
+            var name = Path.GetFileNameWithoutExtension(FilePath);
+            _isScripts = string.Equals(name, "scripts", StringComparison.InvariantCultureIgnoreCase);
 
             if (_isScripts)
             {
@@ -92,6 +94,8 @@ namespace TranslationHelper.Formats.RPGMakerVX.RVData2
             else
             {
                 _parser = new Parser(FilePath);
+                var isCommandsUser = string.Equals(name, "CommonEvents", StringComparison.InvariantCultureIgnoreCase)
+                    || Regex.IsMatch(name,"[Mm]ap[0-9]{3}");
                 foreach (var stringData in _parser.EnumerateStrings())
                 {
                     if (_isScripts)
@@ -101,7 +105,10 @@ namespace TranslationHelper.Formats.RPGMakerVX.RVData2
                     else
                     {
                         string s = stringData.Text;
-                        if (AddRowData(ref s, stringData.Info.ToString()) && SaveFileMode)
+                        var info = stringData.Info.ToString();
+                        if (isCommandsUser && IsSkipCode(info)) continue;
+
+                        if (AddRowData(ref s, info) && SaveFileMode)
                         {
                             stringData.Text = s;
                         }
@@ -110,6 +117,40 @@ namespace TranslationHelper.Formats.RPGMakerVX.RVData2
                 }
             }
 
+        }
+
+        protected override string FixInvalidSymbols(string str)
+        {
+            if (_isScripts)
+            {
+                // fix not escaped symbols for sccripts
+                foreach (var c in new[] { '"', '\\' })
+                {
+                    int ind = str.LastIndexOf('"');
+                    while (ind != -1)
+                    {
+                        var checkIndex = ind - 1;
+                        if (checkIndex > -1 && str[checkIndex] != '\\')
+                        {
+                            str = str.Insert(ind, "\\");
+                        }
+                        ind = str.LastIndexOf('"', checkIndex);
+                    }
+                }
+            }
+
+            return base.FixInvalidSymbols(str);
+        }
+
+        const string _codeInfoText = "Command code: ";
+        private bool IsSkipCode(string info)
+        {
+            var codeIndex = info.IndexOf(_codeInfoText);
+            if (codeIndex <= -1) return false;
+
+            var code = info.Substring(codeIndex + _codeInfoText.Length, 3);
+            return int.TryParse(code, out var codeInt)
+                && RPGMVLists.ExcludedCodes.ContainsKey(codeInt);
         }
 
         protected override bool WriteFileData(string filePath = "")

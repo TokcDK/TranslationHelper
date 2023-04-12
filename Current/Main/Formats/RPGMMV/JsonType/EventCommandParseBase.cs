@@ -72,7 +72,7 @@ namespace TranslationHelper.Formats.RPGMMV.JsonType
             if (SkipCodesCount != excludedCodesCount)
             {
                 SkipCodesCount = excludedCodesCount;
-                RPGMVUtils.GetSkipCodes(SkipCodes);
+                RPGMUtils.GetSkipCodes(SkipCodes);
             }
         }
 
@@ -140,7 +140,7 @@ namespace TranslationHelper.Formats.RPGMMV.JsonType
                             }
 
                             var commentInfo = isScriptCommand && string.IsNullOrWhiteSpace(commentStr) ? "" : $"\r\nComment:{commentStr}";
-                            if (AddRowData(ref s, isSave ? "" : info + $"\r\nCommand code: {command.Code}{RPGMVUtils.GetCodeName(command.Code)}\r\n Parameter #: {i}{commentInfo}") && SaveFileMode)
+                            if (AddRowData(ref s, isSave ? "" : info + $"\r\nCommand code: {command.Code}{RPGMUtils.GetCodeName(command.Code)}\r\n Parameter #: {i}{commentInfo}") && SaveFileMode)
                             {
                                 if (isScriptCommand) s = s + commentStr;
 
@@ -179,7 +179,7 @@ namespace TranslationHelper.Formats.RPGMMV.JsonType
                         if (!(value.Value is string s)) break;
 
                         // add string in open mode and continue
-                        if (!AddRowData(ref s, SaveFileMode ? "" : data.ParentInfo + $"\r\nCommand code: {data.ParentCommand.Code}{RPGMVUtils.GetCodeName(data.ParentCommand.Code)}\r\n Parameter #: {data.ParameterIndex}") || !SaveFileMode) break;
+                        if (!AddRowData(ref s, SaveFileMode ? "" : data.ParentInfo + $"\r\nCommand code: {data.ParentCommand.Code}{RPGMUtils.GetCodeName(data.ParentCommand.Code)}\r\n Parameter #: {data.ParameterIndex}") || !SaveFileMode) break;
 
                         // set translation in save mode
                         value.Value = s;
@@ -227,7 +227,7 @@ namespace TranslationHelper.Formats.RPGMMV.JsonType
             var s = string.Join("\r\n", message.Select(m => m.Parameters[0]));
             int extraLinesCount = 0;
             var newMessage = new List<Command>();
-            if (AddRowData(ref s, SaveFileMode ? "" : info + $"\r\nCommand code: {message[0].Code}{RPGMVUtils.GetCodeName(message[0].Code)}\r\nParameter #: {0}") && SaveFileMode)
+            if (AddRowData(ref s, SaveFileMode ? "" : info + $"\r\nCommand code: {message[0].Code}{RPGMUtils.GetCodeName(message[0].Code)}\r\nParameter #: {0}") && SaveFileMode)
             {
                 int lineIndex = 0;
                 foreach (var line in s.SplitToLines())
