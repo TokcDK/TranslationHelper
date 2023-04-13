@@ -46,9 +46,9 @@
         static object _soundLocker = new object();
         internal static void PlayBeep()
         {
-            lock(_soundLocker)
+            lock (_soundLocker)
             {
-                new System.Media.SoundPlayer(@"RES\sounds\complete.wav").Play();
+                new System.Media.SoundPlayer(Data.AppSettings.ApplicationStartupPath + @"\RES\sounds\complete.wav").Play();
             }
         }
 
