@@ -48,7 +48,7 @@ namespace TranslationHelper.Menus.MainMenus.Edit
 
     internal class MenuItemCaseMorphUPPERAllVariated : AllTableRowsChildMenuBase
     {
-        public override string Text => T._("To Upper");
+        public override string Text => T._("To UPPER");
 
         public override string Description => T._("Change case of row string chars to UPPER");
 
