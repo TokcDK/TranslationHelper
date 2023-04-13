@@ -22,19 +22,14 @@ namespace TranslationHelper.Formats.RPGMMV.JS
                 {
                     // remove comment // area and get matches
                     var lineNoComment = ParseData.Line.Split(new[] { "//" }, System.StringSplitOptions.None)[0];
-                    var mc = Regex.Matches(lineNoComment, /*@"[\""']([^\""'\r\n]+)[\""']"*/
-                          PreQuoteRegexPattern + @"" + regexQuote + @"([^" + regexQuote + @"\r\n\\]*(?:\\.[^" + regexQuote + @"\\]*)*)" + regexQuote //all between " or ' include \" or \' : x: "abc" or "abc\"" or 'abc' or 'abc\''
-                        );
+                    var mc = Regex.Matches(lineNoComment, AppMethods.GetRegexQuotesCapturePattern(regexQuote));
                     for (int m = mc.Count - 1; m >= 0; m--) // negative because lenght of string will be changing
                     {
                         var match = mc[m];
 
                         var result = match.Result("$1");
 
-                        if (!IsValidString(result))
-                        {
-                            continue;
-                        }
+                        if (!IsValidString(result)) continue;
 
                         if (OpenFileMode)
                         {
@@ -43,10 +38,7 @@ namespace TranslationHelper.Formats.RPGMMV.JS
                         else
                         {
                             string translation = result;
-                            if (!SetTranslation(ref translation))
-                            {
-                                continue;
-                            }
+                            if (!SetTranslation(ref translation)) continue;
 
                             //1111 abc "aaa"
                             int index = match.Value.IndexOf(result); // get internal index of result

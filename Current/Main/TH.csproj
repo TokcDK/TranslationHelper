@@ -112,6 +112,7 @@
     <Compile Include="appSettings\Sections\General\CheckBox\SLineCharLimit.cs" />
     <Compile Include="appSettings\Sections\General\CheckBox\SFullComprasionDBload.cs" />
     <Compile Include="Data\AppSettings.cs" />
+    <Compile Include="Data\AppMethods.cs" />
     <Compile Include="Formats\AI6WIN\MESTXT.cs" />
     <Compile Include="Formats\Glitch Pitch\Idol Manager\Mod\IdolManagerModBase.cs" />
     <Compile Include="Formats\Glitch Pitch\Idol Manager\Mod\Marketing_json.cs" />

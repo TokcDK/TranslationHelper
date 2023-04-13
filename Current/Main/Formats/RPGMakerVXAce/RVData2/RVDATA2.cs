@@ -2,6 +2,7 @@
 using System.IO;
 using System.Text.RegularExpressions;
 using RPGMakerVXRVData2Assistant;
+using TranslationHelper.Data;
 using TranslationHelper.Formats.RPGMMV;
 using TranslationHelper.Main.Functions;
 
@@ -23,6 +24,7 @@ namespace TranslationHelper.Formats.RPGMakerVX.RVData2
 
             if (_isScripts)
             {
+                var quoteCapturePattern = AppMethods.GetRegexQuotesCapturePattern();
                 _scriptsParser = new ScriptsParser(FilePath);
                 foreach (var script in _scriptsParser.EnumerateRMScripts())
                 {
@@ -31,9 +33,7 @@ namespace TranslationHelper.Formats.RPGMakerVX.RVData2
                     var scriptContentToChange = script.Text;
                     if (scriptContentToChange.Length == 0) continue;
 
-                    var mc = Regex.Matches(scriptContentToChange, /*@"[\""']([^\""'\r\n]+)[\""']"*/
-                            @"" + regexQuote + @"([^" + regexQuote + @"\r\n\\]*(?:\\.[^" + regexQuote + @"\r\n\\]*)*)" + regexQuote //all between " or ' include \" or \' : x: "abc" or "abc\"" or 'abc' or 'abc\''
-                        );
+                    var mc = Regex.Matches(scriptContentToChange, quoteCapturePattern);
 
                     var mcCount = mc.Count;
                     if (mcCount == 0) continue;
