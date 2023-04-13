@@ -11,7 +11,6 @@ namespace TranslationHelper.Formats.RPGMakerVX.RVData2
     internal class RVDATA2 : FormatBinaryBase
     {
         public override string Extension => ".rvdata2";
-        readonly string regexQuote = @"\""";
         bool _isScripts = false;
 
         Parser _parser;
