@@ -57,39 +57,6 @@ namespace TranslationHelper.Formats.RPGMakerVX.RVData2
 
                     if (isChanged && SaveFileMode) script.Text = scriptContentToChange;
                 }
-                //foreach(var script in parser.EnumerateScripts())
-                //{
-                //    // parse all strings inside quotes in script content
-
-                //    var scriptContentToChange = script.Content.Text;
-                //    if (scriptContentToChange.Length == 0) continue;
-
-                //    var mc = Regex.Matches(scriptContentToChange, /*@"[\""']([^\""'\r\n]+)[\""']"*/
-                //            @"" + regexQuote + @"([^" + regexQuote + @"\r\n\\]*(?:\\.[^" + regexQuote + @"\\]*)*)" + regexQuote //all between " or ' include \" or \' : x: "abc" or "abc\"" or 'abc' or 'abc\''
-                //        );
-
-                //    var mcCount = mc.Count;
-                //    if (mcCount == 0) continue;
-
-                //    bool isChanged = false;
-
-                //    // negative order because length of content is changing
-                //    for (int i = mcCount - 1; i >= 0; i--)
-                //    {
-                //        var m = mc[i];
-                //        var s = m.Groups[1].Value;
-
-                //        if (AddRowData(ref s, $"Script: {script.Title.Text}") && SaveFileMode)
-                //        {
-                //            isChanged = true;
-                //            scriptContentToChange = scriptContentToChange
-                //                .Remove(m.Index, m.Length)
-                //                .Insert(m.Index, "\"" + s + "\"");
-                //        }
-                //    }
-
-                //    if (isChanged && SaveFileMode) script.Content.Text = scriptContentToChange;
-                //}
             }
             else
             {
