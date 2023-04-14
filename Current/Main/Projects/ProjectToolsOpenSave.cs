@@ -113,6 +113,8 @@ namespace TranslationHelper.Projects
             var filesList = getNewestFiles ? GetNewestFilesList(DirForSearch, mask) : DirForSearch.EnumerateFiles(mask, searchOption);
             Parallel.ForEach(filesList, file =>
             {
+                if (File.Exists(file + ".skipme") || File.Exists(file + ".skip")) return;
+
                 if (project.OpenFileMode && File.Exists(file.FullName + ".bak")) ProjectToolsBackup.RestoreFile(file.FullName);
                 if (project.SaveFileMode
                 && !File.Exists(file.FullName + ".bak")
