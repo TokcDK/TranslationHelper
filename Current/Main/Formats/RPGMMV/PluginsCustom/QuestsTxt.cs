@@ -1,9 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Text.RegularExpressions;
-using System.Threading.Tasks;
 
 namespace TranslationHelper.Formats.RPGMMV.PluginsCustom
 {
@@ -15,7 +13,7 @@ namespace TranslationHelper.Formats.RPGMMV.PluginsCustom
             {
                 var questData = new List<string> { ParseData.Line };
                 bool questDataClosed = false;
-                while (ReadLine() != null && (questDataClosed = ParseData.Line != "</quest>"))
+                while (ReadLine() != null && !(questDataClosed = ParseData.Line == "</quest>"))
                 {
                     questData.Add(ParseData.Line);
                 }
@@ -31,11 +29,11 @@ namespace TranslationHelper.Formats.RPGMMV.PluginsCustom
 
                 bool isTranslated = false;
                 bool isName = true;
-                foreach((string sValue, string type) in new[] { (questName,$"Quest {questNumber} Name"), (questDescription, $"Quest {questNumber} Description") })
+                foreach ((string sValue, string type) in new[] { (questName, $"Quest {questNumber} Name"), (questDescription, $"Quest {questNumber} Description") })
                 {
                     var s = sValue;
 
-                    if(AddRowData(ref s, type) && SaveFileMode)
+                    if (AddRowData(ref s, type) && SaveFileMode)
                     {
                         isTranslated = true;
                         if (isName)
@@ -57,11 +55,11 @@ namespace TranslationHelper.Formats.RPGMMV.PluginsCustom
                 {
                     if (isTranslated)
                     {
-                        ParseData.Line = questName + "\r\n" + questDescription + ParseData.Line;
+                        ParseData.Line = questName + "\r\n" + questDescription + "\r\n" + ParseData.Line;
                     }
                     else
                     {
-                        ParseData.Line = string.Join("\r\n", questData) + ParseData.Line;
+                        ParseData.Line = string.Join("\r\n", questData) + "\r\n" + ParseData.Line;
                     }
                 }
 
