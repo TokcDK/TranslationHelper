@@ -52,7 +52,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
             internal readonly int LineIndex;
             internal readonly string OriginalText;
             internal string TranslationText;
-            internal ExtractRegexInfo RegexExtractionData = new ExtractRegexInfo();
+            internal ExtractRegexInfo RegexExtractionData;
 
             public LineTranslationData(int lineIndex, string originalText)
             {
@@ -194,24 +194,24 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
 
                 int skippedValuesCount = 0;
                 //parse all extracted values from original
-                foreach (var val in extractData.ValueDataList)
+                foreach (var valueData in extractData.ValueDataList)
                 {
                     // get translation from cache
-                    var valcache = AppData.OnlineTranslationCache.GetValueFromCacheOrReturnEmpty(val.Key);
+                    var valcache = AppData.OnlineTranslationCache.GetValueFromCacheOrReturnEmpty(valueData.Original);
 
                     if (!string.IsNullOrEmpty(valcache))
                     {
                         skippedValuesCount++;
-                        val.Value.Translation = valcache; // add translation from cache if found
+                        valueData.Translation = valcache; // add translation from cache if found
                     }
-                    else if (val.Key.IsSoundsText() || !val.Key.IsValidForTranslation())
+                    else if (valueData.Original.IsSoundsText() || !valueData.Original.IsValidForTranslation())
                     {
                         skippedValuesCount++;
-                        val.Value.Translation = val.Key; // original=translation when value is soundtext
+                        valueData.Translation = valueData.Original; // original=translation when value is soundtext
                     }
                     else
                     {
-                        Size += val.Key.Length; // increase size of string for translation for check later
+                        Size += valueData.Original.Length; // increase size of string for translation for check later
                     }
                 }
 
@@ -308,11 +308,11 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
                         {
                             foreach (var value in lineData.RegexExtractionData.ValueDataList)
                             {
-                                if (!orig.Contains(value.Key)
-                                    && (string.IsNullOrEmpty(value.Value.Translation))
-                                    && value.Key.IsValidForTranslation())
+                                if (!orig.Contains(value.Original)
+                                    && (string.IsNullOrEmpty(value.Translation))
+                                    && value.Original.IsValidForTranslation())
                                 {
-                                    orig.Add(value.Key);
+                                    orig.Add(value.Original);
                                 }
                             }
 
@@ -431,11 +431,11 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
                         {
                             foreach (var value in lineData.RegexExtractionData.ValueDataList)
                             {
-                                if (value.Value.Translation != null && value.Value.Translation != value.Key) continue;
-                                if (!value.Key.IsValidForTranslation()) continue;
-                                if (!translations.ContainsKey(value.Key)) continue;
+                                if (value.Translation != null && value.Translation != value.Original) continue;
+                                if (!value.Original.IsValidForTranslation()) continue;
+                                if (!translations.ContainsKey(value.Original)) continue;
 
-                                value.Value.Translation = translations[value.Key];
+                                value.Translation = translations[value.Original];
                             }
 
                             continue;
@@ -546,7 +546,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
 
             var newLineText = lineData.OriginalText;
 
-            var list = new List<ExtractRegexValueInfo>(lineData.RegexExtractionData.ValueDataList.Values);
+            var list = lineData.RegexExtractionData.ValueDataList;
             var maxValueDataIndex = list.Count - 1;
             for (int i = maxValueDataIndex; i >= 0; i--)
             {
