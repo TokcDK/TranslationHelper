@@ -22,6 +22,15 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
 
     public class ExtractRegexInfo
     {
+        public ExtractRegexInfo(string inputString)
+        {
+            InputString = inputString;
+        }
+
+        /// <summary>
+        /// Input string from which values was extracted
+        /// </summary>
+        public string InputString { get; }
         /// <summary>
         /// Regex text values to capture with
         /// </summary>
@@ -37,18 +46,29 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
         /// <summary>
         /// Captured values data
         /// </summary>
-        public Dictionary<string, ExtractRegexValueInfo> ValueDataList = new Dictionary<string, ExtractRegexValueInfo>();
+        public List<ExtractRegexValueInfo> ValueDataList = new List<ExtractRegexValueInfo>();
+
     }
     public class ExtractRegexValueInfo
     {
+        public ExtractRegexValueInfo(string original)
+        {
+            Original = original;
+        }
+
+        /// <summary>
+        /// Captured group match value original
+        /// </summary>
+        public string Original { get; }
+
+        /// <summary>
+        /// Captured group match value translation
+        /// </summary>
+        public string Translation;
+
         /// <summary>
         /// Captured groups for the original text value
         /// </summary>
         public List<Group> MatchGroups = new List<Group>();
-        
-        /// <summary>
-        /// Captured group match values translation
-        /// </summary>
-        public string Translation;
     }
 }
