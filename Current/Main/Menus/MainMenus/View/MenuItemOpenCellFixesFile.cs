@@ -1,18 +1,13 @@
 ﻿using System;
 using System.Diagnostics;
 using TranslationHelper.Data;
+using TranslationHelper.Menus.MainMenus.View;
 
 namespace TranslationHelper.Menus.MainMenus.Edit
 {
-    internal class MenuItemOpenCellFixesFile : MainMenuViewSubItemBase
+    internal class MenuItemOpenCellFixesFile : OpenPathByExplorerMainMenuViewSubItemBase
     {
-        public override string Text => T._("OpenTranslationRulesFile");
-
-        public override string Description => Text;
-
-        public override void OnClick(object sender, EventArgs e)
-        {
-            if (System.IO.File.Exists(THSettings.CellFixesRegexRulesFilePath)) _ = Process.Start("explorer.exe", THSettings.CellFixesRegexRulesFilePath);
-        }
+        public override string Name => T._("CellFixes rules file");
+        public override string DirPath => THSettings.CellFixesRegexRulesFilePath;
     }
 }

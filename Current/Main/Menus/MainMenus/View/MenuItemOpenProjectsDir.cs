@@ -14,15 +14,16 @@ using TranslationHelper.Functions.FileElementsFunctions.Row;
 using TranslationHelper.Main.Functions;
 using TranslationHelper.Menus.FileRowMenus;
 using TranslationHelper.Menus.MainMenus.File;
+using TranslationHelper.Menus.MainMenus.View;
 using TranslationHelper.Projects.RPGMTrans;
 
 namespace TranslationHelper.Menus.MainMenus.Edit
 {
-    internal class MenuItemOpenProjectsDir : MainMenuViewSubItemBase, IProjectMenuItem
+    internal class MenuItemOpenProjectsDir : OpenPathByExplorerMainMenuViewSubItemBase, IProjectMenuItem
     {
-        public override string Text => T._("OpenProjectsDir");
+        public override string Name => T._("Selected projects dir");
 
-        public override string Description => Text;
+        public override string DirPath => "";
 
         public override void OnClick(object sender, EventArgs e)
         {

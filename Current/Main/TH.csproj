@@ -413,6 +413,7 @@
     <Compile Include="Menus\MainMenus\MainMenuItemBase.cs" />
     <Compile Include="Menus\MainMenus\MenusSortData\IMenusSortData.cs" />
     <Compile Include="Menus\MainMenus\MenusSortData\MainMenusSortData.cs" />
+    <Compile Include="Menus\MainMenus\View\OpenPathByExplorerMainMenuViewSubItemBase.cs" />
     <Compile Include="Menus\MainMenus\View\MainMenuViewSubItemBase.cs" />
     <Compile Include="Menus\MainMenus\View\MenuItemReloadRules.cs" />
     <Compile Include="Menus\MainMenus\View\MenuItemOpenSettings.cs" />
