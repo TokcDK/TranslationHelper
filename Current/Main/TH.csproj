@@ -128,6 +128,7 @@
     <Compile Include="Formats\RPGMakerVXAce\RVData2\RVDATA2.cs" />
     <Compile Include="Formats\RPGMMV\JsonType\JsonEventCommandsList.cs" />
     <Compile Include="Formats\RPGMMV\JsonType\JsonSystemMZ.cs" />
+    <Compile Include="Formats\RPGMMV\PluginsCustom\QuestsTxt.cs" />
     <Compile Include="Formats\RPGMMV\RPGMVLists.cs" />
     <Compile Include="Formats\RPGMMV\StopCVPluginTXT.cs" />
     <Compile Include="Formats\WolfRPG\TextEPH.cs" />
