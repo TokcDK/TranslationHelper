@@ -10,6 +10,7 @@ using TranslationHelper.Formats.RPGMMV;
 using TranslationHelper.Formats.RPGMMV.JS;
 using TranslationHelper.Formats.RPGMMV.JsonType;
 using TranslationHelper.Formats.RPGMMV.Other;
+using TranslationHelper.Formats.RPGMMV.PluginsCustom;
 using TranslationHelper.Functions;
 using TranslationHelper.Functions.FileElementsFunctions.Row.FillEmptyTablesLinesDict;
 using TranslationHelper.Menus.FilesListMenus;
@@ -108,14 +109,15 @@ namespace TranslationHelper.Projects.RPGMMV
         private bool ParsePluginsStrings()
         {
             bool ret = false;
-            var mvdatadir = new DirectoryInfo(Path.Combine(WWWDir, "data"));
-            if (ProjectToolsOpenSave.OpenSaveFilesBase(this, mvdatadir, typeof(ExternMessageCSV), "*.csv")) ret = true;
+            var dirWhereSearch = new DirectoryInfo(Path.Combine(WWWDir, "data"));
+            if (ProjectToolsOpenSave.OpenSaveFilesBase(this, dirWhereSearch, typeof(ExternMessageCSV), "*.csv")) ret = true;
+            if (ProjectToolsOpenSave.OpenSaveFilesBase(this, dirWhereSearch, typeof(QuestsTxt), "Quests.txt", searchOption: SearchOption.TopDirectoryOnly)) ret = true;
 
-            mvdatadir = new DirectoryInfo(Path.Combine(mvdatadir.FullName, "tes"));
-            if (ProjectToolsOpenSave.OpenSaveFilesBase(this, mvdatadir, typeof(JsonEventCommandsList), "*.json")) ret = true;
+            dirWhereSearch = new DirectoryInfo(Path.Combine(dirWhereSearch.FullName, "tes"));
+            if (ProjectToolsOpenSave.OpenSaveFilesBase(this, dirWhereSearch, typeof(JsonEventCommandsList), "*.json")) ret = true;
 
-            mvdatadir = new DirectoryInfo(Path.Combine(WWWDir, "scenarios"));
-            if (ProjectToolsOpenSave.OpenSaveFilesBase(this, mvdatadir, typeof(StopCVPluginTXT), "*.txt")) ret = true;
+            dirWhereSearch = new DirectoryInfo(Path.Combine(WWWDir, "scenarios"));
+            if (ProjectToolsOpenSave.OpenSaveFilesBase(this, dirWhereSearch, typeof(StopCVPluginTXT), "*.txt")) ret = true;
 
             return ret;
         }
