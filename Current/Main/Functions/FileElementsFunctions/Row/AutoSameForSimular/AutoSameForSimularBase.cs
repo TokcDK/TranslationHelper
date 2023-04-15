@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Threading.Tasks;
+using System.Windows.Shapes;
+using TranslationHelper.Extensions;
 using TranslationHelper.Functions.FileElementsFunctions.Row.AutoSameForSimular;
 
 namespace TranslationHelper.Functions.FileElementsFunctions.Row
@@ -22,6 +24,31 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
         private async void Set()
         {
             await Task.Run(() => AutoSameForSimularUtils.Set(inputTableIndex: SelectedTableIndex, inputRowIndex: SelectedRowIndex, inputForceSetValue: IsForce)).ConfigureAwait(false);
+
+        }
+
+        class SameFormSimilarData
+        {
+
+        }
+
+        void SameForSimilar()
+        {
+            var originalCellValue = SelectedRow[Data.AppData.CurrentProject.OriginalColumnIndex] + "";
+            var translatedCellValue = SelectedRow[Data.AppData.CurrentProject.TranslationColumnIndex] + "";
+
+            if (originalCellValue == translatedCellValue) return;
+
+
+            var extractDataOriginal = originalCellValue.ExtractMulty();
+            var extractDataTranslation = translatedCellValue.ExtractMulty();
+
+            if (extractDataOriginal.ValueDataList.Count != extractDataTranslation.ValueDataList.Count)
+            {
+                return;
+            }
+
+
         }
     }
 }
