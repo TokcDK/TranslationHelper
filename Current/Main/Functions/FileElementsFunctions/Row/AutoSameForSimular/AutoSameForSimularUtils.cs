@@ -263,7 +263,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row.AutoSameForSimul
             AutoSame4SimilarStack.Remove(inputTableRowOriginalCellValue);
         }
 
-        private static void SetSameIfUseDups(DataTable inputTable, string inputOriginalValue, int inputRowIndex, bool inputForceSetValue, string inputTranslationValue)
+        public static void SetSameIfUseDups(DataTable inputTable, string inputOriginalValue, int inputRowIndex, bool inputForceSetValue, string inputTranslationValue)
         {
             var inputTableName = inputTable.TableName;
             foreach (var storedTableName in AppData.CurrentProject.OriginalsTableRowCoordinates[inputOriginalValue])
