@@ -16,14 +16,12 @@ namespace TranslationHelper.Extensions
         /// <summary>
         /// extract captured groups from string
         /// </summary>
-        /// <param name="line"></param>
-        /// <param name="lineCoordinates"></param>
-        /// <param name="lineNum"></param>
+        /// <param name="inputString"></param>
         /// <returns></returns>
-        internal static ExtractRegexInfo ExtractMulty(this string line)
+        internal static ExtractRegexInfo ExtractMulty(this string inputString)
         {
             var log = new FunctionsLogs();
-            var extractRegexData = new ExtractRegexInfo();
+            var extractRegexData = new ExtractRegexInfo(inputString);
             try
             {
                 foreach (var PatternReplacementPair in AppData.TranslationRegexRules)
@@ -34,7 +32,7 @@ namespace TranslationHelper.Extensions
                     try 
                     {
                         regex = new Regex(PatternReplacementPair.Key);
-                        match = regex.Match(line);
+                        match = regex.Match(inputString);
 
                         if (!match.Success) continue; 
                     }
@@ -50,19 +48,24 @@ namespace TranslationHelper.Extensions
                     extractRegexData.Pattern = PatternReplacementPair.Key;
                     extractRegexData.Replacer = PatternReplacementPair.Value;
 
+                    var added = new Dictionary<string, ExtractRegexValueInfo>();
+
                     // add matched groups values
                     foreach (Group g in match.Groups)
                     {
                         if (!extractRegexData.Replacer.Contains("$" + g.Name)) continue; // skip if group is missing in replacer value
 
                         ExtractRegexValueInfo valueData = null;
-                        if (extractRegexData.ValueDataList.ContainsKey(g.Value)) valueData = extractRegexData.ValueDataList[g.Value];
-                        else extractRegexData.ValueDataList.Add(g.Value, valueData = new ExtractRegexValueInfo());
+                        if (added.ContainsKey(g.Value)) valueData = added[g.Value];
+                        else added.Add(g.Value, valueData = new ExtractRegexValueInfo(g.Value));
 
                         if (valueData.MatchGroups.Contains(g)) continue;
 
                         valueData.MatchGroups.Add(g);
                     }
+
+                    // set va;ues to extractregexinfo return
+                    extractRegexData.ValueDataList = new List<ExtractRegexValueInfo>(added.Values);
 
                     break; // regex found skip other
                 }
@@ -70,7 +73,7 @@ namespace TranslationHelper.Extensions
             catch (InvalidOperationException) // in case of collection was changed exception when rules was changed in time of iteration
             {
                 // retry extraction
-                return line.ExtractMulty();
+                return inputString.ExtractMulty();
             }
 
             return extractRegexData;
