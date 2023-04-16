@@ -1,7 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Data;
-using System.Diagnostics;
 using System.Drawing;
 using System.Globalization;
 using System.IO;
@@ -11,15 +9,13 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Windows.Controls.Primitives;
 using System.Windows.Forms;
-using CSRegisterHotkey;
 using TranslationHelper.Data;
 using TranslationHelper.Extensions;
 using TranslationHelper.Functions;
 using TranslationHelper.Functions.FileElementsFunctions.Row;
 using TranslationHelper.Functions.FileElementsFunctions.Row.AutoSameForSimular;
-using TranslationHelper.Functions.FileElementsFunctions.Row.HardFixes;
-using TranslationHelper.Functions.FileElementsFunctions.Row.StringCaseMorph;
 using TranslationHelper.Main.Functions;
 using TranslationHelper.Menus.MainMenus.File;
 
@@ -313,12 +309,7 @@ namespace TranslationHelper
 
                 FunctionsMenus.CreateFileRowMenus();
 
-                // bind textboxes to cells
-                AppData.Main.THSourceRichTextBox.DataBindings.Clear();
-                AppData.Main.THSourceRichTextBox.DataBindings.Add(new Binding("Text", AppData.Main.THFileElementsDataGridView.DataSource, THSettings.OriginalColumnName, true));
-                AppData.Main.THTargetRichTextBox.DataBindings.Clear();
-                AppData.Main.THTargetRichTextBox.DataBindings.Add(new Binding("Text", AppData.Main.THFileElementsDataGridView.DataSource, THSettings.TranslationColumnName, true));
-
+                BindTextBoxesOriginalTranslation();
             }
             catch (Exception)
             {
@@ -475,12 +466,9 @@ namespace TranslationHelper
             try
             {
                 if (THFileElementsDataGridView.CurrentCell == null) return;
+                var selected = AppData.Main.THFileElementsDataGridView.SelectedCells;
 
-                //// bind textboxes to cells
-                //AppData.Main.THSourceRichTextBox.DataBindings.Clear();
-                //AppData.Main.THSourceRichTextBox.DataBindings.Add(new Binding("Text", AppData.Main.THFileElementsDataGridView.DataSource, THSettings.OriginalColumnName, true));
-                //AppData.Main.THTargetRichTextBox.DataBindings.Clear();
-                //AppData.Main.THTargetRichTextBox.DataBindings.Add(new Binding("Text", AppData.Main.THFileElementsDataGridView.DataSource, THSettings.TranslationColumnName, true));
+                BindTextBoxesOriginalTranslation();
 
                 var tableIndex = AppSettings.THFilesListSelectedIndex = THFilesList.GetSelectedIndex();
                 if (tableIndex == -1) return;
@@ -570,6 +558,18 @@ namespace TranslationHelper
                 //THInfoTextBox.Text += furigana.ReadingHtml + "\r\n";
             }
             catch { }
+        }
+
+        private void BindTextBoxesOriginalTranslation()
+        {
+            // this way binding on each selected row changed event, it prevents errors with threads of bound dataset to dgv and seems not causing slowdown
+            var selected = AppData.Main.THFileElementsDataGridView.SelectedCells;
+            if (selected.Count == 0) return;
+            var rowIndex = selected[0].RowIndex;
+            AppData.Main.THSourceRichTextBox.DataBindings.Clear();
+            AppData.Main.THSourceRichTextBox.DataBindings.Add(new Binding("Text", AppData.Main.THFileElementsDataGridView[AppData.CurrentProject.OriginalColumnIndex, rowIndex], "Value", false));
+            AppData.Main.THTargetRichTextBox.DataBindings.Clear();
+            AppData.Main.THTargetRichTextBox.DataBindings.Add(new Binding("Text", AppData.Main.THFileElementsDataGridView[AppData.CurrentProject.TranslationColumnIndex, rowIndex], "Value", false));                        
         }
 
         private void UpdateRowInfo(int tableIndex, int columnIndex, int rowIndex)
@@ -1364,7 +1364,7 @@ namespace TranslationHelper
 
         private void SetColumnSortingToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            
+
         }
 
         bool WriteDBFileIsBusy;
