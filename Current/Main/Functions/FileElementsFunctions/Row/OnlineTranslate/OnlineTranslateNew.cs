@@ -58,6 +58,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
             {
                 LineIndex = lineIndex;
                 OriginalText = originalText;
+                RegexExtractionData = new ExtractRegexInfo(OriginalText);
             }
         }
 
@@ -187,7 +188,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
                 }
 
                 // get extracted
-                var extractData = line.ExtractMulty();
+                var extractData = new ExtractRegexInfo(line);
                 lineData.RegexExtractionData = extractData;
                 var extractedValuesCount = extractData.ValueDataList.Count;
                 bool isExtracted = extractedValuesCount > 0;

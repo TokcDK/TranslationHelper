@@ -1,5 +1,8 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Text.RegularExpressions;
+using TranslationHelper.Data;
+using TranslationHelper.Extensions;
 
 namespace TranslationHelper.Functions.FileElementsFunctions.Row
 {
@@ -25,6 +28,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
         public ExtractRegexInfo(string inputString)
         {
             InputString = inputString;
+            ExtractMulty();
         }
 
         /// <summary>
@@ -47,7 +51,71 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
         /// Captured values data
         /// </summary>
         public List<ExtractRegexValueInfo> ValueDataList = new List<ExtractRegexValueInfo>();
+        /// <summary>
+        /// extract captured groups from string
+        /// </summary>
+        /// <param name="InputString"></param>
+        /// <returns></returns>
+        void ExtractMulty()
+        {
+            var log = new FunctionsLogs();
+            try
+            {
+                foreach (var PatternReplacementPair in AppData.TranslationRegexRules)
+                {
+                    // check if any regex is match
+                    Regex regex = null;
+                    Match match = null;
+                    try
+                    {
+                        regex = new Regex(PatternReplacementPair.Key);
+                        match = regex.Match(InputString);
 
+                        if (!match.Success) continue;
+                    }
+                    catch (System.ArgumentException ex)
+                    {
+                        log.LogToFile("ExtractMulty: Invalid regex:" + PatternReplacementPair.Key + "\r\nError:\r\n" + ex);
+                        AppData.Main.ProgressInfo(true, "Invalid regex found. See " + THSettings.ApplicationLogName);
+                        continue;
+                    }
+
+                    // add regex pattern and replacer
+                    Match = match;
+                    Pattern = PatternReplacementPair.Key;
+                    Replacer = PatternReplacementPair.Value;
+
+                    var added = new Dictionary<string, ExtractRegexValueInfo>();
+
+                    // add matched groups values
+                    foreach (Group g in match.Groups)
+                    {
+                        if (!Replacer.Contains("$" + g.Name)) continue; // skip if group is missing in replacer value
+
+                        ExtractRegexValueInfo valueData = null;
+                        if (added.ContainsKey(g.Value)) valueData = added[g.Value];
+                        else added.Add(g.Value, valueData = new ExtractRegexValueInfo(g.Value));
+
+                        if (valueData.MatchGroups.Contains(g)) continue;
+
+                        valueData.MatchGroups.Add(g);
+                    }
+
+                    // set va;ues to extractregexinfo return
+                    ValueDataList = new List<ExtractRegexValueInfo>(added.Values);
+
+                    break; // regex found skip other
+                }
+            }
+            catch (InvalidOperationException) // in case of collection was changed exception when rules was changed in time of iteration
+            {
+                if (++retryCount > 10) throw;
+
+                // retry extraction
+                ExtractMulty();
+            }
+        }
+        int retryCount = 0;
     }
     public class ExtractRegexValueInfo
     {

@@ -47,8 +47,8 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
             if (originalCellValue == translatedCellValue) return;
 
             // set for similar originals using multi extraction
-            var extractDataOriginal = originalCellValue.ExtractMulty();
-            var extractDataTranslation = translatedCellValue.ExtractMulty();
+            var extractDataOriginal = new ExtractRegexInfo(originalCellValue);
+            var extractDataTranslation = new ExtractRegexInfo(translatedCellValue);
 
             var extractedDataOriginalCount = extractDataOriginal.ValueDataList.Count;
             if (extractedDataOriginalCount != extractDataTranslation.ValueDataList.Count)
@@ -99,7 +99,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
 
                     if (!string.IsNullOrEmpty(originalToCheck) || originalToCheck == translationToCheck) continue;
 
-                    var originalToCheckExtracted = originalToCheck.ExtractMulty();
+                    var originalToCheckExtracted = new ExtractRegexInfo(originalToCheck);
                     if (originalToCheckExtracted.ValueDataList.Count != 1) continue;
 
 
