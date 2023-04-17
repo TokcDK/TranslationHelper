@@ -44,6 +44,6 @@ namespace TranslationHelper.Menus.MainMenus.File
         }
         public override int Order => base.Order + 15;
 
-        public override Keys ShortcutKeys => Keys.ControlKey | Keys.S;
+        public override Keys ShortcutKeys => Keys.Control | Keys.S;
     }
 }

@@ -30,6 +30,6 @@ namespace TranslationHelper.Menus.MainMenus.File
         }
         public override int Order => base.Order + 10;
 
-        public override Keys ShortcutKeys => Keys.ControlKey | Keys.O;
+        public override Keys ShortcutKeys => Keys.Control | Keys.O;
     }
 }
