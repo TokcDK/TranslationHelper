@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using TranslationHelper.Data;
 
 namespace TranslationHelper.Functions.FileElementsFunctions.Row.ExtractedParser
 {
@@ -20,7 +21,8 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row.ExtractedParser
             var etractDataTransExtractedValuesListCount = etractDataTrans.ExtractedValuesList.Count;
 
             bool isChanged = false;
-            if (etractDataOrig.ExtractedValuesList.Count == etractDataTransExtractedValuesListCount)
+            var newValue = trans;
+            if (etractDataTransExtractedValuesListCount > 0 && etractDataOrig.ExtractedValuesList.Count == etractDataTransExtractedValuesListCount)
             {
                 foreach (var extractedValueInfo in etractDataTrans.ExtractedValuesList)
                 {
@@ -31,7 +33,6 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row.ExtractedParser
 
                 if (!isChanged) return false;
 
-                var newValue = trans;
                 var replacedStartIndexes = new List<int>();
                 foreach (var (group, info) in etractDataTrans.GetByGroupIndex(isReversed: true))
                 {
@@ -45,15 +46,15 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row.ExtractedParser
 
                     replacedStartIndexes.Add(index);
                 }
-
-                if (newValue == trans) return false;
-
-                return true;
+            }
+            else
+            {
+                newValue = ActionWithOriginalIfNoExtracted(orig, trans);
             }
 
-            var changedTrans = ActionWithOriginalIfNoExtracted(orig, trans);
+            if (newValue == trans) return false;
 
-            if (changedTrans == orig) return false;
+            SelectedRow[AppData.CurrentProject.TranslationColumnIndex] = newValue;
 
             return true;
         }
