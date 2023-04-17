@@ -68,9 +68,9 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row.StringCaseMorph
         /// </summary>
         bool _isAnimations = false;
 
-        protected override string ActionWithExtracted(ExtractRegexValueInfo extractedValueInfo)
+        protected override string ActionWithExtractedTranslation(ExtractRegexValueInfo extractedOrigValueInfo, ExtractRegexValueInfo extractedTransValueInfo)
         {
-            return ChangeRegistryCaseForTheCell(extractedValueInfo.Original, Variant);
+            return ChangeRegistryCaseForTheCell(extractedTransValueInfo.Original, Variant);
         }
 
         protected override string ActionWithOriginalIfNoExtracted(string original, string translation)

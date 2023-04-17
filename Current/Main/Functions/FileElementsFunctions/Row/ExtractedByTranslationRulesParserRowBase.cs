@@ -5,7 +5,13 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row.ExtractedParser
 {
     internal abstract class ExtractedByTranslationRulesParserRowBase : RowBase
     {
-        protected abstract string ActionWithExtracted(ExtractRegexValueInfo extractedValueInfo);
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="extractOrigValueInfo">Value for check purposes</param>
+        /// <param name="extractedTransValueInfo">value which will be changed</param>
+        /// <returns>String which will be set to translation of <seealso cref="extractedTransValueInfo"/></returns>
+        protected abstract string ActionWithExtractedTranslation(ExtractRegexValueInfo extractOrigValueInfo, ExtractRegexValueInfo extractedTransValueInfo);
         protected abstract string ActionWithOriginalIfNoExtracted(string original, string translation);
 
         // RoweBase
@@ -24,11 +30,16 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row.ExtractedParser
             var newValue = trans;
             if (etractDataTransExtractedValuesListCount > 0 && etractDataOrig.ExtractedValuesList.Count == etractDataTransExtractedValuesListCount)
             {
-                foreach (var extractedValueInfo in etractDataTrans.ExtractedValuesList)
+                int i = -1;
+                foreach (var extractedTransValueInfo in etractDataTrans.ExtractedValuesList)
                 {
-                    extractedValueInfo.Translation = ActionWithExtracted(extractedValueInfo);
+                    i++;
+                    var wxtractedOrigValueInfo = etractDataOrig.ExtractedValuesList[i];
+                    if (extractedTransValueInfo.Original == wxtractedOrigValueInfo.Original) continue; // do not change when equal to original
 
-                    if (extractedValueInfo.Translation != extractedValueInfo.Original) isChanged = true;
+                    extractedTransValueInfo.Translation = ActionWithExtractedTranslation(extractedTransValueInfo, wxtractedOrigValueInfo);
+
+                    if (extractedTransValueInfo.Translation != extractedTransValueInfo.Original) isChanged = true;
                 }
 
                 if (!isChanged) return false;
@@ -36,7 +47,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row.ExtractedParser
                 var replacedStartIndexes = new List<int>();
                 foreach (var (group, info) in etractDataTrans.GetByGroupIndex(isReversed: true))
                 {
-                    if (info.Translation == info.Original) continue;
+                    if (info.Translation == null || info.Translation == info.Original) continue;
 
                     var index = group.Index;
                     if (replacedStartIndexes.Contains(index)) continue; // this shorter group match was inside of other group with same start index
