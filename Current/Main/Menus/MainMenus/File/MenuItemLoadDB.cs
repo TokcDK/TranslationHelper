@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Forms;
 using TranslationHelper.Data;
 using TranslationHelper.Formats.RPGMaker.Functions;
 using TranslationHelper.Functions;
@@ -21,10 +22,14 @@ namespace TranslationHelper.Menus.MainMenus.File
 
         public override void OnClick(object sender, EventArgs e)
         {
+            if (AppData.CurrentProject == null) return;
+
             AppData.Main.UnLockDBLoad(false);
             AppData.Main.LoadDB();
             //AppData.Main.Invoke((Action)(() => AppData.Main.LoadTranslationToolStripMenuItem.Enabled = true));
         }
         public override int Order => base.Order + 10;
+
+        public override Keys ShortcutKeys => Keys.ControlKey | Keys.O;
     }
 }

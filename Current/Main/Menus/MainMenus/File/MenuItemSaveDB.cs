@@ -21,6 +21,8 @@ namespace TranslationHelper.Menus.MainMenus.File
 
         public override async void OnClick(object sender, EventArgs e)
         {
+            if (AppData.CurrentProject == null) return;
+
             var path = Path.Combine(FunctionsDBFile.GetProjectDBFolder(), FunctionsDBFile.GetDBFileName() + FunctionsDBFile.GetDBCompressionExt());
             AppData.Main.lastautosavepath = path;
 
