@@ -5,10 +5,11 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text.RegularExpressions;
 using TranslationHelper.Extensions;
+using TranslationHelper.Functions.FileElementsFunctions.Row.ExtractedParser;
 
 namespace TranslationHelper.Functions.FileElementsFunctions.Row.StringCaseMorph
 {
-    abstract class StringCaseMorphBase : RowBase
+    abstract class StringCaseMorphBase : ExtractedByTranslationRulesParserRowBase
     {
         protected StringCaseMorphBase()
         {
@@ -65,110 +66,120 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row.StringCaseMorph
         /// </summary>
         bool _isAnimations = false;
 
-        protected override bool Apply()
+        protected override string ActionWithExtracted(ExtractRegexValueInfo extractedValueInfo)
         {
-            var orig = SelectedRow[0] as string;
-            var trans = SelectedRow[1] + string.Empty;
-
-            if (string.IsNullOrWhiteSpace(trans)) return false;
-
-            var etractDataOrig = new ExtractRegexInfo(orig);
-            var etractDataTrans = new ExtractRegexInfo(trans);
-            var etractDataTransExtractedValuesListCount = etractDataTrans.ExtractedValuesList.Count;
-
-            bool isChanged = false;
-            if (etractDataOrig.ExtractedValuesList.Count == etractDataTransExtractedValuesListCount)
-            {
-                foreach(var extractedValueInfo in etractDataTrans.ExtractedValuesList)
-                {
-                    extractedValueInfo.Translation = ChangeRegistryCaseForTheCell(extractedValueInfo.Original, Variant);
-
-                    if (extractedValueInfo.Translation != extractedValueInfo.Original) isChanged = true;
-                }
-
-                if (!isChanged) return false;
-
-                var newValue = trans;
-                var extractedValuesListGroups = etractDataTrans.ExtractedValuesList.Select(v => v.MatchGroups.Select(g => g)).OrderByDescending(g=>g.i);
-                var replacedStartIndexes = new List<int>();
-                foreach (var info in etractDataTrans.GetByGroupIndex(isReversed: true))
-                {
-                    if (info.Value.Translation == info.Value.Original) continue;
-
-                    var index = info.Key.Index;
-                    if (replacedStartIndexes.Contains(index)) continue; // this shorter group match was inside of other group with same start index
-
-                    newValue = newValue.Remove(index, info.Key.Length)
-                        .Insert(index, info.Value.Translation);
-
-                    replacedStartIndexes.Add(index);
-                }
-
-                if (newValue == trans) return false;
-
-                return true;
-            }
-
-            var changedTrans = ChangeRegistryCaseForTheCell(trans, Variant);
-
-            if (changedTrans == orig) return false;
-
-            return true;
-
-            #region old
-            //var indexes = new List<int>();
-            //var extractedFromTrans = trans.ExtractMulty(outIndexes: indexes);
-            //if (extractedFromTrans.Length == indexes.Count)
-            //{
-            //    var result = trans;
-            //    for (int i = extractedFromTrans.Length - 1; i >= 0; i--)
-            //    {
-            //        string transName = ChangeRegistryCaseForTheCell(extractedFromTrans[i], Variant);
-            //        if (!string.IsNullOrWhiteSpace(transName) // not empty extracted value
-            //            && extractedFromTrans[i].Trim() != transName) // not just trimmed extracted value
-            //        {
-            //            result = result.Remove(indexes[i], extractedFromTrans[i].Length).Insert(indexes[i], transName);
-            //        }
-            //    }
-
-            //    if (result != trans)
-            //    {
-            //        SelectedRow[1] = result;
-            //        return true;
-            //    }
-            //}
-
-
-            //if (!string.IsNullOrWhiteSpace(trans)// not empty translation
-            //    && trans != orig//not equal to original
-            //    && (Variant != VariantCase.Upper || !trans.StartsWith("'s "))//need for states table. not starts with "'s " to prevent change of this "John's boots" to "John'S boots"
-            //    )
-            //{
-            //    if (_isAnimations && Variant == VariantCase.Upper && trans.IndexOf('/') != -1)//change 'effect1/effect2' to 'Effect1/Effect2'
-            //    {
-            //        string[] parts = trans.Split('/');
-            //        for (int i = 0; i < parts.Length; i++)
-            //        {
-            //            parts[i] = ChangeRegistryCaseForTheCell(parts[i], Variant);
-            //        }
-            //        SelectedRow[1] = string.Join("/", parts);
-            //    }
-            //    else
-            //    {
-            //        try
-            //        {
-            //            SelectedRow[1] = ChangeRegistryCaseForTheCell(trans, Variant);
-            //        }
-            //        catch
-            //        {
-
-            //        }
-            //    }
-            //}
-
-            //return false;
-            #endregion old
+            return ChangeRegistryCaseForTheCell(extractedValueInfo.Original, Variant);
         }
+
+        protected override string ActionWithOriginalIfNoExtracted(string original, string translation)
+        {
+            return ChangeRegistryCaseForTheCell(translation, Variant);
+        }
+
+        // move base code
+        //protected override bool Apply()
+        //{
+        //    var orig = SelectedRow[0] as string;
+        //    var trans = SelectedRow[1] + string.Empty;
+
+        //    if (string.IsNullOrWhiteSpace(trans)) return false;
+
+        //    var etractDataOrig = new ExtractRegexInfo(orig);
+        //    var etractDataTrans = new ExtractRegexInfo(trans);
+        //    var etractDataTransExtractedValuesListCount = etractDataTrans.ExtractedValuesList.Count;
+
+        //    bool isChanged = false;
+        //    if (etractDataOrig.ExtractedValuesList.Count == etractDataTransExtractedValuesListCount)
+        //    {
+        //        foreach(var extractedValueInfo in etractDataTrans.ExtractedValuesList)
+        //        {
+        //            extractedValueInfo.Translation = ChangeRegistryCaseForTheCell(extractedValueInfo.Original, Variant);
+
+        //            if (extractedValueInfo.Translation != extractedValueInfo.Original) isChanged = true;
+        //        }
+
+        //        if (!isChanged) return false;
+
+        //        var newValue = trans;
+        //        var replacedStartIndexes = new List<int>();
+        //        foreach (var info in etractDataTrans.GetByGroupIndex(isReversed: true))
+        //        {
+        //            if (info.Value.Translation == info.Value.Original) continue;
+
+        //            var index = info.Key.Index;
+        //            if (replacedStartIndexes.Contains(index)) continue; // this shorter group match was inside of other group with same start index
+
+        //            newValue = newValue.Remove(index, info.Key.Length)
+        //                .Insert(index, info.Value.Translation);
+
+        //            replacedStartIndexes.Add(index);
+        //        }
+
+        //        if (newValue == trans) return false;
+
+        //        return true;
+        //    }
+
+        //    var changedTrans = ChangeRegistryCaseForTheCell(trans, Variant);
+
+        //    if (changedTrans == orig) return false;
+
+        //    return true;
+
+        //    #region old
+        //    //var indexes = new List<int>();
+        //    //var extractedFromTrans = trans.ExtractMulty(outIndexes: indexes);
+        //    //if (extractedFromTrans.Length == indexes.Count)
+        //    //{
+        //    //    var result = trans;
+        //    //    for (int i = extractedFromTrans.Length - 1; i >= 0; i--)
+        //    //    {
+        //    //        string transName = ChangeRegistryCaseForTheCell(extractedFromTrans[i], Variant);
+        //    //        if (!string.IsNullOrWhiteSpace(transName) // not empty extracted value
+        //    //            && extractedFromTrans[i].Trim() != transName) // not just trimmed extracted value
+        //    //        {
+        //    //            result = result.Remove(indexes[i], extractedFromTrans[i].Length).Insert(indexes[i], transName);
+        //    //        }
+        //    //    }
+
+        //    //    if (result != trans)
+        //    //    {
+        //    //        SelectedRow[1] = result;
+        //    //        return true;
+        //    //    }
+        //    //}
+
+
+        //    //if (!string.IsNullOrWhiteSpace(trans)// not empty translation
+        //    //    && trans != orig//not equal to original
+        //    //    && (Variant != VariantCase.Upper || !trans.StartsWith("'s "))//need for states table. not starts with "'s " to prevent change of this "John's boots" to "John'S boots"
+        //    //    )
+        //    //{
+        //    //    if (_isAnimations && Variant == VariantCase.Upper && trans.IndexOf('/') != -1)//change 'effect1/effect2' to 'Effect1/Effect2'
+        //    //    {
+        //    //        string[] parts = trans.Split('/');
+        //    //        for (int i = 0; i < parts.Length; i++)
+        //    //        {
+        //    //            parts[i] = ChangeRegistryCaseForTheCell(parts[i], Variant);
+        //    //        }
+        //    //        SelectedRow[1] = string.Join("/", parts);
+        //    //    }
+        //    //    else
+        //    //    {
+        //    //        try
+        //    //        {
+        //    //            SelectedRow[1] = ChangeRegistryCaseForTheCell(trans, Variant);
+        //    //        }
+        //    //        catch
+        //    //        {
+
+        //    //        }
+        //    //    }
+        //    //}
+
+        //    //return false;
+        //    #endregion old
+        //}
 
         /// <summary>
         /// 0=lowercase,1=Uppercase,2=UPPERCASE
