@@ -96,10 +96,7 @@ namespace TranslationHelper.Functions.FilesListControl
         private void ListBox_SelectedIndexChanged(object sender, EventArgs e)
         {
             AppData.Main.ActionsOnTHFIlesListElementSelected();
-            if (!AppData.Main.TableCompleteInfoLabel.Visible)
-            {
-                AppData.Main.TableCompleteInfoLabel.Visible = false;
-            }
+            AppData.Main.TableCompleteInfoLabel.Visible = true;
         }
 
         private void ListBox_MouseUp(object sender, MouseEventArgs e)
