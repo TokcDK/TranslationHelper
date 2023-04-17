@@ -59,5 +59,7 @@ namespace TranslationHelper.Menus.MainMenus.File
             }
         }
         public override int Order => base.Order + 16;
+
+        public override Keys ShortcutKeys => Keys.Control | Keys.Shift | Keys.S;
     }
 }

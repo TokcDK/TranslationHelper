@@ -24,5 +24,6 @@ namespace TranslationHelper.Menus.MainMenus.File
             AppData.Main.LoadDBAs();
         }
         public override int Order => base.Order + 11;
+        public override Keys ShortcutKeys => Keys.Control | Keys.Shift | Keys.O;
     }
 }
