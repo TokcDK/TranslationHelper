@@ -37,7 +37,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row.ExtractedParser
                     var wxtractedOrigValueInfo = etractDataOrig.ExtractedValuesList[i];
                     if (extractedTransValueInfo.Original == wxtractedOrigValueInfo.Original) continue; // do not change when equal to original
 
-                    extractedTransValueInfo.Translation = ActionWithExtractedTranslation(extractedTransValueInfo, wxtractedOrigValueInfo);
+                    extractedTransValueInfo.Translation = ActionWithExtractedTranslation(wxtractedOrigValueInfo, extractedTransValueInfo);
 
                     if (extractedTransValueInfo.Translation != extractedTransValueInfo.Original) isChanged = true;
                 }
