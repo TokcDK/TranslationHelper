@@ -1,7 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Globalization;
-using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text.RegularExpressions;
 using TranslationHelper.Extensions;
@@ -58,7 +56,11 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row.StringCaseMorph
             /// <summary>
             /// all chars to upper case
             /// </summary>
-            UPPER = 2
+            UPPER = 2,
+            /// <summary>
+            /// 1st char to lower
+            /// </summary>
+            lower1st = 3,
         }
 
         /// <summary>
@@ -201,12 +203,21 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row.StringCaseMorph
                 case VariantCase.UPPER:
                     //UPPERCASE
                     return dsTransCell.ToUpperInvariant();
+                case VariantCase.lower1st:
+                    //UPPERCASE
+                    return StringToUpper(dsTransCell, isReverse: true);
                 default:
                     return dsTransCell;
             }
         }
 
-        internal string StringToUpper(string inputString)
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="inputString"></param>
+        /// <param name="isReverse">1st har change to lower instead of Upper</param>
+        /// <returns></returns>
+        internal string StringToUpper(string inputString, bool isReverse = false)
         {
             if (string.IsNullOrWhiteSpace(inputString)) return inputString;
 
@@ -214,7 +225,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row.StringCaseMorph
             {
                 if ((SelectedRow[0] as string)[0] != inputString[0]) // skip if char in original equals char in translation with same index
                 {
-                    inputString = char.ToUpper(inputString[0], CultureInfo.InvariantCulture) + inputString.Substring(1);
+                    inputString = (isReverse ? char.ToLowerInvariant(inputString[0]) : char.ToUpperInvariant(inputString[0])) + inputString.Substring(1);
                 }
             }
             else
@@ -230,7 +241,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row.StringCaseMorph
                         ||
                         (orig = SelectedRow[0] as string).Length > c && orig[c] == inputString[c]) // skip if char in original equals char in translation with same index
                     { }
-                    else inputString = inputString.Substring(0, c) + char.ToUpper(inputString[c], CultureInfo.InvariantCulture) + (c == dsTransCellLength - 1 ? string.Empty : inputString.Substring(c + 1));
+                    else inputString = inputString.Substring(0, c) + (isReverse ? char.ToLowerInvariant(inputString[c]) : char.ToUpperInvariant(inputString[c])) + (c == dsTransCellLength - 1 ? string.Empty : inputString.Substring(c + 1));
 
                     break;
                 }
@@ -251,7 +262,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row.StringCaseMorph
                         resultLine += Environment.NewLine;
                         if (lineCnt == 1)
                         {
-                            resultLine += StringToUpper(line);
+                            resultLine += StringToUpper(line, isReverse);
                         }
                         else
                         {

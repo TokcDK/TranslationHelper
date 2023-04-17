@@ -37,13 +37,25 @@ namespace TranslationHelper.Menus.MainMenus.Edit
     {
         public override string Text => T._("To Upper");
 
-        public override string Description => T._("Change first case of row string to Upper");
+        public override string Description => T._("Change first char case of row string to Upper");
 
         protected override void OnAll(object sender, EventArgs e) { _ = new ToUpperCaseFirst().AllT(); }
 
         protected override void OnTable(object sender, EventArgs e) { _ = new ToUpperCaseFirst().TableT(); }
 
         protected override void OnRows(object sender, EventArgs e) { new ToUpperCaseFirst().Rows(); }
+    }
+    internal class MenuItemCaseMorplower1stVariated : AllTableRowsChildMenuBase
+    {
+        public override string Text => T._("To lower 1st");
+
+        public override string Description => T._("Change first char case of row string to lower");
+
+        protected override void OnAll(object sender, EventArgs e) { _ = new ToLowerCaseFirst().AllT(); }
+
+        protected override void OnTable(object sender, EventArgs e) { _ = new ToLowerCaseFirst().TableT(); }
+
+        protected override void OnRows(object sender, EventArgs e) { new ToLowerCaseFirst().Rows(); }
     }
 
     internal class MenuItemCaseMorphUPPERAllVariated : AllTableRowsChildMenuBase

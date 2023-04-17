@@ -10,4 +10,12 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row.StringCaseMorph
 
         protected override VariantCase Variant => VariantCase.Upper;
     }
+    class ToLowerCaseFirst : StringCaseMorphBase
+    {
+        public ToLowerCaseFirst()
+        {
+        }
+
+        protected override VariantCase Variant => VariantCase.lower1st;
+    }
 }
