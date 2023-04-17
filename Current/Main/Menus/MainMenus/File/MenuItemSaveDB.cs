@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Forms;
 using TranslationHelper.Data;
 using TranslationHelper.Formats.RPGMaker.Functions;
 using TranslationHelper.Functions;
@@ -40,5 +41,7 @@ namespace TranslationHelper.Menus.MainMenus.File
             AppData.Main.ProgressInfo(false);
         }
         public override int Order => base.Order + 15;
+
+        public override Keys ShortcutKeys => Keys.ControlKey | Keys.S;
     }
 }
