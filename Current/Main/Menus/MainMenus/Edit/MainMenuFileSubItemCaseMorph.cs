@@ -10,9 +10,10 @@ namespace TranslationHelper.Menus.MainMenus.Edit
     {
         public override string Text => T._("Case Morph");
 
-        public override IMenuItem[] Childs => new IMenuItem[3] 
+        public override IMenuItem[] Childs => new IMenuItem[4] 
         { 
             new MenuItemCaseMorphLowerVariated(),
+            new MenuItemCaseMorphlower1stVariated(),
             new MenuItemCaseMorphUpperVariated(),
             new MenuItemCaseMorphUPPERAllVariated(),
         };
@@ -45,7 +46,7 @@ namespace TranslationHelper.Menus.MainMenus.Edit
 
         protected override void OnRows(object sender, EventArgs e) { new ToUpperCaseFirst().Rows(); }
     }
-    internal class MenuItemCaseMorplower1stVariated : AllTableRowsChildMenuBase
+    internal class MenuItemCaseMorphlower1stVariated : AllTableRowsChildMenuBase
     {
         public override string Text => T._("To lower 1st");
 
