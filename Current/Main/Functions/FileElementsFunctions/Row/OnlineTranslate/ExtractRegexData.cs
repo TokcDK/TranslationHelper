@@ -53,20 +53,11 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
         /// </summary>
         public List<ExtractRegexValueInfo> ExtractedValuesList = new List<ExtractRegexValueInfo>();
 
-        public Dictionary<Group, ExtractRegexValueInfo> GetByGroupIndex(bool isReversed = false)
+        public IOrderedEnumerable<(Group Group, ExtractRegexValueInfo Info)> GetByGroupIndex(bool isReversed = false)
         {
-            var ret = new Dictionary<Group, ExtractRegexValueInfo>();
-            foreach (var info in ExtractedValuesList)
-            {
-                foreach (var group in info.MatchGroups)
-                {
-                    ret.Add(group, info);
-                }
-            }
-
-            return (isReversed ? ret.OrderByDescending(p => p.Key).ThenByDescending(p=>p.Key.Value.Length)
-                : ret.OrderBy(p => p.Key).ThenBy(p => p.Key.Value.Length))
-                .ToDictionary(k => k.Key,ValueTuple=>ValueTuple.Value);
+            var ret = (ExtractedValuesList.SelectMany(info => info.MatchGroups.Select(group => (group, info))));
+            return (isReversed ? ret.OrderByDescending(p => p.group.Index).ThenByDescending(p => p.group.Value.Length)
+                            : ret.OrderBy(p => p.group.Index).ThenBy(p => p.group.Value.Length));
         }
 
         /// <summary>

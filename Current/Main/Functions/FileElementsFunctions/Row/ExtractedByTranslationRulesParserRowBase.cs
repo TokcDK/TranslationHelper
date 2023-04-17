@@ -33,15 +33,15 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row.ExtractedParser
 
                 var newValue = trans;
                 var replacedStartIndexes = new List<int>();
-                foreach (var info in etractDataTrans.GetByGroupIndex(isReversed: true))
+                foreach (var (group, info) in etractDataTrans.GetByGroupIndex(isReversed: true))
                 {
-                    if (info.Value.Translation == info.Value.Original) continue;
+                    if (info.Translation == info.Original) continue;
 
-                    var index = info.Key.Index;
+                    var index = group.Index;
                     if (replacedStartIndexes.Contains(index)) continue; // this shorter group match was inside of other group with same start index
 
-                    newValue = newValue.Remove(index, info.Key.Length)
-                        .Insert(index, info.Value.Translation);
+                    newValue = newValue.Remove(index, group.Length)
+                        .Insert(index, info.Translation);
 
                     replacedStartIndexes.Add(index);
                 }

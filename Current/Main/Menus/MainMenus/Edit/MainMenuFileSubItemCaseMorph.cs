@@ -28,9 +28,9 @@ namespace TranslationHelper.Menus.MainMenus.Edit
 
         protected override void OnAll(object sender, EventArgs e) { _ = new ToLowerCaseAll().AllT(); }
 
-        protected override void OnRows(object sender, EventArgs e) { _ = new ToLowerCaseAll().TableT(); }
+        protected override void OnTable(object sender, EventArgs e) { _ = new ToLowerCaseAll().TableT(); }
 
-        protected override void OnTable(object sender, EventArgs e) { new ToLowerCaseAll().Rows(); }
+        protected override void OnRows(object sender, EventArgs e) { new ToLowerCaseAll().Rows(); }
     }
 
     internal class MenuItemCaseMorphUpperVariated : AllTableRowsChildMenuBase
@@ -41,9 +41,9 @@ namespace TranslationHelper.Menus.MainMenus.Edit
 
         protected override void OnAll(object sender, EventArgs e) { _ = new ToUpperCaseFirst().AllT(); }
 
-        protected override void OnRows(object sender, EventArgs e) { _ = new ToUpperCaseFirst().TableT(); }
+        protected override void OnTable(object sender, EventArgs e) { _ = new ToUpperCaseFirst().TableT(); }
 
-        protected override void OnTable(object sender, EventArgs e) { new ToUpperCaseFirst().Rows(); }
+        protected override void OnRows(object sender, EventArgs e) { new ToUpperCaseFirst().Rows(); }
     }
 
     internal class MenuItemCaseMorphUPPERAllVariated : AllTableRowsChildMenuBase
@@ -54,8 +54,8 @@ namespace TranslationHelper.Menus.MainMenus.Edit
 
         protected override void OnAll(object sender, EventArgs e) { _ = new ToUpperCaseAll().AllT(); }
 
-        protected override void OnRows(object sender, EventArgs e) { _ = new ToUpperCaseAll().TableT(); }
+        protected override void OnTable(object sender, EventArgs e) { _ = new ToUpperCaseAll().TableT(); }
 
-        protected override void OnTable(object sender, EventArgs e) { new ToUpperCaseAll().Rows(); }
+        protected override void OnRows(object sender, EventArgs e) { new ToUpperCaseAll().Rows(); }
     }
 }
