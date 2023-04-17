@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text.RegularExpressions;
 using TranslationHelper.Data;
 using TranslationHelper.Extensions;
@@ -50,7 +51,24 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
         /// <summary>
         /// Captured values data
         /// </summary>
-        public List<ExtractRegexValueInfo> ValueDataList = new List<ExtractRegexValueInfo>();
+        public List<ExtractRegexValueInfo> ExtractedValuesList = new List<ExtractRegexValueInfo>();
+
+        public Dictionary<Group, ExtractRegexValueInfo> GetByGroupIndex(bool isReversed = false)
+        {
+            var ret = new Dictionary<Group, ExtractRegexValueInfo>();
+            foreach (var info in ExtractedValuesList)
+            {
+                foreach (var group in info.MatchGroups)
+                {
+                    ret.Add(group, info);
+                }
+            }
+
+            return (isReversed ? ret.OrderByDescending(p => p.Key).ThenByDescending(p=>p.Key.Value.Length)
+                : ret.OrderBy(p => p.Key).ThenBy(p => p.Key.Value.Length))
+                .ToDictionary(k => k.Key,ValueTuple=>ValueTuple.Value);
+        }
+
         /// <summary>
         /// extract captured groups from string
         /// </summary>
@@ -102,7 +120,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
                     }
 
                     // set va;ues to extractregexinfo return
-                    ValueDataList = new List<ExtractRegexValueInfo>(added.Values);
+                    ExtractedValuesList = new List<ExtractRegexValueInfo>(added.Values);
 
                     break; // regex found skip other
                 }

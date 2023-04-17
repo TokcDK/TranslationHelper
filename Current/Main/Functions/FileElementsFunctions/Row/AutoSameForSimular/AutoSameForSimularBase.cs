@@ -50,8 +50,8 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
             var extractDataOriginal = new ExtractRegexInfo(originalCellValue);
             var extractDataTranslation = new ExtractRegexInfo(translatedCellValue);
 
-            var extractedDataOriginalCount = extractDataOriginal.ValueDataList.Count;
-            if (extractedDataOriginalCount != extractDataTranslation.ValueDataList.Count)
+            var extractedDataOriginalCount = extractDataOriginal.ExtractedValuesList.Count;
+            if (extractedDataOriginalCount != extractDataTranslation.ExtractedValuesList.Count)
             {
                 return;
             }
@@ -66,10 +66,10 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
             }
 
             var tablesCount = tables.Count;
-            for (int i = 0; i < extractDataOriginal.ValueDataList.Count; i++)
+            for (int i = 0; i < extractDataOriginal.ExtractedValuesList.Count; i++)
             {
-                var originalExtractedValueInfo = extractDataOriginal.ValueDataList[i];
-                var translationExtractedValueInfo = extractDataTranslation.ValueDataList[i];
+                var originalExtractedValueInfo = extractDataOriginal.ExtractedValuesList[i];
+                var translationExtractedValueInfo = extractDataTranslation.ExtractedValuesList[i];
 
                 foreach(DataTable tableToCheck in tables)
                 {
@@ -100,7 +100,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
                     if (!string.IsNullOrEmpty(originalToCheck) || originalToCheck == translationToCheck) continue;
 
                     var originalToCheckExtracted = new ExtractRegexInfo(originalToCheck);
-                    if (originalToCheckExtracted.ValueDataList.Count != 1) continue;
+                    if (originalToCheckExtracted.ExtractedValuesList.Count != 1) continue;
 
 
                 }

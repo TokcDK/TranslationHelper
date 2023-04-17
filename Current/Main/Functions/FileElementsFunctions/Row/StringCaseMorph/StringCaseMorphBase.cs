@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text.RegularExpressions;
 using TranslationHelper.Extensions;
@@ -69,57 +70,104 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row.StringCaseMorph
             var orig = SelectedRow[0] as string;
             var trans = SelectedRow[1] + string.Empty;
 
-            var indexes = new List<int>();
-            var extractedFromTrans = trans.ExtractMulty(outIndexes: indexes);
-            if (extractedFromTrans.Length == indexes.Count)
+            if (string.IsNullOrWhiteSpace(trans)) return false;
+
+            var etractDataOrig = new ExtractRegexInfo(orig);
+            var etractDataTrans = new ExtractRegexInfo(trans);
+            var etractDataTransExtractedValuesListCount = etractDataTrans.ExtractedValuesList.Count;
+
+            bool isChanged = false;
+            if (etractDataOrig.ExtractedValuesList.Count == etractDataTransExtractedValuesListCount)
             {
-                var result = trans;
-                for (int i = extractedFromTrans.Length - 1; i >= 0; i--)
+                foreach(var extractedValueInfo in etractDataTrans.ExtractedValuesList)
                 {
-                    string transName = ChangeRegistryCaseForTheCell(extractedFromTrans[i], Variant);
-                    if (!string.IsNullOrWhiteSpace(transName) // not empty extracted value
-                        && extractedFromTrans[i].Trim() != transName) // not just trimmed extracted value
-                    {
-                        result = result.Remove(indexes[i], extractedFromTrans[i].Length).Insert(indexes[i], transName);
-                    }
+                    extractedValueInfo.Translation = ChangeRegistryCaseForTheCell(extractedValueInfo.Original, Variant);
+
+                    if (extractedValueInfo.Translation != extractedValueInfo.Original) isChanged = true;
                 }
 
-                if (result != trans)
+                if (!isChanged) return false;
+
+                var newValue = trans;
+                var extractedValuesListGroups = etractDataTrans.ExtractedValuesList.Select(v => v.MatchGroups.Select(g => g)).OrderByDescending(g=>g.i);
+                var replacedStartIndexes = new List<int>();
+                foreach (var info in etractDataTrans.GetByGroupIndex(isReversed: true))
                 {
-                    SelectedRow[1] = result;
-                    return true;
+                    if (info.Value.Translation == info.Value.Original) continue;
+
+                    var index = info.Key.Index;
+                    if (replacedStartIndexes.Contains(index)) continue; // this shorter group match was inside of other group with same start index
+
+                    newValue = newValue.Remove(index, info.Key.Length)
+                        .Insert(index, info.Value.Translation);
+
+                    replacedStartIndexes.Add(index);
                 }
+
+                if (newValue == trans) return false;
+
+                return true;
             }
 
+            var changedTrans = ChangeRegistryCaseForTheCell(trans, Variant);
 
-            if (!string.IsNullOrWhiteSpace(trans)// not empty translation
-                && trans != orig//not equal to original
-                && (Variant != VariantCase.Upper || !trans.StartsWith("'s "))//need for states table. not starts with "'s " to prevent change of this "John's boots" to "John'S boots"
-                )
-            {
-                if (_isAnimations && Variant == VariantCase.Upper && trans.IndexOf('/') != -1)//change 'effect1/effect2' to 'Effect1/Effect2'
-                {
-                    string[] parts = trans.Split('/');
-                    for (int i = 0; i < parts.Length; i++)
-                    {
-                        parts[i] = ChangeRegistryCaseForTheCell(parts[i], Variant);
-                    }
-                    SelectedRow[1] = string.Join("/", parts);
-                }
-                else
-                {
-                    try
-                    {
-                        SelectedRow[1] = ChangeRegistryCaseForTheCell(trans, Variant);
-                    }
-                    catch
-                    {
+            if (changedTrans == orig) return false;
 
-                    }
-                }
-            }
+            return true;
 
-            return false;
+            #region old
+            //var indexes = new List<int>();
+            //var extractedFromTrans = trans.ExtractMulty(outIndexes: indexes);
+            //if (extractedFromTrans.Length == indexes.Count)
+            //{
+            //    var result = trans;
+            //    for (int i = extractedFromTrans.Length - 1; i >= 0; i--)
+            //    {
+            //        string transName = ChangeRegistryCaseForTheCell(extractedFromTrans[i], Variant);
+            //        if (!string.IsNullOrWhiteSpace(transName) // not empty extracted value
+            //            && extractedFromTrans[i].Trim() != transName) // not just trimmed extracted value
+            //        {
+            //            result = result.Remove(indexes[i], extractedFromTrans[i].Length).Insert(indexes[i], transName);
+            //        }
+            //    }
+
+            //    if (result != trans)
+            //    {
+            //        SelectedRow[1] = result;
+            //        return true;
+            //    }
+            //}
+
+
+            //if (!string.IsNullOrWhiteSpace(trans)// not empty translation
+            //    && trans != orig//not equal to original
+            //    && (Variant != VariantCase.Upper || !trans.StartsWith("'s "))//need for states table. not starts with "'s " to prevent change of this "John's boots" to "John'S boots"
+            //    )
+            //{
+            //    if (_isAnimations && Variant == VariantCase.Upper && trans.IndexOf('/') != -1)//change 'effect1/effect2' to 'Effect1/Effect2'
+            //    {
+            //        string[] parts = trans.Split('/');
+            //        for (int i = 0; i < parts.Length; i++)
+            //        {
+            //            parts[i] = ChangeRegistryCaseForTheCell(parts[i], Variant);
+            //        }
+            //        SelectedRow[1] = string.Join("/", parts);
+            //    }
+            //    else
+            //    {
+            //        try
+            //        {
+            //            SelectedRow[1] = ChangeRegistryCaseForTheCell(trans, Variant);
+            //        }
+            //        catch
+            //        {
+
+            //        }
+            //    }
+            //}
+
+            //return false;
+            #endregion old
         }
 
         /// <summary>
@@ -134,9 +182,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row.StringCaseMorph
             {
                 case VariantCase.lower:
                     //lowercase
-#pragma warning disable CA1308 // Нормализуйте строки до прописных букв
                     return dsTransCell.ToLowerInvariant();
-#pragma warning restore CA1308 // Нормализуйте строки до прописных букв
                 case VariantCase.Upper:
                     //Uppercase
                     //https://www.c-sharpcorner.com/blogs/first-letter-in-uppercase-in-c-sharp1

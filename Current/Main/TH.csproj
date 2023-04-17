@@ -132,6 +132,7 @@
     <Compile Include="Formats\RPGMMV\RPGMVLists.cs" />
     <Compile Include="Formats\RPGMMV\StopCVPluginTXT.cs" />
     <Compile Include="Formats\WolfRPG\TextEPH.cs" />
+    <Compile Include="Functions\FileElementsFunctions\Row\ExtractedByTranslationRulesParserBase.cs" />
     <Compile Include="Functions\FunctionRules.cs" />
     <Compile Include="Functions\FunctionsCleanup.cs" />
     <Compile Include="Data\FileInfo.cs" />

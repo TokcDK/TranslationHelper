@@ -190,12 +190,12 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
                 // get extracted
                 var extractData = new ExtractRegexInfo(line);
                 lineData.RegexExtractionData = extractData;
-                var extractedValuesCount = extractData.ValueDataList.Count;
+                var extractedValuesCount = extractData.ExtractedValuesList.Count;
                 bool isExtracted = extractedValuesCount > 0;
 
                 int skippedValuesCount = 0;
                 //parse all extracted values from original
-                foreach (var valueData in extractData.ValueDataList)
+                foreach (var valueData in extractData.ExtractedValuesList)
                 {
                     // get translation from cache
                     var valcache = AppData.OnlineTranslationCache.GetValueFromCacheOrReturnEmpty(valueData.Original);
@@ -305,9 +305,9 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
                 {
                     foreach (var lineData in rowData.Lines) // get line data
                     {
-                        if (lineData.RegexExtractionData.ValueDataList.Count > 0)
+                        if (lineData.RegexExtractionData.ExtractedValuesList.Count > 0)
                         {
-                            foreach (var value in lineData.RegexExtractionData.ValueDataList)
+                            foreach (var value in lineData.RegexExtractionData.ExtractedValuesList)
                             {
                                 if (!orig.Contains(value.Original)
                                     && (string.IsNullOrEmpty(value.Translation))
@@ -428,9 +428,9 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
                 {
                     foreach (var lineData in rowData.Lines) // get line data
                     {
-                        if (lineData.RegexExtractionData.ValueDataList.Count > 0)
+                        if (lineData.RegexExtractionData.ExtractedValuesList.Count > 0)
                         {
-                            foreach (var value in lineData.RegexExtractionData.ValueDataList)
+                            foreach (var value in lineData.RegexExtractionData.ExtractedValuesList)
                             {
                                 if (value.Translation != null && value.Translation != value.Original) continue;
                                 if (!value.Original.IsValidForTranslation()) continue;
@@ -503,7 +503,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
 
                 var lineData = rowData.Lines[lineNum];
 
-                if (lineData.RegexExtractionData.ValueDataList.Count > 0) // when line has extracted values
+                if (lineData.RegexExtractionData.ExtractedValuesList.Count > 0) // when line has extracted values
                 {
                     newValue.Add(MergeExtracted(lineData));
                 }
@@ -547,7 +547,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
 
             var newLineText = lineData.OriginalText;
 
-            var list = lineData.RegexExtractionData.ValueDataList;
+            var list = lineData.RegexExtractionData.ExtractedValuesList;
             var maxValueDataIndex = list.Count - 1;
             for (int i = maxValueDataIndex; i >= 0; i--)
             {
