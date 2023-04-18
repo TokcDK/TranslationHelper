@@ -9,7 +9,6 @@ using System.Windows.Forms;
 using TranslationHelper.Data;
 using TranslationHelper.Extensions;
 using TranslationHelper.Functions;
-using TranslationHelper.Functions.FileElementsFunctions.Row;
 using TranslationHelper.Main.Functions;
 
 namespace TranslationHelper
@@ -237,7 +236,7 @@ namespace TranslationHelper
 
         private static void UnEscapeSearchValues(ref string[] arr, bool unescape = true)
         {
-            for(int i = 0; i < arr.Length; i++)
+            for (int i = 0; i < arr.Length; i++)
             {
                 try
                 {
@@ -417,7 +416,7 @@ namespace TranslationHelper
         DataSet oDsResults;
         private void SearchAllButton_Click(object sender, EventArgs e)
         {
-            if (AppData.CurrentProject.FilesContent == null 
+            if (AppData.CurrentProject.FilesContent == null
                 || !SearchFindLinesWithPossibleIssuesCheckBox.Checked && SearchFormFindWhatTextBox.Text.Length == 0)
             {
                 return;
@@ -524,7 +523,7 @@ namespace TranslationHelper
                             try
                             {
                                 if ((THSearchMatchCaseCheckBox.Checked && infoValue.Contains(strQuery))
-                                    || (!THSearchMatchCaseCheckBox.Checked && infoValue.ToUpperInvariant().Contains(strQuery.ToUpperInvariant())))
+                                    || (!THSearchMatchCaseCheckBox.Checked && infoValue.IndexOf(strQuery, StringComparison.CurrentCultureIgnoreCase) != -1))
                                 {
                                     ImportRowToFound(ref found, DS, Row, t, r);
                                 }
@@ -571,7 +570,7 @@ namespace TranslationHelper
                             try
                             {
                                 if ((THSearchMatchCaseCheckBox.Checked && SelectedCellValue.Contains(strQuery))
-                                    || (!THSearchMatchCaseCheckBox.Checked && SelectedCellValue.ToUpperInvariant().Contains(strQuery.ToUpperInvariant()))
+                                    || (!THSearchMatchCaseCheckBox.Checked && SelectedCellValue.IndexOf(strQuery, StringComparison.CurrentCultureIgnoreCase) != -1)
                                     )
                                 {
                                     ImportRowToFound(ref found, DS, Row, t, r);
@@ -813,8 +812,8 @@ namespace TranslationHelper
                 return;
             }
 
-            bool inputEqualWithLatest = THSearchMatchCaseCheckBox.Checked ? 
-                SearchFormFindWhatTextBox.Text == lastfoundvalue 
+            bool inputEqualWithLatest = THSearchMatchCaseCheckBox.Checked ?
+                SearchFormFindWhatTextBox.Text == lastfoundvalue
                 : string.Compare(SearchFormFindWhatTextBox.Text, lastfoundvalue, true, CultureInfo.InvariantCulture) == 0;
             if (inputEqualWithLatest)
             {
@@ -1015,7 +1014,7 @@ namespace TranslationHelper
                     return Regex.Unescape(text);
                 }
                 catch { }
-                
+
             }
 
             return text;
