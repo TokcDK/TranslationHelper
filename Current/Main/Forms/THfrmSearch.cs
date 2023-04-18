@@ -170,7 +170,7 @@ namespace TranslationHelper
                     lblSearchMsg.Visible = false;
                     oDsResults = AppData.CurrentProject.FilesContent.Clone();
 
-                    DataTable drFoundRowsTable = SearchNew(oDsResults);
+                    DataTable drFoundRowsTable = GetSearchResults(oDsResults);
 
                     if (drFoundRowsTable == null) return;
 
@@ -425,7 +425,7 @@ namespace TranslationHelper
             lblSearchMsg.Visible = false;
             oDsResults = AppData.CurrentProject.FilesContent.Clone();
             //DataTable drFoundRowsTable = SelectFromDatatables(oDsResults);
-            DataTable drFoundRowsTable = SearchNew(oDsResults);
+            DataTable drFoundRowsTable = GetSearchResults(oDsResults);
 
             if (drFoundRowsTable == null) return;
 
@@ -453,7 +453,7 @@ namespace TranslationHelper
 
         private readonly DataTable oDsResultsCoordinates = new DataTable();
 
-        private DataTable SearchNew(DataSet DS)
+        private DataTable GetSearchResults(DataSet DS)
         {
             lblSearchMsg.Visible = false;
             if (AppData.CurrentProject.FilesContent.Tables.Count == 0) return DS.Tables[0];
@@ -836,7 +836,7 @@ namespace TranslationHelper
                         }
                         else
                         {
-                            if (value.ToUpperInvariant().Contains(SearchFormFindWhatTextBox.Text.ToUpperInvariant()))
+                            if (value.IndexOf(SearchFormFindWhatTextBox.Text, StringComparison.InvariantCultureIgnoreCase)!=-1)
                             {
                                 StoryFoundValueToComboBox(SearchFormFindWhatTextBox.Text, SearchFormReplaceWithTextBox.Text);
                                 THFileElementsDataGridView[THSettings.TranslationColumnName, rowindex].Value = ReplaceEx.Replace(GetFirstIfNotEmpty(THFileElementsDataGridView[THSettings.TranslationColumnName, rowindex].Value + string.Empty, value), SearchFormFindWhatTextBox.Text, SearchFormReplaceWithTextBox.Text, StringComparison.OrdinalIgnoreCase);
@@ -871,7 +871,7 @@ namespace TranslationHelper
                 lblSearchMsg.Visible = false;
                 oDsResults = AppData.CurrentProject.FilesContent.Clone();
 
-                DataTable drFoundRowsTable = SearchNew(oDsResults);
+                DataTable drFoundRowsTable = GetSearchResults(oDsResults);
 
                 if (drFoundRowsTable == null) return;
 
@@ -929,7 +929,7 @@ namespace TranslationHelper
 
             lblSearchMsg.Visible = false;
             oDsResults = AppData.CurrentProject.FilesContent.Clone();
-            DataTable drFoundRowsTable = SearchNew(oDsResults);
+            DataTable drFoundRowsTable = GetSearchResults(oDsResults);
 
             if (drFoundRowsTable == null)
             {
