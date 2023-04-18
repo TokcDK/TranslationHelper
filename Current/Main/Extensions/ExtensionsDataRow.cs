@@ -19,7 +19,7 @@ namespace TranslationHelper.Extensions
 #if DEBUG
             AppData.Main.Invoke((Action)(() => selectedRow[columnIndex] = value));
 #else
-            selectedRow[columnIndex] = value
+            selectedRow[columnIndex] = value;
 #endif
         }
 

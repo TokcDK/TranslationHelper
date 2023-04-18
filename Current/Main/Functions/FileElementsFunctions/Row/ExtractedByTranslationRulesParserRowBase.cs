@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using TranslationHelper.Data;
+using TranslationHelper.Extensions;
 
 namespace TranslationHelper.Functions.FileElementsFunctions.Row.ExtractedParser
 {
@@ -65,11 +66,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row.ExtractedParser
 
             if (newValue == trans) return false;
 
-            try
-            {
-                SelectedRow[AppData.CurrentProject.TranslationColumnIndex] = newValue;
-            }
-            catch (System.InvalidOperationException) { }
+            SelectedRow.SetValue(AppData.CurrentProject.TranslationColumnIndex, newValue);
 
             return true;
         }
