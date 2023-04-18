@@ -65,7 +65,11 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row.ExtractedParser
 
             if (newValue == trans) return false;
 
-            SelectedRow[AppData.CurrentProject.TranslationColumnIndex] = newValue;
+            try
+            {
+                SelectedRow[AppData.CurrentProject.TranslationColumnIndex] = newValue;
+            }
+            catch (System.InvalidOperationException) { }
 
             return true;
         }

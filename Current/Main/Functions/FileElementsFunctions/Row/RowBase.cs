@@ -8,6 +8,60 @@ using TranslationHelper.Main.Functions;
 
 namespace TranslationHelper.Functions.FileElementsFunctions.Row
 {
+    public class SelectedTable
+    {
+        public readonly DataTable Table;
+
+        public SelectedTable(DataTable table)
+        {
+            Table = table;
+        }
+    }
+    public class SelectedRow
+    {
+        public SelectedRow(DataRow row)
+        {
+            Row = row;
+        }
+
+        public readonly DataRow Row;
+
+        string original;
+        bool IsOriginalNeedInit = true;
+        public string Original
+        {
+            get
+            {
+                if (IsOriginalNeedInit)
+                {
+                    IsOriginalNeedInit = false;
+                    return original = Row[AppData.CurrentProject.OriginalColumnIndex] as string;
+                }
+                else return original;
+            }
+        }
+
+
+        string translation;
+        public string Translation
+        {
+            get
+            {
+                return translation ?? (translation = Row[AppData.CurrentProject.TranslationColumnIndex] + "");
+            }
+            set
+            {
+                if (translation == value) return;
+                translation = value;
+#if DEBUG
+                AppData.Main.Invoke((Action)(() => Row[AppData.CurrentProject.TranslationColumnIndex] = translation));
+#else
+                Row[AppData.CurrentProject.TranslationColumnIndex] = translation = value;
+#endif
+            }
+        }
+    }
+
     internal abstract class RowBase
     {
         /// <summary>
@@ -291,7 +345,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
         {
             if (SelectedTableIndex == -1)
             {
-                if ( tableIndex != -1) { SelectedTableIndex = tableIndex; } 
+                if (tableIndex != -1) { SelectedTableIndex = tableIndex; }
                 else
                 {
 #if DEBUG
