@@ -58,7 +58,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row.ExportFormats
         {
             Init();
 
-            _allRows.Add(OriginalMod(SelectedRow[0] + "") + MarkerTranslation + TranslationMod(SelectedRow[1] + ""));
+            _allRows.Add(OriginalMod(Original) + MarkerTranslation + TranslationMod(Translation));
 
             if (IsLastRow)
             {

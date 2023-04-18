@@ -10,9 +10,11 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
 
         protected override bool Apply()
         {
-            if ((SelectedRow[ColumnIndexTranslation] == null || string.IsNullOrEmpty(SelectedRow[ColumnIndexTranslation] as string) || !Equals(SelectedRow[ColumnIndexTranslation], SelectedRow[ColumnIndexOriginal])) && (SelectedRow[ColumnIndexOriginal] as string).HaveMostOfRomajiOtherChars() || !(SelectedRow[ColumnIndexOriginal] as string).HasLetters())
+            var o = Original;
+            var t = Translation;
+            if ((string.IsNullOrEmpty(t) || !Equals(t, o)) && o.HaveMostOfRomajiOtherChars() || !o.HasLetters())
             {
-                SelectedRow[ColumnIndexTranslation] = SelectedRow[ColumnIndexOriginal];
+                Translation = o;
                 return true;
             }
             return false;

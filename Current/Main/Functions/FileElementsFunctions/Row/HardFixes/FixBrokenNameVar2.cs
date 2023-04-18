@@ -11,13 +11,13 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row.HardFixes
 
         protected override bool Apply()
         {
-            var translation = SelectedRow[ColumnIndexTranslation] + "";
+            var translation = Translation;
             if (Regex.IsMatch(translation, @"\\\\([0-9]{1,3})\[([0-9]{1,3})\]"))
             {
-                var original = SelectedRow[ColumnIndexOriginal] as string;
+                var original = Original;
                 if (Regex.IsMatch(original, @"\\\\N\[[0-9]{1,3}\]"))
                 {
-                    SelectedRow[ColumnIndexTranslation] = Regex.Replace(translation, @"\\\\([0-9]{1,3})\[([0-9]{1,3})\]", @"\\N[$2]");
+                    Translation = Regex.Replace(translation, @"\\\\([0-9]{1,3})\[([0-9]{1,3})\]", @"\\N[$2]");
                     return true;
                 }
                 else
@@ -25,7 +25,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row.HardFixes
                     var mc = Regex.Matches(original, @"\\\\([A-Za-z])\[[0-9]{1,3}\]");
                     if (mc.Count == 1)
                     {
-                        SelectedRow[ColumnIndexTranslation] = Regex.Replace(translation, @"\\\\([0-9]{1,3})\[([0-9]{1,3})\]", @"\" + mc[0].Value);
+                        Translation = Regex.Replace(translation, @"\\\\([0-9]{1,3})\[([0-9]{1,3})\]", @"\" + mc[0].Value);
                         return true;
                     }
                 }

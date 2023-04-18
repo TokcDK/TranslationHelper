@@ -6,7 +6,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
     {
         protected override bool IsValidRow()
         {
-            return base.IsValidRow() && (SelectedRow[1] == null || string.IsNullOrEmpty(SelectedRow[1].ToString()));
+            return base.IsValidRow() && string.IsNullOrEmpty(Original);
         }
 
         protected override bool ApplyToBuffered()

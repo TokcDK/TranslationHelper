@@ -50,8 +50,8 @@ namespace TranslationHelper.Projects.RPGMMV.Menus
         {
             try
             {
-                var o = SelectedRow[ColumnIndexOriginal] as string;
-                if (dict.TryGetValue(o, out string value)) SelectedRow[ColumnIndexTranslation] = value;
+                var o = Original;
+                if (dict.TryGetValue(o, out string value)) Translation = value;
             }
             catch
             {

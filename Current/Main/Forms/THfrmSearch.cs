@@ -629,8 +629,9 @@ namespace TranslationHelper
         DataTable Actors;
         private bool IsTheRowHasPossibleIssues(DataRow row)
         {
-            var rowTranslation = (row[1] + string.Empty);
-            if (rowTranslation.Length == 0 || (AppSettings.IgnoreOrigEqualTransLines && Equals(row[0], row[1])))
+            var o = (row[0] + string.Empty);
+            var t = (row[1] + string.Empty);
+            if (string.IsNullOrEmpty(t) || (AppSettings.IgnoreOrigEqualTransLines && o.Equals(t)))
             {
                 return false;
             }
@@ -638,7 +639,7 @@ namespace TranslationHelper
             if (AppSettings.SearchRowIssueOptionsCheckNonRomaji)
             {
                 //translation contains non romaji symbols
-                if (Regex.IsMatch(row[1] + "", @"[^\x00-\x7F]+\ *(?:[^\x00-\x7F]| )*"))
+                if (Regex.IsMatch(t, @"[^\x00-\x7F]+\ *(?:[^\x00-\x7F]|\ )*"))
                 {
                     return true;
                 }
@@ -685,7 +686,7 @@ namespace TranslationHelper
                     var translation = ActorsLine[1] + string.Empty;
 
                     //если оригинал содержит оригинал(Анна) из Actors, а перевод не содержит определение(Anna) из Actors
-                    if (translation.Length > 0 && (original.Length < 80 && (row[0] as string).Contains(original) && !rowTranslation.Contains(translation)))
+                    if (translation.Length > 0 && (original.Length < 80 && (row[0] as string).Contains(original) && !t.Contains(translation)))
                     {
                         return true;
                     }
@@ -696,7 +697,7 @@ namespace TranslationHelper
             if (AppSettings.SearchRowIssueOptionsCheckAnyLineTranslatable)
             {
                 //check if multiline and one of line equal to original and valide for translation
-                if (row.HasAnyTranslationLineValidAndEqualSameOrigLine())
+                if (o.HasAnyTranslationLineValidAndEqualSameOrigLine(t))
                 {
                     return true;
                 }

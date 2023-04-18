@@ -22,7 +22,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
         int _lineIndex = 0;
         protected override bool Apply()
         {
-            var origValue = SelectedRow[0].ToString();
+            var origValue = Original;
             var selectedRowOriginalLinesCount = origValue.GetLinesCount();
             if (_lineIndex + selectedRowOriginalLinesCount > _bufferLength)
             {
@@ -44,7 +44,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
             //    translation += _buffer[_lineIndex];
             //}
 
-            SelectedRow[1] = translation;
+            Translation = translation;
             return true;
         }
     }

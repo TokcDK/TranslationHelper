@@ -51,8 +51,8 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
 
         protected override bool Apply()
         {
-            var orig = SelectedRow[0] + "";
-            var trans = SelectedRow[1] + "";
+            var orig = Original;
+            var trans = Translation;
 
             //add orig or replace exist
             if (_dict.ContainsKey(orig))

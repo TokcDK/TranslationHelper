@@ -19,14 +19,14 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row.HardFixes
 
         protected override bool Apply()
         {
-            var orig = SelectedRow[0] as string;
+            var orig = Original;
 
             if (orig.IsMultiline()) // skip multiline
             {
                 return false;
             }
 
-            var trans = SelectedRow[1] + string.Empty;
+            var trans = Translation;
 
             if (_cache.ContainsKey(orig))
             {
@@ -58,7 +58,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row.HardFixes
                 var cachedTranslation = _cache[extractedFromOrig[0]];
                 if (cachedTranslation != extractedFromTrans[0]) // replace translation if it is not equals of same in cache
                 {
-                    SelectedRow[1] = trans
+                    Translation = trans
                     .Remove(indexes[0], extractedFromTrans[0].Length)
                     .Insert(indexes[0], cachedTranslation);
                 }

@@ -14,7 +14,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row.HardFixes
 
         protected override bool Apply()
         {
-            var translation = SelectedRow[ColumnIndexTranslation] + "";
+            var translation = Translation;
             if (FunctionsRomajiKana.HasNOJPcharacters(translation))
             {
                 return false;
@@ -37,7 +37,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row.HardFixes
             {
                 System.Threading.Thread.Sleep(100);
             }
-            SelectedRow[ColumnIndexTranslation] = translation;
+            Translation = translation;
             return true;
         }
     }

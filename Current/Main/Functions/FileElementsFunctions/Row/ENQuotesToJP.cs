@@ -79,7 +79,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
         {
             try
             {
-                var translation = SelectedRow[ColumnIndexTranslation] + "";
+                var translation = Translation;
                 if (translation.Length == 0) return false;
 
                 if (
@@ -192,7 +192,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
                     }
                 }
 
-                if(changed) SelectedRow[ColumnIndexTranslation] = result;
+                if(changed) Translation = result;
             }
             catch
             {
@@ -200,33 +200,5 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
             }
             return true;
         }
-
-        //private void RiseChar(char c, bool prev = true)
-        //{
-        //    if (IsAll || IsTable)
-        //        if (prev)
-        //        {
-        //            if (AppData.ENQuotesToJPLearnDataFoundPrev.ContainsKey(c))
-        //            {
-        //                AppData.ENQuotesToJPLearnDataFoundPrev[c]++;
-        //            }
-        //            else
-        //            {
-        //                AppData.ENQuotesToJPLearnDataFoundPrev.Add(c, 1);
-        //            }
-        //        }
-        //        else
-        //        {
-        //            if (AppData.ENQuotesToJPLearnDataFoundNext.ContainsKey(c))
-        //            {
-        //                AppData.ENQuotesToJPLearnDataFoundNext[c]++;
-        //            }
-        //            else
-        //            {
-        //                AppData.ENQuotesToJPLearnDataFoundNext.Add(c, 1);
-        //            }
-        //        }
-
-        //}
     }
 }

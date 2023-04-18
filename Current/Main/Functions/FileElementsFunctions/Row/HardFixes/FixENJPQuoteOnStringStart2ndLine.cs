@@ -24,7 +24,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row.HardFixes
         {
             try
             {
-                var originalValue = SelectedRow[ColumnIndexOriginal] as string;
+                var originalValue = Original;
                 if (originalValue.IsMultiline())
                 {
                     string origSecondLine = string.Empty;
@@ -57,7 +57,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row.HardFixes
                     {
                         bool endsWith = false;
 
-                        var translationValue = SelectedRow[ColumnIndexTranslation] + "";
+                        var translationValue = Translation;
                         if (translationValue.IsMultiline())
                         {
                             string quoteString;
@@ -204,7 +204,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row.HardFixes
                                     resultString = (endsWith ? resultString.Remove(resultString.Length - endQuoteStringEnLength, endQuoteStringEnLength) : resultString) + endQuoteString;
                                 }
 
-                                SelectedRow[ColumnIndexTranslation] = resultString;
+                                Translation = resultString;
                                 return true;
                             }
                         }

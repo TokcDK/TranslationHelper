@@ -17,7 +17,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row.HardFixes
 　\\C[16]1 play \\C[0]\\V[7]\\C[16]\\G\\C[0] */
         protected override bool Apply()
         {
-            var transValue = SelectedRow[ColumnIndexTranslation] + "";
+            var transValue = Translation;
 
             string[] quotes; ;
             if (transValue.Length == 0 || !(quotes = new string[4] { "\"", "``", "`", "“" }).Contains(transValue.Substring(0, 1)))
@@ -33,7 +33,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row.HardFixes
             var ret = false;
             for (int i = 0; i < quotes.Length; i++)
             {
-                var origValue = SelectedRow[ColumnIndexOriginal] as string;
+                var origValue = Original;
                 oStartsJp = origValue.StartsWith("「");
                 oEndsJp = origValue.EndsWith("」");
                 tStartsEn = transValue.StartsWith(quotes[i]);
@@ -58,7 +58,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row.HardFixes
             }
 
             if (ret)
-                SelectedRow[ColumnIndexTranslation] = transValue;
+                Translation = transValue;
 
             return ret;
         }

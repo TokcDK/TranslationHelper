@@ -35,11 +35,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
 
         protected override bool Apply()
         {
-            try
-            {
-                SelectedRow[1] = null;
-            }
-            catch (InvalidOperationException) { }
+            Translation = null;
 
             return true;
         }

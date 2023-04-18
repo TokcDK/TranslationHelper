@@ -28,10 +28,10 @@ namespace TranslationHelper.Extensions
         /// </summary>
         /// <param name="selectedRow"></param>
         /// <returns></returns>
-        internal static bool HasAnyTranslationLineValidAndEqualSameOrigLine(this DataRow selectedRow, bool checklinescount = true)
+        internal static bool HasAnyTranslationLineValidAndEqualSameOrigLine(this string original, string translation, bool checklinescount = true)
         {
-            string o = (selectedRow[0] + "");
-            string t = (selectedRow[1] + "");
+            string o = original;
+            string t = translation;
             if (o == t || !o.IsMultiline() || (checklinescount && o.GetLinesCount() != t.GetLinesCount()))
                 return false;
 

@@ -223,7 +223,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row.StringCaseMorph
 
             if (char.IsLetter(inputString[0]))
             {
-                if ((SelectedRow[0] as string)[0] != inputString[0]) // skip if char in original equals char in translation with same index
+                if (Original[0] != inputString[0]) // skip if char in original equals char in translation with same index
                 {
                     inputString = (isReverse ? char.ToLowerInvariant(inputString[0]) : char.ToUpperInvariant(inputString[0])) + inputString.Substring(1);
                 }
@@ -239,7 +239,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row.StringCaseMorph
                     string orig;
                     if ((c > 0 && (@char == 's' && inputString[c - 1] == '\'' || inputString[c - 1] == '\\')) // 's or \s
                         ||
-                        (orig = SelectedRow[0] as string).Length > c && orig[c] == inputString[c]) // skip if char in original equals char in translation with same index
+                        (orig = Original).Length > c && orig[c] == inputString[c]) // skip if char in original equals char in translation with same index
                     { }
                     else inputString = inputString.Substring(0, c) + (isReverse ? char.ToLowerInvariant(inputString[c]) : char.ToUpperInvariant(inputString[c])) + (c == dsTransCellLength - 1 ? string.Empty : inputString.Substring(c + 1));
 

@@ -28,7 +28,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row.HardFixes
         protected override bool Apply()
         {
             var ret = false;
-            var translation = SelectedRow[ColumnIndexTranslation] + "";
+            var translation = Translation;
 
             string[][] quotes = new string[][]
             {
@@ -36,9 +36,9 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row.HardFixes
                  new string[] { "「", "」"}
             };
 
+            var original = Original;
             foreach (var quote in quotes)
             {
-                var original = SelectedRow[ColumnIndexOriginal] as string;
                 if (original.TrimStart().StartsWith(quote[0]) && original.TrimEnd().EndsWith(quote[1]))
                 {
                     string translationTrimStart = translation.TrimStart();
@@ -95,7 +95,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row.HardFixes
             }
 
             if (ret)
-                SelectedRow[ColumnIndexTranslation] = translation;
+                Translation = translation;
 
             return ret;
         }

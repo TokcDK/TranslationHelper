@@ -66,7 +66,7 @@ namespace TranslationHelper.Projects.RPGMMV.Menus
                 if (!match.Success) return false;
                 var k = match.Groups[1].Value;
 
-                if (dict.TryGetValue(k, out string value)) SelectedRow[ColumnIndexTranslation] = value;
+                if (dict.TryGetValue(k, out string value)) Translation = value;
             }
             catch
             {

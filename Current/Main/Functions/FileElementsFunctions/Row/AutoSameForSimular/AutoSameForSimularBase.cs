@@ -11,7 +11,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
     {
         protected override bool IsValidRow()
         {
-            return !string.IsNullOrEmpty(SelectedRow[1] + ""); // not empty original translation
+            return !string.IsNullOrEmpty(Translation); // not empty original translation
         }
 
         protected virtual bool IsForce => false;
@@ -35,8 +35,8 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
 
         void SameForSimilar()
         {
-            var originalCellValue = (string)SelectedRow[AppData.CurrentProject.OriginalColumnIndex];
-            var translatedCellValue = (string)SelectedRow[AppData.CurrentProject.TranslationColumnIndex];
+            var originalCellValue = Original;
+            var translatedCellValue = Translation;
 
 
             var tables = AppData.CurrentProject.FilesContent.Tables;

@@ -45,13 +45,13 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
         protected override bool Apply()
         {
 
-            string orig = SelectedRow[0] as string;
+            string orig = Original;
             if (orig.IsMultiline()) // skip multiline
             {
                 return false;
             }
 
-            string trans = SelectedRow[1] + "";
+            string trans = Translation;
             if (trans.IsMultiline()) // skip multiline
             {
                 return false;
@@ -125,7 +125,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
             }
             catch (Exception ex)
             {
-                _log.LogToFile(@"An error occured while file copy\write:\r\n" + ex + "\r\noriginal=" + SelectedRow[0] + "\r\ntranslation=" + SelectedRow[1]);
+                _log.LogToFile(@"An error occured while file copy\write:\r\n" + ex + "\r\noriginal=" + Original + "\r\ntranslation=" + Translation);
             }
             return false;
         }

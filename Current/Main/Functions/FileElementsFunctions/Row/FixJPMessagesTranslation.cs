@@ -46,8 +46,8 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
                 return false;
             }
 
-            var strOriginal = SelectedRow[ColumnIndexOriginal] as string;
-            var strTranslation = SelectedRow[ColumnIndexTranslation] + string.Empty;
+            var strOriginal = Original;
+            var strTranslation = Translation;
 
             if (string.IsNullOrWhiteSpace(strTranslation))
             {
@@ -56,15 +56,15 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
 
             if (SessionData.ContainsKey(strOriginal))
             {
-                SelectedRow[ColumnIndexTranslation] = SessionData[strOriginal];
+                Translation = SessionData[strOriginal];
             }
             else if ((strOriginal.StartsWith("は") || strOriginal.StartsWith("を")) && !strTranslation.StartsWith(" "))
             {
-                SelectedRow[ColumnIndexTranslation] = " " + strTranslation.Substring(0, 1).ToLower(CultureInfo.InvariantCulture) + strTranslation.Substring(1);
+                Translation = " " + strTranslation.Substring(0, 1).ToLower(CultureInfo.InvariantCulture) + strTranslation.Substring(1);
             }
             else if (strOriginal.StartsWith("の") && !strTranslation.StartsWith("'s ") && !strTranslation.StartsWith(" "))
             {
-                SelectedRow[ColumnIndexTranslation] = "'s " + strTranslation.Substring(0, 1).ToLower(CultureInfo.InvariantCulture) + strTranslation.Substring(1);
+                Translation = "'s " + strTranslation.Substring(0, 1).ToLower(CultureInfo.InvariantCulture) + strTranslation.Substring(1);
             }
             else
             {

@@ -17,7 +17,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
 
         protected override bool Apply()
         {
-            _bufferedOriginals.Add(SelectedRow[0] as string);//add original value
+            _bufferedOriginals.Add(Original);//add original value
 
             return true;
         }

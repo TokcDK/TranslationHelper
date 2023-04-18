@@ -81,8 +81,8 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
         protected override bool IsValidRow()
         {
             return !AppSettings.InterruptTtanslation && base.IsValidRow()
-                && (SelectedRow[1] == null || string.IsNullOrEmpty(SelectedRow[1] + "")
-                || SelectedRow.HasAnyTranslationLineValidAndEqualSameOrigLine());
+                && string.IsNullOrEmpty(Translation)
+                || Original.HasAnyTranslationLineValidAndEqualSameOrigLine(Translation);
         }
 
         /// <summary>
@@ -144,7 +144,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
 
         private void SetRowLinesToBuffer()
         {
-            var original = SelectedRow[0] as string;
+            var original = Original;
             var lineNum = 0;
 
             // add table data
@@ -483,16 +483,18 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
             var row = AppData.CurrentProject.FilesContent.Tables[tableIndex].Rows[rowData.RowIndex];
 
             // skip equal
-            var cellTranslationEqualOriginal = Equals(row[1], row[0]);
+            var o = row[0]+"";
+            var t = row[1]+"";
+            var cellTranslationEqualOriginal = Equals(t,o);
             if (AppSettings.IgnoreOrigEqualTransLines && cellTranslationEqualOriginal) return false;
 
             // skip when translation not equal to original and and have No any original line equal translation
-            var cellTranslationIsNotEmptyAndNotEqualOriginal = (row[1] != null && !string.IsNullOrEmpty(row[1] as string) && !cellTranslationEqualOriginal);
-            if (cellTranslationIsNotEmptyAndNotEqualOriginal && !row.HasAnyTranslationLineValidAndEqualSameOrigLine(false)) return false;
+            var cellTranslationIsNotEmptyAndNotEqualOriginal = !string.IsNullOrEmpty(t) && !cellTranslationEqualOriginal;
+            if (cellTranslationIsNotEmptyAndNotEqualOriginal && !o.HasAnyTranslationLineValidAndEqualSameOrigLine(t,false)) return false;
 
             var newValue = new List<string>();
             var lineNum = 0;
-            var rowValue = (cellTranslationIsNotEmptyAndNotEqualOriginal ? row[1] : row[0]) + "";
+            var rowValue = cellTranslationIsNotEmptyAndNotEqualOriginal ? t : o;
             foreach (var line in rowValue.SplitToLines())
             {
                 //if (lineNum >= rowData.Lines.Count) break; // multyline row was not fully translated, skip to translate later on next loop

@@ -48,8 +48,8 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
         protected override bool IsValidRow()
         {
             return !AppSettings.InterruptTtanslation && base.IsValidRow()
-                && (SelectedRow[1] == null || string.IsNullOrEmpty(SelectedRow[1] + "")
-                || SelectedRow.HasAnyTranslationLineValidAndEqualSameOrigLine());
+                && (string.IsNullOrEmpty(Translation)
+                || Original.HasAnyTranslationLineValidAndEqualSameOrigLine(Translation));
         }
 
         /// <summary>
@@ -112,7 +112,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
 
         private void SetRowLinesToBuffer()
         {
-            var original = SelectedRow[0] as string;
+            var original = Original;
             var lineNum = 0;
             foreach (var line in original.SplitToLines())
             {
@@ -357,18 +357,20 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
                 var rindex = int.Parse(tr[1]);
                 var row = AppData.CurrentProject.FilesContent.Tables[tindex].Rows[rindex];
 
-                var cellTranslationEqualOriginal = Equals(row[1], row[0]);
+                var o = row[0] + "";
+                var t = row[1] + "";
+                var cellTranslationEqualOriginal = Equals(t, o);
 
                 //skip equal
                 if (AppSettings.IgnoreOrigEqualTransLines && cellTranslationEqualOriginal) continue;
 
-                var cellTranslationIsNotEmptyAndNotEqualOriginal = (row[1] != null && !string.IsNullOrEmpty(row[1] as string) && !cellTranslationEqualOriginal);
+                var cellTranslationIsNotEmptyAndNotEqualOriginal = (!string.IsNullOrEmpty(o) && !cellTranslationEqualOriginal);
 
-                if (cellTranslationIsNotEmptyAndNotEqualOriginal && !row.HasAnyTranslationLineValidAndEqualSameOrigLine(false)) continue;
+                if (cellTranslationIsNotEmptyAndNotEqualOriginal && !o.HasAnyTranslationLineValidAndEqualSameOrigLine(t,false)) continue;
 
                 var newValue = new List<string>();
                 var lineNum = 0;
-                var rowValue = (cellTranslationIsNotEmptyAndNotEqualOriginal ? row[1] : row[0]) + "";
+                var rowValue = cellTranslationIsNotEmptyAndNotEqualOriginal ? t : o;
                 foreach (var line in rowValue.SplitToLines())
                 {
                     if ((!coordinate.Value.ContainsKey(lineNum) || coordinate.Value[lineNum].Count == 0) || line.IsSoundsText())
@@ -399,7 +401,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
 
                 row.SetValue(1, string.Join(Environment.NewLine, newValue));
 
-                if (!row.HasAnyTranslationLineValidAndEqualSameOrigLine(false))//apply only for finished rows
+                if (!o.HasAnyTranslationLineValidAndEqualSameOrigLine(t,false))//apply only for finished rows
                 {
                     //apply fixes for cell
                     new AllHardFixes().Selected(row, tindex, rindex);

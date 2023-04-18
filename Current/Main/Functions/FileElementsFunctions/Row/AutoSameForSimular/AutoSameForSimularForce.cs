@@ -4,7 +4,7 @@
     {
         protected override bool IsValidRow()
         {
-            return !string.IsNullOrEmpty(SelectedRow[1] + "");
+            return !string.IsNullOrEmpty(Original);
         }
 
         protected override bool IsForce => true; // force set values

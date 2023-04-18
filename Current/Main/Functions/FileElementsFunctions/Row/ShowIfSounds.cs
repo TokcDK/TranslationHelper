@@ -16,9 +16,10 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
 
         protected override bool Apply()
         {
-            if ((SelectedRow[0] + "").IsSoundsText())
+            var o = Original;
+            if (o.IsSoundsText())
             {
-                SelectedRow[1] = SelectedRow[0];
+                Translation = o;
 
                 return true;
             }

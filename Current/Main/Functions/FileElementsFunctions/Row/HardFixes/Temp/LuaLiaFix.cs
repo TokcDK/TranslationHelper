@@ -11,11 +11,11 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row.HardFixes.Temp
         protected override bool Apply()
         {
             bool lia;
-            var original = SelectedRow[ColumnIndexOriginal] as string;
+            var original = Original;
             string translation;
-            if (original.StartsWith("ルア") && ((lia = (translation = SelectedRow[ColumnIndexTranslation] + "").StartsWith("Lia")) || translation.StartsWith("Lila")))
+            if (original.StartsWith("ルア") && ((lia = (translation = Translation).StartsWith("Lia")) || translation.StartsWith("Lila")))
             {
-                SelectedRow[ColumnIndexTranslation] = "Lua" + translation.Remove(0, lia ? 3 : 4);
+                Translation = "Lua" + translation.Remove(0, lia ? 3 : 4);
                 return true;
             }
 

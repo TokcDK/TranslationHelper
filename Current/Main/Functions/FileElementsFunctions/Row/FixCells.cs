@@ -20,8 +20,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
         {
             try
             {
-                var row = SelectedRow;
-                string cvalue = row[1] + string.Empty;
+                string cvalue = Translation;
                 //не трогать строку перевода, если она пустая
                 if (cvalue.Length > 0)
                 {
@@ -88,10 +87,10 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
                     //здесь функция возвращения извлеченного
                     //cvalue = RestoreExtracted(cvalue, row[cind - 1] as string);
 
-                    if (!Equals(row[1], cvalue))
+                    if (!Equals(Translation, cvalue))
                     {
                         //ProjectData.THFilesElementsDataset.Tables[t].Rows[rowindex][cind] = cvalue;
-                        row[1] = cvalue;
+                        Translation = cvalue;
                         return true;
                     }
                 }
