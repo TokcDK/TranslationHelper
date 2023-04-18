@@ -10,7 +10,11 @@ namespace TranslationHelper.Menus.MainMenus.Edit.CaseMorph
 {
     public class MainMenuFileSubItemEnQuotesToJp : MainMenuEditSubItemBase, IFileListMenuItem, IFileRowMenuItem, IProjectMenuItem
     {
-        public override IMenuItem[] Childs => new IMenuItem[1] { new MenuItemCaseMorphEnQuotesToJpVariated() };
+        public override IMenuItem[] Childs => new IMenuItem[2] 
+        { 
+            new MenuItemCaseMorphEnQuotesToJpVariated(),
+            new MenuItemCaseMorphEnQuotesToJpVariated2(),
+        };
 
         public override string Text => T._("En Quotes To Jp");
 
@@ -39,6 +43,28 @@ namespace TranslationHelper.Menus.MainMenus.Edit.CaseMorph
         protected override void OnTable(object sender, EventArgs e)
         {
             _ = new EnQuotesToJp().TableT();
+        }
+    }
+
+    internal class MenuItemCaseMorphEnQuotesToJpVariated2 : AllTableRowsChildMenuBase
+    {
+        public override string Text => T._("Run2");
+
+        public override string Description => T._("EnQuotesToJp2");
+
+        protected override void OnAll(object sender, EventArgs e)
+        {
+            _ = new EnQuotesToJp2().AllT();
+        }
+
+        protected override void OnRows(object sender, EventArgs e)
+        {
+            new EnQuotesToJp2().Rows();
+        }
+
+        protected override void OnTable(object sender, EventArgs e)
+        {
+            _ = new EnQuotesToJp2().TableT();
         }
     }
 }
