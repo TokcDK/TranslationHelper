@@ -152,7 +152,7 @@ namespace TranslationHelper
                     else
                     {
                         THFilesListBox.SelectedIndex = tableindex;
-                        THFileElementsDataGridView.DataSource = AppData.CurrentProject.FilesContent.Tables[tableindex];
+                        THFileElementsDataGridView.DataSource = _tables[tableindex];
                     }
                     THFileElementsDataGridView.CurrentCell = THFileElementsDataGridView[searchColumn, rowindex];
 
@@ -194,7 +194,7 @@ namespace TranslationHelper
                     if (tableindex != THFilesListBox.SelectedIndex)
                     {
                         THFilesListBox.SelectedIndex = tableindex;
-                        THFileElementsDataGridView.DataSource = AppData.CurrentProject.FilesContent.Tables[tableindex];
+                        THFileElementsDataGridView.DataSource = _tables[tableindex];
                     }
                     THFileElementsDataGridView.CurrentCell = THFileElementsDataGridView[searchcolumn, rowindex];
 
@@ -456,19 +456,19 @@ namespace TranslationHelper
         private DataTable GetSearchResults(DataSet DS)
         {
             lblSearchMsg.Visible = false;
-            if (AppData.CurrentProject.FilesContent.Tables.Count == 0) return DS.Tables[0];
+            if (_tables.Count == 0) return DS.Tables[0];
 
             string searchcolumn = GetSearchColumn();
             bool info = SearchInInfoCheckBox.Checked;
             string strQuery = SearchFormFindWhatTextBox.Text;
             bool found = false;
             var ForSelected = SearchRangeSelectedRadioButton.Checked || SearchRangeVisibleRadioButton.Checked;
-            int DatatablesCount = SearchRangeTableRadioButton.Checked || ForSelected ? THFilesListBox.SelectedIndex + 1 : AppData.CurrentProject.FilesContent.Tables.Count;
+            int DatatablesCount = SearchRangeTableRadioButton.Checked || ForSelected ? THFilesListBox.SelectedIndex + 1 : _tables.Count;
             int StartTableIndex = SearchRangeTableRadioButton.Checked || ForSelected ? THFilesListBox.SelectedIndex : 0;
 
             for (int t = StartTableIndex; t < DatatablesCount; t++)
             {
-                var table = AppData.CurrentProject.FilesContent.Tables[t];
+                var table = _tables[t];
 
                 System.Collections.Generic.HashSet<int> selectedrowsHashes = null;
                 if (ForSelected)
@@ -481,7 +481,7 @@ namespace TranslationHelper
                 {
                     if (ForSelected && !selectedrowsHashes.Contains(r)) continue;
 
-                    var Row = AppData.CurrentProject.FilesContent.Tables[t].Rows[r];
+                    var Row = _tables[t].Rows[r];
 
                     //skip equal lines if need, skip empty search cells && not skip when row issue search
                     if ((chkbxDoNotTouchEqualOT.Checked && Equals(Row[0], Row[1])) || (!chkbxDoNotTouchEqualOT.Checked && (Row[searchcolumn] + string.Empty).Length == 0 && !SearchFindLinesWithPossibleIssuesCheckBox.Checked))
@@ -489,7 +489,7 @@ namespace TranslationHelper
                         continue;
                     }
 
-                    string SelectedCellValue = AppData.CurrentProject.FilesContent.Tables[t].Rows[r][searchcolumn] + string.Empty;
+                    string SelectedCellValue = _tables[t].Rows[r][searchcolumn] + string.Empty;
 
                     if (info)//search in info box
                     {
@@ -682,7 +682,7 @@ namespace TranslationHelper
 
         private void GetActorsTable()
         {
-            foreach (DataTable table in AppData.CurrentProject.FilesContent.Tables)
+            foreach (DataTable table in _tables)
             {
                 if (!table.TableName.StartsWith("Actors")) continue;
 
@@ -690,6 +690,8 @@ namespace TranslationHelper
                 break;
             }
         }
+
+        DataTableCollection _tables;
 
         private void THSearch_Load(object sender, EventArgs e)
         {
@@ -703,6 +705,8 @@ namespace TranslationHelper
 
             //set default values for search settings
             chkbxDoNotTouchEqualOT.Checked = AppSettings.IgnoreOrigEqualTransLines;
+
+            _tables = AppData.CurrentProject.FilesContent.Tables;
         }
 
         private void SelectTextInTextBox(string input)
@@ -782,8 +786,8 @@ namespace TranslationHelper
                 //было исключение, отсутствует позиция, хотя позицияприсутствовала
                 tableindex = int.Parse(oDsResultsCoordinates.Rows[e.RowIndex][0].ToString(), CultureInfo.InvariantCulture);
 
-                AppData.CurrentProject.FilesContent.Tables[tableindex].DefaultView.RowFilter = string.Empty;
-                AppData.CurrentProject.FilesContent.Tables[tableindex].DefaultView.Sort = string.Empty;
+                _tables[tableindex].DefaultView.RowFilter = string.Empty;
+                _tables[tableindex].DefaultView.Sort = string.Empty;
                 THFileElementsDataGridView.Refresh();
 
                 rowindex = int.Parse(oDsResultsCoordinates.Rows[e.RowIndex][1].ToString(), CultureInfo.InvariantCulture);
@@ -854,7 +858,7 @@ namespace TranslationHelper
                 if (tableindex != THFilesListBox.SelectedIndex)
                 {
                     THFilesListBox.SelectedIndex = tableindex;
-                    THFileElementsDataGridView.DataSource = AppData.CurrentProject.FilesContent.Tables[tableindex];
+                    THFileElementsDataGridView.DataSource = _tables[tableindex];
                 }
                 THFileElementsDataGridView.CurrentCell = THFileElementsDataGridView[searchcolumn, rowindex];
 
@@ -895,7 +899,7 @@ namespace TranslationHelper
                 if (tableindex != THFilesListBox.SelectedIndex)
                 {
                     THFilesListBox.SelectedIndex = tableindex;
-                    THFileElementsDataGridView.DataSource = AppData.CurrentProject.FilesContent.Tables[tableindex];
+                    THFileElementsDataGridView.DataSource = _tables[tableindex];
                 }
                 THFileElementsDataGridView.CurrentCell = THFileElementsDataGridView[searchcolumn, rowindex];
 
@@ -960,7 +964,7 @@ namespace TranslationHelper
             {
                 tableindex = int.Parse(oDsResultsCoordinates.Rows[r][0] + string.Empty, CultureInfo.CurrentCulture);
                 rowindex = int.Parse(oDsResultsCoordinates.Rows[r][1] + string.Empty, CultureInfo.CurrentCulture);
-                var row = AppData.CurrentProject.FilesContent.Tables[tableindex].Rows[rowindex];
+                var row = _tables[tableindex].Rows[rowindex];
                 string value = row[searchcolumn] + string.Empty;
                 if (value.Length == 0)
                 {
