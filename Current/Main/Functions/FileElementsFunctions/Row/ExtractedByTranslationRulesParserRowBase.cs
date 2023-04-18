@@ -18,8 +18,8 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row.ExtractedParser
         // RoweBase
         protected override bool Apply()
         {
-            var orig = SelectedRow[0] as string;
-            var trans = SelectedRow[1] + string.Empty;
+            var orig = Original;
+            var trans = Translation;
 
             if (string.IsNullOrWhiteSpace(trans)) return false;
 
@@ -66,7 +66,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row.ExtractedParser
 
             if (newValue == trans) return false;
 
-            SelectedRow.SetValue(AppData.CurrentProject.TranslationColumnIndex, newValue);
+            Translation = newValue;
 
             return true;
         }

@@ -655,5 +655,13 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
         protected virtual bool IsValidRow() => AppSettings.IgnoreOrigEqualTransLines || !Equals(SelectedRow[ColumnIndexOriginal], SelectedRow[ColumnIndexTranslation]);
 
         protected abstract bool Apply();
+
+        public string Original { get => SelectedRow[AppData.CurrentProject.OriginalColumnIndex] as string; }
+
+        public string Translation
+        {
+            get => SelectedRow[AppData.CurrentProject.TranslationColumnIndex] + "";
+            set => SelectedRow.SetValue(AppData.CurrentProject.TranslationColumnIndex, value);
+        }
     }
 }
