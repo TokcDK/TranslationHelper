@@ -456,7 +456,7 @@
             this.FindAllButton.TabIndex = 7;
             this.FindAllButton.Text = "Find All";
             this.FindAllButton.UseVisualStyleBackColor = true;
-            this.FindAllButton.Click += new System.EventHandler(this.FindAllButton_Click);
+            this.FindAllButton.Click += new System.EventHandler(this.SearchAllButton_Click);
             // 
             // SearchFormFindNextButton
             // 

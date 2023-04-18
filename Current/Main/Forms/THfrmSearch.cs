@@ -414,40 +414,40 @@ namespace TranslationHelper
         //https://stackoverflow.com/questions/3608388/c-sharp-access-dataset-data-from-another-class
         //http://qaru.site/questions/236566/how-to-know-the-row-index-from-datatable-object
         DataSet oDsResults;
-        private void FindAllButton_Click(object sender, EventArgs e)
+        private void SearchAllButton_Click(object sender, EventArgs e)
         {
-            if (AppData.CurrentProject.FilesContent != null && (SearchFindLinesWithPossibleIssuesCheckBox.Checked || SearchFormFindWhatTextBox.Text.Length > 0))
+            if (AppData.CurrentProject.FilesContent == null 
+                || !SearchFindLinesWithPossibleIssuesCheckBox.Checked && SearchFormFindWhatTextBox.Text.Length == 0)
             {
-                lblSearchMsg.Visible = false;
-                oDsResults = AppData.CurrentProject.FilesContent.Clone();
-                //DataTable drFoundRowsTable = SelectFromDatatables(oDsResults);
-                DataTable drFoundRowsTable = SearchNew(oDsResults);
+                return;
+            }
 
-                if (drFoundRowsTable != null)
-                {
-                    if (drFoundRowsTable.Rows.Count > 0)
-                    {
-                        StoryFoundValueToComboBox(SearchFormFindWhatTextBox.Text);
+            lblSearchMsg.Visible = false;
+            oDsResults = AppData.CurrentProject.FilesContent.Clone();
+            //DataTable drFoundRowsTable = SelectFromDatatables(oDsResults);
+            DataTable drFoundRowsTable = SearchNew(oDsResults);
 
-                        oDsResults.AcceptChanges();
-                        PopulateGrid(oDsResults);
+            if (drFoundRowsTable == null) return;
 
-                        lblSearchMsg.Visible = true;
-                        lblSearchMsg.Text = T._("Found ") + drFoundRowsTable.Rows.Count + T._(" records");
-                        this.Height = 589;
+            if (drFoundRowsTable.Rows.Count > 0)
+            {
+                StoryFoundValueToComboBox(SearchFormFindWhatTextBox.Text);
 
+                oDsResults.AcceptChanges();
+                PopulateGrid(oDsResults);
 
-                    }
-                    else
-                    {
-                        //PopulateGrid(null);
-                        lblSearchMsg.Visible = true;
-                        lblSearchMsg.Text = T._("Nothing Found");
-                        SearchResultsDatagridview.DataSource = null;
-                        SearchResultsDatagridview.Refresh();
-                        this.Height = 368;
-                    }
-                }
+                lblSearchMsg.Visible = true;
+                lblSearchMsg.Text = T._("Found ") + drFoundRowsTable.Rows.Count + T._(" records");
+                this.Height = 589;
+            }
+            else
+            {
+                //PopulateGrid(null);
+                lblSearchMsg.Visible = true;
+                lblSearchMsg.Text = T._("Nothing Found");
+                SearchResultsDatagridview.DataSource = null;
+                SearchResultsDatagridview.Refresh();
+                this.Height = 368;
             }
         }
 
@@ -456,10 +456,8 @@ namespace TranslationHelper
         private DataTable SearchNew(DataSet DS)
         {
             lblSearchMsg.Visible = false;
-            if (AppData.CurrentProject.FilesContent.Tables.Count <= 0)
-            {
-                return DS.Tables[0];
-            }
+            if (AppData.CurrentProject.FilesContent.Tables.Count == 0) return DS.Tables[0];
+
             string searchcolumn = GetSearchColumn();
             bool info = SearchInInfoCheckBox.Checked;
             string strQuery = SearchFormFindWhatTextBox.Text;
@@ -481,10 +479,7 @@ namespace TranslationHelper
                 var rowsCount = table.Rows.Count;
                 for (int r = 0; r < rowsCount; r++)
                 {
-                    if (ForSelected && !selectedrowsHashes.Contains(r))
-                    {
-                        continue;
-                    }
+                    if (ForSelected && !selectedrowsHashes.Contains(r)) continue;
 
                     var Row = AppData.CurrentProject.FilesContent.Tables[t].Rows[r];
 
@@ -652,14 +647,8 @@ namespace TranslationHelper
             {
                 //------------------------------
                 //Проверка актеров
-                if (Actors == null)
-                {
-                    GetActorsTable();
-                }
-                if (Actors == null || Actors.Rows.Count == 0)
-                {
-                    return false;
-                }
+                if (Actors == null) GetActorsTable();
+                if (Actors == null || Actors.Rows.Count == 0) return false;
 
                 foreach (DataRow ActorsLine in Actors.Rows)
                 {
@@ -695,11 +684,10 @@ namespace TranslationHelper
         {
             foreach (DataTable table in AppData.CurrentProject.FilesContent.Tables)
             {
-                if (table.TableName.StartsWith("Actors"))
-                {
-                    Actors = table;
-                    break;
-                }
+                if (!table.TableName.StartsWith("Actors")) continue;
+
+                Actors = table;
+                break;
             }
         }
 
@@ -829,10 +817,7 @@ namespace TranslationHelper
             {
                 string searchcolumn = GetSearchColumn();
 
-                if (startrowsearchindex == 0)
-                {
-                    return;
-                }
+                if (startrowsearchindex == 0) return;
 
                 if (tableindex >= 0 && tableindex < THFilesListBox.Items.Count && rowindex >= 0 && rowindex < THFileElementsDataGridView.Rows.Count)
                 {
@@ -858,10 +843,7 @@ namespace TranslationHelper
                     }
                 }
 
-                if (startrowsearchindex == oDsResults.Tables[0].Rows.Count)
-                {
-                    startrowsearchindex = 0;
-                }
+                if (startrowsearchindex == oDsResults.Tables[0].Rows.Count) startrowsearchindex = 0;
 
                 tableindex = int.Parse(oDsResultsCoordinates.Rows[startrowsearchindex][0].ToString(), CultureInfo.InvariantCulture);
                 rowindex = int.Parse(oDsResultsCoordinates.Rows[startrowsearchindex][1].ToString(), CultureInfo.InvariantCulture);
@@ -889,10 +871,7 @@ namespace TranslationHelper
 
                 DataTable drFoundRowsTable = SearchNew(oDsResults);
 
-                if (drFoundRowsTable == null)
-                {
-                    return;
-                }
+                if (drFoundRowsTable == null) return;
 
                 if (drFoundRowsTable.Rows.Count == 0)
                 {
@@ -923,10 +902,7 @@ namespace TranslationHelper
                 selectstring.Start();
 
                 startrowsearchindex++;
-                if (startrowsearchindex == oDsResults.Tables[0].Rows.Count)
-                {
-                    startrowsearchindex = 0;
-                }
+                if (startrowsearchindex == oDsResults.Tables[0].Rows.Count) startrowsearchindex = 0;
             }
         }
 
