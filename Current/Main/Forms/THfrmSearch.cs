@@ -158,7 +158,7 @@ namespace TranslationHelper
 
                     //подсвечивание найденного
                     //http://www.sql.ru/forum/1149655/kak-peredat-parametr-s-metodom-delegatom
-                    Thread selectstring = new Thread(new ParameterizedThreadStart((obj) => SelectTextinTextBox(SearchFormFindWhatTextBox.Text)));
+                    Thread selectstring = new Thread(new ParameterizedThreadStart((obj) => SelectTextInTextBox(SearchFormFindWhatTextBox.Text)));
                     selectstring.Start();
 
                     startrowsearchindex++;
@@ -202,7 +202,7 @@ namespace TranslationHelper
                             THFileElementsDataGridView.CurrentCell = THFileElementsDataGridView[searchcolumn, rowindex];
 
                             //http://www.sql.ru/forum/1149655/kak-peredat-parametr-s-metodom-delegatom
-                            Thread selectstring = new Thread(new ParameterizedThreadStart((obj) => SelectTextinTextBox(SearchFormFindWhatTextBox.Text)));
+                            Thread selectstring = new Thread(new ParameterizedThreadStart((obj) => SelectTextInTextBox(SearchFormFindWhatTextBox.Text)));
                             selectstring.Start();
 
                             startrowsearchindex++;
@@ -732,94 +732,67 @@ namespace TranslationHelper
             chkbxDoNotTouchEqualOT.Checked = AppSettings.IgnoreOrigEqualTransLines;
         }
 
-        private void SelectTextinTextBox(string input)
+        private void SelectTextInTextBox(string input)
         {
-            try
+            Invoke((Action)(() =>
             {
-                _ = Invoke(new MethodInvoker(() =>
+                if (string.IsNullOrEmpty(THTargetRichTextBox.Text)) return;
+
+                var searchWord = Regex.Escape(SearchFormFindWhatTextBox.Text);
+                var matchCase = THSearchMatchCaseCheckBox.Checked;
+                var searchOptions = matchCase ? RichTextBoxFinds.MatchCase : RichTextBoxFinds.None;
+
+                if (SearchModeRegexRadioButton.Checked)
                 {
-                    Thread.Sleep(200);
-                    if (THTargetRichTextBox.Text.Length == 0)
-                    {
-                        //MessageBox.Show("THTargetRichTextBox.Text="+ THTargetRichTextBox.Text);
-                        return;
-                    }
+                    SelectTextInTextBoxRegex(searchWord, matchCase, searchOptions);
+                }
+                else
+                {
+                    SelectTextInTextBoxNormal(searchWord, searchOptions);
+                }
+            }));
+        }
 
-                    if (SearchModeRegexRadioButton.Checked)
-                    {
-                        //https://www.c-sharpcorner.com/article/search-and-highlight-text-in-rich-textbox/
-                        //распознает лучше, чем код ниже, но не выделяет слово TEST
-                        bool MatchCase = THSearchMatchCaseCheckBox.Checked;
-                        MatchCollection mc = Regex.Matches(THTargetRichTextBox.Text, SearchFormFindWhatTextBox.Text, MatchCase ? RegexOptions.None : RegexOptions.IgnoreCase);
-                        if (mc.Count > 0)
-                        {
-                            string m = mc[0].Value;
-                            foreach (Match word in mc)
-                            {
-                                //string word = SearchFormFindWhatTextBox.Text;
-                                int startindex = 0;
-                                while (startindex < THTargetRichTextBox.TextLength)
-                                {
-                                    int wordstartIndex;
-                                    if (MatchCase)
-                                    {
-                                        wordstartIndex = THTargetRichTextBox.Find(word.Value, startindex, RichTextBoxFinds.MatchCase);
-                                    }
-                                    else
-                                    {
-                                        wordstartIndex = THTargetRichTextBox.Find(word.Value, startindex, RichTextBoxFinds.None);
-                                    }
-                                    if (wordstartIndex == -1)
-                                    {
-                                        break;
-                                    }
-                                    else
-                                    {
-                                        THTargetRichTextBox.SelectionStart = wordstartIndex;
-                                        THTargetRichTextBox.SelectionLength = word.Length;
-                                        THTargetRichTextBox.SelectionBackColor = Color.Yellow;
-                                    }
+        private void SelectTextInTextBoxNormal(string searchWord, RichTextBoxFinds searchOptions)
+        {
+            var start = 0;
+            var length = SearchFormFindWhatTextBox.TextLength;
 
-                                    startindex += wordstartIndex + word.Length;
-                                }
-                            }
-                        }
-                    }
-                    else
-                    {
-                        string word = SearchFormFindWhatTextBox.Text;
-                        int startindex = 0;
-                        while (startindex < THTargetRichTextBox.TextLength)
-                        {
-                            int wordstartIndex;
-                            if (THSearchMatchCaseCheckBox.Checked)
-                            {
-                                wordstartIndex = THTargetRichTextBox.Find(word, startindex, RichTextBoxFinds.MatchCase);
-                            }
-                            else
-                            {
-                                wordstartIndex = THTargetRichTextBox.Find(word, startindex, RichTextBoxFinds.None);
-                            }
-                            if (wordstartIndex == -1)
-                            {
-                                break;
-                            }
-                            else
-                            {
-                                THTargetRichTextBox.SelectionStart = wordstartIndex;
-                                THTargetRichTextBox.SelectionLength = word.Length;
-                                THTargetRichTextBox.SelectionBackColor = Color.Yellow;
-                            }
-
-                            startindex += wordstartIndex + word.Length;
-                        }
-                    }
-
-                }));
-            }
-            catch (Exception ex)
+            while (start < THTargetRichTextBox.TextLength)
             {
-                new FunctionsLogs().LogToFile("SelectTextinTextBox. error occured:" + Environment.NewLine + ex);
+                var startIndex = THTargetRichTextBox.Find(searchWord, start, searchOptions);
+
+                if (startIndex == -1) break;
+
+                THTargetRichTextBox.SelectionStart = startIndex;
+                THTargetRichTextBox.SelectionLength = length;
+                THTargetRichTextBox.SelectionBackColor = Color.Yellow;
+
+                start = startIndex + length;
+            }
+        }
+
+        private void SelectTextInTextBoxRegex(string searchWord, bool matchCase, RichTextBoxFinds findOptions)
+        {
+            var matches = Regex.Matches(THTargetRichTextBox.Text, searchWord, matchCase ? RegexOptions.None : RegexOptions.IgnoreCase);
+
+            foreach (Match match in matches)
+            {
+                var start = match.Index;
+                var length = match.Length;
+
+                while (start < THTargetRichTextBox.TextLength)
+                {
+                    var startIndex = THTargetRichTextBox.Find(match.Value, start, findOptions);
+
+                    if (startIndex == -1) break;
+
+                    THTargetRichTextBox.SelectionStart = startIndex;
+                    THTargetRichTextBox.SelectionLength = length;
+                    THTargetRichTextBox.SelectionBackColor = Color.Yellow;
+
+                    start = startIndex + length;
+                }
             }
         }
 
@@ -846,7 +819,7 @@ namespace TranslationHelper
                 if (THFileElementsDataGridView != null && THFileElementsDataGridView.DataSource != null && THFileElementsDataGridView.CurrentCell != null)
                 {
                     //http://www.sql.ru/forum/1149655/kak-peredat-parametr-s-metodom-delegatom
-                    Thread selectstring = new Thread(new ParameterizedThreadStart((obj) => SelectTextinTextBox(THFileElementsDataGridView.CurrentCell.Value.ToString())));
+                    Thread selectstring = new Thread(new ParameterizedThreadStart((obj) => SelectTextInTextBox(THFileElementsDataGridView.CurrentCell.Value.ToString())));
                     selectstring.Start();
                 }
             }
@@ -918,7 +891,7 @@ namespace TranslationHelper
 
                 //подсвечивание найденного
                 //http://www.sql.ru/forum/1149655/kak-peredat-parametr-s-metodom-delegatom
-                Thread selectstring = new Thread(new ParameterizedThreadStart((obj) => SelectTextinTextBox(SearchFormFindWhatTextBox.Text)));
+                Thread selectstring = new Thread(new ParameterizedThreadStart((obj) => SelectTextInTextBox(SearchFormFindWhatTextBox.Text)));
                 selectstring.Start();
 
                 startrowsearchindex++;
@@ -961,7 +934,7 @@ namespace TranslationHelper
                 THFileElementsDataGridView.CurrentCell = THFileElementsDataGridView[searchcolumn, rowindex];
 
                 //http://www.sql.ru/forum/1149655/kak-peredat-parametr-s-metodom-delegatom
-                Thread selectstring = new Thread(new ParameterizedThreadStart((obj) => SelectTextinTextBox(SearchFormFindWhatTextBox.Text)));
+                Thread selectstring = new Thread(new ParameterizedThreadStart((obj) => SelectTextInTextBox(SearchFormFindWhatTextBox.Text)));
                 selectstring.Start();
 
                 startrowsearchindex++;
