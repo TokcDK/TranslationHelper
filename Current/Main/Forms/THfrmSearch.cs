@@ -9,6 +9,7 @@ using System.Windows.Forms;
 using TranslationHelper.Data;
 using TranslationHelper.Extensions;
 using TranslationHelper.Functions;
+using TranslationHelper.Functions.FileElementsFunctions.Row;
 using TranslationHelper.Main.Functions;
 
 namespace TranslationHelper
@@ -812,8 +813,10 @@ namespace TranslationHelper
                 return;
             }
 
-            bool inputqualwithlatest = THSearchMatchCaseCheckBox.Checked ? SearchFormFindWhatTextBox.Text == lastfoundvalue : string.Compare(SearchFormFindWhatTextBox.Text, lastfoundvalue, true, CultureInfo.InvariantCulture) == 0;
-            if (inputqualwithlatest)
+            bool inputEqualWithLatest = THSearchMatchCaseCheckBox.Checked ? 
+                SearchFormFindWhatTextBox.Text == lastfoundvalue 
+                : string.Compare(SearchFormFindWhatTextBox.Text, lastfoundvalue, true, CultureInfo.InvariantCulture) == 0;
+            if (inputEqualWithLatest)
             {
                 string searchcolumn = GetSearchColumn();
 
