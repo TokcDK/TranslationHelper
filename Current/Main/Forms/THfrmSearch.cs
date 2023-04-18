@@ -139,10 +139,10 @@ namespace TranslationHelper
             }
             else
             {
-                bool inputqualwithlatest = THSearchMatchCaseCheckBox.Checked ? SearchFormFindWhatTextBox.Text == lastfoundvalue : string.Compare(SearchFormFindWhatTextBox.Text, lastfoundvalue, true, CultureInfo.InvariantCulture) == 0;
-                if (inputqualwithlatest)
+                bool inputEqualwithLatest = THSearchMatchCaseCheckBox.Checked ? SearchFormFindWhatTextBox.Text == lastfoundvalue : string.Compare(SearchFormFindWhatTextBox.Text, lastfoundvalue, true, CultureInfo.InvariantCulture) == 0;
+                if (inputEqualwithLatest)
                 {
-                    string searchcolumn = GetSearchColumn();
+                    string searchColumn = GetSearchColumn();
                     tableindex = int.Parse(oDsResultsCoordinates.Rows[startrowsearchindex][0].ToString(), CultureInfo.InvariantCulture);
                     rowindex = int.Parse(oDsResultsCoordinates.Rows[startrowsearchindex][1].ToString(), CultureInfo.InvariantCulture);
 
@@ -154,19 +154,15 @@ namespace TranslationHelper
                         THFilesListBox.SelectedIndex = tableindex;
                         THFileElementsDataGridView.DataSource = AppData.CurrentProject.FilesContent.Tables[tableindex];
                     }
-                    THFileElementsDataGridView.CurrentCell = THFileElementsDataGridView[searchcolumn, rowindex];
+                    THFileElementsDataGridView.CurrentCell = THFileElementsDataGridView[searchColumn, rowindex];
 
                     //подсвечивание найденного
                     //http://www.sql.ru/forum/1149655/kak-peredat-parametr-s-metodom-delegatom
-                    Thread selectstring = new Thread(new ParameterizedThreadStart((obj) => SelectTextInTextBox(SearchFormFindWhatTextBox.Text)));
-                    selectstring.Start();
+                    Thread selectString = new Thread(new ParameterizedThreadStart((obj) => SelectTextInTextBox(SearchFormFindWhatTextBox.Text)));
+                    selectString.Start();
 
                     startrowsearchindex++;
-                    if (startrowsearchindex == oDsResults.Tables[0].Rows.Count)
-                    {
-                        startrowsearchindex = 0;
-                    }
-
+                    if (startrowsearchindex == oDsResults.Tables[0].Rows.Count) startrowsearchindex = 0;
                 }
                 else
                 {
@@ -176,51 +172,39 @@ namespace TranslationHelper
 
                     DataTable drFoundRowsTable = SearchNew(oDsResults);
 
-                    if (drFoundRowsTable == null)
+                    if (drFoundRowsTable == null) return;
+
+                    if (drFoundRowsTable.Rows.Count == 0)
                     {
+                        //PopulateGrid(null);
+                        lblSearchMsg.Visible = true;
+                        lblSearchMsg.Text = "Nothing Found.";
+                        this.Height = 368;
+                        return;
                     }
-                    else
+
+                    StoryFoundValueToComboBox(SearchFormFindWhatTextBox.Text);
+
+                    oDsResults.AcceptChanges();
+
+                    string searchcolumn = GetSearchColumn();
+                    tableindex = int.Parse(oDsResultsCoordinates.Rows[startrowsearchindex][0].ToString(), CultureInfo.InvariantCulture);
+                    rowindex = int.Parse(oDsResultsCoordinates.Rows[startrowsearchindex][1].ToString(), CultureInfo.InvariantCulture);
+
+                    if (tableindex != THFilesListBox.SelectedIndex)
                     {
-                        if (drFoundRowsTable.Rows.Count > 0)
-                        {
-                            StoryFoundValueToComboBox(SearchFormFindWhatTextBox.Text);
-
-                            oDsResults.AcceptChanges();
-
-                            string searchcolumn = GetSearchColumn();
-                            tableindex = int.Parse(oDsResultsCoordinates.Rows[startrowsearchindex][0].ToString(), CultureInfo.InvariantCulture);
-                            rowindex = int.Parse(oDsResultsCoordinates.Rows[startrowsearchindex][1].ToString(), CultureInfo.InvariantCulture);
-
-                            if (tableindex == THFilesListBox.SelectedIndex)
-                            {
-                            }
-                            else
-                            {
-                                THFilesListBox.SelectedIndex = tableindex;
-                                THFileElementsDataGridView.DataSource = AppData.CurrentProject.FilesContent.Tables[tableindex];
-                            }
-                            THFileElementsDataGridView.CurrentCell = THFileElementsDataGridView[searchcolumn, rowindex];
-
-                            //http://www.sql.ru/forum/1149655/kak-peredat-parametr-s-metodom-delegatom
-                            Thread selectstring = new Thread(new ParameterizedThreadStart((obj) => SelectTextInTextBox(SearchFormFindWhatTextBox.Text)));
-                            selectstring.Start();
-
-                            startrowsearchindex++;
-                            if (startrowsearchindex == oDsResults.Tables[0].Rows.Count)
-                            {
-                                startrowsearchindex = 0;
-                            }
-                        }
-                        else
-                        {
-                            //PopulateGrid(null);
-                            lblSearchMsg.Visible = true;
-                            lblSearchMsg.Text = "Nothing Found.";
-                            this.Height = 368;
-                        }
+                        THFilesListBox.SelectedIndex = tableindex;
+                        THFileElementsDataGridView.DataSource = AppData.CurrentProject.FilesContent.Tables[tableindex];
                     }
+                    THFileElementsDataGridView.CurrentCell = THFileElementsDataGridView[searchcolumn, rowindex];
+
+                    //http://www.sql.ru/forum/1149655/kak-peredat-parametr-s-metodom-delegatom
+                    Thread selectstring = new Thread(new ParameterizedThreadStart((obj) => SelectTextInTextBox(SearchFormFindWhatTextBox.Text)));
+                    selectstring.Start();
+
+                    startrowsearchindex++;
+                    if (startrowsearchindex == oDsResults.Tables[0].Rows.Count) startrowsearchindex = 0;
                 }
-
             }
         }
 
@@ -472,134 +456,135 @@ namespace TranslationHelper
         private DataTable SearchNew(DataSet DS)
         {
             lblSearchMsg.Visible = false;
-            if (AppData.CurrentProject.FilesContent.Tables.Count > 0)
+            if (AppData.CurrentProject.FilesContent.Tables.Count <= 0)
             {
-                string searchcolumn = GetSearchColumn();
-                bool info = SearchInInfoCheckBox.Checked;
-                string strQuery = SearchFormFindWhatTextBox.Text;
-                bool found = false;
-                var ForSelected = SearchRangeSelectedRadioButton.Checked || SearchRangeVisibleRadioButton.Checked;
-                int DatatablesCount = SearchRangeTableRadioButton.Checked || ForSelected ? THFilesListBox.SelectedIndex + 1 : AppData.CurrentProject.FilesContent.Tables.Count;
-                int StartTableIndex = SearchRangeTableRadioButton.Checked || ForSelected ? THFilesListBox.SelectedIndex : 0;
+                return DS.Tables[0];
+            }
+            string searchcolumn = GetSearchColumn();
+            bool info = SearchInInfoCheckBox.Checked;
+            string strQuery = SearchFormFindWhatTextBox.Text;
+            bool found = false;
+            var ForSelected = SearchRangeSelectedRadioButton.Checked || SearchRangeVisibleRadioButton.Checked;
+            int DatatablesCount = SearchRangeTableRadioButton.Checked || ForSelected ? THFilesListBox.SelectedIndex + 1 : AppData.CurrentProject.FilesContent.Tables.Count;
+            int StartTableIndex = SearchRangeTableRadioButton.Checked || ForSelected ? THFilesListBox.SelectedIndex : 0;
 
-                for (int t = StartTableIndex; t < DatatablesCount; t++)
+            for (int t = StartTableIndex; t < DatatablesCount; t++)
+            {
+                var table = AppData.CurrentProject.FilesContent.Tables[t];
+
+                System.Collections.Generic.HashSet<int> selectedrowsHashes = null;
+                if (ForSelected)
                 {
-                    var table = AppData.CurrentProject.FilesContent.Tables[t];
+                    selectedrowsHashes = FunctionsTable.GetDGVRowsIndexesHashesInDT(t, SearchRangeVisibleRadioButton.Checked);
+                }
 
-                    System.Collections.Generic.HashSet<int> selectedrowsHashes = null;
-                    if (ForSelected)
+                var rowsCount = table.Rows.Count;
+                for (int r = 0; r < rowsCount; r++)
+                {
+                    if (ForSelected && !selectedrowsHashes.Contains(r))
                     {
-                        selectedrowsHashes = FunctionsTable.GetDGVRowsIndexesHashesInDT(t, SearchRangeVisibleRadioButton.Checked);
+                        continue;
                     }
 
-                    var rowsCount = table.Rows.Count;
-                    for (int r = 0; r < rowsCount; r++)
+                    var Row = AppData.CurrentProject.FilesContent.Tables[t].Rows[r];
+
+                    //skip equal lines if need, skip empty search cells && not skip when row issue search
+                    if ((chkbxDoNotTouchEqualOT.Checked && Equals(Row[0], Row[1])) || (!chkbxDoNotTouchEqualOT.Checked && (Row[searchcolumn] + string.Empty).Length == 0 && !SearchFindLinesWithPossibleIssuesCheckBox.Checked))
                     {
-                        if (ForSelected && !selectedrowsHashes.Contains(r))
+                        continue;
+                    }
+
+                    string SelectedCellValue = AppData.CurrentProject.FilesContent.Tables[t].Rows[r][searchcolumn] + string.Empty;
+
+                    if (info)//search in info box
+                    {
+                        var infoValue = (AppData.CurrentProject.FilesContentInfo.Tables[t].Rows[r][0] + string.Empty);
+
+                        //regex search
+                        if (SearchModeRegexRadioButton.Checked)//regex
                         {
-                            continue;
-                        }
-
-                        var Row = AppData.CurrentProject.FilesContent.Tables[t].Rows[r];
-
-                        //skip equal lines if need, skip empty search cells && not skip when row issue search
-                        if ((chkbxDoNotTouchEqualOT.Checked && Equals(Row[0], Row[1])) || (!chkbxDoNotTouchEqualOT.Checked && (Row[searchcolumn] + string.Empty).Length == 0 && !SearchFindLinesWithPossibleIssuesCheckBox.Checked))
-                        {
-                            continue;
-                        }
-
-                        string SelectedCellValue = AppData.CurrentProject.FilesContent.Tables[t].Rows[r][searchcolumn] + string.Empty;
-
-                        if (info)//search in info box
-                        {
-                            var infoValue = (AppData.CurrentProject.FilesContentInfo.Tables[t].Rows[r][0] + string.Empty);
-
-                            //regex search
-                            if (SearchModeRegexRadioButton.Checked)//regex
+                            try
                             {
-                                try
+                                if ((THSearchMatchCaseCheckBox.Checked && Regex.IsMatch(infoValue, strQuery))
+                                    || (!THSearchMatchCaseCheckBox.Checked && Regex.IsMatch(infoValue, strQuery, RegexOptions.IgnoreCase)))
                                 {
-                                    if ((THSearchMatchCaseCheckBox.Checked && Regex.IsMatch(infoValue, strQuery)) 
-                                        || (!THSearchMatchCaseCheckBox.Checked && Regex.IsMatch(infoValue, strQuery, RegexOptions.IgnoreCase)))
-                                    {
-                                        ImportRowToFound(ref found, DS, Row, t, r);
-                                    }
-                                }
-                                catch (ArgumentException ex)
-                                {
-                                    //при ошибках регекса выходить
-                                    lblSearchMsg.Visible = true;
-                                    lblSearchMsg.Text = T._("Invalid regex") + ">" + ex.Message;
-                                    return null;
-                                }
-                                catch
-                                {
-                                    return null;
+                                    ImportRowToFound(ref found, DS, Row, t, r);
                                 }
                             }
-                            else//common text search
+                            catch (ArgumentException ex)
                             {
-                                try
-                                {
-                                    if ((THSearchMatchCaseCheckBox.Checked && infoValue.Contains(strQuery)) 
-                                        || (!THSearchMatchCaseCheckBox.Checked && infoValue.ToUpperInvariant().Contains(strQuery.ToUpperInvariant())))
-                                    {
-                                        ImportRowToFound(ref found, DS, Row, t, r);
-                                    }
-                                }
-                                catch { }
+                                //при ошибках регекса выходить
+                                lblSearchMsg.Visible = true;
+                                lblSearchMsg.Text = T._("Invalid regex") + ">" + ex.Message;
+                                return null;
                             }
-
+                            catch
+                            {
+                                return null;
+                            }
                         }
-                        else if (SearchFindLinesWithPossibleIssuesCheckBox.Checked)//search rows with possible issues
+                        else//common text search
                         {
-                            if (IsTheRowHasPossibleIssues(Row))
+                            try
                             {
-                                ImportRowToFound(ref found, DS, Row, t, r);
+                                if ((THSearchMatchCaseCheckBox.Checked && infoValue.Contains(strQuery))
+                                    || (!THSearchMatchCaseCheckBox.Checked && infoValue.ToUpperInvariant().Contains(strQuery.ToUpperInvariant())))
+                                {
+                                    ImportRowToFound(ref found, DS, Row, t, r);
+                                }
                             }
+                            catch { }
                         }
-                        else
+
+                    }
+                    else if (SearchFindLinesWithPossibleIssuesCheckBox.Checked)//search rows with possible issues
+                    {
+                        if (IsTheRowHasPossibleIssues(Row))
                         {
-                            //regex search
-                            if (SearchModeRegexRadioButton.Checked)//regex
+                            ImportRowToFound(ref found, DS, Row, t, r);
+                        }
+                    }
+                    else
+                    {
+                        //regex search
+                        if (SearchModeRegexRadioButton.Checked)//regex
+                        {
+                            try
                             {
-                                try
+                                if ((THSearchMatchCaseCheckBox.Checked && Regex.IsMatch(SelectedCellValue, strQuery))
+                                    || (!THSearchMatchCaseCheckBox.Checked && Regex.IsMatch(SelectedCellValue, strQuery, RegexOptions.IgnoreCase))
+                                    )
                                 {
-                                    if ((THSearchMatchCaseCheckBox.Checked && Regex.IsMatch(SelectedCellValue, strQuery))
-                                        || (!THSearchMatchCaseCheckBox.Checked && Regex.IsMatch(SelectedCellValue, strQuery, RegexOptions.IgnoreCase))
-                                        )
-                                    {
-                                        ImportRowToFound(ref found, DS, Row, t, r);
-                                    }
-                                }
-                                catch (ArgumentException ex)
-                                {
-                                    //при ошибках регекса выходить
-                                    lblSearchMsg.Visible = true;
-                                    lblSearchMsg.Text = T._("Invalid regex") + ">" + ex.Message;
-                                    return null;
-                                }
-                                catch
-                                {
-                                    return null;
+                                    ImportRowToFound(ref found, DS, Row, t, r);
                                 }
                             }
-                            else//common text search
+                            catch (ArgumentException ex)
                             {
-                                try
-                                {
-                                    if ((THSearchMatchCaseCheckBox.Checked && SelectedCellValue.Contains(strQuery))
-                                        || (!THSearchMatchCaseCheckBox.Checked && SelectedCellValue.ToUpperInvariant().Contains(strQuery.ToUpperInvariant()))
-                                        )
-                                    {
-                                        ImportRowToFound(ref found, DS, Row, t, r);
-                                    }
-                                }
-                                catch { }
-
+                                //при ошибках регекса выходить
+                                lblSearchMsg.Visible = true;
+                                lblSearchMsg.Text = T._("Invalid regex") + ">" + ex.Message;
+                                return null;
                             }
+                            catch
+                            {
+                                return null;
+                            }
+                        }
+                        else//common text search
+                        {
+                            try
+                            {
+                                if ((THSearchMatchCaseCheckBox.Checked && SelectedCellValue.Contains(strQuery))
+                                    || (!THSearchMatchCaseCheckBox.Checked && SelectedCellValue.ToUpperInvariant().Contains(strQuery.ToUpperInvariant()))
+                                    )
+                                {
+                                    ImportRowToFound(ref found, DS, Row, t, r);
+                                }
+                            }
+                            catch { }
 
                         }
+
                     }
                 }
             }
