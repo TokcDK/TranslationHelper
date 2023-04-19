@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Data;
 using System.Drawing;
 using System.Globalization;
@@ -7,8 +8,8 @@ using System.Text.RegularExpressions;
 using System.Threading;
 using System.Windows.Forms;
 using TranslationHelper.Data;
-using TranslationHelper.Extensions;
 using TranslationHelper.Functions;
+using TranslationHelper.Functions.FileElementsFunctions.Row.SearchIssueCheckers;
 using TranslationHelper.Main.Functions;
 
 namespace TranslationHelper
@@ -605,89 +606,25 @@ namespace TranslationHelper
             oDsResultsCoordinates.Rows.Add(t, r);
         }
 
-        DataTable Actors;
+        List<ISearchIssueChecker> _issueChecers { get; } = new List<ISearchIssueChecker>(4)
+        {
+            new ContainsNonRomaji(),
+            //new CheckAnyLineLngerOfMaxLength(),
+            new CheckActorsNameTranslationConsistent(),
+            new CheckAnyLineTranslatable(),
+            new ProjectSpecificIssues(),
+        };
         private bool IsTheRowHasPossibleIssues(DataRow row)
         {
-            var o = (row[0] + string.Empty);
-            var t = (row[1] + string.Empty);
+            var o = row[AppData.CurrentProject.OriginalColumnIndex] + string.Empty;
+            var t = row[AppData.CurrentProject.TranslationColumnIndex] + string.Empty;
             if (string.IsNullOrEmpty(t) || (AppSettings.IgnoreOrigEqualTransLines && o.Equals(t)))
             {
                 return false;
             }
 
-            if (AppSettings.SearchRowIssueOptionsCheckNonRomaji)
-            {
-                //translation contains non romaji symbols
-                if (Regex.IsMatch(t, @"[^\x00-\x7F]+\ *(?:[^\x00-\x7F]|\ )*"))
-                {
-                    return true;
-                }
-            }
-
-            //------------------------------
-            //если длина любой из строк длиннее лимита
-            //if ((FunctionsString.GetLongestLineLength(rowTranslation) > AppSettings.THOptionLineCharLimit))
-            //{
-            //    return true;
-            //}
-
-            //------------------------------
-
-            if (AppSettings.SearchRowIssueOptionsCheckProjectSpecific)
-            {
-                //project specific checks
-                if (AppData.CurrentProject.CheckForRowIssue(row))
-                {
-                    return true;
-                }
-            }
-
-            if (AppSettings.SearchRowIssueOptionsCheckActors)
-            {
-                //------------------------------
-                //Проверка актеров
-                if (Actors == null) GetActorsTable();
-                if (Actors == null || Actors.Rows.Count == 0) return false;
-
-                foreach (DataRow ActorsLine in Actors.Rows)
-                {
-                    var original = ActorsLine[0] as string;
-                    if (original.IsMultiline() || original.Length > 255)//skip multiline and long rows
-                    {
-                        continue;
-                    }
-                    var translation = ActorsLine[1] + string.Empty;
-
-                    //если оригинал содержит оригинал(Анна) из Actors, а перевод не содержит определение(Anna) из Actors
-                    if (translation.Length > 0 && (original.Length < 80 && (row[0] as string).Contains(original) && !t.Contains(translation)))
-                    {
-                        return true;
-                    }
-                }
-                //--------------------------------
-            }
-
-            if (AppSettings.SearchRowIssueOptionsCheckAnyLineTranslatable)
-            {
-                //check if multiline and one of line equal to original and valide for translation
-                if (o.HasAnyTranslationLineValidAndEqualSameOrigLine(t))
-                {
-                    return true;
-                }
-            }
-
-            return false;
-        }
-
-        private void GetActorsTable()
-        {
-            foreach (DataTable table in _tables)
-            {
-                if (!table.TableName.StartsWith("Actors")) continue;
-
-                Actors = table;
-                break;
-            }
+            var data = new SearchIssueCheckerData(row, o, t);
+            return _issueChecers.Any(p => p.IsHaveTheIssue(data));
         }
 
         private void THSearch_Load(object sender, EventArgs e)
@@ -835,7 +772,7 @@ namespace TranslationHelper
                         }
                         else
                         {
-                            if (value.IndexOf(SearchFormFindWhatTextBox.Text, StringComparison.InvariantCultureIgnoreCase)!=-1)
+                            if (value.IndexOf(SearchFormFindWhatTextBox.Text, StringComparison.InvariantCultureIgnoreCase) != -1)
                             {
                                 StoryFoundValueToComboBox(SearchFormFindWhatTextBox.Text, SearchFormReplaceWithTextBox.Text);
                                 _workFileDgv[THSettings.TranslationColumnName, rowindex].Value = ReplaceEx.Replace(GetFirstIfNotEmpty(_workFileDgv[THSettings.TranslationColumnName, rowindex].Value + string.Empty, value), SearchFormFindWhatTextBox.Text, SearchFormReplaceWithTextBox.Text, StringComparison.OrdinalIgnoreCase);

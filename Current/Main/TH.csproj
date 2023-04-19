@@ -134,6 +134,12 @@
     <Compile Include="Formats\WolfRPG\TextEPH.cs" />
     <Compile Include="Functions\FileElementsFunctions\Row\EnQuotesToJp2.cs" />
     <Compile Include="Functions\FileElementsFunctions\Row\ExtractedByTranslationRulesParserRowBase.cs" />
+    <Compile Include="Functions\FileElementsFunctions\Row\SearchIssueCheckers\CheckActorsNameTranslationConsistent.cs" />
+    <Compile Include="Functions\FileElementsFunctions\Row\SearchIssueCheckers\CheckAnyLineTranslatable.cs" />
+    <Compile Include="Functions\FileElementsFunctions\Row\SearchIssueCheckers\CheckAnyLineLngerOfMaxLength.cs" />
+    <Compile Include="Functions\FileElementsFunctions\Row\SearchIssueCheckers\ProjectSpecificIssues.cs" />
+    <Compile Include="Functions\FileElementsFunctions\Row\SearchIssueCheckers\ContainsNonRomaji.cs" />
+    <Compile Include="Functions\FileElementsFunctions\Row\SearchIssueCheckers\ISearchIssueChecker.cs" />
     <Compile Include="Functions\FunctionRules.cs" />
     <Compile Include="Functions\FunctionsCleanup.cs" />
     <Compile Include="Data\FileInfo.cs" />
