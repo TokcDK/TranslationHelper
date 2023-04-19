@@ -613,6 +613,7 @@ namespace TranslationHelper
             new CheckActorsNameTranslationConsistent(),
             new CheckAnyLineTranslatable(),
             new ProjectSpecificIssues(),
+            new CheckInternalQuoteUnescaped(),
         };
         private bool IsTheRowHasPossibleIssues(DataRow row)
         {
