@@ -930,10 +930,7 @@ namespace TranslationHelper
             oDsResults = AppData.CurrentProject.FilesContent.Clone();
             DataTable drFoundRowsTable = GetSearchResults(oDsResults);
 
-            if (drFoundRowsTable == null)
-            {
-                return;
-            }
+            if (drFoundRowsTable == null) return;
 
             if (drFoundRowsTable.Rows.Count == 0)
             {
@@ -961,10 +958,7 @@ namespace TranslationHelper
                 rowindex = int.Parse(oDsResultsCoordinates.Rows[r][1] + string.Empty, CultureInfo.CurrentCulture);
                 var row = _tables[tableindex].Rows[rowindex];
                 string value = row[searchcolumn] + string.Empty;
-                if (value.Length == 0)
-                {
-                    continue;
-                }
+                if (value.Length == 0) continue;
 
                 if (SearchInInfoCheckBox.Checked)
                 {
