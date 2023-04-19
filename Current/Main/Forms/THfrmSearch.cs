@@ -606,7 +606,7 @@ namespace TranslationHelper
             oDsResultsCoordinates.Rows.Add(t, r);
         }
 
-        List<ISearchIssueChecker> _issueChecers { get; } = new List<ISearchIssueChecker>(4)
+        readonly List<ISearchIssueChecker> _issueChecers = new List<ISearchIssueChecker>(4)
         {
             new ContainsNonRomaji(),
             //new CheckAnyLineLngerOfMaxLength(),
