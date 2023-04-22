@@ -143,7 +143,8 @@ namespace TranslationHelper
             if (inputEqualwithLatest)
             {
                 string searchColumn = GetSearchColumn();
-                (tableIndex, rowIndex) = _foundRowsTableRowIndexes[startRowSearchIndex];
+                var foundRowData = foundRowsList[startRowSearchIndex];
+                (tableIndex, rowIndex) = (foundRowData.TableIndex, foundRowData.RowIndex);
 
                 if (tableIndex != _filesList.SelectedIndex)
                 {
@@ -182,7 +183,8 @@ namespace TranslationHelper
                 StoryFoundValueToComboBox(SearchFormFindWhatTextBox.Text);
 
                 string searchcolumn = GetSearchColumn();
-                (tableIndex, rowIndex) = _foundRowsTableRowIndexes[startRowSearchIndex];
+                var foundRowData = foundRowsList[startRowSearchIndex];
+                (tableIndex, rowIndex) = (foundRowData.TableIndex, foundRowData.RowIndex);
 
                 if (tableIndex != _filesList.SelectedIndex)
                 {
@@ -460,8 +462,6 @@ namespace TranslationHelper
             }
         }
 
-        private readonly List<(int tableIndex, int rowIndex)> _foundRowsTableRowIndexes = new List<(int tableIndex, int rowIndex)>();
-
         private void GetSearchResults(List<FoundRowData> foundRowsList)
         {
             lblSearchMsg.Visible = false;
@@ -504,16 +504,16 @@ namespace TranslationHelper
                     if (isSearchInInfo)//search in info box
                     {
                         var infoValue = (AppData.CurrentProject.FilesContentInfo.Tables[tableIndex].Rows[rowIndex][0] + string.Empty);
-                        if (GetCheckResult(ref isFound, foundRowsList, row2check, tableIndex, rowIndex, infoValue, searchQueryText) == SearchResult.Error) return;
+                        if (GetCheckResult(ref isFound, foundRowsList, row2check, infoValue, searchQueryText) == SearchResult.Error) return;
                     }
                     else if (isIssuesSearch && IsTheRowHasPossibleIssues(row2check)) //search rows with possible issues
                     {
-                        ImportRowToFound(ref isFound, foundRowsList, row2check, tableIndex, rowIndex);
+                        ImportRowToFound(ref isFound, foundRowsList, row2check);
                     }
                     else
                     {
                         string SelectedCellValue = _tables[tableIndex].Rows[rowIndex][searchColumnIndex] + string.Empty;
-                        if (GetCheckResult(ref isFound, foundRowsList, row2check, tableIndex, rowIndex, SelectedCellValue, searchQueryText) == SearchResult.Error) return; // general search
+                        if (GetCheckResult(ref isFound, foundRowsList, row2check, SelectedCellValue, searchQueryText) == SearchResult.Error) return; // general search
                     }
                 }
             }
@@ -528,23 +528,23 @@ namespace TranslationHelper
                         && (row2check[searchcolumn] + string.Empty).Length == 0);
         }
 
-        private SearchResult GetCheckResult(ref bool found, List<FoundRowData> foundRowsList, DataRow row, int t, int r, string infoValue, string strQuery)
+        private SearchResult GetCheckResult(ref bool found, List<FoundRowData> foundRowsList, DataRow row, string infoValue, string strQuery)
         {
             if (SearchModeRegexRadioButton.Checked) // regex check
             {
-                return CheckRegex(ref found, foundRowsList, row, t, r, infoValue, strQuery);
+                return CheckRegex(ref found, foundRowsList, row, infoValue, strQuery);
             }
-            else return CheckIsFound(ref found, foundRowsList, row, t, r, infoValue, strQuery); // common check
+            else return CheckIsFound(ref found, foundRowsList, row, infoValue, strQuery); // common check
         }
 
-        private SearchResult CheckIsFound(ref bool isFound, List<FoundRowData> foundRowsList, DataRow row, int t, int r, string infoValue, string strQuery)
+        private SearchResult CheckIsFound(ref bool isFound, List<FoundRowData> foundRowsList, DataRow row, string infoValue, string strQuery)
         {
             try
             {
                 if ((THSearchMatchCaseCheckBox.Checked && infoValue.Contains(strQuery))
                     || (!THSearchMatchCaseCheckBox.Checked && infoValue.IndexOf(strQuery, StringComparison.CurrentCultureIgnoreCase) != -1))
                 {
-                    ImportRowToFound(ref isFound, foundRowsList, row, t, r);
+                    ImportRowToFound(ref isFound, foundRowsList, row);
                     return SearchResult.Found;
                 }
             }
@@ -553,14 +553,14 @@ namespace TranslationHelper
             return SearchResult.NotFound;
         }
 
-        private SearchResult CheckRegex(ref bool isFound, List<FoundRowData> foundRowsList, DataRow row, int t, int r, string infoValue, string strQuery)
+        private SearchResult CheckRegex(ref bool isFound, List<FoundRowData> foundRowsList, DataRow row, string infoValue, string strQuery)
         {
             try
             {
                 if ((THSearchMatchCaseCheckBox.Checked && Regex.IsMatch(infoValue, strQuery))
                     || (!THSearchMatchCaseCheckBox.Checked && Regex.IsMatch(infoValue, strQuery, RegexOptions.IgnoreCase)))
                 {
-                    ImportRowToFound(ref isFound, foundRowsList, row, t, r);
+                    ImportRowToFound(ref isFound, foundRowsList, row);
                     return SearchResult.Found;
                 }
             }
@@ -590,16 +590,14 @@ namespace TranslationHelper
         /// <param name="row"></param>
         /// <param name="t"></param>
         /// <param name="r"></param>
-        private void ImportRowToFound(ref bool isFound, List<FoundRowData> foundRowsList, DataRow row, int t, int r)
+        private void ImportRowToFound(ref bool isFound, List<FoundRowData> foundRowsList, DataRow row)
         {
             if (!isFound)
             {
                 isFound = true;
-                _foundRowsTableRowIndexes.Clear();
                 this.Height = 368;
             }
             foundRowsList.Add(new FoundRowData(row));
-            _foundRowsTableRowIndexes.Add((t, r));
         }
 
         readonly List<ISearchIssueChecker> _issueChecers = new List<ISearchIssueChecker>(4)
@@ -711,7 +709,8 @@ namespace TranslationHelper
             try
             {
                 //было исключение, отсутствует позиция, хотя позицияприсутствовала
-                (tableIndex, rowIndex) = _foundRowsTableRowIndexes[e.RowIndex];
+                var foundRowData = foundRowsList[e.RowIndex];
+                (tableIndex, rowIndex) = (foundRowData.TableIndex, foundRowData.RowIndex);
 
                 _tables[tableIndex].DefaultView.RowFilter = string.Empty;
                 _tables[tableIndex].DefaultView.Sort = string.Empty;
@@ -777,7 +776,8 @@ namespace TranslationHelper
 
                 if (startRowSearchIndex == foundRowsList.Count) startRowSearchIndex = 0;
 
-                (tableIndex, rowIndex) = _foundRowsTableRowIndexes[startRowSearchIndex];
+                var foundRowData = foundRowsList[startRowSearchIndex];
+                (tableIndex, rowIndex) = (foundRowData.TableIndex, foundRowData.RowIndex);
 
                 if (tableIndex != _filesList.SelectedIndex)
                 {
@@ -813,7 +813,8 @@ namespace TranslationHelper
 
                 StoryFoundValueToComboBox(SearchFormFindWhatTextBox.Text, SearchFormReplaceWithTextBox.Text);
 
-                (tableIndex, rowIndex) = _foundRowsTableRowIndexes[startRowSearchIndex];
+                var foundRowData = foundRowsList[startRowSearchIndex];
+                (tableIndex, rowIndex) = (foundRowData.TableIndex, foundRowData.RowIndex);
                 if (tableIndex != _filesList.SelectedIndex)
                 {
                     _filesList.SelectedIndex = tableIndex;
@@ -877,7 +878,8 @@ namespace TranslationHelper
             int oDsResultsCount = foundRowsList.Count;
             for (int r = 0; r < oDsResultsCount; r++)
             {
-                (tableIndex, rowIndex) = _foundRowsTableRowIndexes[r];
+                var foundRowData = foundRowsList[r];
+                (tableIndex, rowIndex) = (foundRowData.TableIndex, foundRowData.RowIndex);
                 var row = _tables[tableIndex].Rows[rowIndex];
                 string value = row[searchcolumn] + string.Empty;
                 if (value.Length == 0) continue;
