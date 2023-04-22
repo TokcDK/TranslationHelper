@@ -24,6 +24,39 @@ namespace TranslationHelper
         readonly int _originalColumnIndex = AppData.CurrentProject.OriginalColumnIndex;
         readonly int _translationColumnIndex = AppData.CurrentProject.TranslationColumnIndex;
 
+        bool _isAnyRowFound;
+        int _startRowSearchIndex;        //Индекс стартовой ячейки для поиска
+        int _tableIndex;
+        int _rowIndex;
+        string _lastfoundvalue = string.Empty;
+        string _lastfoundreplacedvalue = string.Empty;
+        string[] _searchQueries;
+        string[] _searchReplacers;
+
+        public enum SearchResult
+        {
+            Found,
+            NotFound,
+            Error
+        }
+
+        public class FoundRowData
+        {
+            public FoundRowData(DataRow row)
+            {
+                //_row = row;
+                Original = row[AppData.CurrentProject.OriginalColumnIndex] as string;
+                Translation = row[AppData.CurrentProject.TranslationColumnIndex] + string.Empty;
+                TableIndex = AppData.CurrentProject.FilesContent.Tables.IndexOf(row.Table);
+                RowIndex = row.Table.Rows.IndexOf(row);
+            }
+
+            public string Original { get; }
+            public string Translation { get; }
+            public int TableIndex { get; }
+            public int RowIndex { get; }
+            //DataRow _row { get; set; }
+        }
 
         internal THfrmSearch(ListBox filesList, DataGridView workFileDgv, RichTextBox translationTextBox)
         {
@@ -131,10 +164,6 @@ namespace TranslationHelper
         {
             return SearchMethodTranslationRadioButton.Checked ? THSettings.TranslationColumnName : THSettings.OriginalColumnName;
         }
-
-        int _startRowSearchIndex;        //Индекс стартовой ячейки для поиска
-        int _tableIndex;
-        int _rowIndex;
         private void SearchFormFindNextButton_Click(object sender, EventArgs e)
         {
             if (SearchFormFindWhatTextBox.Text.Length == 0 || AppData.CurrentProject.FilesContent == null)
@@ -142,7 +171,7 @@ namespace TranslationHelper
                 return;
             }
 
-            bool inputEqualwithLatest = THSearchMatchCaseCheckBox.Checked ? SearchFormFindWhatTextBox.Text == lastfoundvalue : string.Compare(SearchFormFindWhatTextBox.Text, lastfoundvalue, true, CultureInfo.InvariantCulture) == 0;
+            bool inputEqualwithLatest = THSearchMatchCaseCheckBox.Checked ? SearchFormFindWhatTextBox.Text == _lastfoundvalue : string.Compare(SearchFormFindWhatTextBox.Text, _lastfoundvalue, true, CultureInfo.InvariantCulture) == 0;
             if (inputEqualwithLatest)
             {
                 string searchColumn = GetSearchColumn();
@@ -207,21 +236,21 @@ namespace TranslationHelper
         {
             try
             {
-                SearchQueries = _config.GetSectionValues("Search Queries").ToArray();
-                if (SearchQueries != null && SearchQueries.Length > 0)
+                _searchQueries = _config.GetSectionValues("Search Queries").ToArray();
+                if (_searchQueries != null && _searchQueries.Length > 0)
                 {
-                    RemoveQuotesFromLoadedSearchValues(ref SearchQueries);
-                    UnEscapeSearchValues(ref SearchQueries);
+                    RemoveQuotesFromLoadedSearchValues(ref _searchQueries);
+                    UnEscapeSearchValues(ref _searchQueries);
                     SearchFormFindWhatComboBox.Items.Clear();
-                    SearchFormFindWhatComboBox.Items.AddRange(SearchQueries);
+                    SearchFormFindWhatComboBox.Items.AddRange(_searchQueries);
                 }
-                SearchReplacers = _config.GetSectionValues("Search Replacers").ToArray();
-                if (SearchReplacers != null && SearchReplacers.Length > 0)
+                _searchReplacers = _config.GetSectionValues("Search Replacers").ToArray();
+                if (_searchReplacers != null && _searchReplacers.Length > 0)
                 {
-                    RemoveQuotesFromLoadedSearchValues(ref SearchReplacers);
-                    UnEscapeSearchValues(ref SearchReplacers);
+                    RemoveQuotesFromLoadedSearchValues(ref _searchReplacers);
+                    UnEscapeSearchValues(ref _searchReplacers);
                     SearchFormReplaceWithComboBox.Items.Clear();
-                    SearchFormReplaceWithComboBox.Items.AddRange(SearchReplacers);
+                    SearchFormReplaceWithComboBox.Items.AddRange(_searchReplacers);
                 }
             }
             catch
@@ -271,21 +300,21 @@ namespace TranslationHelper
         {
             try
             {
-                if (SearchFormFindWhatComboBox.Items.Count > 0 && IsSearchQueriesReplacersListChanged(SearchQueries, SearchFormFindWhatComboBox.Items))
+                if (SearchFormFindWhatComboBox.Items.Count > 0 && IsSearchQueriesReplacersListChanged(_searchQueries, SearchFormFindWhatComboBox.Items))
                 {
-                    SearchQueries = new string[SearchFormFindWhatComboBox.Items.Count];
-                    SearchFormFindWhatComboBox.Items.CopyTo(SearchQueries, 0);
-                    AddQuotesToWritingSearchValues(ref SearchQueries);
-                    UnEscapeSearchValues(ref SearchQueries, false);
-                    _config.SetArrayToSectionValues("Search Queries", SearchQueries);
+                    _searchQueries = new string[SearchFormFindWhatComboBox.Items.Count];
+                    SearchFormFindWhatComboBox.Items.CopyTo(_searchQueries, 0);
+                    AddQuotesToWritingSearchValues(ref _searchQueries);
+                    UnEscapeSearchValues(ref _searchQueries, false);
+                    _config.SetArrayToSectionValues("Search Queries", _searchQueries);
                 }
-                if (SearchFormReplaceWithComboBox.Items.Count > 0 && IsSearchQueriesReplacersListChanged(SearchReplacers, SearchFormReplaceWithComboBox.Items))
+                if (SearchFormReplaceWithComboBox.Items.Count > 0 && IsSearchQueriesReplacersListChanged(_searchReplacers, SearchFormReplaceWithComboBox.Items))
                 {
-                    SearchReplacers = new string[SearchFormReplaceWithComboBox.Items.Count];
-                    SearchFormReplaceWithComboBox.Items.CopyTo(SearchReplacers, 0);
-                    AddQuotesToWritingSearchValues(ref SearchReplacers);
-                    UnEscapeSearchValues(ref SearchReplacers, false);
-                    _config.SetArrayToSectionValues("Search Replacers", SearchReplacers);
+                    _searchReplacers = new string[SearchFormReplaceWithComboBox.Items.Count];
+                    SearchFormReplaceWithComboBox.Items.CopyTo(_searchReplacers, 0);
+                    AddQuotesToWritingSearchValues(ref _searchReplacers);
+                    UnEscapeSearchValues(ref _searchReplacers, false);
+                    _config.SetArrayToSectionValues("Search Replacers", _searchReplacers);
                 }
             }
             catch
@@ -311,19 +340,14 @@ namespace TranslationHelper
             }
             return false;
         }
-
-        string lastfoundvalue = string.Empty;
-        string lastfoundreplacedvalue = string.Empty;
-        string[] SearchQueries;
-        string[] SearchReplacers;
         private void StoryFoundValueToComboBox(string foundvalue, string replaceWithValue = "")
         {
             //store found value
-            lastfoundvalue = foundvalue;
+            _lastfoundvalue = foundvalue;
             StoreFoundReplaceValues(foundvalue, SearchFormFindWhatComboBox);
 
             //store replace value
-            lastfoundreplacedvalue = replaceWithValue;
+            _lastfoundreplacedvalue = replaceWithValue;
             StoreFoundReplaceValues(replaceWithValue, SearchFormReplaceWithComboBox);
 
             //write found values
@@ -406,24 +430,6 @@ namespace TranslationHelper
             SearchResultsPanel.Visible = true;
         }
 
-        public class FoundRowData
-        {
-            public FoundRowData(DataRow row)
-            {
-                //_row = row;
-                Original = row[AppData.CurrentProject.OriginalColumnIndex] as string;
-                Translation = row[AppData.CurrentProject.TranslationColumnIndex] + string.Empty;
-                TableIndex = AppData.CurrentProject.FilesContent.Tables.IndexOf(row.Table);
-                RowIndex = row.Table.Rows.IndexOf(row);
-            }
-
-            public string Original { get; }
-            public string Translation { get; }
-            public int TableIndex { get; }
-            public int RowIndex { get; }
-            //DataRow _row { get; set; }
-        }
-
         //http://mrbool.com/dataset-advance-operations-search-sort-filter-net/24769
         //https://stackoverflow.com/questions/3608388/c-sharp-access-dataset-data-from-another-class
         //http://qaru.site/questions/236566/how-to-know-the-row-index-from-datatable-object
@@ -461,19 +467,18 @@ namespace TranslationHelper
                 this.Height = 368;
             }
         }
-
         private void GetSearchResults()
         {
             lblSearchMsg.Visible = false;
             if (_tables.Count == 0) return;
 
             _foundRowsList = new List<FoundRowData>();
+            _isAnyRowFound = false;
 
             string searchColumnIndex = GetSearchColumn();
             bool isSearchInInfo = SearchInInfoCheckBox.Checked;
             bool isIssuesSearch = SearchFindLinesWithPossibleIssuesCheckBox.Checked;
             string searchQueryText = SearchFormFindWhatTextBox.Text;
-            bool isFound = false;
             var searchInSelected = SearchRangeSelectedRadioButton.Checked || SearchRangeVisibleRadioButton.Checked;
             int tableIndexMax = SearchRangeTableRadioButton.Checked || searchInSelected ? _filesList.SelectedIndex + 1 : _tables.Count;
             int initTableIndex = SearchRangeTableRadioButton.Checked || searchInSelected ? _filesList.SelectedIndex : 0;
@@ -503,16 +508,16 @@ namespace TranslationHelper
                     if (isSearchInInfo)//search in info box
                     {
                         var infoValue = (AppData.CurrentProject.FilesContentInfo.Tables[tableIndex].Rows[rowIndex][0] + string.Empty);
-                        if (GetCheckResult(ref isFound, row2check, infoValue, searchQueryText) == SearchResult.Error) return;
+                        if (GetCheckResult(row2check, infoValue, searchQueryText) == SearchResult.Error) return;
                     }
                     else if (isIssuesSearch && IsTheRowHasPossibleIssues(row2check)) //search rows with possible issues
                     {
-                        ImportRowToFound(ref isFound, row2check);
+                        ImportRowToFound(row2check);
                     }
                     else
                     {
                         string selectedCellValue = _tables[tableIndex].Rows[rowIndex][searchColumnIndex] + string.Empty;
-                        if (GetCheckResult(ref isFound, row2check, selectedCellValue, searchQueryText) == SearchResult.Error) return; // general search
+                        if (GetCheckResult(row2check, selectedCellValue, searchQueryText) == SearchResult.Error) return; // general search
                     }
                 }
             }
@@ -527,23 +532,23 @@ namespace TranslationHelper
                         && (row2check[searchcolumn] + string.Empty).Length == 0);
         }
 
-        private SearchResult GetCheckResult(ref bool isFound, DataRow row, string infoValue, string strQuery)
+        private SearchResult GetCheckResult(DataRow row, string infoValue, string strQuery)
         {
             if (SearchModeRegexRadioButton.Checked) // regex check
             {
-                return CheckRegex(ref isFound, row, infoValue, strQuery);
+                return CheckRegex(row, infoValue, strQuery);
             }
-            else return CheckIsFound(ref isFound, row, infoValue, strQuery); // common check
+            else return CheckIsFound(row, infoValue, strQuery); // common check
         }
 
-        private SearchResult CheckIsFound(ref bool isFound, DataRow row, string infoValue, string strQuery)
+        private SearchResult CheckIsFound(DataRow row, string infoValue, string strQuery)
         {
             try
             {
                 if ((THSearchMatchCaseCheckBox.Checked && infoValue.Contains(strQuery))
                     || (!THSearchMatchCaseCheckBox.Checked && infoValue.IndexOf(strQuery, StringComparison.CurrentCultureIgnoreCase) != -1))
                 {
-                    ImportRowToFound(ref isFound, row);
+                    ImportRowToFound(row);
                     return SearchResult.Found;
                 }
             }
@@ -552,14 +557,14 @@ namespace TranslationHelper
             return SearchResult.NotFound;
         }
 
-        private SearchResult CheckRegex(ref bool isFound, DataRow row, string textWhereSearch, string searchPattern)
+        private SearchResult CheckRegex(DataRow row, string textWhereSearch, string searchPattern)
         {
             try
             {
                 if ((THSearchMatchCaseCheckBox.Checked && Regex.IsMatch(textWhereSearch, searchPattern))
                     || (!THSearchMatchCaseCheckBox.Checked && Regex.IsMatch(textWhereSearch, searchPattern, RegexOptions.IgnoreCase)))
                 {
-                    ImportRowToFound(ref isFound, row);
+                    ImportRowToFound(row);
                     return SearchResult.Found;
                 }
             }
@@ -574,13 +579,6 @@ namespace TranslationHelper
             return SearchResult.NotFound;
         }
 
-        public enum SearchResult
-        {
-            Found,
-            NotFound,
-            Error
-        }
-
         /// <summary>
         /// Add found row to results
         /// </summary>
@@ -589,11 +587,11 @@ namespace TranslationHelper
         /// <param name="row"></param>
         /// <param name="t"></param>
         /// <param name="r"></param>
-        private void ImportRowToFound(ref bool isFound, DataRow row)
+        private void ImportRowToFound(DataRow row)
         {
-            if (!isFound)
+            if (!_isAnyRowFound)
             {
-                isFound = true;
+                _isAnyRowFound = true;
                 this.Height = 368;
             }
             _foundRowsList.Add(new FoundRowData(row));
@@ -742,8 +740,8 @@ namespace TranslationHelper
             }
 
             bool inputEqualWithLatest = THSearchMatchCaseCheckBox.Checked ?
-                SearchFormFindWhatTextBox.Text == lastfoundvalue
-                : string.Compare(SearchFormFindWhatTextBox.Text, lastfoundvalue, true, CultureInfo.InvariantCulture) == 0;
+                SearchFormFindWhatTextBox.Text == _lastfoundvalue
+                : string.Compare(SearchFormFindWhatTextBox.Text, _lastfoundvalue, true, CultureInfo.InvariantCulture) == 0;
             if (inputEqualWithLatest)
             {
                 string searchcolumn = GetSearchColumn();
@@ -943,8 +941,8 @@ namespace TranslationHelper
         }
 
         //https://www.c-sharpcorner.com/uploadfile/kirtan007/make-form-stay-always-on-top-of-every-window/
-        private static readonly IntPtr HWND_TOPMOST = new IntPtr(-1);
-        private static readonly IntPtr HWND_NOTOPMOST = new IntPtr(-2);
+        private readonly IntPtr HWND_TOPMOST = new IntPtr(-1);
+        private readonly IntPtr HWND_NOTOPMOST = new IntPtr(-2);
         //private static readonly IntPtr HWND_TOP = new IntPtr(0);
         //private static readonly IntPtr HWND_BOTTOM = new IntPtr(1);
         private const uint SWP_NOSIZE = 0x0001;
@@ -953,14 +951,7 @@ namespace TranslationHelper
 
         private void SearchAlwaysOnTopCheckBox_CheckedChanged(object sender, EventArgs e)
         {
-            if (SearchAlwaysOnTopCheckBox.Checked)
-            {
-                ExternalAdditions.NativeMethods.SetWindowPos(this.Handle, HWND_TOPMOST, 0, 0, 0, 0, TOPMOST_FLAGS);
-            }
-            else
-            {
-                ExternalAdditions.NativeMethods.SetWindowPos(this.Handle, HWND_NOTOPMOST, 0, 0, 0, 0, TOPMOST_FLAGS);
-            }
+            ExternalAdditions.NativeMethods.SetWindowPos(this.Handle, SearchAlwaysOnTopCheckBox.Checked ? HWND_TOPMOST : HWND_NOTOPMOST, 0, 0, 0, 0, TOPMOST_FLAGS);
         }
 
         private void THSearch_FormClosing(object sender, FormClosingEventArgs e)
