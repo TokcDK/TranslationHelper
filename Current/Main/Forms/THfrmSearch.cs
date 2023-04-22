@@ -453,54 +453,53 @@ namespace TranslationHelper
             lblSearchMsg.Visible = false;
             if (_tables.Count == 0) return dataSet.Tables[0];
 
-            string searchcolumn = GetSearchColumn();
-            bool info = SearchInInfoCheckBox.Checked;
-            bool issues = SearchFindLinesWithPossibleIssuesCheckBox.Checked;
-            bool regex = SearchModeRegexRadioButton.Checked;
-            string strQuery = SearchFormFindWhatTextBox.Text;
-            bool found = false;
-            var ForSelected = SearchRangeSelectedRadioButton.Checked || SearchRangeVisibleRadioButton.Checked;
-            int DatatablesCount = SearchRangeTableRadioButton.Checked || ForSelected ? _filesList.SelectedIndex + 1 : _tables.Count;
-            int StartTableIndex = SearchRangeTableRadioButton.Checked || ForSelected ? _filesList.SelectedIndex : 0;
+            string searchColumnIndex = GetSearchColumn();
+            bool isSearchInInfo = SearchInInfoCheckBox.Checked;
+            bool isIssuesSearch = SearchFindLinesWithPossibleIssuesCheckBox.Checked;
+            string searchQueryText = SearchFormFindWhatTextBox.Text;
+            bool isFound = false;
+            var searchInSelected = SearchRangeSelectedRadioButton.Checked || SearchRangeVisibleRadioButton.Checked;
+            int tableIndexMax = SearchRangeTableRadioButton.Checked || searchInSelected ? _filesList.SelectedIndex + 1 : _tables.Count;
+            int initTableIndex = SearchRangeTableRadioButton.Checked || searchInSelected ? _filesList.SelectedIndex : 0;
 
-            for (int t = StartTableIndex; t < DatatablesCount; t++)
+            for (int tableIndex = initTableIndex; tableIndex < tableIndexMax; tableIndex++)
             {
-                var table = _tables[t];
+                var tableWhereSearching = _tables[tableIndex];
 
                 HashSet<int> selectedrowsHashes = null;
-                if (ForSelected)
+                if (searchInSelected)
                 {
-                    selectedrowsHashes = FunctionsTable.GetDGVRowsIndexesHashesInDT(t, SearchRangeVisibleRadioButton.Checked);
+                    selectedrowsHashes = FunctionsTable.GetDGVRowsIndexesHashesInDT(tableIndex, SearchRangeVisibleRadioButton.Checked);
                 }
 
-                int origColumnIndex = AppData.CurrentProject.OriginalColumnIndex;
-                int transColumnIndex = AppData.CurrentProject.TranslationColumnIndex;
+                int originalColumnIndex = AppData.CurrentProject.OriginalColumnIndex;
+                int translationColumnIndex = AppData.CurrentProject.TranslationColumnIndex;
 
-                var rowsCount = table.Rows.Count;
-                for (int r = 0; r < rowsCount; r++)
+                var rowsCount = tableWhereSearching.Rows.Count;
+                for (int rowIndex = 0; rowIndex < rowsCount; rowIndex++)
                 {
-                    if (ForSelected && !selectedrowsHashes.Contains(r)) continue;
+                    if (searchInSelected && !selectedrowsHashes.Contains(rowIndex)) continue;
 
-                    var row2check = _tables[t].Rows[r];
+                    var row2check = _tables[tableIndex].Rows[rowIndex];
 
-                    if (IsValid2Search(row2check, origColumnIndex, transColumnIndex, searchcolumn))
+                    if (IsValid2Search(row2check, originalColumnIndex, translationColumnIndex, searchColumnIndex))
                     {
                         continue;
                     }
 
-                    if (info)//search in info box
+                    if (isSearchInInfo)//search in info box
                     {
-                        var infoValue = (AppData.CurrentProject.FilesContentInfo.Tables[t].Rows[r][0] + string.Empty);
-                        if (GetCheckResult(ref found, dataSet, row2check, t, r, infoValue, strQuery) == SearchResult.Error) return null;
+                        var infoValue = (AppData.CurrentProject.FilesContentInfo.Tables[tableIndex].Rows[rowIndex][0] + string.Empty);
+                        if (GetCheckResult(ref isFound, dataSet, row2check, tableIndex, rowIndex, infoValue, searchQueryText) == SearchResult.Error) return null;
                     }
-                    else if (issues && IsTheRowHasPossibleIssues(row2check)) //search rows with possible issues
+                    else if (isIssuesSearch && IsTheRowHasPossibleIssues(row2check)) //search rows with possible issues
                     {
-                        ImportRowToFound(ref found, dataSet, row2check, t, r); 
+                        ImportRowToFound(ref isFound, dataSet, row2check, tableIndex, rowIndex); 
                     }
                     else
                     {
-                        string SelectedCellValue = _tables[t].Rows[r][searchcolumn] + string.Empty;
-                        if (GetCheckResult(ref found, dataSet, row2check, t, r, SelectedCellValue, strQuery) == SearchResult.Error) return null; // general search
+                        string SelectedCellValue = _tables[tableIndex].Rows[rowIndex][searchColumnIndex] + string.Empty;
+                        if (GetCheckResult(ref isFound, dataSet, row2check, tableIndex, rowIndex, SelectedCellValue, searchQueryText) == SearchResult.Error) return null; // general search
                     }
                 }
             }
