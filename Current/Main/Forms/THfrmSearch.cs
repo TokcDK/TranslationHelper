@@ -969,6 +969,8 @@ namespace TranslationHelper
         private void THSearch_FormClosing(object sender, FormClosingEventArgs e)
         {
             WriteSearchQueriesReplacers();
+
+            _foundRowsList = null;
         }
 
         private void SearchFindLinesWithPossibleIssuesCheckBox_CheckedChanged(object sender, EventArgs e)
