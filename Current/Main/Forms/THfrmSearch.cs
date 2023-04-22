@@ -11,6 +11,7 @@ using TranslationHelper.Data;
 using TranslationHelper.Functions;
 using TranslationHelper.Functions.FileElementsFunctions.Row.SearchIssueCheckers;
 using TranslationHelper.Main.Functions;
+using static RubyMarshal.RubyMarshal;
 
 namespace TranslationHelper
 {
@@ -451,15 +452,24 @@ namespace TranslationHelper
             }
         }
 
+        public enum SearchResult
+        {
+            Found,
+            NotFound,
+            Error
+        }
+
         private readonly DataTable oDsResultsCoordinates = new DataTable();
 
-        private DataTable GetSearchResults(DataSet DS)
+        private DataTable GetSearchResults(DataSet dataSet)
         {
             lblSearchMsg.Visible = false;
-            if (_tables.Count == 0) return DS.Tables[0];
+            if (_tables.Count == 0) return dataSet.Tables[0];
 
             string searchcolumn = GetSearchColumn();
             bool info = SearchInInfoCheckBox.Checked;
+            bool issues = SearchFindLinesWithPossibleIssuesCheckBox.Checked;
+            bool regex = SearchModeRegexRadioButton.Checked;
             string strQuery = SearchFormFindWhatTextBox.Text;
             bool found = false;
             var ForSelected = SearchRangeSelectedRadioButton.Checked || SearchRangeVisibleRadioButton.Checked;
@@ -476,114 +486,90 @@ namespace TranslationHelper
                     selectedrowsHashes = FunctionsTable.GetDGVRowsIndexesHashesInDT(t, SearchRangeVisibleRadioButton.Checked);
                 }
 
+                int origColumnIndex = AppData.CurrentProject.OriginalColumnIndex;
+                int transColumnIndex = AppData.CurrentProject.TranslationColumnIndex;
+
                 var rowsCount = table.Rows.Count;
                 for (int r = 0; r < rowsCount; r++)
                 {
                     if (ForSelected && !selectedrowsHashes.Contains(r)) continue;
 
-                    var Row = _tables[t].Rows[r];
+                    var row2check = _tables[t].Rows[r];
 
                     //skip equal lines if need, skip empty search cells && not skip when row issue search
-                    if ((chkbxDoNotTouchEqualOT.Checked && Equals(Row[0], Row[1])) || (!chkbxDoNotTouchEqualOT.Checked && (Row[searchcolumn] + string.Empty).Length == 0 && !SearchFindLinesWithPossibleIssuesCheckBox.Checked))
+                    if ((chkbxDoNotTouchEqualOT.Checked 
+                        && row2check[origColumnIndex].Equals(row2check[transColumnIndex])) 
+                        || (!chkbxDoNotTouchEqualOT.Checked
+                        && (row2check[searchcolumn] + string.Empty).Length == 0 
+                        && !SearchFindLinesWithPossibleIssuesCheckBox.Checked))
                     {
                         continue;
                     }
 
-                    string SelectedCellValue = _tables[t].Rows[r][searchcolumn] + string.Empty;
-
                     if (info)//search in info box
                     {
                         var infoValue = (AppData.CurrentProject.FilesContentInfo.Tables[t].Rows[r][0] + string.Empty);
-
-                        //regex search
-                        if (SearchModeRegexRadioButton.Checked)//regex
-                        {
-                            try
-                            {
-                                if ((THSearchMatchCaseCheckBox.Checked && Regex.IsMatch(infoValue, strQuery))
-                                    || (!THSearchMatchCaseCheckBox.Checked && Regex.IsMatch(infoValue, strQuery, RegexOptions.IgnoreCase)))
-                                {
-                                    ImportRowToFound(ref found, DS, Row, t, r);
-                                }
-                            }
-                            catch (ArgumentException ex)
-                            {
-                                //при ошибках регекса выходить
-                                lblSearchMsg.Visible = true;
-                                lblSearchMsg.Text = T._("Invalid regex") + ">" + ex.Message;
-                                return null;
-                            }
-                            catch
-                            {
-                                return null;
-                            }
-                        }
-                        else//common text search
-                        {
-                            try
-                            {
-                                if ((THSearchMatchCaseCheckBox.Checked && infoValue.Contains(strQuery))
-                                    || (!THSearchMatchCaseCheckBox.Checked && infoValue.IndexOf(strQuery, StringComparison.CurrentCultureIgnoreCase) != -1))
-                                {
-                                    ImportRowToFound(ref found, DS, Row, t, r);
-                                }
-                            }
-                            catch { }
-                        }
-
+                        if (GetCheckResult(ref found, dataSet, row2check, t, r, infoValue, strQuery) == SearchResult.Error) return null;
                     }
-                    else if (SearchFindLinesWithPossibleIssuesCheckBox.Checked)//search rows with possible issues
+                    else if (issues && IsTheRowHasPossibleIssues(row2check)) //search rows with possible issues
                     {
-                        if (IsTheRowHasPossibleIssues(Row))
-                        {
-                            ImportRowToFound(ref found, DS, Row, t, r);
-                        }
+                        ImportRowToFound(ref found, dataSet, row2check, t, r); 
                     }
                     else
                     {
-                        //regex search
-                        if (SearchModeRegexRadioButton.Checked)//regex
-                        {
-                            try
-                            {
-                                if ((THSearchMatchCaseCheckBox.Checked && Regex.IsMatch(SelectedCellValue, strQuery))
-                                    || (!THSearchMatchCaseCheckBox.Checked && Regex.IsMatch(SelectedCellValue, strQuery, RegexOptions.IgnoreCase))
-                                    )
-                                {
-                                    ImportRowToFound(ref found, DS, Row, t, r);
-                                }
-                            }
-                            catch (ArgumentException ex)
-                            {
-                                //при ошибках регекса выходить
-                                lblSearchMsg.Visible = true;
-                                lblSearchMsg.Text = T._("Invalid regex") + ">" + ex.Message;
-                                return null;
-                            }
-                            catch
-                            {
-                                return null;
-                            }
-                        }
-                        else//common text search
-                        {
-                            try
-                            {
-                                if ((THSearchMatchCaseCheckBox.Checked && SelectedCellValue.Contains(strQuery))
-                                    || (!THSearchMatchCaseCheckBox.Checked && SelectedCellValue.IndexOf(strQuery, StringComparison.CurrentCultureIgnoreCase) != -1)
-                                    )
-                                {
-                                    ImportRowToFound(ref found, DS, Row, t, r);
-                                }
-                            }
-                            catch { }
-
-                        }
-
+                        string SelectedCellValue = _tables[t].Rows[r][searchcolumn] + string.Empty;
+                        if (GetCheckResult(ref found, dataSet, row2check, t, r, SelectedCellValue, strQuery) == SearchResult.Error) return null; // general search
                     }
                 }
             }
-            return DS.Tables[0];
+            return dataSet.Tables[0];
+        }
+
+        private SearchResult GetCheckResult(ref bool found, DataSet ds, DataRow row, int t, int r, string infoValue, string strQuery)
+        {
+            if (SearchModeRegexRadioButton.Checked) // regex check
+            {
+                return CheckRegex(ref found, ds, row, t, r, infoValue, strQuery);
+            }
+            else return CheckIsFound(ref found, ds, row, t, r, infoValue, strQuery); // common check
+        }
+
+        private SearchResult CheckIsFound(ref bool found, DataSet ds, DataRow row, int t, int r, string infoValue, string strQuery)
+        {
+            try
+            {
+                if ((THSearchMatchCaseCheckBox.Checked && infoValue.Contains(strQuery))
+                    || (!THSearchMatchCaseCheckBox.Checked && infoValue.IndexOf(strQuery, StringComparison.CurrentCultureIgnoreCase) != -1))
+                {
+                    ImportRowToFound(ref found, ds, row, t, r);
+                    return SearchResult.Found;
+                }
+            }
+            catch { return SearchResult.Error; }
+
+            return SearchResult.NotFound;
+        }
+
+        private SearchResult CheckRegex(ref bool found, DataSet ds, DataRow row, int t, int r, string infoValue, string strQuery)
+        {
+            try
+            {
+                if ((THSearchMatchCaseCheckBox.Checked && Regex.IsMatch(infoValue, strQuery))
+                    || (!THSearchMatchCaseCheckBox.Checked && Regex.IsMatch(infoValue, strQuery, RegexOptions.IgnoreCase)))
+                {
+                    ImportRowToFound(ref found, ds, row, t, r);
+                    return SearchResult.Found;
+                }
+            }
+            catch (ArgumentException ex)
+            {
+                //при ошибках регекса выходить
+                lblSearchMsg.Visible = true;
+                lblSearchMsg.Text = T._("Invalid regex") + ">" + ex.Message;
+                return SearchResult.Error;
+            }
+
+            return SearchResult.NotFound;
         }
 
         /// <summary>
