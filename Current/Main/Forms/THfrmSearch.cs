@@ -11,7 +11,6 @@ using TranslationHelper.Data;
 using TranslationHelper.Functions;
 using TranslationHelper.Functions.FileElementsFunctions.Row.SearchIssueCheckers;
 using TranslationHelper.Main.Functions;
-using static RubyMarshal.RubyMarshal;
 
 namespace TranslationHelper
 {
@@ -159,19 +158,19 @@ namespace TranslationHelper
                 selectString.Start();
 
                 startRowSearchIndex++;
-                if (startRowSearchIndex == oDsResults.Tables[0].Rows.Count) startRowSearchIndex = 0;
+                if (startRowSearchIndex == foundRowsList.Count) startRowSearchIndex = 0;
             }
             else
             {
                 startRowSearchIndex = 0;
                 lblSearchMsg.Visible = false;
-                oDsResults = AppData.CurrentProject.FilesContent.Clone();
+                foundRowsList = new List<FoundRowData>();
 
-                DataTable drFoundRowsTable = GetSearchResults(oDsResults);
+                GetSearchResults(foundRowsList);
 
-                if (drFoundRowsTable == null) return;
+                if (foundRowsList == null) return;
 
-                if (drFoundRowsTable.Rows.Count == 0)
+                if (foundRowsList.Count == 0)
                 {
                     //PopulateGrid(null);
                     lblSearchMsg.Visible = true;
@@ -181,8 +180,6 @@ namespace TranslationHelper
                 }
 
                 StoryFoundValueToComboBox(SearchFormFindWhatTextBox.Text);
-
-                oDsResults.AcceptChanges();
 
                 string searchcolumn = GetSearchColumn();
                 (tableIndex, rowIndex) = _foundRowsTableRowIndexes[startRowSearchIndex];
@@ -199,7 +196,7 @@ namespace TranslationHelper
                 selectstring.Start();
 
                 startRowSearchIndex++;
-                if (startRowSearchIndex == oDsResults.Tables[0].Rows.Count) startRowSearchIndex = 0;
+                if (startRowSearchIndex == foundRowsList.Count) startRowSearchIndex = 0;
             }
         }
 
@@ -383,32 +380,51 @@ namespace TranslationHelper
             }
         }
 
-        private void PopulateGrid(DataSet oDsResults)
+        private void PopulateGrid(List<FoundRowData> foundRowsList)
         {
-            if (oDsResults == null)
+            if (foundRowsList == null)
             {
+                return;
             }
-            else
+            SearchResultsDatagridview.DataSource = foundRowsList;
+            int originalColumnIndex = AppData.CurrentProject.OriginalColumnIndex;
+            int translationColumnIndex = AppData.CurrentProject.TranslationColumnIndex;
+            for (int columnIndex = 0; columnIndex < SearchResultsDatagridview.ColumnCount; columnIndex++)
             {
-                SearchResultsDatagridview.DataSource = oDsResults.Tables[0];
-                for (int c = 0; c < SearchResultsDatagridview.ColumnCount; c++)
+                if (columnIndex == originalColumnIndex || columnIndex == translationColumnIndex)
                 {
-                    if (c > 1)
-                    {
-                        SearchResultsDatagridview.Columns[c].Visible = false;
-                    }
+                    continue;
                 }
-                SearchResultsDatagridview.Columns[0].ReadOnly = true;
-
-                SearchResultsDatagridview.Visible = true;
-                SearchResultsPanel.Visible = true;
+                SearchResultsDatagridview.Columns[columnIndex].Visible = false;
             }
+            SearchResultsDatagridview.Columns[originalColumnIndex].ReadOnly = true;
+
+            SearchResultsDatagridview.Visible = true;
+            SearchResultsPanel.Visible = true;
+        }
+
+        public class FoundRowData
+        {
+            public FoundRowData(DataRow row)
+            {
+                _row = row;
+                Original = row[AppData.CurrentProject.OriginalColumnIndex] as string;
+                Translation = row[AppData.CurrentProject.TranslationColumnIndex] + string.Empty;
+                TableIndex = AppData.CurrentProject.FilesContent.Tables.IndexOf(row.Table);
+                RowIndex = row.Table.Rows.IndexOf(row);
+            }
+
+            public string Original { get; }
+            public string Translation { get; }
+            public int TableIndex { get; }
+            public int RowIndex { get; }
+            DataRow _row { get; set; }
         }
 
         //http://mrbool.com/dataset-advance-operations-search-sort-filter-net/24769
         //https://stackoverflow.com/questions/3608388/c-sharp-access-dataset-data-from-another-class
         //http://qaru.site/questions/236566/how-to-know-the-row-index-from-datatable-object
-        DataSet oDsResults;
+        List<FoundRowData> foundRowsList;
         private void SearchAllButton_Click(object sender, EventArgs e)
         {
             if (AppData.CurrentProject.FilesContent == null
@@ -418,21 +434,19 @@ namespace TranslationHelper
             }
 
             lblSearchMsg.Visible = false;
-            oDsResults = AppData.CurrentProject.FilesContent.Clone();
-            //DataTable drFoundRowsTable = SelectFromDatatables(oDsResults);
-            DataTable drFoundRowsTable = GetSearchResults(oDsResults);
+            foundRowsList = new List<FoundRowData>();
+            GetSearchResults(foundRowsList);
 
-            if (drFoundRowsTable == null) return;
+            if (foundRowsList == null) return;
 
-            if (drFoundRowsTable.Rows.Count > 0)
+            if (foundRowsList.Count > 0)
             {
                 StoryFoundValueToComboBox(SearchFormFindWhatTextBox.Text);
 
-                oDsResults.AcceptChanges();
-                PopulateGrid(oDsResults);
+                PopulateGrid(foundRowsList);
 
                 lblSearchMsg.Visible = true;
-                lblSearchMsg.Text = T._("Found ") + drFoundRowsTable.Rows.Count + T._(" records");
+                lblSearchMsg.Text = T._("Found ") + foundRowsList.Count + T._(" records");
                 this.Height = 589;
             }
             else
@@ -448,10 +462,10 @@ namespace TranslationHelper
 
         private readonly List<(int tableIndex, int rowIndex)> _foundRowsTableRowIndexes = new List<(int tableIndex, int rowIndex)>();
 
-        private DataTable GetSearchResults(DataSet dataSet)
+        private void GetSearchResults(List<FoundRowData> foundRowsList)
         {
             lblSearchMsg.Visible = false;
-            if (_tables.Count == 0) return dataSet.Tables[0];
+            if (_tables.Count == 0) return;
 
             string searchColumnIndex = GetSearchColumn();
             bool isSearchInInfo = SearchInInfoCheckBox.Checked;
@@ -490,20 +504,19 @@ namespace TranslationHelper
                     if (isSearchInInfo)//search in info box
                     {
                         var infoValue = (AppData.CurrentProject.FilesContentInfo.Tables[tableIndex].Rows[rowIndex][0] + string.Empty);
-                        if (GetCheckResult(ref isFound, dataSet, row2check, tableIndex, rowIndex, infoValue, searchQueryText) == SearchResult.Error) return null;
+                        if (GetCheckResult(ref isFound, foundRowsList, row2check, tableIndex, rowIndex, infoValue, searchQueryText) == SearchResult.Error) return;
                     }
                     else if (isIssuesSearch && IsTheRowHasPossibleIssues(row2check)) //search rows with possible issues
                     {
-                        ImportRowToFound(ref isFound, dataSet, row2check, tableIndex, rowIndex); 
+                        ImportRowToFound(ref isFound, foundRowsList, row2check, tableIndex, rowIndex);
                     }
                     else
                     {
                         string SelectedCellValue = _tables[tableIndex].Rows[rowIndex][searchColumnIndex] + string.Empty;
-                        if (GetCheckResult(ref isFound, dataSet, row2check, tableIndex, rowIndex, SelectedCellValue, searchQueryText) == SearchResult.Error) return null; // general search
+                        if (GetCheckResult(ref isFound, foundRowsList, row2check, tableIndex, rowIndex, SelectedCellValue, searchQueryText) == SearchResult.Error) return; // general search
                     }
                 }
             }
-            return dataSet.Tables[0];
         }
 
         private bool IsValid2Search(DataRow row2check, int origColumnIndex, int transColumnIndex, string searchcolumn)
@@ -515,23 +528,23 @@ namespace TranslationHelper
                         && (row2check[searchcolumn] + string.Empty).Length == 0);
         }
 
-        private SearchResult GetCheckResult(ref bool found, DataSet ds, DataRow row, int t, int r, string infoValue, string strQuery)
+        private SearchResult GetCheckResult(ref bool found, List<FoundRowData> foundRowsList, DataRow row, int t, int r, string infoValue, string strQuery)
         {
             if (SearchModeRegexRadioButton.Checked) // regex check
             {
-                return CheckRegex(ref found, ds, row, t, r, infoValue, strQuery);
+                return CheckRegex(ref found, foundRowsList, row, t, r, infoValue, strQuery);
             }
-            else return CheckIsFound(ref found, ds, row, t, r, infoValue, strQuery); // common check
+            else return CheckIsFound(ref found, foundRowsList, row, t, r, infoValue, strQuery); // common check
         }
 
-        private SearchResult CheckIsFound(ref bool found, DataSet ds, DataRow row, int t, int r, string infoValue, string strQuery)
+        private SearchResult CheckIsFound(ref bool isFound, List<FoundRowData> foundRowsList, DataRow row, int t, int r, string infoValue, string strQuery)
         {
             try
             {
                 if ((THSearchMatchCaseCheckBox.Checked && infoValue.Contains(strQuery))
                     || (!THSearchMatchCaseCheckBox.Checked && infoValue.IndexOf(strQuery, StringComparison.CurrentCultureIgnoreCase) != -1))
                 {
-                    ImportRowToFound(ref found, ds, row, t, r);
+                    ImportRowToFound(ref isFound, foundRowsList, row, t, r);
                     return SearchResult.Found;
                 }
             }
@@ -540,14 +553,14 @@ namespace TranslationHelper
             return SearchResult.NotFound;
         }
 
-        private SearchResult CheckRegex(ref bool found, DataSet ds, DataRow row, int t, int r, string infoValue, string strQuery)
+        private SearchResult CheckRegex(ref bool isFound, List<FoundRowData> foundRowsList, DataRow row, int t, int r, string infoValue, string strQuery)
         {
             try
             {
                 if ((THSearchMatchCaseCheckBox.Checked && Regex.IsMatch(infoValue, strQuery))
                     || (!THSearchMatchCaseCheckBox.Checked && Regex.IsMatch(infoValue, strQuery, RegexOptions.IgnoreCase)))
                 {
-                    ImportRowToFound(ref found, ds, row, t, r);
+                    ImportRowToFound(ref isFound, foundRowsList, row, t, r);
                     return SearchResult.Found;
                 }
             }
@@ -572,20 +585,20 @@ namespace TranslationHelper
         /// <summary>
         /// Add found row to results
         /// </summary>
-        /// <param name="found"></param>
+        /// <param name="isFound"></param>
         /// <param name="ds"></param>
         /// <param name="row"></param>
         /// <param name="t"></param>
         /// <param name="r"></param>
-        private void ImportRowToFound(ref bool found, DataSet ds, DataRow row, int t, int r)
+        private void ImportRowToFound(ref bool isFound, List<FoundRowData> foundRowsList, DataRow row, int t, int r)
         {
-            if (!found)
+            if (!isFound)
             {
-                found = true;
+                isFound = true;
                 _foundRowsTableRowIndexes.Clear();
                 this.Height = 368;
             }
-            ds.Tables[0].ImportRow(row);
+            foundRowsList.Add(new FoundRowData(row));
             _foundRowsTableRowIndexes.Add((t, r));
         }
 
@@ -762,7 +775,7 @@ namespace TranslationHelper
                     }
                 }
 
-                if (startRowSearchIndex == oDsResults.Tables[0].Rows.Count) startRowSearchIndex = 0;
+                if (startRowSearchIndex == foundRowsList.Count) startRowSearchIndex = 0;
 
                 (tableIndex, rowIndex) = _foundRowsTableRowIndexes[startRowSearchIndex];
 
@@ -784,13 +797,12 @@ namespace TranslationHelper
             {
                 startRowSearchIndex = 0;
                 lblSearchMsg.Visible = false;
-                oDsResults = AppData.CurrentProject.FilesContent.Clone();
+                foundRowsList = new List<FoundRowData>();
+                GetSearchResults(this.foundRowsList);
 
-                DataTable drFoundRowsTable = GetSearchResults(oDsResults);
+                if (foundRowsList == null) return;
 
-                if (drFoundRowsTable == null) return;
-
-                if (drFoundRowsTable.Rows.Count == 0)
+                if (foundRowsList.Count == 0)
                 {
                     //PopulateGrid(null);
                     lblSearchMsg.Visible = true;
@@ -800,8 +812,6 @@ namespace TranslationHelper
                 }
 
                 StoryFoundValueToComboBox(SearchFormFindWhatTextBox.Text, SearchFormReplaceWithTextBox.Text);
-
-                oDsResults.AcceptChanges();
 
                 (tableIndex, rowIndex) = _foundRowsTableRowIndexes[startRowSearchIndex];
                 if (tableIndex != _filesList.SelectedIndex)
@@ -817,7 +827,7 @@ namespace TranslationHelper
                 selectstring.Start();
 
                 startRowSearchIndex++;
-                if (startRowSearchIndex == oDsResults.Tables[0].Rows.Count) startRowSearchIndex = 0;
+                if (startRowSearchIndex == foundRowsList.Count) startRowSearchIndex = 0;
             }
         }
 
@@ -841,12 +851,12 @@ namespace TranslationHelper
             var replacementUnescaped = FixRegexReplacementFromTextbox(SearchFormReplaceWithTextBox.Text);
 
             lblSearchMsg.Visible = false;
-            oDsResults = AppData.CurrentProject.FilesContent.Clone();
-            DataTable drFoundRowsTable = GetSearchResults(oDsResults);
+            foundRowsList = new List<FoundRowData>();
+            GetSearchResults(foundRowsList);
 
-            if (drFoundRowsTable == null) return;
+            if (foundRowsList == null) return;
 
-            if (drFoundRowsTable.Rows.Count == 0)
+            if (foundRowsList.Count == 0)
             {
                 //PopulateGrid(null);
                 lblSearchMsg.Visible = true;
@@ -857,15 +867,14 @@ namespace TranslationHelper
 
             bool StoreQueryAndReplacer = false;
 
-            oDsResults.AcceptChanges();
-            PopulateGrid(oDsResults);
+            PopulateGrid(foundRowsList);
 
             lblSearchMsg.Visible = true;
-            lblSearchMsg.Text = T._("Found ") + drFoundRowsTable.Rows.Count + T._(" records");
+            lblSearchMsg.Text = T._("Found ") + foundRowsList.Count + T._(" records");
             this.Height = 589;
 
             string searchcolumn = GetSearchColumn();
-            int oDsResultsCount = oDsResults.Tables[0].Rows.Count;
+            int oDsResultsCount = foundRowsList.Count;
             for (int r = 0; r < oDsResultsCount; r++)
             {
                 (tableIndex, rowIndex) = _foundRowsTableRowIndexes[r];
