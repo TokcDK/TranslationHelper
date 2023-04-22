@@ -132,9 +132,9 @@ namespace TranslationHelper
             return SearchMethodTranslationRadioButton.Checked ? THSettings.TranslationColumnName : THSettings.OriginalColumnName;
         }
 
-        int startRowSearchIndex;        //Индекс стартовой ячейки для поиска
-        int tableIndex;
-        int rowIndex;
+        int _startRowSearchIndex;        //Индекс стартовой ячейки для поиска
+        int _tableIndex;
+        int _rowIndex;
         private void SearchFormFindNextButton_Click(object sender, EventArgs e)
         {
             if (SearchFormFindWhatTextBox.Text.Length == 0 || AppData.CurrentProject.FilesContent == null)
@@ -146,27 +146,27 @@ namespace TranslationHelper
             if (inputEqualwithLatest)
             {
                 string searchColumn = GetSearchColumn();
-                var foundRowData = _foundRowsList[startRowSearchIndex];
-                (tableIndex, rowIndex) = (foundRowData.TableIndex, foundRowData.RowIndex);
+                var foundRowData = _foundRowsList[_startRowSearchIndex];
+                (_tableIndex, _rowIndex) = (foundRowData.TableIndex, foundRowData.RowIndex);
 
-                if (tableIndex != _filesList.SelectedIndex)
+                if (_tableIndex != _filesList.SelectedIndex)
                 {
-                    _filesList.SelectedIndex = tableIndex;
-                    _workFileDgv.DataSource = _tables[tableIndex];
+                    _filesList.SelectedIndex = _tableIndex;
+                    _workFileDgv.DataSource = _tables[_tableIndex];
                 }
-                _workFileDgv.CurrentCell = _workFileDgv[searchColumn, rowIndex];
+                _workFileDgv.CurrentCell = _workFileDgv[searchColumn, _rowIndex];
 
                 //подсвечивание найденного
                 //http://www.sql.ru/forum/1149655/kak-peredat-parametr-s-metodom-delegatom
                 Thread selectString = new Thread(new ParameterizedThreadStart((obj) => SelectTextInTextBox(SearchFormFindWhatTextBox.Text)));
                 selectString.Start();
 
-                startRowSearchIndex++;
-                if (startRowSearchIndex == _foundRowsList.Count) startRowSearchIndex = 0;
+                _startRowSearchIndex++;
+                if (_startRowSearchIndex == _foundRowsList.Count) _startRowSearchIndex = 0;
             }
             else
             {
-                startRowSearchIndex = 0;
+                _startRowSearchIndex = 0;
                 lblSearchMsg.Visible = false;
                 GetSearchResults();
 
@@ -184,22 +184,22 @@ namespace TranslationHelper
                 StoryFoundValueToComboBox(SearchFormFindWhatTextBox.Text);
 
                 string searchcolumn = GetSearchColumn();
-                var foundRowData = _foundRowsList[startRowSearchIndex];
-                (tableIndex, rowIndex) = (foundRowData.TableIndex, foundRowData.RowIndex);
+                var foundRowData = _foundRowsList[_startRowSearchIndex];
+                (_tableIndex, _rowIndex) = (foundRowData.TableIndex, foundRowData.RowIndex);
 
-                if (tableIndex != _filesList.SelectedIndex)
+                if (_tableIndex != _filesList.SelectedIndex)
                 {
-                    _filesList.SelectedIndex = tableIndex;
-                    _workFileDgv.DataSource = _tables[tableIndex];
+                    _filesList.SelectedIndex = _tableIndex;
+                    _workFileDgv.DataSource = _tables[_tableIndex];
                 }
-                _workFileDgv.CurrentCell = _workFileDgv[searchcolumn, rowIndex];
+                _workFileDgv.CurrentCell = _workFileDgv[searchcolumn, _rowIndex];
 
                 //http://www.sql.ru/forum/1149655/kak-peredat-parametr-s-metodom-delegatom
                 Thread selectstring = new Thread(new ParameterizedThreadStart((obj) => SelectTextInTextBox(SearchFormFindWhatTextBox.Text)));
                 selectstring.Start();
 
-                startRowSearchIndex++;
-                if (startRowSearchIndex == _foundRowsList.Count) startRowSearchIndex = 0;
+                _startRowSearchIndex++;
+                if (_startRowSearchIndex == _foundRowsList.Count) _startRowSearchIndex = 0;
             }
         }
 
@@ -511,8 +511,8 @@ namespace TranslationHelper
                     }
                     else
                     {
-                        string SelectedCellValue = _tables[tableIndex].Rows[rowIndex][searchColumnIndex] + string.Empty;
-                        if (GetCheckResult(ref isFound, row2check, SelectedCellValue, searchQueryText) == SearchResult.Error) return; // general search
+                        string selectedCellValue = _tables[tableIndex].Rows[rowIndex][searchColumnIndex] + string.Empty;
+                        if (GetCheckResult(ref isFound, row2check, selectedCellValue, searchQueryText) == SearchResult.Error) return; // general search
                     }
                 }
             }
@@ -552,12 +552,12 @@ namespace TranslationHelper
             return SearchResult.NotFound;
         }
 
-        private SearchResult CheckRegex(ref bool isFound, DataRow row, string infoValue, string strQuery)
+        private SearchResult CheckRegex(ref bool isFound, DataRow row, string textWhereSearch, string searchPattern)
         {
             try
             {
-                if ((THSearchMatchCaseCheckBox.Checked && Regex.IsMatch(infoValue, strQuery))
-                    || (!THSearchMatchCaseCheckBox.Checked && Regex.IsMatch(infoValue, strQuery, RegexOptions.IgnoreCase)))
+                if ((THSearchMatchCaseCheckBox.Checked && Regex.IsMatch(textWhereSearch, searchPattern))
+                    || (!THSearchMatchCaseCheckBox.Checked && Regex.IsMatch(textWhereSearch, searchPattern, RegexOptions.IgnoreCase)))
                 {
                     ImportRowToFound(ref isFound, row);
                     return SearchResult.Found;
@@ -625,7 +625,7 @@ namespace TranslationHelper
         {
             //some other info: https://stackoverflow.com/questions/20893725/how-to-hide-and-show-panels-on-a-form-and-have-it-resize-to-take-up-slack
             this.Height = 368;
-            tableIndex = _filesList.SelectedIndex;
+            _tableIndex = _filesList.SelectedIndex;
 
             LoadSearchQueriesReplacers();
 
@@ -709,13 +709,13 @@ namespace TranslationHelper
             {
                 //было исключение, отсутствует позиция, хотя позицияприсутствовала
                 var foundRowData = _foundRowsList[e.RowIndex];
-                (tableIndex, rowIndex) = (foundRowData.TableIndex, foundRowData.RowIndex);
+                (_tableIndex, _rowIndex) = (foundRowData.TableIndex, foundRowData.RowIndex);
 
-                _tables[tableIndex].DefaultView.RowFilter = string.Empty;
-                _tables[tableIndex].DefaultView.Sort = string.Empty;
+                _tables[_tableIndex].DefaultView.RowFilter = string.Empty;
+                _tables[_tableIndex].DefaultView.Sort = string.Empty;
                 _workFileDgv.Refresh();
 
-                FunctionsTable.ShowSelectedRow(tableIndex, searchcolumn, rowIndex);
+                FunctionsTable.ShowSelectedRow(_tableIndex, searchcolumn, _rowIndex);
 
                 if (_workFileDgv != null && _workFileDgv.DataSource != null && _workFileDgv.CurrentCell != null)
                 {
@@ -748,11 +748,11 @@ namespace TranslationHelper
             {
                 string searchcolumn = GetSearchColumn();
 
-                if (startRowSearchIndex == 0) return;
+                if (_startRowSearchIndex == 0) return;
 
-                if (tableIndex >= 0 && tableIndex < _filesList.Items.Count && rowIndex >= 0 && rowIndex < _workFileDgv.Rows.Count)
+                if (_tableIndex >= 0 && _tableIndex < _filesList.Items.Count && _rowIndex >= 0 && _rowIndex < _workFileDgv.Rows.Count)
                 {
-                    string value = _workFileDgv[searchcolumn, rowIndex].Value + string.Empty;
+                    string value = _workFileDgv[searchcolumn, _rowIndex].Value + string.Empty;
                     if (value.Length > 0)
                     {
                         if (SearchModeRegexRadioButton.Checked)
@@ -760,7 +760,7 @@ namespace TranslationHelper
                             if (Regex.IsMatch(value, SearchFormFindWhatTextBox.Text, RegexOptions.IgnoreCase))
                             {
                                 StoryFoundValueToComboBox(SearchFormFindWhatTextBox.Text, SearchFormReplaceWithTextBox.Text);
-                                _workFileDgv[THSettings.TranslationColumnName, rowIndex].Value = Regex.Replace(GetFirstIfNotEmpty(_workFileDgv[THSettings.TranslationColumnName, rowIndex].Value + string.Empty, value), SearchFormFindWhatTextBox.Text, FixRegexReplacementFromTextbox(SearchFormReplaceWithTextBox.Text), RegexOptions.IgnoreCase);
+                                _workFileDgv[THSettings.TranslationColumnName, _rowIndex].Value = Regex.Replace(GetFirstIfNotEmpty(_workFileDgv[THSettings.TranslationColumnName, _rowIndex].Value + string.Empty, value), SearchFormFindWhatTextBox.Text, FixRegexReplacementFromTextbox(SearchFormReplaceWithTextBox.Text), RegexOptions.IgnoreCase);
                             }
                         }
                         else
@@ -768,34 +768,34 @@ namespace TranslationHelper
                             if (value.IndexOf(SearchFormFindWhatTextBox.Text, StringComparison.InvariantCultureIgnoreCase) != -1)
                             {
                                 StoryFoundValueToComboBox(SearchFormFindWhatTextBox.Text, SearchFormReplaceWithTextBox.Text);
-                                _workFileDgv[THSettings.TranslationColumnName, rowIndex].Value = ReplaceEx.Replace(GetFirstIfNotEmpty(_workFileDgv[THSettings.TranslationColumnName, rowIndex].Value + string.Empty, value), SearchFormFindWhatTextBox.Text, SearchFormReplaceWithTextBox.Text, StringComparison.OrdinalIgnoreCase);
+                                _workFileDgv[THSettings.TranslationColumnName, _rowIndex].Value = ReplaceEx.Replace(GetFirstIfNotEmpty(_workFileDgv[THSettings.TranslationColumnName, _rowIndex].Value + string.Empty, value), SearchFormFindWhatTextBox.Text, SearchFormReplaceWithTextBox.Text, StringComparison.OrdinalIgnoreCase);
                             }
                         }
                     }
                 }
 
-                if (startRowSearchIndex == _foundRowsList.Count) startRowSearchIndex = 0;
+                if (_startRowSearchIndex == _foundRowsList.Count) _startRowSearchIndex = 0;
 
-                var foundRowData = _foundRowsList[startRowSearchIndex];
-                (tableIndex, rowIndex) = (foundRowData.TableIndex, foundRowData.RowIndex);
+                var foundRowData = _foundRowsList[_startRowSearchIndex];
+                (_tableIndex, _rowIndex) = (foundRowData.TableIndex, foundRowData.RowIndex);
 
-                if (tableIndex != _filesList.SelectedIndex)
+                if (_tableIndex != _filesList.SelectedIndex)
                 {
-                    _filesList.SelectedIndex = tableIndex;
-                    _workFileDgv.DataSource = _tables[tableIndex];
+                    _filesList.SelectedIndex = _tableIndex;
+                    _workFileDgv.DataSource = _tables[_tableIndex];
                 }
-                _workFileDgv.CurrentCell = _workFileDgv[searchcolumn, rowIndex];
+                _workFileDgv.CurrentCell = _workFileDgv[searchcolumn, _rowIndex];
 
                 //подсвечивание найденного
                 //http://www.sql.ru/forum/1149655/kak-peredat-parametr-s-metodom-delegatom
                 Thread selectstring = new Thread(new ParameterizedThreadStart((obj) => SelectTextInTextBox(SearchFormFindWhatTextBox.Text)));
                 selectstring.Start();
 
-                startRowSearchIndex++;
+                _startRowSearchIndex++;
             }
             else
             {
-                startRowSearchIndex = 0;
+                _startRowSearchIndex = 0;
                 lblSearchMsg.Visible = false;
                 GetSearchResults();
 
@@ -812,22 +812,22 @@ namespace TranslationHelper
 
                 StoryFoundValueToComboBox(SearchFormFindWhatTextBox.Text, SearchFormReplaceWithTextBox.Text);
 
-                var foundRowData = _foundRowsList[startRowSearchIndex];
-                (tableIndex, rowIndex) = (foundRowData.TableIndex, foundRowData.RowIndex);
-                if (tableIndex != _filesList.SelectedIndex)
+                var foundRowData = _foundRowsList[_startRowSearchIndex];
+                (_tableIndex, _rowIndex) = (foundRowData.TableIndex, foundRowData.RowIndex);
+                if (_tableIndex != _filesList.SelectedIndex)
                 {
-                    _filesList.SelectedIndex = tableIndex;
-                    _workFileDgv.DataSource = _tables[tableIndex];
+                    _filesList.SelectedIndex = _tableIndex;
+                    _workFileDgv.DataSource = _tables[_tableIndex];
                 }
 
-                _workFileDgv.CurrentCell = _workFileDgv[GetSearchColumn(), rowIndex];
+                _workFileDgv.CurrentCell = _workFileDgv[GetSearchColumn(), _rowIndex];
 
                 //http://www.sql.ru/forum/1149655/kak-peredat-parametr-s-metodom-delegatom
                 Thread selectstring = new Thread(new ParameterizedThreadStart((obj) => SelectTextInTextBox(SearchFormFindWhatTextBox.Text)));
                 selectstring.Start();
 
-                startRowSearchIndex++;
-                if (startRowSearchIndex == _foundRowsList.Count) startRowSearchIndex = 0;
+                _startRowSearchIndex++;
+                if (_startRowSearchIndex == _foundRowsList.Count) _startRowSearchIndex = 0;
             }
         }
 
@@ -877,8 +877,8 @@ namespace TranslationHelper
             for (int r = 0; r < oDsResultsCount; r++)
             {
                 var foundRowData = _foundRowsList[r];
-                (tableIndex, rowIndex) = (foundRowData.TableIndex, foundRowData.RowIndex);
-                var row = _tables[tableIndex].Rows[rowIndex];
+                (_tableIndex, _rowIndex) = (foundRowData.TableIndex, foundRowData.RowIndex);
+                var row = _tables[_tableIndex].Rows[_rowIndex];
                 string value = row[searchcolumn] + string.Empty;
                 if (value.Length == 0) continue;
 
