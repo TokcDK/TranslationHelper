@@ -26,8 +26,8 @@ namespace TranslationHelper
 
         bool _isAnyRowFound;
         int _startRowSearchIndex;        //Индекс стартовой ячейки для поиска
-        int _tableIndex;
-        int _rowIndex;
+        int _selectedTableIndex;
+        int _selectedRowIndex;
         string _lastfoundvalue = string.Empty;
         string _lastfoundreplacedvalue = string.Empty;
         string[] _searchQueries;
@@ -176,14 +176,14 @@ namespace TranslationHelper
             {
                 string searchColumn = GetSearchColumn();
                 var foundRowData = _foundRowsList[_startRowSearchIndex];
-                (_tableIndex, _rowIndex) = (foundRowData.TableIndex, foundRowData.RowIndex);
+                (_selectedTableIndex, _selectedRowIndex) = (foundRowData.TableIndex, foundRowData.RowIndex);
 
-                if (_tableIndex != _filesList.SelectedIndex)
+                if (_selectedTableIndex != _filesList.SelectedIndex)
                 {
-                    _filesList.SelectedIndex = _tableIndex;
-                    _workFileDgv.DataSource = _tables[_tableIndex];
+                    _filesList.SelectedIndex = _selectedTableIndex;
+                    _workFileDgv.DataSource = _tables[_selectedTableIndex];
                 }
-                _workFileDgv.CurrentCell = _workFileDgv[searchColumn, _rowIndex];
+                _workFileDgv.CurrentCell = _workFileDgv[searchColumn, _selectedRowIndex];
 
                 //подсвечивание найденного
                 //http://www.sql.ru/forum/1149655/kak-peredat-parametr-s-metodom-delegatom
@@ -214,14 +214,14 @@ namespace TranslationHelper
 
                 string searchcolumn = GetSearchColumn();
                 var foundRowData = _foundRowsList[_startRowSearchIndex];
-                (_tableIndex, _rowIndex) = (foundRowData.TableIndex, foundRowData.RowIndex);
+                (_selectedTableIndex, _selectedRowIndex) = (foundRowData.TableIndex, foundRowData.RowIndex);
 
-                if (_tableIndex != _filesList.SelectedIndex)
+                if (_selectedTableIndex != _filesList.SelectedIndex)
                 {
-                    _filesList.SelectedIndex = _tableIndex;
-                    _workFileDgv.DataSource = _tables[_tableIndex];
+                    _filesList.SelectedIndex = _selectedTableIndex;
+                    _workFileDgv.DataSource = _tables[_selectedTableIndex];
                 }
-                _workFileDgv.CurrentCell = _workFileDgv[searchcolumn, _rowIndex];
+                _workFileDgv.CurrentCell = _workFileDgv[searchcolumn, _selectedRowIndex];
 
                 //http://www.sql.ru/forum/1149655/kak-peredat-parametr-s-metodom-delegatom
                 Thread selectstring = new Thread(new ParameterizedThreadStart((obj) => SelectTextInTextBox(SearchFormFindWhatTextBox.Text)));
@@ -623,7 +623,7 @@ namespace TranslationHelper
         {
             //some other info: https://stackoverflow.com/questions/20893725/how-to-hide-and-show-panels-on-a-form-and-have-it-resize-to-take-up-slack
             this.Height = 368;
-            _tableIndex = _filesList.SelectedIndex;
+            _selectedTableIndex = _filesList.SelectedIndex;
 
             LoadSearchQueriesReplacers();
 
@@ -707,13 +707,13 @@ namespace TranslationHelper
             {
                 //было исключение, отсутствует позиция, хотя позицияприсутствовала
                 var foundRowData = _foundRowsList[e.RowIndex];
-                (_tableIndex, _rowIndex) = (foundRowData.TableIndex, foundRowData.RowIndex);
+                (_selectedTableIndex, _selectedRowIndex) = (foundRowData.TableIndex, foundRowData.RowIndex);
 
-                _tables[_tableIndex].DefaultView.RowFilter = string.Empty;
-                _tables[_tableIndex].DefaultView.Sort = string.Empty;
+                _tables[_selectedTableIndex].DefaultView.RowFilter = string.Empty;
+                _tables[_selectedTableIndex].DefaultView.Sort = string.Empty;
                 _workFileDgv.Refresh();
 
-                FunctionsTable.ShowSelectedRow(_tableIndex, searchcolumn, _rowIndex);
+                FunctionsTable.ShowSelectedRow(_selectedTableIndex, searchcolumn, _selectedRowIndex);
 
                 if (_workFileDgv != null && _workFileDgv.DataSource != null && _workFileDgv.CurrentCell != null)
                 {
@@ -748,9 +748,9 @@ namespace TranslationHelper
 
                 if (_startRowSearchIndex == 0) return;
 
-                if (_tableIndex >= 0 && _tableIndex < _filesList.Items.Count && _rowIndex >= 0 && _rowIndex < _workFileDgv.Rows.Count)
+                if (_selectedTableIndex >= 0 && _selectedTableIndex < _filesList.Items.Count && _selectedRowIndex >= 0 && _selectedRowIndex < _workFileDgv.Rows.Count)
                 {
-                    string value = _workFileDgv[searchcolumn, _rowIndex].Value + string.Empty;
+                    string value = _workFileDgv[searchcolumn, _selectedRowIndex].Value + string.Empty;
                     if (value.Length > 0)
                     {
                         if (SearchModeRegexRadioButton.Checked)
@@ -758,7 +758,7 @@ namespace TranslationHelper
                             if (Regex.IsMatch(value, SearchFormFindWhatTextBox.Text, RegexOptions.IgnoreCase))
                             {
                                 StoryFoundValueToComboBox(SearchFormFindWhatTextBox.Text, SearchFormReplaceWithTextBox.Text);
-                                _workFileDgv[THSettings.TranslationColumnName, _rowIndex].Value = Regex.Replace(GetFirstIfNotEmpty(_workFileDgv[THSettings.TranslationColumnName, _rowIndex].Value + string.Empty, value), SearchFormFindWhatTextBox.Text, FixRegexReplacementFromTextbox(SearchFormReplaceWithTextBox.Text), RegexOptions.IgnoreCase);
+                                _workFileDgv[THSettings.TranslationColumnName, _selectedRowIndex].Value = Regex.Replace(GetFirstIfNotEmpty(_workFileDgv[THSettings.TranslationColumnName, _selectedRowIndex].Value + string.Empty, value), SearchFormFindWhatTextBox.Text, FixRegexReplacementFromTextbox(SearchFormReplaceWithTextBox.Text), RegexOptions.IgnoreCase);
                             }
                         }
                         else
@@ -766,7 +766,7 @@ namespace TranslationHelper
                             if (value.IndexOf(SearchFormFindWhatTextBox.Text, StringComparison.InvariantCultureIgnoreCase) != -1)
                             {
                                 StoryFoundValueToComboBox(SearchFormFindWhatTextBox.Text, SearchFormReplaceWithTextBox.Text);
-                                _workFileDgv[THSettings.TranslationColumnName, _rowIndex].Value = ReplaceEx.Replace(GetFirstIfNotEmpty(_workFileDgv[THSettings.TranslationColumnName, _rowIndex].Value + string.Empty, value), SearchFormFindWhatTextBox.Text, SearchFormReplaceWithTextBox.Text, StringComparison.OrdinalIgnoreCase);
+                                _workFileDgv[THSettings.TranslationColumnName, _selectedRowIndex].Value = ReplaceEx.Replace(GetFirstIfNotEmpty(_workFileDgv[THSettings.TranslationColumnName, _selectedRowIndex].Value + string.Empty, value), SearchFormFindWhatTextBox.Text, SearchFormReplaceWithTextBox.Text, StringComparison.OrdinalIgnoreCase);
                             }
                         }
                     }
@@ -775,14 +775,14 @@ namespace TranslationHelper
                 if (_startRowSearchIndex == _foundRowsList.Count) _startRowSearchIndex = 0;
 
                 var foundRowData = _foundRowsList[_startRowSearchIndex];
-                (_tableIndex, _rowIndex) = (foundRowData.TableIndex, foundRowData.RowIndex);
+                (_selectedTableIndex, _selectedRowIndex) = (foundRowData.TableIndex, foundRowData.RowIndex);
 
-                if (_tableIndex != _filesList.SelectedIndex)
+                if (_selectedTableIndex != _filesList.SelectedIndex)
                 {
-                    _filesList.SelectedIndex = _tableIndex;
-                    _workFileDgv.DataSource = _tables[_tableIndex];
+                    _filesList.SelectedIndex = _selectedTableIndex;
+                    _workFileDgv.DataSource = _tables[_selectedTableIndex];
                 }
-                _workFileDgv.CurrentCell = _workFileDgv[searchcolumn, _rowIndex];
+                _workFileDgv.CurrentCell = _workFileDgv[searchcolumn, _selectedRowIndex];
 
                 //подсвечивание найденного
                 //http://www.sql.ru/forum/1149655/kak-peredat-parametr-s-metodom-delegatom
@@ -811,14 +811,14 @@ namespace TranslationHelper
                 StoryFoundValueToComboBox(SearchFormFindWhatTextBox.Text, SearchFormReplaceWithTextBox.Text);
 
                 var foundRowData = _foundRowsList[_startRowSearchIndex];
-                (_tableIndex, _rowIndex) = (foundRowData.TableIndex, foundRowData.RowIndex);
-                if (_tableIndex != _filesList.SelectedIndex)
+                (_selectedTableIndex, _selectedRowIndex) = (foundRowData.TableIndex, foundRowData.RowIndex);
+                if (_selectedTableIndex != _filesList.SelectedIndex)
                 {
-                    _filesList.SelectedIndex = _tableIndex;
-                    _workFileDgv.DataSource = _tables[_tableIndex];
+                    _filesList.SelectedIndex = _selectedTableIndex;
+                    _workFileDgv.DataSource = _tables[_selectedTableIndex];
                 }
 
-                _workFileDgv.CurrentCell = _workFileDgv[GetSearchColumn(), _rowIndex];
+                _workFileDgv.CurrentCell = _workFileDgv[GetSearchColumn(), _selectedRowIndex];
 
                 //http://www.sql.ru/forum/1149655/kak-peredat-parametr-s-metodom-delegatom
                 Thread selectstring = new Thread(new ParameterizedThreadStart((obj) => SelectTextInTextBox(SearchFormFindWhatTextBox.Text)));
@@ -875,8 +875,8 @@ namespace TranslationHelper
             for (int r = 0; r < oDsResultsCount; r++)
             {
                 var foundRowData = _foundRowsList[r];
-                (_tableIndex, _rowIndex) = (foundRowData.TableIndex, foundRowData.RowIndex);
-                var row = _tables[_tableIndex].Rows[_rowIndex];
+                (_selectedTableIndex, _selectedRowIndex) = (foundRowData.TableIndex, foundRowData.RowIndex);
+                var row = _tables[_selectedTableIndex].Rows[_selectedRowIndex];
                 string value = row[searchcolumn] + string.Empty;
                 if (value.Length == 0) continue;
 
