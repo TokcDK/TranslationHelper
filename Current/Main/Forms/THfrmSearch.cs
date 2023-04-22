@@ -410,7 +410,7 @@ namespace TranslationHelper
         {
             public FoundRowData(DataRow row)
             {
-                _row = row;
+                //_row = row;
                 Original = row[AppData.CurrentProject.OriginalColumnIndex] as string;
                 Translation = row[AppData.CurrentProject.TranslationColumnIndex] + string.Empty;
                 TableIndex = AppData.CurrentProject.FilesContent.Tables.IndexOf(row.Table);
@@ -421,7 +421,7 @@ namespace TranslationHelper
             public string Translation { get; }
             public int TableIndex { get; }
             public int RowIndex { get; }
-            DataRow _row { get; set; }
+            //DataRow _row { get; set; }
         }
 
         //http://mrbool.com/dataset-advance-operations-search-sort-filter-net/24769
