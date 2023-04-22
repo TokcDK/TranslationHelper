@@ -21,6 +21,9 @@ namespace TranslationHelper
         readonly DataTableCollection _tables;
         readonly RichTextBox _translationTextBox;
         readonly INIFileMan.INIFile _config;
+        readonly int _originalColumnIndex = AppData.CurrentProject.OriginalColumnIndex;
+        readonly int _translationColumnIndex = AppData.CurrentProject.TranslationColumnIndex;
+
 
         internal THfrmSearch(ListBox filesList, DataGridView workFileDgv, RichTextBox translationTextBox)
         {
@@ -165,9 +168,7 @@ namespace TranslationHelper
             {
                 startRowSearchIndex = 0;
                 lblSearchMsg.Visible = false;
-                _foundRowsList = new List<FoundRowData>();
-
-                GetSearchResults(_foundRowsList);
+                GetSearchResults();
 
                 if (_foundRowsList == null) return;
 
@@ -436,8 +437,7 @@ namespace TranslationHelper
             }
 
             lblSearchMsg.Visible = false;
-            _foundRowsList = new List<FoundRowData>();
-            GetSearchResults(_foundRowsList);
+            GetSearchResults();
 
             if (_foundRowsList == null) return;
 
@@ -462,10 +462,12 @@ namespace TranslationHelper
             }
         }
 
-        private void GetSearchResults(List<FoundRowData> foundRowsList)
+        private void GetSearchResults()
         {
             lblSearchMsg.Visible = false;
             if (_tables.Count == 0) return;
+
+            _foundRowsList = new List<FoundRowData>();
 
             string searchColumnIndex = GetSearchColumn();
             bool isSearchInInfo = SearchInInfoCheckBox.Checked;
@@ -486,9 +488,6 @@ namespace TranslationHelper
                     selectedrowsHashes = FunctionsTable.GetDGVRowsIndexesHashesInDT(tableIndex, SearchRangeVisibleRadioButton.Checked);
                 }
 
-                int originalColumnIndex = AppData.CurrentProject.OriginalColumnIndex;
-                int translationColumnIndex = AppData.CurrentProject.TranslationColumnIndex;
-
                 var rowsCount = tableWhereSearching.Rows.Count;
                 for (int rowIndex = 0; rowIndex < rowsCount; rowIndex++)
                 {
@@ -496,7 +495,7 @@ namespace TranslationHelper
 
                     var row2check = _tables[tableIndex].Rows[rowIndex];
 
-                    if (IsValid2Search(row2check, originalColumnIndex, translationColumnIndex, searchColumnIndex))
+                    if (IsValid2Search(row2check, searchColumnIndex))
                     {
                         continue;
                     }
@@ -519,10 +518,10 @@ namespace TranslationHelper
             }
         }
 
-        private bool IsValid2Search(DataRow row2check, int origColumnIndex, int transColumnIndex, string searchcolumn)
+        private bool IsValid2Search(DataRow row2check, string searchcolumn)
         {
             //skip equal lines if need, skip empty search cells && not skip when row issue search
-            return (chkbxDoNotTouchEqualOT.Checked && row2check[origColumnIndex].Equals(row2check[transColumnIndex]))
+            return (chkbxDoNotTouchEqualOT.Checked && row2check[_originalColumnIndex].Equals(row2check[_translationColumnIndex]))
                         || (!chkbxDoNotTouchEqualOT.Checked
                         && !SearchFindLinesWithPossibleIssuesCheckBox.Checked
                         && (row2check[searchcolumn] + string.Empty).Length == 0);
@@ -798,8 +797,7 @@ namespace TranslationHelper
             {
                 startRowSearchIndex = 0;
                 lblSearchMsg.Visible = false;
-                _foundRowsList = new List<FoundRowData>();
-                GetSearchResults(this._foundRowsList);
+                GetSearchResults();
 
                 if (_foundRowsList == null) return;
 
@@ -853,8 +851,7 @@ namespace TranslationHelper
             var replacementUnescaped = FixRegexReplacementFromTextbox(SearchFormReplaceWithTextBox.Text);
 
             lblSearchMsg.Visible = false;
-            _foundRowsList = new List<FoundRowData>();
-            GetSearchResults(_foundRowsList);
+            GetSearchResults();
 
             if (_foundRowsList == null) return;
 
