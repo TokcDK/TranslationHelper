@@ -243,7 +243,7 @@ namespace TranslationHelper
                         Regex.Escape(arr[i]);
                     }
                 }
-                catch { }
+                catch(ArgumentException) { }
             }
         }
 
@@ -548,7 +548,7 @@ namespace TranslationHelper
                     return SearchResult.Found;
                 }
             }
-            catch { return SearchResult.Error; }
+            catch (ArgumentException) { return SearchResult.Error; }
 
             return SearchResult.NotFound;
         }
@@ -725,7 +725,8 @@ namespace TranslationHelper
                     selectstring.Start();
                 }
             }
-            catch { } // ignore errors
+            catch (ArgumentException) {  } // ignore errors
+            catch (InvalidOperationException) {  } // ignore errors
 
         }
 
@@ -930,8 +931,7 @@ namespace TranslationHelper
                 {
                     return Regex.Unescape(text);
                 }
-                catch { }
-
+                catch(ArgumentException) {  }
             }
 
             return text;
