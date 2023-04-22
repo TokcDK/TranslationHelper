@@ -480,7 +480,7 @@ namespace TranslationHelper
             {
                 var table = _tables[t];
 
-                System.Collections.Generic.HashSet<int> selectedrowsHashes = null;
+                HashSet<int> selectedrowsHashes = null;
                 if (ForSelected)
                 {
                     selectedrowsHashes = FunctionsTable.GetDGVRowsIndexesHashesInDT(t, SearchRangeVisibleRadioButton.Checked);
@@ -496,12 +496,7 @@ namespace TranslationHelper
 
                     var row2check = _tables[t].Rows[r];
 
-                    //skip equal lines if need, skip empty search cells && not skip when row issue search
-                    if ((chkbxDoNotTouchEqualOT.Checked 
-                        && row2check[origColumnIndex].Equals(row2check[transColumnIndex])) 
-                        || (!chkbxDoNotTouchEqualOT.Checked
-                        && (row2check[searchcolumn] + string.Empty).Length == 0 
-                        && !SearchFindLinesWithPossibleIssuesCheckBox.Checked))
+                    if (IsValid2Search(row2check, origColumnIndex, transColumnIndex, searchcolumn))
                     {
                         continue;
                     }
@@ -523,6 +518,15 @@ namespace TranslationHelper
                 }
             }
             return dataSet.Tables[0];
+        }
+
+        private bool IsValid2Search(DataRow row2check, int origColumnIndex, int transColumnIndex, string searchcolumn)
+        {
+            //skip equal lines if need, skip empty search cells && not skip when row issue search
+            return (chkbxDoNotTouchEqualOT.Checked && row2check[origColumnIndex].Equals(row2check[transColumnIndex]))
+                        || (!chkbxDoNotTouchEqualOT.Checked
+                        && !SearchFindLinesWithPossibleIssuesCheckBox.Checked
+                        && (row2check[searchcolumn] + string.Empty).Length == 0);
         }
 
         private SearchResult GetCheckResult(ref bool found, DataSet ds, DataRow row, int t, int r, string infoValue, string strQuery)
