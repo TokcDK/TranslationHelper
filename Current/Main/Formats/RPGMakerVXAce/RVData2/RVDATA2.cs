@@ -131,23 +131,26 @@ namespace TranslationHelper.Formats.RPGMakerVX.RVData2
         {
             try
             {
-                if (_isScripts && _parser is ScriptsParser sp)
+                if (_isScripts)
                 {
+                    if (!(_parser is ScriptsParser sp)) return false;
+
                     _bytes = sp.DumpRMScripts();
                     if (_bytes.Length == 0) return false;
 
                     base.DoWriteFile(filePath);
-                    return true;
                 }
-                else if (_parser is Parser p)
+                else
                 {
-                    p.Write();
+                    if (!(_parser is Parser p)) return false;
 
-                    return true;
+                    p.Write();
                 }
 
+                return true;
             }
             catch { }
+
             return false;
         }
     }
