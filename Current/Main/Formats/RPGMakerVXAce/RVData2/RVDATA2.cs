@@ -14,8 +14,10 @@ namespace TranslationHelper.Formats.RPGMakerVX.RVData2
         public override string Extension => ".rvdata2";
         bool _isScripts = false;
 
-        Parser _parser;
-        ScriptsParser _scriptsParser;
+        object _parser;
+        byte[] _bytes;
+        readonly Regex _quoteCaptureRegex = new Regex(AppMethods.GetRegexQuotesCapturePattern(), RegexOptions.Compiled);
+        readonly Regex _mapNameCheckRegex = new Regex("[Mm]ap[0-9]{3}", RegexOptions.Compiled);
 
         protected override void FileOpen()
         {
@@ -24,15 +26,15 @@ namespace TranslationHelper.Formats.RPGMakerVX.RVData2
 
             if (_isScripts)
             {
-                var quoteCapturePattern = AppMethods.GetRegexQuotesCapturePattern();
-                _scriptsParser = new ScriptsParser(FilePath);
-                foreach (var script in _scriptsParser.EnumerateRMScripts())
+                _parser = new ScriptsParser(FilePath);
+
+                foreach (var script in (_parser as ScriptsParser).EnumerateRMScripts())
                 {
                     // parse all strings inside quotes in script content
 
                     if (string.IsNullOrEmpty(script.Text)) continue;
 
-                    var mc = Regex.Matches(script.Text, quoteCapturePattern);
+                    var mc = _quoteCaptureRegex.Matches(script.Text);
 
                     var mcCount = mc.Count;
                     if (mcCount == 0) continue;
@@ -61,12 +63,12 @@ namespace TranslationHelper.Formats.RPGMakerVX.RVData2
             else
             {
                 _parser = new Parser(FilePath);
-                var isCommandsUser = string.Equals(name, "CommonEvents", StringComparison.InvariantCultureIgnoreCase)
-                    || Regex.IsMatch(name,"[Mm]ap[0-9]{3}");
-                foreach (var stringData in _parser.EnumerateStrings())
-                {
-                    if (_isScripts) continue;
 
+                var isCommandsUser = string.Equals(name, "CommonEvents", StringComparison.InvariantCultureIgnoreCase)
+                    || _mapNameCheckRegex.IsMatch(name);
+
+                foreach (var stringData in (_parser as Parser).EnumerateStrings())
+                {
                     string s = stringData.Text;
                     var info = stringData.Info.ToString();
                     if (isCommandsUser && IsSkipCode(info)) continue;
@@ -101,7 +103,7 @@ namespace TranslationHelper.Formats.RPGMakerVX.RVData2
         }
 
         const string _codeInfoText = "Command code: ";
-        private bool IsSkipCode(string info)
+        private static bool IsSkipCode(string info)
         {
             var codeIndex = info.IndexOf(_codeInfoText);
             if (codeIndex <= -1) return false;
@@ -120,7 +122,6 @@ namespace TranslationHelper.Formats.RPGMakerVX.RVData2
                 && DoWriteFile(filePath);
         }
 
-        byte[] _bytes;
         protected override byte[] GetFileBytes()
         {
             return _bytes;
@@ -130,16 +131,21 @@ namespace TranslationHelper.Formats.RPGMakerVX.RVData2
         {
             try
             {
-                if (_isScripts)
+                if (_isScripts && _parser is ScriptsParser sp)
                 {
-                    _bytes = _scriptsParser.DumpRMScripts();
+                    _bytes = sp.DumpRMScripts();
                     if (_bytes.Length == 0) return false;
 
                     base.DoWriteFile(filePath);
+                    return true;
                 }
-                else _parser.Write();
+                else if (_parser is Parser p)
+                {
+                    p.Write();
 
-                return true;
+                    return true;
+                }
+
             }
             catch { }
             return false;
