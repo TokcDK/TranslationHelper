@@ -65,22 +65,13 @@ namespace TranslationHelper.Formats.RPGMakerVX.RVData2
                     || Regex.IsMatch(name,"[Mm]ap[0-9]{3}");
                 foreach (var stringData in _parser.EnumerateStrings())
                 {
-                    if (_isScripts)
-                    {
-                        continue;
-                    }
-                    else
-                    {
-                        string s = stringData.Text;
-                        var info = stringData.Info.ToString();
-                        if (isCommandsUser && IsSkipCode(info)) continue;
+                    if (_isScripts) continue;
 
-                        if (AddRowData(ref s, info) && SaveFileMode)
-                        {
-                            stringData.Text = s;
-                        }
-                    }
+                    string s = stringData.Text;
+                    var info = stringData.Info.ToString();
+                    if (isCommandsUser && IsSkipCode(info)) continue;
 
+                    if (AddRowData(ref s, info) && SaveFileMode) stringData.Text = s;
                 }
             }
 
