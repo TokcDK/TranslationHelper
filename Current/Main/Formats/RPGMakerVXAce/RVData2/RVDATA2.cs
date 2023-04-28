@@ -30,7 +30,7 @@ namespace TranslationHelper.Formats.RPGMakerVX.RVData2
                     // parse all strings inside quotes in script content
 
                     var scriptContentToChange = script.Text;
-                    if (scriptContentToChange.Length == 0) continue;
+                    if (string.IsNullOrEmpty(scriptContentToChange)) continue;
 
                     var mc = Regex.Matches(scriptContentToChange, quoteCapturePattern);
 
