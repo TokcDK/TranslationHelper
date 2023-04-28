@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using System.Text;
 using System.Text.RegularExpressions;
 using RPGMakerVXRVData2Assistant;
 using TranslationHelper.Data;
@@ -29,16 +30,16 @@ namespace TranslationHelper.Formats.RPGMakerVX.RVData2
                 {
                     // parse all strings inside quotes in script content
 
-                    var scriptContentToChange = script.Text;
-                    if (string.IsNullOrEmpty(scriptContentToChange)) continue;
+                    if (string.IsNullOrEmpty(script.Text)) continue;
 
-                    var mc = Regex.Matches(scriptContentToChange, quoteCapturePattern);
+                    var mc = Regex.Matches(script.Text, quoteCapturePattern);
 
                     var mcCount = mc.Count;
                     if (mcCount == 0) continue;
 
                     bool isChanged = false;
 
+                    var scriptContentToChange = new StringBuilder(script.Text);
                     // negative order because length of content is changing
                     for (int i = mcCount - 1; i >= 0; i--)
                     {
@@ -54,7 +55,7 @@ namespace TranslationHelper.Formats.RPGMakerVX.RVData2
                         }
                     }
 
-                    if (isChanged && SaveFileMode) script.Text = scriptContentToChange;
+                    if (isChanged && SaveFileMode) script.Text = scriptContentToChange.ToString();
                 }
             }
             else
