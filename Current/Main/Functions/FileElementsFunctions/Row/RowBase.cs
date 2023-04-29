@@ -660,8 +660,8 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
 
         public string Translation
         {
-            get => SelectedRow[AppData.CurrentProject.TranslationColumnIndex] + "";
-            set => SelectedRow.SetValue(AppData.CurrentProject.TranslationColumnIndex, value);
+            get => SelectedRow.Field<string>(THSettings.TranslationColumnName);
+            set => SelectedRow.SetValue(THSettings.TranslationColumnName, value);
         }
     }
 }

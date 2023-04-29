@@ -22,6 +22,21 @@ namespace TranslationHelper.Extensions
             selectedRow[columnIndex] = value;
 #endif
         }
+        /// <summary>
+        /// Set value to selected row.
+        /// Use invoke in debug
+        /// </summary>
+        /// <param name="selectedRow"></param>
+        /// <param name="columnIndex"></param>
+        /// <param name="value"></param>
+        internal static void SetValue(this DataRow selectedRow, string columnName, object value)
+        {
+#if DEBUG
+            AppData.Main.Invoke((Action)(() => selectedRow[columnName] = value));
+#else
+            selectedRow[columnName] = value;
+#endif
+        }
 
         /// <summary>
         /// true when original and translation lines count is equal and any orig line valid and equal same transl line
