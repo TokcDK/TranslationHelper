@@ -63,7 +63,7 @@ namespace TranslationHelper.Menus
     }
 
     /// <summary>
-    /// Determine to load the menu while project is not opened
+    /// Determine to NOT load the menu while project is not opened
     /// </summary>
     public interface IProjectMenuItem : IMenuItem
     {
