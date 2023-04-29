@@ -55,8 +55,8 @@ namespace TranslationHelper.Data
         public static bool IsEditTextBoxFocused { get => AppData.Main.THTargetRichTextBox.Focused; }
         public static bool IsRowInEditMode { get => (IsFileContentFocused && AppData.Main.THFileElementsDataGridView.IsCurrentCellInEditMode) || IsEditTextBoxFocused; }
         public static bool IsFilesListFocused { get => AppData.FilesListControl.Focused; }
-        public static bool IsProcessAll { get => IsFilesListFocused && AppData.THFilesList.SelectedItems.Count == AppData.THFilesList.Items.Count; }
-        public static bool IsProcessTable { get => IsFilesListFocused && AppData.THFilesList.SelectedItems.Count > 0; }
-        public static bool IsProcessSelected { get => IsFileOpened && IsFileContentFocused; }
+        public static bool IsParseAllFiles { get => IsFilesListFocused && AppData.THFilesList.SelectedItems.Count == AppData.THFilesList.Items.Count; }
+        public static bool IsParseFile { get => IsFilesListFocused && AppData.THFilesList.SelectedItems.Count > 0; }
+        public static bool IsParseRow { get => IsFileOpened && IsFileContentFocused; }
     }
 }

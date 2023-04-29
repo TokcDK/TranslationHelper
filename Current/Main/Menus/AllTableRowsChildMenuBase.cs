@@ -7,9 +7,9 @@ namespace TranslationHelper.Menus
     {
         public override void OnClick(object sender, EventArgs e)
         {
-            if (AppSettings.IsProcessAll) { OnAll(sender, e); }
-            else if (AppSettings.IsProcessTable) { OnTable(sender, e); }
-            else if (AppSettings.IsProcessSelected) OnRows(sender, e);
+            if (AppSettings.IsParseAllFiles) { OnAll(sender, e); }
+            else if (AppSettings.IsParseFile) { OnTable(sender, e); }
+            else if (AppSettings.IsParseRow) OnRows(sender, e);
         }
 
         protected abstract void OnAll(object sender, EventArgs e);
