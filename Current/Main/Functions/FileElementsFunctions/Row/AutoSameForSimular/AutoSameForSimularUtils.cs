@@ -146,9 +146,8 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row.AutoSameForSimul
                     if (targetTableIndex == inputTableIndex && targetRowIndex == inputRowIndex) continue;
                     if (!inputForceSetValue) // only when is not forse set
                     {
-                        if(!string.IsNullOrEmpty(targetTranslationCellValue)) continue; // must be not empty translation
-                        if(AppSettings.IgnoreOrigEqualTransLines 
-                            && targetTranslationCellValue.Equals(targetOriginalCellValue)) continue; // must be not equal original and translation
+                        if(!string.IsNullOrEmpty(targetTranslationCellValue)
+                            && targetOriginalCellValue.Equals(targetTranslationCellValue)) continue; // must be not equal original and translation
                     }
 
                     if (ParsedWithExtractMulti(targetOriginalCellValue, targetTranslationCellValue, inputOriginalValue, inputTranslationValue, targetRow))
@@ -266,7 +265,16 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row.AutoSameForSimul
             }
 
             var extractedTargetTranslationIndexses = new List<int>();
-            var extractedTargetTranslation = targetTranslationCellString.ExtractMulty(outIndexes: extractedTargetTranslationIndexses);
+            string[] extractedTargetTranslation = null;
+            try
+            {
+                targetTranslationCellString.ExtractMulty(outIndexes: extractedTargetTranslationIndexses);
+            }
+            catch (NullReferenceException ex)
+            {
+                return false;
+            };
+
             var extractedTargetTranslationLength = extractedTargetTranslation.Length;
             if (extractedTargetTranslationLength == 0
                 || extractedTargetTranslation[0] == targetTranslationCellString
