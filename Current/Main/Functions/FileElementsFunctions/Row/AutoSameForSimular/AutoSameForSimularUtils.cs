@@ -40,6 +40,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row.AutoSameForSimul
         public static HashSet<string> AutoSame4SimilarStack = new HashSet<string>();
         static readonly string _anyNumRegexPattern = GetStringSimularityRegexPattern();
         static readonly Regex _anyNumRegex = new Regex(_anyNumRegexPattern, RegexOptions.Compiled); //reg равняется любым цифрам
+        static readonly Regex _simpleNumRegex = new Regex(@"\d+", RegexOptions.Compiled); //reg равняется любым цифрам, простое сравнение
 
         /// <summary>
         /// Set same translation values for rows with simular original
@@ -102,7 +103,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row.AutoSameForSimul
 
             //проверка для предотвращения ситуации с ошибкой, когда, например, строка "\{\V[11] \}万円手に入れた！" с японского будет переведена как "\ {\ V [11] \} You got 10,000 yen!" и число совпадений по числам поменяется, т.к. 万 [man] переводится как 10000.
             if (AppSettings.OnlineTranslationSourceLanguage == "Japanese"
-                && Regex.Matches(inputTranslationValue, @"\d+").Count != Regex.Matches(inputOriginalValue, @"\d+").Count)
+                && _simpleNumRegex.Matches(inputTranslationValue).Count != _simpleNumRegex.Matches(inputOriginalValue).Count)
             {
                 AutoSame4SimilarStack.Remove(inputRowDataForStack);
                 return;
@@ -113,17 +114,21 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row.AutoSameForSimul
 
             // Standart rows scan
             var coordinatesByInputOriginal = AppData.CurrentProject.OriginalsTableRowCoordinates[inputOriginalValue];
-            int tablesCount = AppData.CurrentProject.FilesContent.Tables.Count;
-            for (int targetTableIndex = 0; targetTableIndex < tablesCount; targetTableIndex++) //количество файлов
+            var tables = AppData.CurrentProject.FilesContent.Tables;
+            int tablesCount = tables.Count;
+
+            // scan all files
+            for (int targetTableIndex = 0; targetTableIndex < tablesCount; targetTableIndex++)
             {
                 // app closing
                 if (AppSettings.IsTranslationHelperWasClosed) break;
 
-                var targetTable = AppData.CurrentProject.FilesContent.Tables[targetTableIndex];
+                var targetTable = tables[targetTableIndex];
 
                 var rowsCount = targetTable.Rows.Count;
 
-                for (int targetRowIndex = 0; targetRowIndex < rowsCount; targetRowIndex++) //количество строк в каждом файле
+                // scan all rows of target file
+                for (int targetRowIndex = 0; targetRowIndex < rowsCount; targetRowIndex++)
                 {
                     // app closing
                     if (AppSettings.IsTranslationHelperWasClosed)
@@ -132,10 +137,14 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row.AutoSameForSimul
                         return;
                     }
 
+                    // skip when input and target row is same
+                    if (targetTableIndex == inputTableIndex && targetRowIndex == inputRowIndex) continue;
+
+                    // skip row was already set by coordinates 
                     if (weUseDuplicates
                         && coordinatesByInputOriginal.TryGetValue(targetTable.TableName, out var rowCoordinates)
                         && rowCoordinates.Contains(targetRowIndex)
-                        ) // the row was already set by coordinates
+                        )
                     {
                         continue;
                     }
@@ -143,13 +152,29 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row.AutoSameForSimul
                     var targetRow = targetTable.Rows[targetRowIndex];
                     var targetOriginalCellValue = targetRow.Field<string>(AppData.CurrentProject.OriginalColumnIndex);
                     var targetTranslationCellValue = targetRow.Field<string>(translationColumnIndex);
-                    if (targetTableIndex == inputTableIndex && targetRowIndex == inputRowIndex) continue;
-                    if (!inputForceSetValue) // only when is not forse set
+
+                    bool isEmptyTargetTranslation = string.IsNullOrEmpty(targetTranslationCellValue);
+
+                    // set to translatino when original is same and translation is null or empty, and continue
+                    if ((isEmptyTargetTranslation || inputForceSetValue) && !weUseDuplicates && targetOriginalCellValue.Equals(inputOriginalValue))
                     {
-                        if(!string.IsNullOrEmpty(targetTranslationCellValue)
-                            && targetOriginalCellValue.Equals(targetTranslationCellValue)) continue; // must be not equal original and translation
+                        targetRow[translationColumnIndex] = inputTranslationValue;
+
+                        continue;
+                    }
+                    
+                    // when is not force set
+                    if (!inputForceSetValue
+                        // skip equal original and translation
+                        && targetOriginalCellValue.Equals(targetTranslationCellValue)) 
+                    {
+                        continue;
                     }
 
+                    // below it parse only not empty translation
+                    if (isEmptyTargetTranslation) continue;
+
+                    // skip when was parsed with multi extraction
                     if (ParsedWithExtractMulti(targetOriginalCellValue, targetTranslationCellValue, inputOriginalValue, inputTranslationValue, targetRow))
                     {
                         continue;
@@ -208,8 +233,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row.AutoSameForSimul
                     }
 
                     //только если ячейка пустая
-                    targetTranslationCellValue = AppData.CurrentProject.FilesContent.Tables[targetTableIndex].Rows[targetRowIndex].Field<string>(translationColumnIndex);
-                    if ((inputForceSetValue || string.IsNullOrEmpty(targetTranslationCellValue)) && !inputTranslationValue.Equals(newInputTranslationValue))
+                    if (!inputTranslationValue.Equals(newInputTranslationValue))
                     {
                         targetRow[translationColumnIndex] = newInputTranslationValue;
                     }
@@ -265,15 +289,8 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row.AutoSameForSimul
             }
 
             var extractedTargetTranslationIndexses = new List<int>();
-            string[] extractedTargetTranslation = null;
-            try
-            {
-                targetTranslationCellString.ExtractMulty(outIndexes: extractedTargetTranslationIndexses);
-            }
-            catch (NullReferenceException ex)
-            {
-                return false;
-            };
+            string[] extractedTargetTranslation = targetTranslationCellString.ExtractMulty(outIndexes: extractedTargetTranslationIndexses);
+            if (extractedTargetTranslation == null) return false;
 
             var extractedTargetTranslationLength = extractedTargetTranslation.Length;
             if (extractedTargetTranslationLength == 0

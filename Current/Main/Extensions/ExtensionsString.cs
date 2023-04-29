@@ -116,6 +116,8 @@ namespace TranslationHelper.Extensions
         /// <returns></returns>
         internal static string[] ExtractMulty(this string line, bool onlyOne = false, List<int> outIndexes = null)
         {
+            if (line == null) return null;
+
             var GroupValues = (onlyOne ? new List<string>(1) : new List<string>());//list of values for captured groups which containing in PatternReplacementPair.Value
             foreach (var PatternReplacementPair in AppData.TranslationRegexRules)
             {
