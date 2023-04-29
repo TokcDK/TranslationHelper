@@ -13,48 +13,66 @@ namespace TranslationHelper.Formats.RPGMMV
             if (s.StartsWith("[") && s.EndsWith("]")) // is json array
             {
                 bool ret = false;
-                var parameterData = Helper.LoadArray(s);
-                for (int i1 = 0; i1 < parameterData.Count; i1++)
+                List<object> parameterData = null;
+                try
                 {
-                    if (parameterData[i1] is string s1) { } else continue;
+                    parameterData = Helper.LoadArray(s);
 
-                    if (ParseList(ref s1, info) && SaveFileMode)
+                    for (int i1 = 0; i1 < parameterData.Count; i1++)
                     {
-                        RET = ret = true;
-                        parameterData[i1] = s1;
-                    }
-                }
+                        if (parameterData[i1] is string s1) { } else continue;
 
-                if (SaveFileMode && ret) s = Helper.Json2String(parameterData);
+                        if (ParseList(ref s1, info) && SaveFileMode)
+                        {
+                            RET = ret = true;
+                            parameterData[i1] = s1;
+                        }
+                    }
+
+                    if (SaveFileMode && ret) s = Helper.Json2String(parameterData);
+                }
+                catch
+                {
+                    return ParseString(ref s, info); // parse as string, when parse as json elements was not possible
+                }
             }
             else if (s.StartsWith("{") && s.EndsWith("}")) // is json array
             {
                 bool ret = false;
-                var parameterData = Helper.LoadDictionary(s);
-                var parameterKeys = new List<string>(parameterData.Keys);
-                foreach (var parameterKey in parameterKeys)
+                Dictionary<string, object> parameterData = null;
+                try
                 {
-                    if (parameterData[parameterKey] is string s1) { } else continue;
-
-                    if (ParseList(ref s1, info + $"\r\nSubkey: {parameterKey}") && SaveFileMode)
+                    parameterData = Helper.LoadDictionary(s);
+                    var parameterKeys = new List<string>(parameterData.Keys);
+                    foreach (var parameterKey in parameterKeys)
                     {
-                        RET = ret = true;
-                        parameterData[parameterKey] = s1;
-                    }
-                }
+                        if (parameterData[parameterKey] is string s1) { } else continue;
 
-                if (SaveFileMode && ret) s = Helper.Json2String(parameterData);
+                        if (ParseList(ref s1, info + $"\r\nSubkey: {parameterKey}") && SaveFileMode)
+                        {
+                            RET = ret = true;
+                            parameterData[parameterKey] = s1;
+                        }
+                    }
+
+                    if (SaveFileMode && ret) s = Helper.Json2String(parameterData);
+                }
+                catch
+                {
+                    return ParseString(ref s, info); // parse as string, when parse as json elements was not possible
+                }
             }
             else
             {
-                if (AddRowData(ref s, info) && SaveFileMode)
-                {
-                    RET = true;
-                    //plugin.Parameters[key] = s;
-                }
+                return ParseString(ref s , info);
             }
 
             return RET;
+        }
+
+        public bool ParseString(ref string s, string info)
+        {
+            return AddRowData(ref s, info);
         }
     }
 }
