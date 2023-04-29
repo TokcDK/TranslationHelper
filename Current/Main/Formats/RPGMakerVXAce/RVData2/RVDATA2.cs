@@ -64,14 +64,14 @@ namespace TranslationHelper.Formats.RPGMakerVX.RVData2
             {
                 _parser = new Parser(FilePath);
 
-                var isCommandsUser = string.Equals(name, "CommonEvents", StringComparison.InvariantCultureIgnoreCase)
+                var isEventCommandsUser = string.Equals(name, "CommonEvents", StringComparison.InvariantCultureIgnoreCase)
                     || _mapNameCheckRegex.IsMatch(name);
 
                 foreach (var stringData in (_parser as Parser).EnumerateStrings())
                 {
                     string s = stringData.Text;
                     var info = stringData.Info.ToString();
-                    if (isCommandsUser && IsSkipCode(info)) continue;
+                    if (isEventCommandsUser && IsSkipCode(info)) continue;
 
                     if (AddRowData(ref s, info) && SaveFileMode) stringData.Text = s;
                 }
