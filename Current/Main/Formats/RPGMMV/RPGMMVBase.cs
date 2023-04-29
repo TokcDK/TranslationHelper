@@ -13,10 +13,11 @@ namespace TranslationHelper.Formats.RPGMMV
             if (s.StartsWith("[") && s.EndsWith("]")) // is json array
             {
                 bool ret = false;
-                List<object> parameterData = null;
                 try
                 {
-                    parameterData = Helper.LoadArray(s);
+                    List<object> parameterData = Helper.LoadArray(s);
+
+                    if (parameterData==null || parameterData.Count==0) return ParseString(ref s, info);
 
                     for (int i1 = 0; i1 < parameterData.Count; i1++)
                     {
@@ -39,10 +40,11 @@ namespace TranslationHelper.Formats.RPGMMV
             else if (s.StartsWith("{") && s.EndsWith("}")) // is json array
             {
                 bool ret = false;
-                Dictionary<string, object> parameterData = null;
                 try
                 {
-                    parameterData = Helper.LoadDictionary(s);
+                    Dictionary<string, object> parameterData = Helper.LoadDictionary(s);
+                    if (parameterData == null || parameterData.Count == 0) return ParseString(ref s, info);
+
                     var parameterKeys = new List<string>(parameterData.Keys);
                     foreach (var parameterKey in parameterKeys)
                     {
