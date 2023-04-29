@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data;
-using System.Globalization;
 using System.Linq;
 using System.Text.RegularExpressions;
 using TranslationHelper.Data;
@@ -39,6 +38,8 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row.AutoSameForSimul
         }
 
         public static HashSet<string> AutoSame4SimilarStack = new HashSet<string>();
+        static readonly string _anyNumRegexPattern = GetStringSimularityRegexPattern();
+        static readonly Regex _anyNumRegex = new Regex(_anyNumRegexPattern, RegexOptions.Compiled); //reg равняется любым цифрам
 
         /// <summary>
         /// Set same translation values for rows with simular original
@@ -79,9 +80,6 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row.AutoSameForSimul
                 return;
             }
 
-            string regexPattern = GetStringSimularityRegexPattern();
-
-            Regex reg = new Regex(regexPattern); //reg равняется любым цифрам
             string inputOriginalValue = FunctionsRomajiKana.THFixDigits(inputTableRowOriginalCellValue);
             string inputTranslationValue = FunctionsRomajiKana.THFixDigits(inputTableRowTranslationCellValue);
 
@@ -95,7 +93,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row.AutoSameForSimul
             bool weUseDuplicates = false;
             try
             {
-                weUseDuplicates = !AppData.CurrentProject.DontLoadDuplicates && AppData.CurrentProject.OriginalsTableRowCoordinates != null /*&& ProjectData.CurrentProject.OriginalsTableRowCoordinates[inputOriginalValue].Values.Count > 1*/;
+                weUseDuplicates = AppData.CurrentProject != null && !AppData.CurrentProject.DontLoadDuplicates && AppData.CurrentProject.OriginalsTableRowCoordinates != null;
             }
             catch { }
 
@@ -110,43 +108,47 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row.AutoSameForSimul
                 return;
             }
 
-            MatchCollection inputOriginalMatches = reg.Matches(inputOriginalValue); //присвоить mc совпадения в выбранной ячейке, заданные в reg, т.е. все цифры в поле untrans выбранной строки, если они есть.
+            MatchCollection inputOriginalMatches = _anyNumRegex.Matches(inputOriginalValue); //присвоить mc совпадения в выбранной ячейке, заданные в reg, т.е. все цифры в поле untrans выбранной строки, если они есть.
             int inputOriginalMatchesCount = inputOriginalMatches.Count;
 
             // Standart rows scan
+            var coordinatesByInputOriginal = AppData.CurrentProject.OriginalsTableRowCoordinates[inputOriginalValue];
             int tablesCount = AppData.CurrentProject.FilesContent.Tables.Count;
             for (int targetTableIndex = 0; targetTableIndex < tablesCount; targetTableIndex++) //количество файлов
             {
-                //если приложение закрылось
+                // app closing
                 if (AppSettings.IsTranslationHelperWasClosed) break;
 
                 var targetTable = AppData.CurrentProject.FilesContent.Tables[targetTableIndex];
-                var rowsCount = targetTable.Rows.Count;
 
-                //var useSkipped = weUseDuplicates && AppData.CurrentProject.OriginalsTableRowCoordinates[inputOriginalValue].ContainsKey(targetTable.TableName);
+                var rowsCount = targetTable.Rows.Count;
 
                 for (int targetRowIndex = 0; targetRowIndex < rowsCount; targetRowIndex++) //количество строк в каждом файле
                 {
-                    //если приложение закрылось
+                    // app closing
                     if (AppSettings.IsTranslationHelperWasClosed)
                     {
                         AutoSame4SimilarStack.Remove(inputRowDataForStack);
                         return;
                     }
 
+                    if (weUseDuplicates
+                        && coordinatesByInputOriginal.TryGetValue(targetTable.TableName, out var rowCoordinates)
+                        && rowCoordinates.Contains(targetRowIndex)
+                        ) // the row was already set by coordinates
+                    {
+                        continue;
+                    }
+
                     var targetRow = targetTable.Rows[targetRowIndex];
                     var targetOriginalCellValue = targetRow.Field<string>(AppData.CurrentProject.OriginalColumnIndex);
                     var targetTranslationCellValue = targetRow.Field<string>(translationColumnIndex);
-                    if (
-                        (targetTableIndex == inputTableIndex && targetRowIndex == inputRowIndex) // skip input row index
-                        ||
-                        (!inputForceSetValue && (
-                        targetTranslationCellValue == targetOriginalCellValue /*только если оригинал и перевод целевой ячейки не равны-*/
-                        || !string.IsNullOrEmpty(targetTranslationCellValue) //Проверять только для пустых ячеек перевода
-                        ))
-                        )
+                    if (targetTableIndex == inputTableIndex && targetRowIndex == inputRowIndex) continue;
+                    if (!inputForceSetValue) // only when is not forse set
                     {
-                        continue;
+                        if(!string.IsNullOrEmpty(targetTranslationCellValue)) continue; // must be not empty translation
+                        if(AppSettings.IgnoreOrigEqualTransLines 
+                            && targetTranslationCellValue.Equals(targetOriginalCellValue)) continue; // must be not equal original and translation
                     }
 
                     if (ParsedWithExtractMulti(targetOriginalCellValue, targetTranslationCellValue, inputOriginalValue, inputTranslationValue, targetRow))
@@ -168,57 +170,49 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row.AutoSameForSimul
                         continue;
                     }
 
-                    MatchCollection targetMatches = reg.Matches(targetOriginalCellValue); //mc0 равно значениям цифр ячейки под номером y в файле i
-                    int targetMatchesCount = targetMatches.Count;
+                    MatchCollection targetTranslationMatches = _anyNumRegex.Matches(targetOriginalCellValue); //mc0 равно значениям цифр ячейки под номером y в файле i
+                    int targetMatchesCount = targetTranslationMatches.Count;
                     if (targetMatchesCount == 0) continue; //если количество совпадений больше нуля(идти дальше), т.е. цифры были в поле untrans проверяемой на совпадение ячейки
 
-                    string TargetTransCellValueWithRemovedPatternMatches = Regex.Replace(targetTranslationCellValue, regexPattern, string.Empty, RegexOptions.Compiled);
-                    string InputTransCellValueWithRemovedPatternMatches = Regex.Replace(inputTranslationValue, regexPattern, string.Empty, RegexOptions.Compiled);
+                    string targetTranslationValueWithRemovedPatternMatches = _anyNumRegex.Replace(targetTranslationCellValue, string.Empty);
+                    string inputTransCellValueWithRemovedPatternMatches = _anyNumRegex.Replace(inputTranslationValue, string.Empty);
 
                     //Если значение ячеек перевода без паттернов равны, идти дальше
-                    if (TargetTransCellValueWithRemovedPatternMatches == InputTransCellValueWithRemovedPatternMatches) continue;
+                    if (targetTranslationValueWithRemovedPatternMatches == inputTransCellValueWithRemovedPatternMatches) continue;
 
-                    string TargetOrigCellValueWithRemovedPatternMatches = Regex.Replace(targetOriginalCellValue, regexPattern, string.Empty, RegexOptions.Compiled);
-                    string InputOrigCellValueWithRemovedPatternMatches = Regex.Replace(inputOriginalValue, regexPattern, string.Empty, RegexOptions.Compiled);
+                    string targetOrigCellValueWithRemovedPatternMatches = _anyNumRegex.Replace(targetOriginalCellValue, string.Empty);
+                    string inputOrigCellValueWithRemovedPatternMatches = _anyNumRegex.Replace(inputOriginalValue, string.Empty);
 
                     //если поле перевода равно только что измененному во входной, без учета цифр
-                    if (TargetOrigCellValueWithRemovedPatternMatches != InputOrigCellValueWithRemovedPatternMatches
+                    if (targetOrigCellValueWithRemovedPatternMatches != inputOrigCellValueWithRemovedPatternMatches
                         || inputOriginalMatchesCount != targetMatchesCount
-                        || !IsAllMatchesInIdenticalPlaces(inputOriginalMatches, targetMatches)
+                        || !IsAllMatchesInIdenticalPlaces(inputOriginalMatches, targetTranslationMatches)
                         ) continue;
 
-                    MatchCollection tm = reg.Matches(inputTranslationValue);
+                    MatchCollection inputTranslationMatches = _anyNumRegex.Matches(inputTranslationValue);
 
                     //количество совпадений должно быть равное для избежания исключений и прочих неверных замен
-                    if (tm.Count != inputOriginalMatches.Count) continue;
+                    if (inputTranslationMatches.Count != inputOriginalMatches.Count) continue;
 
-                    int startindex;
-                    int stringoverallength = 0;
-                    int stringlength;
-                    int stringoverallength0 = 0;
-                    bool failed = false;
-
-                    for (int m = 0; m < inputOriginalMatchesCount; m++)
+                    var newInputTranslationValue = inputTranslationValue;
+                    for (int m = inputTranslationMatches.Count - 1; m >= 0; m--)
                     {
+                        var inputTranslationMatch = inputTranslationMatches[m];
+                        var targetTransationMatch = targetTranslationMatches[m];
+
                         //проверка, ЧТОБЫ СОВПАДЕНИЯ ОТЛИЧАЛИСЬ, Т.Е. НЕ МЕНЯТЬ ! НА ! И ? НА ?, ТОЛЬКО ! НА ? И 1 НА 2
-                        if (inputOriginalMatches[m].Value == targetMatches[m].Value) continue;
+                        if (inputTranslationMatch.Value == targetTransationMatch.Value) continue;
 
-                        //замена символа путем удаления на позиции и вставки нового:https://stackoverflow.com/questions/5015593/how-to-replace-part-of-string-by-position
-                        startindex = tm[m].Index - stringoverallength + stringoverallength0;//отнять предыдущее число и заменить новым числом, для корректировки индекса
-
-                        stringlength = tm[m].Value.Length;
-                        stringoverallength += stringlength;//запомнить общую длину заменяемых символов, для коррекции индекса позиции для замены
-
-                        inputTranslationValue = inputTranslationValue.Remove(startindex, stringlength).Insert(startindex, targetMatches[m].Value);//Исключение - startindex = [Данные недоступны. Доступные данные IntelliTrace см. в окне "Локальные переменные"] "Индекс и показание счетчика должны указывать на позицию в строке."
-
-                        stringoverallength0 += targetMatches[m].Value.Length;//запомнить общую длину заменяющих символов, для коррекции индекса позиции для замены
-
+                        newInputTranslationValue = newInputTranslationValue
+                            .Remove(inputTranslationMatch.Index, inputTranslationMatch.Length)
+                            .Insert(inputTranslationMatch.Index, targetTransationMatch.Value);
                     }
+
                     //только если ячейка пустая
                     targetTranslationCellValue = AppData.CurrentProject.FilesContent.Tables[targetTableIndex].Rows[targetRowIndex].Field<string>(translationColumnIndex);
-                    if (!failed && (inputForceSetValue || string.IsNullOrEmpty(targetTranslationCellValue)))
+                    if ((inputForceSetValue || string.IsNullOrEmpty(targetTranslationCellValue)) && !inputTranslationValue.Equals(newInputTranslationValue))
                     {
-                        targetRow[translationColumnIndex] = inputTranslationValue;
+                        targetRow[translationColumnIndex] = newInputTranslationValue;
                     }
                 }
             }
