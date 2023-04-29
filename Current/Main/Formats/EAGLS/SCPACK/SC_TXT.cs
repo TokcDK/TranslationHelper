@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Text;
 using System.Text.RegularExpressions;
 using TranslationHelper.Data;
 using TranslationHelper.Functions;
@@ -37,33 +38,28 @@ namespace TranslationHelper.Formats.EAGLS.SCPACK
 
         protected override void ParseFileContent()
         {
-            var file = ParseData.Reader.ReadToEnd();
+            var file = new StringBuilder(ParseData.Reader.ReadToEnd());
             foreach (var pattern in Patterns())
             {
-                var mc = Regex.Matches(file, pattern.Pattern);
-                if (mc.Count == 0)
-                {
-                    continue;
-                }
+                var mc = Regex.Matches(file.ToString(), pattern.Pattern);
+                if (mc.Count == 0) continue;
 
-                if (OpenFileMode)
+                for (int i = mc.Count - 1; i >= 0; i--)
                 {
-                    foreach (Match match in mc)
+                    var match = mc[i];
+                    var matchGroup1Captures = match.Groups[1].Captures;
+                    for(int n = matchGroup1Captures.Count - 1; n >= 0; n--)
                     {
-                        AddRowData(match.Result("$1"), "", isCheckInput: true);
-                    }
-                }
-                else
-                {
-                    for (int i = mc.Count - 1; i >= 0; i--)
-                    {
-                        var value = mc[i].Result("$1");
-                        if (IsValidString(value))
+                        var capturedGroupMatch = matchGroup1Captures[n];
+
+                        var matchGroup1value2change = capturedGroupMatch.Value;
+                        if (AddRowData(ref matchGroup1value2change, "") && SaveFileMode)
                         {
-                            if (SetTranslation(ref value))
-                            {
-                                file = file.Remove(mc[i].Index, mc[i].Length).Insert(mc[i].Index, mc[i].Value.Replace(mc[i].Result("$1"), value));
-                            }
+                            var index = capturedGroupMatch.Index;
+                            file = file
+                                .Remove(index, capturedGroupMatch.Length)
+                                .Insert(index, capturedGroupMatch.Value
+                                .Replace(capturedGroupMatch.Value, matchGroup1value2change));
                         }
                     }
                 }
@@ -71,7 +67,7 @@ namespace TranslationHelper.Formats.EAGLS.SCPACK
 
             if (SaveFileMode)
             {
-                ParseData.ResultForWrite.Append(file);
+                ParseData.ResultForWrite.Append(file.ToString());
             }
         }
 
