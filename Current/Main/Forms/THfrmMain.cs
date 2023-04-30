@@ -9,7 +9,6 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
-using System.Windows.Controls.Primitives;
 using System.Windows.Forms;
 using TranslationHelper.Data;
 using TranslationHelper.Extensions;
@@ -569,7 +568,7 @@ namespace TranslationHelper
             AppData.Main.THSourceRichTextBox.DataBindings.Clear();
             AppData.Main.THSourceRichTextBox.DataBindings.Add(new Binding("Text", AppData.Main.THFileElementsDataGridView[AppData.CurrentProject.OriginalColumnIndex, rowIndex], "Value", false));
             AppData.Main.THTargetRichTextBox.DataBindings.Clear();
-            AppData.Main.THTargetRichTextBox.DataBindings.Add(new Binding("Text", AppData.Main.THFileElementsDataGridView[AppData.CurrentProject.TranslationColumnIndex, rowIndex], "Value", false));                        
+            AppData.Main.THTargetRichTextBox.DataBindings.Add(new Binding("Text", AppData.Main.THFileElementsDataGridView[AppData.CurrentProject.TranslationColumnIndex, rowIndex], "Value", false));
         }
 
         private void UpdateRowInfo(int tableIndex, int columnIndex, int rowIndex)
@@ -742,6 +741,8 @@ namespace TranslationHelper
 
         private void THFiltersDataGridView_CellValueChanged(object sender, DataGridViewCellEventArgs e)
         {
+            if (!AppSettings.ProjectIsOpened) return;
+
             CheckFilterDGV();
         }
 
@@ -819,8 +820,30 @@ namespace TranslationHelper
         //Пример виртуального режима
         //http://www.cyberforum.ru/post9306711.html
 
-        private void THFileElementsDataGridView_CellValueChanged(object sender, DataGridViewCellEventArgs e)
+        private async void THFileElementsDataGridView_CellValueChanged(object sender, DataGridViewCellEventArgs e)
         {
+            if (AppData.CurrentProject == null) return;
+            if (e.ColumnIndex != AppData.CurrentProject.TranslationColumnIndex) return;
+
+            // Get the new value of the cell
+            DataGridViewCell cell = (sender as DataGridView).Rows[e.RowIndex].Cells[e.ColumnIndex];
+            object newValue = cell.Value;
+
+            // Get the old value of the cell
+            object oldValue = cell.Tag;
+
+            // Compare the new value with the old value and return if new value is same
+            if (!newValue.Equals(oldValue))
+            {
+                cell.Tag = newValue;
+            }
+            else return;
+
+            if (!AppSettings.ProjectIsOpened) return;
+
+            await Task.Run(() => new AutoSameForSimular().Rows()).ConfigureAwait(true);
+            Autosave();
+
             UpdateTranslationTextBoxValue(sender, e);
             CellChangedRegistration(e.ColumnIndex);
         }
@@ -1124,14 +1147,8 @@ namespace TranslationHelper
             IsOpeningInProcess = false;
         }
 
-        private async void THFileElementsDataGridView_CellValidated(object sender, DataGridViewCellEventArgs e)
+        private void THFileElementsDataGridView_CellValidated(object sender, DataGridViewCellEventArgs e)
         {
-            if (!AppSettings.ProjectIsOpened) return;
-
-            await Task.Run(() => new AutoSameForSimular().Rows()).ConfigureAwait(false);
-
-            //Запуск автосохранения
-            Autosave();
         }
 
         [Obsolete]
