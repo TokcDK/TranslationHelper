@@ -291,7 +291,6 @@
     <Compile Include="Functions\FileElementsFunctions\Row\AutoSameForSimular\AutoSameForSimularForce.cs" />
     <Compile Include="Functions\FileElementsFunctions\Row\AutoSameForSimular\AutoSameForSimular.cs" />
     <Compile Include="Functions\FileElementsFunctions\Row\AutoSameForSimular\AutoSameForSimularBase.cs" />
-    <Compile Include="Functions\FileElementsFunctions\Row\AutoSameForSimular\AutoSameForSimularUtils.cs" />
     <Compile Include="Functions\FileElementsFunctions\Row\ClearCells.cs" />
     <Compile Include="Functions\FileElementsFunctions\Row\CompleteRomajiotherLines.cs" />
     <Compile Include="Functions\FileElementsFunctions\Row\CopyOriginals.cs" />

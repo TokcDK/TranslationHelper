@@ -11,6 +11,7 @@ using TranslationHelper.Main.Functions;
 
 namespace TranslationHelper.Functions.FileElementsFunctions.Row
 {
+    [Obsolete]
     class OnlineTranslate : RowBase
     {
         /// <summary>

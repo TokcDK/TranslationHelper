@@ -829,7 +829,6 @@ namespace TranslationHelper
         {
             if (ColumnIndex > 0)
             {
-                cellchanged = true;
                 FileDataWasChanged = true;
             }
         }
@@ -1125,37 +1124,14 @@ namespace TranslationHelper
             IsOpeningInProcess = false;
         }
 
-        internal bool SavemenusNOTenabled = true;
         private async void THFileElementsDataGridView_CellValidated(object sender, DataGridViewCellEventArgs e)
         {
             if (!AppSettings.ProjectIsOpened) return;
 
+            await Task.Run(() => new AutoSameForSimular().Rows()).ConfigureAwait(false);
 
-            try
-            {
-                if (FileDataWasChanged && SavemenusNOTenabled)
-                {
-                    SavemenusNOTenabled = false;
-                }
-
-                int tableind = THFilesList.GetSelectedIndex();
-                int rind = FunctionsTable.GetDGVSelectedRowIndexInDatatable(THFilesList.GetSelectedIndex(), e.RowIndex);
-
-                if (rind > -1 && rind < AppData.CurrentProject.FilesContent.Tables[tableind].Rows.Count && (AppData.CurrentProject.FilesContent.Tables[tableind].Rows[rind][1] + string.Empty).Length > 0)
-                {
-                    //http://www.sql.ru/forum/1149655/kak-peredat-parametr-s-metodom-delegatom
-                    //Thread trans = new Thread(new ParameterizedThreadStart((obj) => THAutoSetSameTranslationForSimular(tableind, rind, cind, false)));
-                    //trans.Start();
-
-                    await Task.Run(() => SetSameTranslationForSimular(tableind, rind, false)).ConfigureAwait(false);
-                }
-
-                //Запуск автосохранения
-                Autosave();
-            }
-            catch
-            {
-            }
+            //Запуск автосохранения
+            Autosave();
         }
 
         [Obsolete]
@@ -1270,51 +1246,6 @@ namespace TranslationHelper
         private void CellFixesSelectedToolStripMenuItem_Click(object sender, EventArgs e)
         {
             _ = new FixCells().Rows();
-        }
-
-        //private void SetOriginalToTranslation()
-        //{
-        //    int THFileElementsDataGridViewSelectedCellsCount = THFileElementsDataGridView.GetCountOfRowsWithSelectedCellsCount();
-        //    if (THFileElementsDataGridViewSelectedCellsCount > 0)
-        //    {
-        //        try
-        //        {
-        //            int tableIndex = THFilesList.GetSelectedIndex();
-        //            int cind = AppData.CurrentProject.FilesContent.Tables[tableIndex].Columns[THSettings.OriginalColumnName].Ordinal;// Колонка Original
-        //            int cindTrans = AppData.CurrentProject.FilesContent.Tables[tableIndex].Columns[THSettings.TranslationColumnName].Ordinal;// Колонка Original
-        //            int[] selectedRowIndexses = new int[THFileElementsDataGridViewSelectedCellsCount];
-        //            for (int i = 0; i < THFileElementsDataGridViewSelectedCellsCount; i++)
-        //            {
-        //                //координаты ячейки
-        //                selectedRowIndexses[i] = FunctionsTable.GetDGVSelectedRowIndexInDatatable(THFilesList.GetSelectedIndex(), THFileElementsDataGridView.SelectedCells[i].RowIndex);
-
-        //            }
-        //            foreach (var rind in selectedRowIndexses)
-        //            {
-        //                string origCellValue = AppData.CurrentProject.FilesContent.Tables[tableIndex].Rows[rind][cind] as string;
-        //                string transCellValue = AppData.CurrentProject.FilesContent.Tables[tableIndex].Rows[rind][cindTrans] + string.Empty;
-        //                if (transCellValue != origCellValue || transCellValue.Length == 0)
-        //                {
-        //                    AppData.CurrentProject.FilesContent.Tables[tableIndex].Rows[rind][cindTrans] = origCellValue;
-        //                }
-
-        //            }
-        //        }
-        //        catch
-        //        {
-        //        }
-        //    }
-        //}
-
-        bool cellchanged;
-        public async void SetSameTranslationForSimular(int InputTableIndex, int InputRowIndex, bool forcerun = true, bool forcevalue = false)
-        {
-            if (forcevalue || (AppSettings.AutotranslationForSimular && (cellchanged || forcerun))) //запуск только при изменении ячейки, чтобы не запускалось каждый раз. Переменная задается в событии изменения ячейки
-            {
-                await Task.Run(() => AutoSameForSimularUtils.Set(InputTableIndex, InputRowIndex, forcevalue)).ConfigureAwait(false);
-
-                cellchanged = false;
-            }
         }
 
         int SelectedRowRealIndex = -1;

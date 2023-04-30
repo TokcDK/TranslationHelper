@@ -8,10 +8,12 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using TranslationHelper.Data;
 using TranslationHelper.Extensions;
+using TranslationHelper.Functions.FileElementsFunctions.Row.AutoSameForSimular;
 using TranslationHelper.Main.Functions;
 
 namespace TranslationHelper.Functions
 {
+    [Obsolete]
     class FunctionsOnlineTranslation : IDisposable
     {
         
@@ -215,7 +217,7 @@ namespace TranslationHelper.Functions
                                 }
                             }
                         }
-                        AppData.Main.SetSameTranslationForSimular(tableIndex, CurrentRowIndex);
+                        new AutoSameForSimular().Selected(row);
                     }
                 }
             }
