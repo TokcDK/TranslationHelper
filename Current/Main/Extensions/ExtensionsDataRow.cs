@@ -17,9 +17,9 @@ namespace TranslationHelper.Extensions
         internal static void SetValue(this DataRow selectedRow, int columnIndex, object value)
         {
 #if DEBUG
-            AppData.Main.Invoke((Action)(() => selectedRow[columnIndex] = value));
+            AppData.Main.Invoke((Action)(() => selectedRow.SetField(columnIndex, value)));
 #else
-            selectedRow[columnIndex] = value;
+            selectedRow.SetField(columnIndex, value);
 #endif
         }
         /// <summary>
@@ -32,9 +32,9 @@ namespace TranslationHelper.Extensions
         internal static void SetValue(this DataRow selectedRow, string columnName, object value)
         {
 #if DEBUG
-            AppData.Main.Invoke((Action)(() => selectedRow[columnName] = value));
+            AppData.Main.Invoke((Action)(() => selectedRow.SetField(columnName, value)));
 #else
-            selectedRow[columnName] = value;
+            selectedRow.SetField(columnName, value);
 #endif
         }
 
