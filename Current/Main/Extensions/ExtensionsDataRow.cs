@@ -27,7 +27,7 @@ namespace TranslationHelper.Extensions
         /// Use invoke in debug
         /// </summary>
         /// <param name="selectedRow"></param>
-        /// <param name="columnIndex"></param>
+        /// <param name="columnName"></param>
         /// <param name="value"></param>
         internal static void SetValue(this DataRow selectedRow, string columnName, object value)
         {
