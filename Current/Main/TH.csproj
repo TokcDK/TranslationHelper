@@ -361,6 +361,10 @@
     <Compile Include="Functions\OnlineTranslation\TranslationBase.cs" />
     <Compile Include="Functions\OnlineTranslation\TranslationBigBlock.cs" />
     <Compile Include="Functions\OnlineTranslation\TranslationBigBlockMulti.cs" />
+    <Compile Include="Functions\UndoRedo\CommandManager.cs" />
+    <Compile Include="Functions\UndoRedo\IUndoRedoCommand.cs" />
+    <Compile Include="Functions\UndoRedo\UndoRedoCommandChangeDataRowTranslationText.cs" />
+    <Compile Include="Functions\UndoRedo\UndoRedoCommandChangeTextBoxText.cs" />
     <Compile Include="GlobalSuppressions.cs" />
     <Compile Include="Menus\DefaultMenu.cs" />
     <Compile Include="Menus\FileRowMenus\FileRowMenuItemBase.cs" />
