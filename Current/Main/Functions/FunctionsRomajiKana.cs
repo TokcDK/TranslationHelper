@@ -66,7 +66,7 @@ namespace TranslationHelper.Main.Functions
         /// <summary>
         /// Замена японских(и не только) цифр на стандартные
         /// </summary>
-        public static string THFixDigits(string input)
+        public static string ReplaceDigits(string input)
         {
             if (string.IsNullOrEmpty(input))
             {

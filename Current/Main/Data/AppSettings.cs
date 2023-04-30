@@ -58,5 +58,6 @@ namespace TranslationHelper.Data
         public static bool IsParseRow { get => IsFileOpened && IsFileContentFocused; }
         public static bool IsParseFile { get => !IsFileContentFocused && IsFilesListFocused && AppData.THFilesList.SelectedItems.Count > 0; }
         public static bool IsParseAllFiles { get => !IsFileContentFocused && IsFilesListFocused && AppData.THFilesList.SelectedItems.Count == AppData.THFilesList.Items.Count; }
+        public static bool IsJapaneseSourceLanguage { get => OnlineTranslationSourceLanguage.Equals("Japanese ja"); }
     }
 }

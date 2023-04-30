@@ -37,9 +37,9 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row.AutoSameForSimul
             Set(inputTableIndex: AppData.CurrentProject.FilesContent.Tables.IndexOf(table), inputRowIndex: table.Rows.IndexOf(dataRow), inputForceSetValue: inputForceSetValue);
         }
 
-        public static HashSet<string> AutoSame4SimilarStack = new HashSet<string>();
-        static readonly string _anyNumRegexPattern = GetStringSimularityRegexPattern();
-        static readonly Regex _anyNumRegex = new Regex(_anyNumRegexPattern, RegexOptions.Compiled); //reg равняется любым цифрам
+        public static HashSet<string> _autoSame4SimilarStack = new HashSet<string>();
+        static readonly string _anyNumSymbolRegexPattern = GetStringSimularityRegexPattern();
+        static readonly Regex _anyNumSymbolRegex = new Regex(_anyNumSymbolRegexPattern, RegexOptions.Compiled); //reg равняется любым цифрам
         static readonly Regex _simpleNumRegex = new Regex(@"\d+", RegexOptions.Compiled); //reg равняется любым цифрам, простое сравнение
 
         /// <summary>
@@ -59,9 +59,9 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row.AutoSameForSimul
 
             var inputRowDataForStack = inputTableIndex + "|" + inputRowIndex + "|" + inputForceSetValue;
 
-            if (AutoSame4SimilarStack.Contains(inputRowDataForStack)) return;
+            if (_autoSame4SimilarStack.Contains(inputRowDataForStack)) return;
 
-            AutoSame4SimilarStack.Add(inputRowDataForStack);
+            _autoSame4SimilarStack.Add(inputRowDataForStack);
 
             Set4Similar(inputTableIndex, inputRowIndex, inputForceSetValue, inputRowDataForStack);
         }
@@ -77,17 +77,17 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row.AutoSameForSimul
             var inputTableRowTranslationCellValue = inputTableRow.Field<string>(translationColumnIndex);
             if (string.IsNullOrEmpty(inputTableRowTranslationCellValue) || inputTableRowTranslationCellValue.Equals(inputTableRowOriginalCellValue))
             {
-                AutoSame4SimilarStack.Remove(inputRowDataForStack);
+                _autoSame4SimilarStack.Remove(inputRowDataForStack);
                 return;
             }
 
-            string inputOriginalValue = FunctionsRomajiKana.THFixDigits(inputTableRowOriginalCellValue);
-            string inputTranslationValue = FunctionsRomajiKana.THFixDigits(inputTableRowTranslationCellValue);
+            string inputOriginalValueFixedDigits = FunctionsRomajiKana.ReplaceDigits(inputTableRowOriginalCellValue);
+            string inputTranslationValueFixedDigits = FunctionsRomajiKana.ReplaceDigits(inputTableRowTranslationCellValue);
 
             //Было исключение OutOfRangeException когда в оригинале присутствовали совпадения для regex, а входной перевод был пустой или равен \r\n, тогда попытка получить индекс совпадения из оригинала заканчивалась исключением, т.к. никаких совпадений не было. Похоже на неверный перевод от онлайн сервиса
-            if (string.IsNullOrWhiteSpace(inputTranslationValue) || inputTranslationValue == Environment.NewLine)
+            if (string.IsNullOrWhiteSpace(inputTranslationValueFixedDigits) || inputTranslationValueFixedDigits == Environment.NewLine)
             {
-                AutoSame4SimilarStack.Remove(inputRowDataForStack);
+                _autoSame4SimilarStack.Remove(inputRowDataForStack);
                 return;
             }
 
@@ -99,21 +99,21 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row.AutoSameForSimul
             catch { }
 
             //set same value for duplicates from row coordinates list
-            if (weUseDuplicates) SetSameIfUseDups(inputTable, inputOriginalValue, inputRowIndex, inputForceSetValue, inputTranslationValue);
+            if (weUseDuplicates) SetSameIfUseDups(inputTable, inputOriginalValueFixedDigits, inputRowIndex, inputForceSetValue, inputTranslationValueFixedDigits);
 
             //проверка для предотвращения ситуации с ошибкой, когда, например, строка "\{\V[11] \}万円手に入れた！" с японского будет переведена как "\ {\ V [11] \} You got 10,000 yen!" и число совпадений по числам поменяется, т.к. 万 [man] переводится как 10000.
-            if (AppSettings.OnlineTranslationSourceLanguage == "Japanese"
-                && _simpleNumRegex.Matches(inputTranslationValue).Count != _simpleNumRegex.Matches(inputOriginalValue).Count)
+            if (AppSettings.IsJapaneseSourceLanguage
+                && _simpleNumRegex.Matches(inputTranslationValueFixedDigits).Count != _simpleNumRegex.Matches(inputOriginalValueFixedDigits).Count)
             {
-                AutoSame4SimilarStack.Remove(inputRowDataForStack);
+                _autoSame4SimilarStack.Remove(inputRowDataForStack);
                 return;
             }
 
-            MatchCollection inputOriginalMatches = _anyNumRegex.Matches(inputOriginalValue); //присвоить mc совпадения в выбранной ячейке, заданные в reg, т.е. все цифры в поле untrans выбранной строки, если они есть.
-            int inputOriginalMatchesCount = inputOriginalMatches.Count;
+            MatchCollection inputOriginalAnyNumRegexMatches = _anyNumSymbolRegex.Matches(inputOriginalValueFixedDigits); //присвоить mc совпадения в выбранной ячейке, заданные в reg, т.е. все цифры в поле untrans выбранной строки, если они есть.
+            int inputOriginalAnyNumRegexMatchesCount = inputOriginalAnyNumRegexMatches.Count;
 
             // Standart rows scan
-            var coordinatesByInputOriginal = AppData.CurrentProject.OriginalsTableRowCoordinates[inputOriginalValue];
+            var coordinatesByInputOriginal = AppData.CurrentProject.OriginalsTableRowCoordinates[inputOriginalValueFixedDigits];
             var tables = AppData.CurrentProject.FilesContent.Tables;
             int tablesCount = tables.Count;
 
@@ -133,7 +133,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row.AutoSameForSimul
                     // app closing
                     if (AppSettings.IsTranslationHelperWasClosed)
                     {
-                        AutoSame4SimilarStack.Remove(inputRowDataForStack);
+                        _autoSame4SimilarStack.Remove(inputRowDataForStack);
                         return;
                     }
 
@@ -153,21 +153,20 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row.AutoSameForSimul
                     var targetOriginalCellValue = targetRow.Field<string>(AppData.CurrentProject.OriginalColumnIndex);
                     var targetTranslationCellValue = targetRow.Field<string>(translationColumnIndex);
 
+                    if (!inputForceSetValue && targetOriginalCellValue.Equals(targetTranslationCellValue))
+                    {
+                        // when is not force set
+                        // skip equal original and translation case
+                        continue;
+                    }
+
                     bool isEmptyTargetTranslation = string.IsNullOrEmpty(targetTranslationCellValue);
 
                     // set to translatino when original is same and translation is null or empty, and continue
-                    if ((isEmptyTargetTranslation || inputForceSetValue) && !weUseDuplicates && targetOriginalCellValue.Equals(inputOriginalValue))
+                    if ((isEmptyTargetTranslation || inputForceSetValue) && !weUseDuplicates && targetOriginalCellValue.Equals(inputOriginalValueFixedDigits))
                     {
-                        targetRow[translationColumnIndex] = inputTranslationValue;
+                        targetRow[translationColumnIndex] = inputTranslationValueFixedDigits;
 
-                        continue;
-                    }
-                    
-                    // when is not force set
-                    if (!inputForceSetValue
-                        // skip equal original and translation
-                        && targetOriginalCellValue.Equals(targetTranslationCellValue)) 
-                    {
                         continue;
                     }
 
@@ -175,50 +174,39 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row.AutoSameForSimul
                     if (isEmptyTargetTranslation) continue;
 
                     // skip when was parsed with multi extraction
-                    if (ParsedWithExtractMulti(targetOriginalCellValue, targetTranslationCellValue, inputOriginalValue, inputTranslationValue, targetRow))
+                    if (ParsedWithExtractMulti(targetOriginalCellValue, targetTranslationCellValue, inputOriginalValueFixedDigits, inputTranslationValueFixedDigits, targetRow))
                     {
                         continue;
                     }
 
-                    //если количество совпадений в mc больше нуля, т.е. цифры были в поле untrans выбранной только что переведенной ячейки
-                    //также проверить, если оригиналы с цифрами не равны, иначе присваивать по обычному
-                    if (inputOriginalMatchesCount == 0 || inputTableRowOriginalCellValue.Equals(targetOriginalCellValue))
-                    {
-                        //иначе, если в поле оригинала не было цифр, сравнить как обычно, два поля между собой 
-                        if (!weUseDuplicates // skip when using duplicates and search for fully duplicated values already was made earlier
-                            && inputTableRowOriginalCellValue.Equals(targetOriginalCellValue)) //если поле Untrans елемента равно только что измененному
-                        {
-                            targetRow[translationColumnIndex] = inputTableRowTranslationCellValue; //Присвоить полю Trans элемента значение только что измененного элемента, учитываются цифры при замене перевода      
-                        }
+                    // no digits in input original, no sense for code below
+                    if (inputOriginalAnyNumRegexMatchesCount == 0) continue;
 
-                        continue;
-                    }
-
-                    MatchCollection targetTranslationMatches = _anyNumRegex.Matches(targetOriginalCellValue); //mc0 равно значениям цифр ячейки под номером y в файле i
+                    MatchCollection targetTranslationMatches = _anyNumSymbolRegex.Matches(targetOriginalCellValue); //mc0 равно значениям цифр ячейки под номером y в файле i
                     int targetMatchesCount = targetTranslationMatches.Count;
                     if (targetMatchesCount == 0) continue; //если количество совпадений больше нуля(идти дальше), т.е. цифры были в поле untrans проверяемой на совпадение ячейки
 
-                    string targetTranslationValueWithRemovedPatternMatches = _anyNumRegex.Replace(targetTranslationCellValue, string.Empty);
-                    string inputTransCellValueWithRemovedPatternMatches = _anyNumRegex.Replace(inputTranslationValue, string.Empty);
+                    string targetTranslationValueWithRemovedPatternMatches = _anyNumSymbolRegex.Replace(targetTranslationCellValue, string.Empty);
+                    string inputTransCellValueWithRemovedPatternMatches = _anyNumSymbolRegex.Replace(inputTranslationValueFixedDigits, string.Empty);
 
                     //Если значение ячеек перевода без паттернов равны, идти дальше
                     if (targetTranslationValueWithRemovedPatternMatches == inputTransCellValueWithRemovedPatternMatches) continue;
 
-                    string targetOrigCellValueWithRemovedPatternMatches = _anyNumRegex.Replace(targetOriginalCellValue, string.Empty);
-                    string inputOrigCellValueWithRemovedPatternMatches = _anyNumRegex.Replace(inputOriginalValue, string.Empty);
+                    string targetOrigCellValueWithRemovedPatternMatches = _anyNumSymbolRegex.Replace(targetOriginalCellValue, string.Empty);
+                    string inputOrigCellValueWithRemovedPatternMatches = _anyNumSymbolRegex.Replace(inputOriginalValueFixedDigits, string.Empty);
 
                     //если поле перевода равно только что измененному во входной, без учета цифр
                     if (targetOrigCellValueWithRemovedPatternMatches != inputOrigCellValueWithRemovedPatternMatches
-                        || inputOriginalMatchesCount != targetMatchesCount
-                        || !IsAllMatchesInIdenticalPlaces(inputOriginalMatches, targetTranslationMatches)
+                        || inputOriginalAnyNumRegexMatchesCount != targetMatchesCount
+                        || !IsAllMatchesInIdenticalPlaces(inputOriginalAnyNumRegexMatches, targetTranslationMatches)
                         ) continue;
 
-                    MatchCollection inputTranslationMatches = _anyNumRegex.Matches(inputTranslationValue);
+                    MatchCollection inputTranslationMatches = _anyNumSymbolRegex.Matches(inputTranslationValueFixedDigits);
 
                     //количество совпадений должно быть равное для избежания исключений и прочих неверных замен
-                    if (inputTranslationMatches.Count != inputOriginalMatches.Count) continue;
+                    if (inputTranslationMatches.Count != inputOriginalAnyNumRegexMatches.Count) continue;
 
-                    var newInputTranslationValue = inputTranslationValue;
+                    var newInputTranslationValue = inputTranslationValueFixedDigits;
                     for (int m = inputTranslationMatches.Count - 1; m >= 0; m--)
                     {
                         var inputTranslationMatch = inputTranslationMatches[m];
@@ -233,14 +221,14 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row.AutoSameForSimul
                     }
 
                     //только если ячейка пустая
-                    if (!inputTranslationValue.Equals(newInputTranslationValue))
+                    if (!inputTranslationValueFixedDigits.Equals(newInputTranslationValue))
                     {
                         targetRow[translationColumnIndex] = newInputTranslationValue;
                     }
                 }
             }
 
-            AutoSame4SimilarStack.Remove(inputRowDataForStack);
+            _autoSame4SimilarStack.Remove(inputRowDataForStack);
         }
 
         public static void SetSameIfUseDups(DataTable inputTable, string inputOriginalValue, int inputRowIndex, bool inputForceSetValue, string inputTranslationValue)
