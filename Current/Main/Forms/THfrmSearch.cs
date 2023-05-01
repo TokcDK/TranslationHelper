@@ -266,11 +266,11 @@ namespace TranslationHelper
                 {
                     if (unescape)
                     {
-                        Regex.Unescape(arr[i]);
+                        arr[i] = Regex.Unescape(arr[i]);
                     }
                     else
                     {
-                        Regex.Escape(arr[i]);
+                        arr[i] = Regex.Escape(arr[i]);
                     }
                 }
                 catch(ArgumentException) { }
