@@ -178,8 +178,9 @@ namespace TranslationHelper
                 var foundRowData = _foundRowsList[_startRowSearchIndex];
                 (_selectedTableIndex, _selectedRowIndex) = (foundRowData.TableIndex, foundRowData.RowIndex);
 
-                if (_selectedTableIndex != _filesList.SelectedIndex)
+                if (_selectedTableIndex != _filesList.SelectedIndex || _workFileDgv.DataSource == null)
                 {
+                    _filesList.SelectedItems.Clear();
                     _filesList.SelectedIndex = _selectedTableIndex;
                     _workFileDgv.DataSource = _tables[_selectedTableIndex];
                 }
