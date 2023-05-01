@@ -1,15 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using TranslationHelper.Data;
-using TranslationHelper.Formats.RPGMaker.Functions;
 using TranslationHelper.Functions;
 using TranslationHelper.Main.Functions;
-using TranslationHelper.Projects.RPGMTrans;
 
 namespace TranslationHelper.Menus.MainMenus.File
 {
@@ -24,6 +19,12 @@ namespace TranslationHelper.Menus.MainMenus.File
             if (AppData.CurrentProject == null) return;
 
             var path = Path.Combine(FunctionsDBFile.GetProjectDBFolder(), FunctionsDBFile.GetDBFileName() + FunctionsDBFile.GetDBCompressionExt());
+
+            if (System.IO.File.Exists(path))
+            {
+                ShiftToBakups(path);
+            }
+
             AppData.Main.lastautosavepath = path;
 
             AppData.Main.ProgressInfo(true);
@@ -42,6 +43,37 @@ namespace TranslationHelper.Menus.MainMenus.File
             FunctionsSounds.SaveDBComplete();
             AppData.Main.ProgressInfo(false);
         }
+
+        private void ShiftToBakups(string path)
+        {
+            var dir = Path.GetDirectoryName(path);
+            var name = Path.GetFileNameWithoutExtension(path);
+            var ext = Path.GetExtension(path);
+
+            int maxBakIndex = 9;
+            for (int i = maxBakIndex; i >= 1; i--)
+            {
+                MoveFile(dir, name, ext, i, maxBakIndex);
+            }
+
+            MoveFile(dir, name, ext, 0, maxBakIndex);
+        }
+
+        private void MoveFile(string dir, string name, string ext, int index, int maxBakIndex)
+        {
+            var path = Path.Combine(dir, name + (index > 0 ? index + "" : "") + ext);
+            if (!System.IO.File.Exists(path)) return;
+
+            if (index == maxBakIndex)
+            {
+                System.IO.File.Delete(path);
+            }
+            else
+            {
+                System.IO.File.Move(path, Path.Combine(dir, name + (index + 1) + ext));
+            }
+        }
+
         public override int Order => base.Order + 15;
 
         public override Keys ShortcutKeys => Keys.Control | Keys.S;
