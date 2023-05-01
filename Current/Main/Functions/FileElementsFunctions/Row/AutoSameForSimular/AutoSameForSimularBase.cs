@@ -272,7 +272,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
                     var row = table.Rows[storedRowIndex];
 
                     //skip if same table\row as input or row translation is not empty
-                    if ((storedTableName.Key == inputTableName && storedRowIndex == inputRowIndex) || (!inputForceSetValue && (row[1] + "").Any()))
+                    if ((storedTableName.Key == inputTableName && storedRowIndex == inputRowIndex) || (!inputForceSetValue && (row.Field<string>(THSettings.TranslationColumnName)).Any()))
                     {
                         continue;
                     }

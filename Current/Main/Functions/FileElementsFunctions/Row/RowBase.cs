@@ -8,112 +8,6 @@ using TranslationHelper.Main.Functions;
 
 namespace TranslationHelper.Functions.FileElementsFunctions.Row
 {
-    public class SelectedTable
-    {
-        public readonly DataTable Table;
-
-        public SelectedTable(DataTable table)
-        {
-            Table = table;
-        }
-    }
-    public class SelectedRow
-    {
-        public SelectedRow(DataRow row)
-        {
-            Row = row;
-        }
-
-        public readonly DataRow Row;
-
-        string original;
-        bool IsOriginalNeedInit = true;
-        public string Original
-        {
-            get
-            {
-                if (IsOriginalNeedInit)
-                {
-                    IsOriginalNeedInit = false;
-                    return original = Row[AppData.CurrentProject.OriginalColumnIndex] as string;
-                }
-                else return original;
-            }
-        }
-
-
-        string translation;
-        public string Translation
-        {
-            get
-            {
-                return translation ?? (translation = Row[AppData.CurrentProject.TranslationColumnIndex] + "");
-            }
-            set
-            {
-                if (translation == value) return;
-                translation = value;
-#if DEBUG
-                AppData.Main.Invoke((Action)(() => Row[AppData.CurrentProject.TranslationColumnIndex] = translation));
-#else
-                Row[AppData.CurrentProject.TranslationColumnIndex] = translation = value;
-#endif
-            }
-        }
-    }
-
-    public abstract class RowFunctionNewWIPBase : RowFunctionSelectedFilesNewWIPBase
-    {
-         
-    }
-
-    public abstract class RowFunctionSelectedFilesNewWIPBase : RowFunctionSelectedRowsNewWIPBase
-    {
-         
-    }
-
-    public abstract class RowFunctionSelectedRowsNewWIPBase : RowFunctionSelectedRowNewWIPBase
-    {
-        public bool Rows()
-        {
-            DataTable[] tables = GetSelectedTables();
-
-            return false;
-        }
-
-        private DataTable[] GetSelectedTables()
-        {
-            int[] tableindexes = null;
-#if DEBUG
-            AppData.THFilesList.Invoke((Action)(() => tableindexes = AppData.THFilesList.CopySelectedIndexes()));
-#else
-            tableindexes = AppData.THFilesList.CopySelectedIndexes();
-#endif
-            DataTable[] tables = null;
-#if DEBUG
-            AppData.Main.Invoke((Action)(() => tables = AppData.CurrentProject.FilesContent.GetTablesByIndexes(tableindexes)));
-            return tables;
-#else
-            return AppData.CurrentProject.FilesContent.GetTablesByIndexes(tableindexes);
-#endif
-        }
-    }
-
-    public abstract class RowFunctionSelectedRowNewWIPBase
-    {
-        /// <summary>
-        /// check if row is valid for parse
-        /// </summary>
-        /// <returns></returns>
-        protected virtual bool IsValidRow(SelectedRow selectedRow) => AppSettings.IgnoreOrigEqualTransLines || !string.Equals(selectedRow.Original, selectedRow.Translation);
-        /// <summary>
-        /// change translation here using selected row data
-        /// </summary>
-        /// <param name="selectedRow"></param>
-        /// <returns></returns>
-        protected abstract bool Apply(SelectedRow selectedRow);
-    }
-
     internal abstract class RowBase
     {
         /// <summary>
@@ -656,7 +550,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
 
         protected abstract bool Apply();
 
-        public string Original { get => SelectedRow[AppData.CurrentProject.OriginalColumnIndex] as string; }
+        public string Original { get => SelectedRow.Field<string>(AppData.CurrentProject.OriginalColumnIndex); }
 
         public string Translation
         {
