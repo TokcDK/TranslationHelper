@@ -14,18 +14,23 @@ using TranslationHelper.Menus.FileRowMenus;
 using TranslationHelper.Menus.MainMenus.File;
 using TranslationHelper.Projects.RPGMTrans;
 
-namespace TranslationHelper.Menus.MainMenus.Edit
+namespace TranslationHelper.Menus.MainMenus.Edit.TextCutCopyPaste
 {
-    internal class MenuItemRowTextClearAll : MainMenuEditSubItemBase, IFileRowMenuItem, IProjectMenuItem
+    internal class MenuItemRowTextCopyOriginal : MenuItemRowTextCopy, IFileRowMenuItem, IProjectMenuItem
     {
-        public override string CategoryName => T._("Clear");
-        public override string Text => T._("All");
+        public override string Text => T._("Copy original");
 
-        public override string Description => T._("Clear translation in all tables");
+        public override string Description => T._("Copy selected rows original values");
 
         public override void OnClick(object sender, EventArgs e)
         {
-            _ = new ClearCells().AllT();
+            if (!IsValidToCopy()) return;
+
+            new CopyOriginals().Rows();
         }
+
+        public override Keys ShortcutKeys => Keys.None;
+
+        public override int Order => base.Order - 99;
     }
 }

@@ -11,23 +11,25 @@ using TranslationHelper.Functions;
 using TranslationHelper.Functions.FileElementsFunctions.Row;
 using TranslationHelper.Main.Functions;
 using TranslationHelper.Menus.FileRowMenus;
-using TranslationHelper.Menus.FilesListMenus;
 using TranslationHelper.Menus.MainMenus.File;
 using TranslationHelper.Projects.RPGMTrans;
 
-namespace TranslationHelper.Menus.MainMenus.Edit
+namespace TranslationHelper.Menus.MainMenus.Edit.TextCutCopyPaste
 {
-    internal class MenuItemRowTextClearTable : MainMenuEditSubItemBase, IFileRowMenuItem, IFileListMenuItem, IProjectMenuItem
+    internal class MenuItemRowTextClearSelected : MainMenuEditSubItemBase, IFileRowMenuItem, IProjectMenuItem
     {
         public override string CategoryName => T._("Clear");
+        public override string Text => T._("Selected");
 
-        public override string Text => T._("Table");
-
-        public override string Description => T._("Clear translation in selected tables");
+        public override string Description => T._("Clear translation in selected rows");
 
         public override void OnClick(object sender, EventArgs e)
         {
-            _ = new ClearCells().TableT();
+            if (AppSettings.IsRowInEditMode) return;
+
+            _ = new ClearCells().Rows();
         }
+
+        public override Keys ShortcutKeys => Keys.Control | Keys.D;
     }
 }

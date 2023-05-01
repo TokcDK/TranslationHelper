@@ -14,7 +14,7 @@ using TranslationHelper.Menus.FileRowMenus;
 using TranslationHelper.Menus.MainMenus.File;
 using TranslationHelper.Projects.RPGMTrans;
 
-namespace TranslationHelper.Menus.MainMenus.Edit
+namespace TranslationHelper.Menus.MainMenus.Edit.TextCutCopyPaste
 {
     internal class MenuItemRowTextPaste : MainMenuEditSubItemBase, IFileRowMenuItem, IProjectMenuItem
     {

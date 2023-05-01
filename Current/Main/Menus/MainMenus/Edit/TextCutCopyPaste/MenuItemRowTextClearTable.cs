@@ -11,26 +11,23 @@ using TranslationHelper.Functions;
 using TranslationHelper.Functions.FileElementsFunctions.Row;
 using TranslationHelper.Main.Functions;
 using TranslationHelper.Menus.FileRowMenus;
+using TranslationHelper.Menus.FilesListMenus;
 using TranslationHelper.Menus.MainMenus.File;
 using TranslationHelper.Projects.RPGMTrans;
 
-namespace TranslationHelper.Menus.MainMenus.Edit
+namespace TranslationHelper.Menus.MainMenus.Edit.TextCutCopyPaste
 {
-    internal class MenuItemRowTextCopyOriginal : MenuItemRowTextCopy, IFileRowMenuItem, IProjectMenuItem
+    internal class MenuItemRowTextClearTable : MainMenuEditSubItemBase, IFileRowMenuItem, IFileListMenuItem, IProjectMenuItem
     {
-        public override string Text => T._("Copy original");
+        public override string CategoryName => T._("Clear");
 
-        public override string Description => T._("Copy selected rows original values");
+        public override string Text => T._("Table");
+
+        public override string Description => T._("Clear translation in selected tables");
 
         public override void OnClick(object sender, EventArgs e)
         {
-            if (!IsValidToCopy()) return;
-
-            new CopyOriginals().Rows();
+            _ = new ClearCells().TableT();
         }
-
-        public override Keys ShortcutKeys => Keys.None;
-
-        public override int Order => base.Order - 99;
     }
 }

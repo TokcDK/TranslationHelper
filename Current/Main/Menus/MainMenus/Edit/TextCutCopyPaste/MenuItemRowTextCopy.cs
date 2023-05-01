@@ -16,40 +16,22 @@ using TranslationHelper.Menus.FileRowMenus;
 using TranslationHelper.Menus.MainMenus.File;
 using TranslationHelper.Projects.RPGMTrans;
 
-namespace TranslationHelper.Menus.MainMenus.Edit
+namespace TranslationHelper.Menus.MainMenus.Edit.TextCutCopyPaste
 {
-    internal class MenuItemRowTextCopy : MainMenuEditSubItemBase, IFileRowMenuItem, IProjectMenuItem
+    internal class MenuItemRowTextCopy : MenuItemRowTextCopyCutBase, IFileRowMenuItem, IProjectMenuItem
     {
         public override string Text => T._("Copy");
 
         public override string Description => T._("Copy selected rows translation");
 
-        public override void OnClick(object sender, EventArgs e)
+        protected override void ActionForSelectedRows()
         {
-            if (CheckAndCopySelectedTextToClipboardDeselect(AppData.Main.THInfoTextBox))
-            {
-            }
-            else if (CheckAndCopySelectedTextToClipboardDeselect(AppData.Main.THSourceRichTextBox))
-            {
-            }
-            else if (CheckAndCopySelectedTextToClipboardDeselect(AppData.Main.THTargetRichTextBox))
-            {
-            }
-            else
-            {
-                if (AppData.Main.THFileElementsDataGridView.EditingControl is TextBox tb && CheckAndCopySelectedTextToClipboardDeselect(tb))
-                {
-                }
-                else
-                {
-                    if (!IsValidToCopy()) return;
+            if (!IsValidToCopy()) return;
 
-                    FunctionsCopyPaste.CopyToClipboard(AppData.Main.THFileElementsDataGridView);
-                }
-            }
+            FunctionsCopyPaste.CopyToClipboard(AppData.Main.THFileElementsDataGridView);
         }
 
-        private static bool CheckAndCopySelectedTextToClipboardDeselect(TextBoxBase tb)
+        protected override bool ActionForTextBoxObject(TextBoxBase tb)
         {
             if (string.IsNullOrEmpty(tb.SelectedText)) return false;
 

@@ -14,15 +14,15 @@ using TranslationHelper.Menus.FileRowMenus;
 using TranslationHelper.Menus.MainMenus.File;
 using TranslationHelper.Projects.RPGMTrans;
 
-namespace TranslationHelper.Menus.MainMenus.Edit
+namespace TranslationHelper.Menus.MainMenus.Edit.TextCutCopyPaste
 {
-    internal class MenuItemRowTextCut : MainMenuEditSubItemBase, IFileRowMenuItem, IProjectMenuItem
+    internal class MenuItemRowTextCut : MenuItemRowTextCopyCutBase, IFileRowMenuItem, IProjectMenuItem
     {
         public override string Text => T._("Cut");
 
         public override string Description => T._("Cut selected rows translation");
 
-        public override void OnClick(object sender, EventArgs e)
+        protected override void ActionForSelectedRows()
         {
             if (AppSettings.DGVCellInEditMode) AppData.Main.ControlsSwitch(); // если ячейка в режиме редактирования вылючение действий для ячеек при выходе из режима редактирования
 
@@ -38,7 +38,28 @@ namespace TranslationHelper.Menus.MainMenus.Edit
             //проверка, выполнять очистку только если выбранные ячейки не помечены Только лдя чтения
             if (AppData.Main.THFileElementsDataGridView.CurrentCell.ReadOnly) return;
 
-            foreach (DataGridViewCell dgvCell in AppData.Main.THFileElementsDataGridView.SelectedCells) dgvCell.Value = string.Empty;
+            foreach (DataGridViewCell dgvCell in AppData.Main.THFileElementsDataGridView.SelectedCells)
+            {
+                if (!dgvCell.ReadOnly) dgvCell.Value = null;
+            }
+        }
+
+        protected override bool ActionForTextBoxObject(TextBoxBase tb)
+        {
+            if (string.IsNullOrEmpty(tb.SelectedText)) return false;
+                       
+            // cut only when textbox is not readonly, else just copy
+            if (tb.ReadOnly)
+            {
+                Clipboard.SetDataObject(tb.SelectedText);
+                tb.DeselectAll();
+            }
+            else
+            {
+                tb.Cut();
+            }
+
+            return true;
         }
 
         public override Keys ShortcutKeys => Keys.Control | Keys.X;
