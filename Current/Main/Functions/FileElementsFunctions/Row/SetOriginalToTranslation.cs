@@ -11,7 +11,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
         {
             try
             {
-                SelectedRow[ColumnIndexTranslation] = SelectedRow[ColumnIndexOriginal];
+                Translation = Original;
             }
             catch
             {

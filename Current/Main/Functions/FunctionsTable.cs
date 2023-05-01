@@ -75,8 +75,8 @@ namespace TranslationHelper.Main.Functions
                 int RCount = table.Rows.Count;
                 for (int r = 0; r < RCount; r++)
                 {
-                    var cell = table.Rows[r][1];
-                    if (cell == null || string.IsNullOrEmpty(cell as string))
+                    var cellValue = table.Rows[r].Field<string>(1);
+                    if (string.IsNullOrEmpty(cellValue))
                     {
                         ShowSelectedRow(t, THSettings.TranslationColumnName, r);
                         return;
@@ -229,11 +229,8 @@ namespace TranslationHelper.Main.Functions
                     int rowscount = table.Rows.Count;
                     for (int r = 0; r < rowscount; r++)
                     {
-                        var cell = table.Rows[r][1];
-                        if (cell == null || string.IsNullOrEmpty(cell as string))
-                        {
-                        }
-                        else
+                        var cell = table.Rows[r].Field<string>(1);
+                        if (!string.IsNullOrEmpty(cell))
                         {
                             return true;
                         }
@@ -262,9 +259,9 @@ namespace TranslationHelper.Main.Functions
                             for (int i = 0; i < RowsCount; i++)
                             {
                                 //MessageBox.Show("Input=" + Input+"\r\nCache="+ THTranslationCache.Tables["TranslationCache"].Rows[i][0].ToString());
-                                if (Equals(Input, Table.Rows[i][0]))
+                                if (Equals(Input, Table.Rows[i].Field<string>(0)))
                                 {
-                                    return Table.Rows[i][1] as string;
+                                    return Table.Rows[i].Field<string>(1);
                                 }
                             }
                         }
@@ -285,7 +282,7 @@ namespace TranslationHelper.Main.Functions
                 }
                 foreach (DataRow row in table.Rows)
                 {
-                    if (!GetAlreadyAddedInTableAndTableHasRowsColumns_Slower(tempTable, row[0] as string))
+                    if (!GetAlreadyAddedInTableAndTableHasRowsColumns_Slower(tempTable, row.Field<string>(0)))
                     {
                         tempTable.ImportRow(row);
                     }
@@ -507,11 +504,8 @@ namespace TranslationHelper.Main.Functions
                 for (int r = 0; r < rowsCount; r++)
                 {
                     var row = table.Rows[r];
-                    var cellTranslation = row[1];
-                    if (cellTranslation == null || string.IsNullOrEmpty(cellTranslation as string))
-                    {
-                    }
-                    else
+                    var cellTranslation = row.Field<string>(1);
+                    if (!string.IsNullOrEmpty(cellTranslation))
                     {
                         retDS.Tables[tname].ImportRow(row);
                     }
@@ -567,9 +561,9 @@ namespace TranslationHelper.Main.Functions
             columnName = columnName ?? THSettings.TranslationColumnName;
             for (int r = 0; r < DTRowsCount; r++)
             {
-                var cell = dataTabe.Rows[r]?[columnName];
+                var cell = dataTabe.Rows[r]?.Field<string>(columnName);
 
-                if ((!complete && (cell != null && !string.IsNullOrEmpty(cell as string))) || (complete && (cell == null || string.IsNullOrEmpty(cell as string))))
+                if ((!complete && (!string.IsNullOrEmpty(cell))) || (complete && (string.IsNullOrEmpty(cell))))
                 {
                     return false;
                 }
@@ -642,9 +636,9 @@ namespace TranslationHelper.Main.Functions
             columnName = columnName ?? THSettings.TranslationColumnName;
             for (int r = 0; r < DTRowsCount; r++)
             {
-                var cell = dataTable.Rows[r][columnName];
+                var cell = dataTable.Rows[r].Field<string>(columnName);
 
-                if (cell == null || string.IsNullOrEmpty(cell as string))
+                if (string.IsNullOrEmpty(cell))
                 {
                     //LogToFile("\r\nIsTableRowsCompleted=false");
                 }

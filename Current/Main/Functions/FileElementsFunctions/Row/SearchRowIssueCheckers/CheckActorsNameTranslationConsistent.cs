@@ -35,12 +35,12 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row.SearchIssueCheck
             var thisTranslation = data.Translation;
             foreach (DataRow ActorsLine in Actors.Rows)
             {
-                var original = ActorsLine[AppData.CurrentProject.OriginalColumnIndex] as string;
+                var original = ActorsLine.Field<string>(AppData.CurrentProject.OriginalColumnIndex);
                 if (original.IsMultiline() || original.Length > 255)//skip multiline and long rows
                 {
                     continue;
                 }
-                var translation = ActorsLine[AppData.CurrentProject.OriginalColumnIndex] + string.Empty;
+                var translation = ActorsLine.Field<string>(AppData.CurrentProject.OriginalColumnIndex);
 
                 //если оригинал содержит оригинал(Анна) из Actors, а перевод не содержит определение(Anna) из Actors
                 if (translation.Length > 0 

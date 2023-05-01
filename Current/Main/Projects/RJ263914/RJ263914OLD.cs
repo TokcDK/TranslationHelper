@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Data;
 using System.IO;
 using System.Text;
 using TranslationHelper.Data;
@@ -177,10 +178,10 @@ namespace TranslationHelper.Projects.RJ263914
                     if (IsWrite)
                     {
                         var row = AppData.CurrentProject.FilesContent.Tables[tableName].Rows[rowIndex];
-                        if (lineValue == row[0] as string && row[1] != null && !string.IsNullOrEmpty(row[1] as string) && !Equals(row[0], row[1]))
+                        if (lineValue == row.Field<string>(0) && row[1] != null && !string.IsNullOrEmpty(row[1] as string) && !Equals(row[0], row[1]))
                         {
                             File.SetAttributes(filePath, FileAttributes.Normal);
-                            File.WriteAllText(filePath, row[1] as string);
+                            File.WriteAllText(filePath, row.Field<string>(1));
                         }
                     }
                     else

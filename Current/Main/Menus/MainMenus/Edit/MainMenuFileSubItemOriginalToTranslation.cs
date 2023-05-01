@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Data;
 using System.IO;
 using System.Linq;
 using System.Threading;
@@ -79,8 +80,8 @@ namespace TranslationHelper.Menus.MainMenus.Edit.CaseMorph
                 int rowsCount = AppData.CurrentProject.FilesContent.Tables[t].Rows.Count;
                 for (int r = 0; r < rowsCount; r++)
                 {
-                    string origCellValue = AppData.CurrentProject.FilesContent.Tables[t].Rows[r][cind] as string;
-                    string transCellValue = AppData.CurrentProject.FilesContent.Tables[t].Rows[r][cindTrans] + string.Empty;
+                    string origCellValue = AppData.CurrentProject.FilesContent.Tables[t].Rows[r].Field<string>(cind);
+                    string transCellValue = AppData.CurrentProject.FilesContent.Tables[t].Rows[r].Field<string>(cindTrans);
 
                     if ((transCellValue.Length == 0 || origCellValue != transCellValue) && FunctionsFileFolder.GetAnyFileWithTheNameExist(ProjectFilesList, origCellValue))
                     {

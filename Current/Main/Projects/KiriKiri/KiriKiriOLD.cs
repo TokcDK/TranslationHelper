@@ -484,8 +484,8 @@ namespace TranslationHelper.Projects.KiriKiri
                                     var row = AppData.CurrentProject.FilesContent.Tables[0].Rows[elementnumber];
                                     if (
                                         row[1] == null
-                                        || string.IsNullOrEmpty(row[1] as string)
-                                        && Equals(cline, row[0] as string)
+                                        || string.IsNullOrEmpty(row.Field<string>(1))
+                                        && Equals(cline, row.Field<string>(0))
                                         && !Equals(row[0], row[1])
                                        )
                                     {
@@ -505,12 +505,12 @@ namespace TranslationHelper.Projects.KiriKiri
                                     var row = AppData.CurrentProject.FilesContent.Tables[0].Rows[elementnumber];
                                     if (
                                         row[1] == null
-                                        || string.IsNullOrEmpty(row[1] as string)
-                                        && Equals(cline, row[0] as string)
+                                        || string.IsNullOrEmpty(row.Field<string>(1))
+                                        && Equals(cline, row.Field<string>(0))
                                         && !Equals(row[0], row[1])
                                        )
                                     {
-                                        line = row[1] as string;
+                                        line = row.Field<string>(1);
                                     }
                                     elementnumber++;
                                 }
@@ -526,12 +526,12 @@ namespace TranslationHelper.Projects.KiriKiri
                                     var row = AppData.CurrentProject.FilesContent.Tables[0].Rows[elementnumber];
                                     if (
                                         row[1] == null
-                                        || string.IsNullOrEmpty(row[1] as string)
-                                        && Equals(cline, row[0] as string)
+                                        || string.IsNullOrEmpty(row.Field<string>(1))
+                                        && Equals(cline, row.Field<string>(0))
                                         && !Equals(row[0], row[1])
                                        )
                                     {
-                                        line = row[1] as string;
+                                        line = row.Field<string>(1);
                                     }
                                     elementnumber++;
                                 }
@@ -546,12 +546,12 @@ namespace TranslationHelper.Projects.KiriKiri
                                     var row = AppData.CurrentProject.FilesContent.Tables[0].Rows[elementnumber];
                                     if (
                                         row[1] == null
-                                        || string.IsNullOrEmpty(row[1] as string)
-                                        && Equals(matches[m].Value.Remove(0, startswith ? 2 : 3), row[0] as string)
+                                        || string.IsNullOrEmpty(row.Field<string>(1))
+                                        && Equals(matches[m].Value.Remove(0, startswith ? 2 : 3), row.Field<string>(0))
                                         && !Equals(row[0], row[1])
                                        )
                                     {
-                                        line = line.Remove(matches[m].Index, matches[m].Value.Length).Insert(matches[m].Index, matches[m].Value.Replace(row[0] as string, row[1] as string));
+                                        line = line.Remove(matches[m].Index, matches[m].Value.Length).Insert(matches[m].Index, matches[m].Value.Replace(row.Field<string>(0), row.Field<string>(1)));
                                     }
                                     if (startswith)
                                     {
@@ -571,8 +571,8 @@ namespace TranslationHelper.Projects.KiriKiri
                                     var row = AppData.CurrentProject.FilesContent.Tables[0].Rows[elementnumber];
                                     if (
                                         row[1] == null
-                                        || string.IsNullOrEmpty(row[1] as string)
-                                        && Equals(cline, row[0] as string)
+                                        || string.IsNullOrEmpty(row.Field<string>(1))
+                                        && Equals(cline, row.Field<string>(0))
                                         && !Equals(row[0], row[1])
                                        )
                                     {

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
 using System.IO;
 using TranslationHelper.Data;
 using TranslationHelper.Extensions;
@@ -50,8 +51,8 @@ namespace TranslationHelper.Formats.RPGMTransPatch
                     {
                         var row = table.Rows[r];
 
-                        var original = row[0] as string;
-                        var translation = row[1] as string;
+                        var original = row.Field<string>(AppData.CurrentProject.OriginalColumnIndex);
+                        var translation = row.Field<string>(AppData.CurrentProject.TranslationColumnIndex);
 
                         List<string> context = new List<string>();
                         var infoRow = AppData.CurrentProject.FilesContentInfo.Tables[t].Rows[r] + string.Empty;

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Data;
 using System.Text.RegularExpressions;
 using TranslationHelper.Data;
 using TranslationHelper.Extensions;
@@ -89,7 +90,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
                     && !translation.Contains("”")
                     ) return false;
 
-                string originalValue = SelectedRow[ColumnIndexOriginal] as string;
+                string originalValue = Original;
 
                 var frontQuote = string.Empty;
                 var backQuote = string.Empty;

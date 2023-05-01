@@ -430,14 +430,14 @@ namespace TranslationHelper.Main.Functions
 
         private static void AddRecordToDictionary(Dictionary<string, string> db, DataRow row, bool dontAddEmptyTranslation, bool dontAddEqualTranslation)
         {
-            if (!db.ContainsKey(row[THSettings.OriginalColumnName] as string))
+            if (!db.ContainsKey(row.Field<string>(THSettings.OriginalColumnName)))
             {
-                if ((dontAddEmptyTranslation && (row[THSettings.TranslationColumnName] == null || string.IsNullOrEmpty(row[THSettings.TranslationColumnName] as string))) || (dontAddEqualTranslation && row[THSettings.TranslationColumnName] as string == row[THSettings.OriginalColumnName] as string))
+                if ((dontAddEmptyTranslation && (row[THSettings.TranslationColumnName] == null || string.IsNullOrEmpty(row.Field<string>(THSettings.TranslationColumnName)))) || (dontAddEqualTranslation && row.Field<string>(THSettings.TranslationColumnName) == row.Field<string>(THSettings.OriginalColumnName)))
                 {
                     return;
                 }
 
-                db.Add(row[THSettings.OriginalColumnName] as string, row[THSettings.TranslationColumnName] + string.Empty);
+                db.Add(row.Field<string>(THSettings.OriginalColumnName), row.Field<string>(THSettings.TranslationColumnName));
             }
         }
 
@@ -476,7 +476,7 @@ namespace TranslationHelper.Main.Functions
                     for (int r = 0; r < rowsCount; r++)
                     {
                         var row = table.Rows[r];
-                        var O = row[THSettings.OriginalColumnName] as string;
+                        var O = row.Field<string>(THSettings.OriginalColumnName);
 
                         if (!db.ContainsKey(O))
                         {
@@ -488,7 +488,7 @@ namespace TranslationHelper.Main.Functions
                             db[O].Add(table.TableName, new Dictionary<int, string>());
                         }
 
-                        db[O][table.TableName].Add(r, row[THSettings.TranslationColumnName] + string.Empty);
+                        db[O][table.TableName].Add(r, row.Field<string>(THSettings.TranslationColumnName));
                     }
                 }
                 catch
@@ -532,16 +532,16 @@ namespace TranslationHelper.Main.Functions
                 for (int r = 0; r < rowsCount; r++)
                 {
                     var row = dbDataSet.Tables[t].Rows[r];
-                    if (db.ContainsKey(row[0] as string))
+                    if (db.ContainsKey(row.Field<string>(0)))
                     {
-                        if (row[1] == null || string.IsNullOrEmpty(row[1] + string.Empty))
+                        if (row[1] == null || string.IsNullOrEmpty(row.Field<string>(1)))
                         {
-                            db[row[0] as string] = db[row[0] as string] + "|" + t + "!" + r;
+                            db[row.Field<string>(0)] = db[row.Field<string>(0)] + "|" + t + "!" + r;
                         }
                     }
                     else
                     {
-                        db.Add(row[0] as string, t + "!" + r);
+                        db.Add(row.Field<string>(0), t + "!" + r);
                     }
                 }
             }

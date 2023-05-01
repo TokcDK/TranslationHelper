@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Globalization;
 using System.Linq;
 using System.Text.RegularExpressions;
@@ -217,9 +218,9 @@ namespace TranslationHelper.Main.Functions
 
                         //LogToFile("5 selected i row index=" + i + ", value of THFilesElementsDataset.Tables[" + t + "].Rows[" + rowindex + "][" + cind + "]=" + THFilesElementsDataset.Tables[t].Rows[rowindex][cind]);
                         var row = AppData.CurrentProject.FilesContent.Tables[t].Rows[rowindex];
-                        string cvalue = row[cind] + string.Empty;
+                        string cvalue = row.Field<string>(cind);
                         //не трогать строку перевода, если она пустая
-                        if (cvalue.Length > 0 && (forceApply || cvalue != row[cind - 1] as string))
+                        if (cvalue.Length > 0 && (forceApply || cvalue != row.Field<string>(cind - 1)))
                         {
                             //Hardcoded rules
                             //cvalue = FunctionsStringFixes.ApplyHardFixes(row[0] + string.Empty, row[1] + string.Empty);

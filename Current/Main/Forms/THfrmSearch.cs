@@ -45,8 +45,8 @@ namespace TranslationHelper
             public FoundRowData(DataRow row)
             {
                 //_row = row;
-                Original = row[AppData.CurrentProject.OriginalColumnIndex] as string;
-                Translation = row[AppData.CurrentProject.TranslationColumnIndex] + string.Empty;
+                Original = row.Field<string>(AppData.CurrentProject.OriginalColumnIndex);
+                Translation = row.Field<string>(AppData.CurrentProject.TranslationColumnIndex);
                 TableIndex = AppData.CurrentProject.FilesContent.Tables.IndexOf(row.Table);
                 RowIndex = row.Table.Rows.IndexOf(row);
             }

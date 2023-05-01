@@ -84,8 +84,8 @@ namespace TranslationHelper.Functions
                     {
                         //ProjectData.Main.ProgressInfo(true, tableprogressinfo + "[" + r + "/" + rcount + "]");
                         var Row = Table.Rows[r];
-                        var CellTranslation = Row[otranscol];
-                        if (CellTranslation == null || string.IsNullOrEmpty(CellTranslation as string))
+                        var CellTranslation = Row.Field<string>(otranscol);
+                        if (string.IsNullOrEmpty(CellTranslation))
                         {
                             bool TranslationWasSet = false;
 
@@ -102,8 +102,8 @@ namespace TranslationHelper.Functions
                                         for (int r1 = trowstartindex; r1 < DBTableRowsCount; r1++)
                                         {
                                             var DBRow = DBTable.Rows[r1];
-                                            var DBCellTranslation = DBRow[ttranscol];
-                                            if (DBCellTranslation != null && !string.IsNullOrEmpty(DBCellTranslation as string))
+                                            var DBCellTranslation = DBRow.Field<string>(ttranscol);
+                                            if (DBCellTranslation != null && !string.IsNullOrEmpty(DBCellTranslation))
                                             {
                                                 try
                                                 {
@@ -173,8 +173,8 @@ namespace TranslationHelper.Functions
                         //ProjectData.Main.ProgressInfo(true, tableprogressinfo + "[" + r + "/" + rcount + "]");
 
                         var TranslationRow = DT.Rows[r];
-                        var TranslationCell = TranslationRow[1];
-                        if (TranslationCell == null || string.IsNullOrEmpty(TranslationCell as string))
+                        var TranslationCell = TranslationRow.Field<string>(1);
+                        if (TranslationCell == null || string.IsNullOrEmpty(TranslationCell))
                         {
                             var DBRow = tHTempDS.Tables[t].Rows[r];
                             if (Equals(TranslationRow[0], DBRow[0]))
@@ -236,10 +236,10 @@ namespace TranslationHelper.Functions
                     {
                         //ProjectData.Main.ProgressInfo(true, tableprogressinfo + "[" + r + "/" + rcount + "]");
                         var Row = Table.Rows[r];
-                        var CellTranslation = Row[otranscol];
-                        if (forced || CellTranslation == null || string.IsNullOrEmpty(CellTranslation as string))
+                        var CellTranslation = Row.Field<string>(otranscol);
+                        if (forced || string.IsNullOrEmpty(CellTranslation))
                         {
-                            var origCellValue = Row[0] as string;
+                            var origCellValue = Row.Field<string>(0);
                             if (db.ContainsKey(origCellValue) && db[origCellValue].Length > 0)
                             {
                                 //ProjectData.THFilesElementsDataset.Tables[t].Rows[r][otranscol] = db[origCellValue];
@@ -257,9 +257,9 @@ namespace TranslationHelper.Functions
                                         {
                                             mergedlines.Add(line);
                                         }
-                                        else if (db.ContainsKey(line) && db[line].Length > 0)
+                                        else if (db.TryGetValue(line, out string value) && value.Length > 0)
                                         {
-                                            mergedlines.Add(db[line]);
+                                            mergedlines.Add(value);
                                         }
                                         else
                                         {
@@ -346,10 +346,10 @@ namespace TranslationHelper.Functions
                 {
                     //ProjectData.Main.ProgressInfo(true, tableprogressinfo + "[" + r + "/" + rcount + "]");
                     var Row = Table.Rows[r];
-                    var CellTranslation = Row[otranscol];
-                    if (!forced && CellTranslation != null && !string.IsNullOrEmpty(CellTranslation as string)) continue;
+                    var CellTranslation = Row.Field<string>(otranscol);
+                    if (!forced && CellTranslation != null && !string.IsNullOrEmpty(CellTranslation)) continue;
 
-                    var origCellValue = Row[0] as string;
+                    var origCellValue = Row.Field<string>(0);
                     var isRN = origCellValue.IndexOf("\r\n") != -1;
                     if ((db.ContainsKey(origCellValue) && db[origCellValue].Length > 0) || (db.ContainsKey(origCellValue = origCellValue.Replace(isRN ? "\r\n" : "\n", isRN ? "\n" : "\r\n")) && db[origCellValue].Length > 0))
                     {
@@ -454,10 +454,10 @@ namespace TranslationHelper.Functions
                     {
                         //ProjectData.Main.ProgressInfo(true, tableprogressinfo + "[" + r + "/" + rcount + "]");
                         var Row = Table.Rows[r];
-                        var CellTranslation = Row[otranscol];
-                        if (forced || CellTranslation == null || string.IsNullOrEmpty(CellTranslation as string))
+                        var CellTranslation = Row.Field<string>(otranscol);
+                        if (forced || CellTranslation == null || string.IsNullOrEmpty(CellTranslation))
                         {
-                            var origCellValue = Row[0] as string;
+                            var origCellValue = Row.Field<string>(0);
                             var found = false;
                             bool isRN = origCellValue.IndexOf("\r\n") != -1;
                             if (db.ContainsKey(origCellValue) || db.ContainsKey(origCellValue = origCellValue.Replace(isRN ? "\r\n" : "\n", isRN ? "\n" : "\r\n")))
@@ -620,10 +620,10 @@ namespace TranslationHelper.Functions
                     {
                         //ProjectData.Main.ProgressInfo(true, tableprogressinfo + "[" + r + "/" + rcount + "]");
                         var Row = AppData.CurrentProject.FilesContent.Tables[t].Rows[r];
-                        var CellTranslation = Row[otranscol];
-                        if (CellTranslation == null || string.IsNullOrEmpty(CellTranslation as string))
+                        var CellTranslation = Row.Field<string>(otranscol);
+                        if (CellTranslation == null || string.IsNullOrEmpty(CellTranslation))
                         {
-                            var origCellValue = Row[0] as string;
+                            var origCellValue = Row.Field<string>(0);
                             string dbvalue;
                             if (db.ContainsKey(origCellValue) && (dbvalue = db[origCellValue]).Length > 0)
                             {

@@ -17,15 +17,15 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
 
         protected override bool Apply()
         {
-            string origCellValue = SelectedRow[ColumnIndexOriginal] as string;
-            string transCellValue = SelectedRow[ColumnIndexTranslation] + string.Empty;
+            string origCellValue = Original;
+            string transCellValue = Translation;
             if (!string.IsNullOrWhiteSpace(transCellValue)
                 && transCellValue != origCellValue
                 && FunctionsString.GetLongestLineLength(transCellValue) > AppSettings.THOptionLineCharLimit
                 /*&& !FunctionsString.IsStringContainsSpecialSymbols(transCellValue)*/
                 && !AppData.CurrentProject.LineSplitProjectSpecificSkipForLine(origCellValue, transCellValue, SelectedTableIndex, SelectedRowIndex))
             {
-                SelectedRow[ColumnIndexTranslation] = transCellValue.SplitMultiLineIfBeyondOfLimit(AppSettings.THOptionLineCharLimit);
+                Translation = transCellValue.SplitMultiLineIfBeyondOfLimit(AppSettings.THOptionLineCharLimit);
                 //row[1] = transCellValue.Wrap(AppSettings.THOptionLineCharLimit);
                 return true;
             }

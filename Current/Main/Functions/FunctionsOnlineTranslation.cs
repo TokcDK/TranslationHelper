@@ -423,7 +423,7 @@ namespace TranslationHelper.Functions
                             //ProjectData.Main.ProgressInfo(true, progressinfo);
                             //ProjectData.Main.ProgressInfo(true, T._("translating") + ": " + t + "/" + tcount + " (" + r + "/" + rcount + ")");
 
-                            InputOriginalLine = Row[OrigColIndex] as string;
+                            InputOriginalLine = Row.Field<string>(OrigColIndex);
                             if (string.IsNullOrWhiteSpace(InputOriginalLine)/* || InputOriginalLine.Length >= maxchars*/ || InputOriginalLine.IsSourceLangJapaneseAndTheStringMostlyRomajiOrOther())
                             {
                                 continue;
@@ -432,8 +432,8 @@ namespace TranslationHelper.Functions
                             bool TranslateIt = false;
                             TranslateIt = /*(CurrentCharsCount + InputOriginalLine.Length) >= maxchars ||*/ (t == TableMaxIndex/*tcount*/ - 1 && r == RowsCountInTable/*rcount*/ - 1);
 
-                            var Cell = Row[OrigColIndex + 1];
-                            if (Cell == null || string.IsNullOrEmpty(Cell as string))
+                            var Cell = Row.Field<string>(OrigColIndex + 1);
+                            if (string.IsNullOrEmpty(Cell))
                             {
                                 //string InputOriginalLineFromCache = FunctionsTable.TranslationCacheFind(THTranslationCache, InputOriginalLine);//поиск оригинала в кеше
                                 string InputOriginalLineFromCache = AppData.OnlineTranslationCache.GetValueFromCacheOrReturnEmpty(InputOriginalLine);
@@ -739,18 +739,18 @@ namespace TranslationHelper.Functions
             {
                 string s; //иногда значения без перевода и равны оригиналу, но отдельным переводом выбранной ячейки получается нормально
                 var Row = AppData.CurrentProject.FilesContent.Tables[PreviousTableIndex].Rows[PreviousRowIndex];
-                var Cell = Row[0];
+                var Cell = Row.Field<string>(0);
                 if (Equals(Cell, ResultValue))
                 {
-                    s = Translator.Translate(Cell as string);
+                    s = Translator.Translate(Cell);
                 }
                 else
                 {
                     s = ResultValue.ToString();
                 }
 
-                var TranslationCell = Row[1];
-                if (TranslationCell == null || string.IsNullOrEmpty(TranslationCell as string))
+                var TranslationCell = Row.Field<string>(1);
+                if (TranslationCell == null || string.IsNullOrEmpty(TranslationCell))
                 {
                     try
                     {
@@ -758,13 +758,13 @@ namespace TranslationHelper.Functions
                         if (AppSettings.ApplyFixesOnTranslation)
                         {
                             s = s.THFixCells();//cell fixes
-                            s = FunctionsStringFixes.ApplyHardFixes(Row[0] as string, s);//hardcoded fixes
+                            s = FunctionsStringFixes.ApplyHardFixes(Row.Field<string>(0), s);//hardcoded fixes
                         }
 
                         Row[1] = s;
 
                         //FunctionsTable.AddToTranslationCacheIfValid(THTranslationCache, Cell as string, s);
-                        FunctionsOnlineCache.TryAdd(Cell as string, s);
+                        FunctionsOnlineCache.TryAdd(Cell, s);
 
                         //закоментировано для повышения производительности
                         //THAutoSetSameTranslationForSimular(PreviousTableIndex, PreviousRowIndex, 0);

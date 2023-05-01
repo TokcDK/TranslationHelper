@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
 using System.IO;
 using System.Text.RegularExpressions;
 using System.Windows.Forms;
@@ -61,7 +62,7 @@ namespace TranslationHelper.Projects.RPGMMV.Menus
         {
             try
             {
-                string oinfo = AppData.CurrentProject.FilesContentInfo.Tables[SelectedTable.TableName].Rows[SelectedRowIndex][0] as string;
+                string oinfo = AppData.CurrentProject.FilesContentInfo.Tables[SelectedTable.TableName].Rows[SelectedRowIndex].Field<string>(0);
                 var match = Regex.Match(oinfo, @"Element: \""([^\""]+)\""");
                 if (!match.Success) return false;
                 var k = match.Groups[1].Value;
