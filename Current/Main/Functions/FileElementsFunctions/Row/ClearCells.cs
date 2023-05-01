@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Data;
 using TranslationHelper.Data;
 
 namespace TranslationHelper.Functions.FileElementsFunctions.Row
@@ -9,10 +10,14 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
         {
         }
 
+        bool _dataSourceClear = false;
         protected override void ActionsPreTableApply()
         {
             if (IsAll || IsTables || IsTable)
             {
+                if (AppData.Main.THFileElementsDataGridView.DataSource != SelectedTable) return;
+
+                _dataSourceClear = true;
                 //отключение датасорса для убирания тормозов с параллельной прорисовкой
                 AppData.Main.Invoke((Action)(() => AppData.Main.THFileElementsDataGridView.DataSource = null));
                 AppData.Main.Invoke((Action)(() => AppData.Main.THFileElementsDataGridView.Update()));
@@ -22,8 +27,9 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
 
         protected override void ActionsPostTableApply()
         {
-            if (IsAll || IsTables || IsTable)
+            if ((IsAll || IsTables || IsTable) && _dataSourceClear)
             {
+                _dataSourceClear = false;
                 AppData.Main.Invoke((Action)(() => AppData.Main.ActionsOnTHFIlesListElementSelected()));
             }
         }
