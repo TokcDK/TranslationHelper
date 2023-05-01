@@ -307,8 +307,6 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
             if (needToGetOrigTransColumnsNum)
             {
                 needToGetOrigTransColumnsNum = false;
-                ColumnIndexOriginal = SelectedTable.Columns[THSettings.OriginalColumnName].Ordinal;// Колонка Original
-                ColumnIndexTranslation = SelectedTable.Columns[THSettings.TranslationColumnName].Ordinal;// Колонка Translation
             }
         }
 
@@ -327,8 +325,8 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
         /// true when processed one table
         /// </summary>
         protected bool IsTable;
-        protected int ColumnIndexOriginal;
-        protected int ColumnIndexTranslation = 1;
+        protected static int ColumnIndexOriginal { get => AppData.CurrentProject.OriginalColumnIndex; }
+        protected static int ColumnIndexTranslation { get => AppData.CurrentProject.TranslationColumnIndex; }
 
         /// <summary>
         /// proceed selected table
@@ -550,12 +548,12 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
 
         protected abstract bool Apply();
 
-        public string Original { get => SelectedRow.Field<string>(AppData.CurrentProject.OriginalColumnIndex); }
+        public string Original { get => SelectedRow.Field<string>(ColumnIndexOriginal); }
 
         public string Translation
         {
-            get => SelectedRow.Field<string>(THSettings.TranslationColumnName);
-            set => SelectedRow.SetValue(THSettings.TranslationColumnName, value);
+            get => SelectedRow.Field<string>(ColumnIndexTranslation);
+            set => SelectedRow.SetValue(ColumnIndexTranslation, value);
         }
     }
 }
