@@ -291,12 +291,13 @@ namespace TranslationHelper.Main.Functions
             }
         }
 
-        private static bool GetAlreadyAddedInTableAndTableHasRowsColumns_Slower(DataTable DT, string value)
+        private static bool GetAlreadyAddedInTableAndTableHasRowsColumns_Slower(DataTable table, string value)
         {
-            int DTRowsCount = DT.Rows.Count;
-            for (int i = 0; i < DTRowsCount; i++)
+            int tableRowsCount = table.Rows.Count;
+            int originalColumnIndex = AppData.CurrentProject.OriginalColumnIndex;
+            for (int i = 0; i < tableRowsCount; i++)
             {
-                if (Equals(DT.Rows[i][0], value))
+                if (table.Rows[i].Field<string>(originalColumnIndex).Equals(value))
                 {
                     return true;
                 }
@@ -386,47 +387,47 @@ namespace TranslationHelper.Main.Functions
         }
 
         //DataSet THTranslationCache = new DataSet();
-        public static void TranslationCacheInit(DataSet DS)
+        public static void TranslationCacheInit(DataSet dataSet)
         {
-            if (DS == null)
+            if (dataSet == null)
             {
                 return;
             }
 
-            DS.Reset();
+            dataSet.Reset();
             if (File.Exists(AppSettings.THTranslationCachePath))
             {
-                FunctionsDBFile.ReadDBFile(DS, AppSettings.THTranslationCachePath);
+                FunctionsDBFile.ReadDBFile(dataSet, AppSettings.THTranslationCachePath);
             }
             else
             {
-                DS.Tables.Add("TranslationCache");
-                DS.Tables["TranslationCache"].Columns.Add(THSettings.OriginalColumnName);
-                DS.Tables["TranslationCache"].Columns.Add(THSettings.TranslationColumnName);
+                dataSet.Tables.Add("TranslationCache");
+                dataSet.Tables["TranslationCache"].Columns.Add(THSettings.OriginalColumnName);
+                dataSet.Tables["TranslationCache"].Columns.Add(THSettings.TranslationColumnName);
             }
             //MessageBox.Show("TranslationCache Rows.Count=" + THTranslationCache.Tables["TranslationCache"].Rows.Count+ "TranslationCache Columns.Count=" + THTranslationCache.Tables["TranslationCache"].Columns.Count);
         }
 
-        public static void THTranslationCacheAdd(DataSet DS, string original, string translation)
+        public static void THTranslationCacheAdd(DataSet dataSet, string original, string translation)
         {
-            if (DS != null)
+            if (dataSet != null)
             {
                 //LogToFile("original=" + original+ ",translation=" + translation,true);
-                DS.Tables[0].Rows.Add(original, translation);
+                dataSet.Tables[0].Rows.Add(original, translation);
             }
         }
 
         /// <summary>
         /// Return real row index in Datatable for Datagridviev cell
         /// </summary>
-        /// <param name="TableIndex"></param>
+        /// <param name="tableIndex"></param>
         /// <param name="rowIndex"></param>
         /// <returns></returns>
-        public static int GetDGVSelectedRowIndexInDatatable(int TableIndex, int rowIndex)
+        public static int GetDGVSelectedRowIndexInDatatable(int tableIndex, int rowIndex)
         {
             try
             {
-                var table = AppData.CurrentProject.FilesContent.Tables[TableIndex];
+                var table = AppData.CurrentProject.FilesContent.Tables[tableIndex];
                 if (string.IsNullOrEmpty(table.DefaultView.Sort) && string.IsNullOrEmpty(table.DefaultView.RowFilter))
                 {
                     return rowIndex;
@@ -447,19 +448,18 @@ namespace TranslationHelper.Main.Functions
         /// <summary>
         /// get Hashes of row indexes for selected/visible rows
         /// </summary>
-        /// <param name="projectData"></param>
         /// <param name="tableindex"></param>
-        /// <param name="IsVisible">set to true if need to search in visible rows</param>
+        /// <param name="isVisible">set to true if need to search in visible rows</param>
         /// <returns></returns>
-        internal static HashSet<int> GetDGVRowsIndexesHashesInDT(int tableindex, bool IsVisible = false)
+        internal static HashSet<int> GetDGVRowsIndexesHashesInDT(int tableindex, bool isVisible = false)
         {
-            DataGridView DGV = null;
-            AppData.Main.Invoke((Action)(() => DGV = AppData.Main.THFileElementsDataGridView));
+            DataGridView dgv = null;
+            AppData.Main.Invoke((Action)(() => dgv = AppData.Main.THFileElementsDataGridView));
 
             var selected = new HashSet<int>();
-            if (IsVisible)
+            if (isVisible)
             {
-                foreach (DataGridViewRow row in DGV.Rows)
+                foreach (DataGridViewRow row in dgv.Rows)
                 {
                     if (!row.Visible)
                     {
@@ -471,9 +471,9 @@ namespace TranslationHelper.Main.Functions
             }
             else
             {
-                for (int i = 0; i < DGV.SelectedCells.Count; i++)
+                for (int i = 0; i < dgv.SelectedCells.Count; i++)
                 {
-                    var rowindex = DGV.SelectedCells[i].RowIndex;
+                    var rowindex = dgv.SelectedCells[i].RowIndex;
                     if (!selected.Contains(rowindex))
                     {
                         selected.Add(GetDGVSelectedRowIndexInDatatable(tableindex, rowindex));
