@@ -6,7 +6,6 @@ using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using TranslationHelper.Data;
 using TranslationHelper.Extensions;
-using TranslationHelper.Functions.FileElementsFunctions.Row.AutoSameForSimular;
 using TranslationHelper.Main.Functions;
 
 namespace TranslationHelper.Functions.FileElementsFunctions.Row
@@ -270,17 +269,22 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
 
                 var table = AppData.CurrentProject.FilesContent.Tables[storedTableName.Key];
 
+                var rowsCount = table.Rows.Count;
                 foreach (var storedRowIndex in storedTableName.Value)
                 {
+                    if (rowsCount <= storedRowIndex) continue;
+
                     var row = table.Rows[storedRowIndex];
 
                     //skip if same table\row as input or row translation is not empty
-                    if ((storedTableName.Key == inputTableName && storedRowIndex == inputRowIndex) || (!inputForceSetValue && (row.Field<string>(THSettings.TranslationColumnName)).Any()))
+                    if (storedTableName.Key == inputTableName && storedRowIndex == inputRowIndex) continue;
+                    if (!inputForceSetValue 
+                        && !string.IsNullOrEmpty(row.Field<string>(THSettings.TranslationColumnName)))
                     {
                         continue;
                     }
 
-                    row[1] = inputTranslationValue;
+                    row.SetField(AppData.CurrentProject.TranslationColumnIndex, inputTranslationValue);
                 }
             }
         }
