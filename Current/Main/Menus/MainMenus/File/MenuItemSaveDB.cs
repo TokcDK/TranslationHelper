@@ -59,9 +59,10 @@ namespace TranslationHelper.Menus.MainMenus.File
             MoveFile(dir, name, ext, 0, maxBakIndex);
         }
 
+        readonly string _saveFileBakSuffix = "_bak";
         private void MoveFile(string dir, string name, string ext, int index, int maxBakIndex)
         {
-            var path = Path.Combine(dir, name + (index > 0 ? index + "" : "") + ext);
+            var path = Path.Combine(dir, name + _saveFileBakSuffix + (index > 0 ? index + "" : "") + ext);
             if (!System.IO.File.Exists(path)) return;
 
             if (index == maxBakIndex)
@@ -70,7 +71,7 @@ namespace TranslationHelper.Menus.MainMenus.File
             }
             else
             {
-                System.IO.File.Move(path, Path.Combine(dir, name + (index + 1) + ext));
+                System.IO.File.Move(path, Path.Combine(dir, name + _saveFileBakSuffix + (index + 1) + ext));
             }
         }
 
