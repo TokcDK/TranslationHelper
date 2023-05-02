@@ -11,30 +11,30 @@ namespace TranslationHelper.Extensions
         /// Set value to selected row.
         /// Use invoke in debug
         /// </summary>
-        /// <param name="selectedRow"></param>
+        /// <param name="inputRow"></param>
         /// <param name="columnIndex"></param>
         /// <param name="value"></param>
-        internal static void SetValue(this DataRow selectedRow, int columnIndex, object value)
+        internal static void SetValue(this DataRow inputRow, int columnIndex, object value)
         {
 #if DEBUG
-            AppData.Main.Invoke((Action)(() => selectedRow.SetField(columnIndex, value)));
+            AppData.Main.Invoke((Action)(() => inputRow.SetField(columnIndex, value)));
 #else
-            selectedRow.SetField(columnIndex, value);
+            inputRow.SetField(columnIndex, value);
 #endif
         }
         /// <summary>
         /// Set value to selected row.
         /// Use invoke in debug
         /// </summary>
-        /// <param name="selectedRow"></param>
+        /// <param name="inputRow"></param>
         /// <param name="columnName"></param>
         /// <param name="value"></param>
-        internal static void SetValue(this DataRow selectedRow, string columnName, object value)
+        internal static void SetValue(this DataRow inputRow, string columnName, object value)
         {
 #if DEBUG
-            AppData.Main.Invoke((Action)(() => selectedRow.SetField(columnName, value)));
+            AppData.Main.Invoke((Action)(() => inputRow.SetField(columnName, value)));
 #else
-            selectedRow.SetField(columnName, value);
+            inputRow.SetField(columnName, value);
 #endif
         }
 
