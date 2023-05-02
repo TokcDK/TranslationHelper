@@ -526,6 +526,7 @@ namespace TranslationHelper
                     {
                         // in info always one query
                         var infoValue = (AppData.CurrentProject.FilesContentInfo.Tables[tableIndex].Rows[rowIndex].Field<string>(0));
+
                         if (GetCheckResult(row2check, new string[1] { infoValue }, searchQueryText) == SearchResult.Error) return;
                     }
                     else if (isIssuesSearch && IsTheRowHasPossibleIssues(row2check)) //search rows with possible issues
@@ -563,6 +564,9 @@ namespace TranslationHelper
 
         private SearchResult GetCheckResult(DataRow row, string[] textWhereToSearch, string[] strQuery)
         {
+            if (string.IsNullOrEmpty(textWhereToSearch[_isDoubleSearch ? 1 : 0]))
+                return SearchResult.NotFound; // skip when value to search is empty, check translation in case of double search
+
             if (SearchModeRegexRadioButton.Checked) // regex check
             {
                 return CheckTextByRegex(row, textWhereToSearch, strQuery);
