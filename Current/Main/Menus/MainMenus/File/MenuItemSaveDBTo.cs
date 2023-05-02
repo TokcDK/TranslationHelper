@@ -23,8 +23,8 @@ namespace TranslationHelper.Menus.MainMenus.File
         {
             using (SaveFileDialog THFSaveBDAs = new SaveFileDialog())
             {
-                //THFSaveBDAs.Filter = "DB file|*.xml;*.cmx;*.cmz|XML-file|*.xml|Gzip compressed DB (*.cmx)|*.cmx|Deflate compressed DB (*.cmz)|*.cmz";
-                THFSaveBDAs.Filter = FunctionsDBFile.GetDBFormatsFilters();
+                var selectedFormat = FunctionsInterfaces.GetCurrentDBFormat();
+                THFSaveBDAs.Filter = $"{selectedFormat.Description}|*.{selectedFormat.Ext}";
 
                 THFSaveBDAs.InitialDirectory = FunctionsDBFile.GetProjectDBFolder();
                 THFSaveBDAs.FileName = FunctionsDBFile.GetDBFileName(true) + FunctionsDBFile.GetDBCompressionExt();
