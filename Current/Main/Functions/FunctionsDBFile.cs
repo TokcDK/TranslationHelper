@@ -102,14 +102,14 @@ namespace TranslationHelper.Main.Functions
         /// <param name="read"></param>
         internal static void ReadWriteDBFile(DataSet dataSet, string dbFilePath, bool read = true, bool useOriginaldbFilePath = false)
         {
-            var DBFormat = FunctionsInterfaces.GetCurrentDBFormat();
-            dbFilePath = useOriginaldbFilePath ? dbFilePath : Path.Combine(Path.GetDirectoryName(dbFilePath), Path.GetFileNameWithoutExtension(dbFilePath) + "." + DBFormat.Ext);
+            var dbFormat = FunctionsInterfaces.GetCurrentDBFormat();
+            dbFilePath = useOriginaldbFilePath ? dbFilePath : Path.Combine(Path.GetDirectoryName(dbFilePath), Path.GetFileNameWithoutExtension(dbFilePath) + "." + dbFormat.Ext);
             Directory.CreateDirectory(Path.GetDirectoryName(dbFilePath));
             using (var fs = new FileStream(dbFilePath, read ? FileMode.Open : FileMode.Create))
             {
                 Stream s;
                 //string fileExtension = Path.GetExtension(fileName);
-                s = DBFormat.FileStreamMod(fs, read);
+                s = dbFormat.FileStreamMod(fs, read);
 
                 if (read)
                 {
