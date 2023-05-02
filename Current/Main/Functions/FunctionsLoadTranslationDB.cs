@@ -633,25 +633,21 @@ namespace TranslationHelper.Functions
         internal async static void LoadTranslationIfNeed()
         {
             var dbPath = Path.Combine(FunctionsDBFile.GetProjectDBFolder(), FunctionsDBFile.GetDBFileName() + FunctionsDBFile.GetDBCompressionExt());
-            if (!File.Exists(dbPath))
+            if (!File.Exists(dbPath)) FunctionsDBFile.SearchByAllDBFormatExtensions(ref dbPath);
+
+            if (!File.Exists(dbPath)) return;
+
+            var loadFoundDBQuestion = MessageBox.Show(T._("Found translation DB. Load it?"), T._("Load translation DB"), MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
+            if (loadFoundDBQuestion == DialogResult.Yes)
             {
-                FunctionsDBFile.SearchByAllDBFormatExtensions(ref dbPath);
+                await Task.Run(() => AppData.Main.LoadTranslationFromDB(dbPath, false, true)).ConfigureAwait(false);
             }
-            if (File.Exists(dbPath))
+            else
             {
-                var loadFoundDBQuestion = MessageBox.Show(T._("Found translation DB. Load it?"), T._("Load translation DB"), MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
-                if (loadFoundDBQuestion == DialogResult.Yes)
-                {
-                    await Task.Run(() => AppData.Main.LoadTranslationFromDB(dbPath, false, true)).ConfigureAwait(false);
-                }
-                else
-                {
-                    var loadTranslationsFromAllDBQuestion = MessageBox.Show(T._("Try to find translations in all avalaible DB? (Can take some time)"), T._("Load all DB"), MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
-                    if (loadTranslationsFromAllDBQuestion == DialogResult.Yes)
-                    {
-                        await Task.Run(() => AppData.Main.LoadTranslationFromDB(string.Empty, true)).ConfigureAwait(false);
-                    }
-                }
+                var loadTranslationsFromAllDBQuestion = MessageBox.Show(T._("Try to find translations in all avalaible DB? (Can take some time)"), T._("Load all DB"), MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
+                if (loadTranslationsFromAllDBQuestion != DialogResult.Yes) return;
+
+                await Task.Run(() => AppData.Main.LoadTranslationFromDB(string.Empty, true)).ConfigureAwait(false);
             }
         }
     }
