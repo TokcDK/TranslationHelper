@@ -245,30 +245,32 @@ namespace TranslationHelper.Main.Functions
             return false;
         }
 
-        public static string TranslationCacheFind(DataSet DS, string Input)
+        public static string TranslationCacheFind(DataSet dataSet, string inputString)
         {
-            if (AppSettings.EnableTranslationCache)
+            if (!AppSettings.EnableTranslationCache)
             {
-                if (!string.IsNullOrEmpty(Input) && DS != null)
+                return string.Empty;
+            }
+            if (string.IsNullOrEmpty(inputString) || dataSet == null)
+            {
+                return string.Empty;
+            }
+            using (var table = dataSet.Tables[0])
+            {
+                if (!GetAlreadyAddedInTableAndTableHasRowsColumns(table, inputString))
                 {
-                    using (var Table = DS.Tables[0])
+                    return string.Empty;
+                }
+                var rowsCount = table.Rows.Count;
+                for (int i = 0; i < rowsCount; i++)
+                {
+                    if (Equals(inputString, table.Rows[i].Field<string>(0)))
                     {
-                        if (GetAlreadyAddedInTableAndTableHasRowsColumns(Table, Input))
-                        {
-                            var RowsCount = Table.Rows.Count;
-                            for (int i = 0; i < RowsCount; i++)
-                            {
-                                //MessageBox.Show("Input=" + Input+"\r\nCache="+ THTranslationCache.Tables["TranslationCache"].Rows[i][0].ToString());
-                                if (Equals(Input, Table.Rows[i].Field<string>(0)))
-                                {
-                                    return Table.Rows[i].Field<string>(1);
-                                }
-                            }
-                        }
+                        return table.Rows[i].Field<string>(1);
                     }
                 }
+                return string.Empty;
             }
-            return string.Empty;
         }
 
         public static DataTable RemoveAllRowsDuplicatesWithRepeatingOriginals(DataTable table)
