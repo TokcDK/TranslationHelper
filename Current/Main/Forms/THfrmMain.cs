@@ -1333,7 +1333,7 @@ namespace TranslationHelper
 
                 WriteDBFileIsBusy = true;
                 WriteDBFileLiteLastFileName = fileName;
-                using (DataSet liteds = FunctionsTable.FillTempDB(ds))
+                using (DataSet liteds = FunctionsTable.GetDataSetWithoutEmptyTableRows(ds))
                 {
                     await Task.Run(() => FunctionsDBFile.WriteDBFile(liteds, fileName)).ConfigureAwait(true);
                 }

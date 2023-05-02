@@ -489,30 +489,28 @@ namespace TranslationHelper.Main.Functions
         /// </summary>
         /// <param name="dataSet"></param>
         /// <returns></returns>
-        public static DataSet FillTempDB(DataSet dataSet)
+        public static DataSet GetDataSetWithoutEmptyTableRows(DataSet dataSet)
         {
-            DataSet retDS = new DataSet();
+            var retDS = new DataSet();
+            int translationColumnIndex = AppData.CurrentProject.TranslationColumnIndex;
             int tablesCount = dataSet.Tables.Count;
             for (int t = 0; t < tablesCount; t++)
             {
                 var table = dataSet.Tables[t];
                 string tname = table.TableName;
-                retDS.Tables.Add(tname);
-                retDS.Tables[tname].Columns.Add(THSettings.OriginalColumnName);
-                retDS.Tables[tname].Columns.Add(THSettings.TranslationColumnName);
-                int rowsCount = table.Rows.Count;
-                for (int r = 0; r < rowsCount; r++)
+                var retDStable = table.Clone();
+                retDStable.TableName = tname;
+                foreach(DataRow row in table.Rows)
                 {
-                    var row = table.Rows[r];
-                    var cellTranslation = row.Field<string>(1);
+                    var cellTranslation = row.Field<string>(translationColumnIndex);
                     if (!string.IsNullOrEmpty(cellTranslation))
                     {
-                        retDS.Tables[tname].ImportRow(row);
+                        retDStable.ImportRow(row);
                     }
                 }
-                if (retDS.Tables[tname].Rows.Count == 0)
+                if (retDStable.Rows.Count == 0)
                 {
-                    retDS.Tables.Remove(tname);
+                    retDS.Tables.Remove(retDStable);
                 }
             }
 
