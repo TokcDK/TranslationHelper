@@ -90,9 +90,9 @@ namespace TranslationHelper.Main.Functions
         public static string GetDBFormatsFilters()
         {
             var formats = FunctionsInterfaces.GetDBSaveFormats();
-            var formatsFilters = formats.Select(f => $"*.{f.Ext};");
-            var formatsIndividualFilters = formats.Select(f => $"|{f.Description}|*.{f.Ext}");
-            return $"DB file|{formatsFilters}{formatsIndividualFilters}|All|*.*";
+            var formatsFilters = "DB file|" + string.Join("",formats.Select(f => $"*.{f.Ext};"));
+            var formatsIndividualFilters = string.Join("", formats.Select(f => $"|{f.Description}|*.{f.Ext}"));
+            return $"{formatsFilters}{formatsIndividualFilters}|All|*.*";
         }
 
         /// <summary>
