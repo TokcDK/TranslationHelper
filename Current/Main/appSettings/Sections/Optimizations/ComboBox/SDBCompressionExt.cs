@@ -23,8 +23,8 @@ namespace TranslationHelper.INISettings
             }
         }
 
-        List<IDBSave> formats;
-        readonly IDBSave defaultformat = new XML();
+        List<IDataBaseFileFormat> formats;
+        readonly IDataBaseFileFormat defaultformat = new XML();
 
         internal override string Key => "DBCompressionExt";
 

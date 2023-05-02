@@ -90,7 +90,7 @@ namespace TranslationHelper.Main.Functions
         /// <param name="dbFilePath"></param>
         public static void WriteDBFile(DataSet dataSet, string dbFilePath, bool useOriginaldbFilePath = false)
         {
-            ReadWriteDBFile(dataSet: dataSet, dbFilePath: dbFilePath, read: false, useOriginaldbFilePath: useOriginaldbFilePath);
+            ReadWriteDBFile(dataSet: dataSet, dbFilePath: dbFilePath, isRead: false, useOriginaldbFilePath: useOriginaldbFilePath);
         }
 
         private static readonly ReaderWriterLockSlim _writeXmlLocker = new ReaderWriterLockSlim();
@@ -99,41 +99,19 @@ namespace TranslationHelper.Main.Functions
         /// </summary>
         /// <param name="dataSet"></param>
         /// <param name="dbFilePath"></param>
-        /// <param name="read"></param>
-        internal static void ReadWriteDBFile(DataSet dataSet, string dbFilePath, bool read = true, bool useOriginaldbFilePath = false)
+        /// <param name="isRead"></param>
+        internal static void ReadWriteDBFile(DataSet dataSet, string dbFilePath, bool isRead = true, bool useOriginaldbFilePath = false)
         {
             var dbFormat = FunctionsInterfaces.GetCurrentDBFormat();
             dbFilePath = useOriginaldbFilePath ? dbFilePath : Path.Combine(Path.GetDirectoryName(dbFilePath), Path.GetFileNameWithoutExtension(dbFilePath) + "." + dbFormat.Ext);
             Directory.CreateDirectory(Path.GetDirectoryName(dbFilePath));
-            using (var fs = new FileStream(dbFilePath, read ? FileMode.Open : FileMode.Create))
+            if (isRead)
             {
-                Stream s;
-                //string fileExtension = Path.GetExtension(fileName);
-                s = dbFormat.FileStreamMod(fs, read);
-
-                if (read)
-                {
-                    try
-                    {
-                        dataSet.ReadXml(s);
-                    }
-                    catch (InvalidDataException) { }
-                    catch (IOException) { }
-                }
-                else
-                {
-                    _writeXmlLocker.EnterWriteLock();
-                    try
-                    {
-                        dataSet.WriteXml(s);
-                    }
-                    finally
-                    {
-                        _writeXmlLocker.ExitWriteLock();
-                    }
-                }
-
-                s.Close();
+                dbFormat.Read(dbFilePath, dataSet);
+            }
+            else
+            {
+                dbFormat.Write(dbFilePath, dataSet);
             }
         }
 
@@ -141,10 +119,10 @@ namespace TranslationHelper.Main.Functions
         /// gets current selected format of database file
         /// </summary>
         /// <returns></returns>
-        internal static IDBSave GetCurrentDBFormat()
+        internal static IDataBaseFileFormat GetCurrentDBFormat()
         {
-            IDBSave Format = new XML();
-            foreach (var f in GetListOfSubClasses.Inherited.GetListOfInterfaceImplimentations<IDBSave>())
+            IDataBaseFileFormat Format = new XML();
+            foreach (var f in GetListOfSubClasses.Inherited.GetListOfInterfaceImplimentations<IDataBaseFileFormat>())
             {
                 if (f.Description == AppSettings.DBCompressionExt) return f;
             }

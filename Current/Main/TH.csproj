@@ -286,7 +286,7 @@
     <Compile Include="Formats\zzzOtherFormat\TXTStringPerLine.cs" />
     <Compile Include="Functions\DBSaveFormats\CMZ.cs" />
     <Compile Include="Functions\DBSaveFormats\CMX.cs" />
-    <Compile Include="Functions\DBSaveFormats\DBSaveBase.cs" />
+    <Compile Include="Functions\DBSaveFormats\IDataBaseFileFormat.cs" />
     <Compile Include="Functions\DBSaveFormats\XML.cs" />
     <Compile Include="Functions\FileElementsFunctions\Row\ApplyAfterFillBufferWithOriginalsBase.cs" />
     <Compile Include="Functions\FileElementsFunctions\Row\AutoSameForSimular\AutoSameForSimularForce.cs" />

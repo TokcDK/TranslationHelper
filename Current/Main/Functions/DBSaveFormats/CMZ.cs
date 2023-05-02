@@ -3,15 +3,18 @@ using System.IO.Compression;
 
 namespace TranslationHelper.Functions.DBSaveFormats
 {
-    class CMZ : IDBSave
+    /// <summary>
+    /// XML compressed using Deflate
+    /// </summary>
+    class CMZ : XML, IDataBaseFileFormat
     {
-        string IDBSave.Ext => "cmz";
+        string IDataBaseFileFormat.Ext => "cmz";
 
-        string IDBSave.Description => "Deflate compressed xml";
+        string IDataBaseFileFormat.Description => "Deflate Compressed xml";
 
-        Stream IDBSave.FileStreamMod(FileStream DBInputFileStream, bool IsRead)
+        protected override Stream FileStreamMod(FileStream dbInputFileStream, bool isRead)
         {
-            return new DeflateStream(DBInputFileStream, IsRead ? CompressionMode.Decompress : CompressionMode.Compress);
+            return new DeflateStream(dbInputFileStream, isRead ? CompressionMode.Decompress : CompressionMode.Compress);
         }
     }
 }
