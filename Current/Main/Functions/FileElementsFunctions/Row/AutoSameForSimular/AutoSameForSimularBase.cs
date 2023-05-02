@@ -126,7 +126,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
             catch { }
 
             //set same value for duplicates from row coordinates list
-            if (weUseDuplicates) SetSameIfUseDups(inputTable, inputOriginalValueFixedDigits, inputRowIndex, inputForceSetValue, inputTranslationValueFixedDigits);
+            if (weUseDuplicates) SetSameIfUseDups(inputTable, inputTableRowOriginalCellValue, inputRowIndex, inputForceSetValue, inputTableRowTranslationCellValue);
 
             //проверка для предотвращения ситуации с ошибкой, когда, например, строка "\{\V[11] \}万円手に入れた！" с японского будет переведена как "\ {\ V [11] \} You got 10,000 yen!" и число совпадений по числам поменяется, т.к. 万 [man] переводится как 10000.
             if (AppSettings.IsJapaneseSourceLanguage
@@ -140,7 +140,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
             int inputOriginalAnyNumRegexMatchesCount = inputOriginalAnyNumRegexMatches.Count;
 
             // Standart rows scan
-            var coordinatesByInputOriginal = AppData.CurrentProject.OriginalsTableRowCoordinates[inputOriginalValueFixedDigits];
+            var coordinatesByInputOriginal = AppData.CurrentProject.OriginalsTableRowCoordinates[inputTableRowOriginalCellValue];
             var tables = AppData.CurrentProject.FilesContent.Tables;
             int tablesCount = tables.Count;
 
@@ -192,7 +192,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
                     // set to translatino when original is same and translation is null or empty, and continue
                     if ((isEmptyTargetTranslation || inputForceSetValue) && !weUseDuplicates && targetOriginalCellValue.Equals(inputOriginalValueFixedDigits))
                     {
-                        targetRow[translationColumnIndex] = inputTranslationValueFixedDigits;
+                        targetRow[translationColumnIndex] = inputTableRowTranslationCellValue;
 
                         continue;
                     }
@@ -201,7 +201,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
                     if (isEmptyTargetTranslation) continue;
 
                     // skip when was parsed with multi extraction
-                    if (ParsedWithExtractMulti(targetOriginalCellValue, targetTranslationCellValue, inputOriginalValueFixedDigits, inputTranslationValueFixedDigits, targetRow))
+                    if (ParsedWithExtractMulti(targetOriginalCellValue, targetTranslationCellValue, inputTableRowOriginalCellValue, inputTableRowTranslationCellValue, targetRow))
                     {
                         continue;
                     }
