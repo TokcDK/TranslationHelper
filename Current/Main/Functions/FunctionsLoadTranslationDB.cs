@@ -13,14 +13,12 @@ namespace TranslationHelper.Functions
 {
     class FunctionsLoadTranslationDB
     {
-
-
         public FunctionsLoadTranslationDB()
         {
 
         }
 
-        internal void THLoadDBCompare(DataSet THTempDS)
+        internal static void THLoadDBCompare(DataSet THTempDS)
         {
             if (!AppSettings.IsFullComprasionDBloadEnabled && FunctionsTable.IsDataSetsElementsCountIdentical(AppData.CurrentProject.FilesContent, THTempDS))
             {
@@ -142,7 +140,7 @@ namespace TranslationHelper.Functions
             AppData.Main.ProgressInfo(false);
         }
 
-        private void CompareLiteIfIdentical(DataSet tHTempDS)
+        private static void CompareLiteIfIdentical(DataSet tHTempDS)
         {
             int tcount = AppData.CurrentProject.FilesContent.Tables.Count;
             string infomessage = T._("Load") + " " + T._(THSettings.TranslationColumnName) + ":";
@@ -193,7 +191,7 @@ namespace TranslationHelper.Functions
         /// </summary>
         /// <param name="db"></param>
         /// <param name="forced"></param>
-        internal void THLoadDBCompareFromDictionary(Dictionary<string, string> db, bool forced = false)
+        internal static void THLoadDBCompareFromDictionary(Dictionary<string, string> db, bool forced = false)
         {
             //Stopwatch timer = new Stopwatch();
             //timer.Start();
@@ -301,7 +299,7 @@ namespace TranslationHelper.Functions
         /// </summary>
         /// <param name="db"></param>
         /// <param name="forced"></param>
-        internal void THLoadDBCompareFromDictionaryParallellTables(Dictionary<string, string> db, bool forced = false)
+        internal static void THLoadDBCompareFromDictionaryParallellTables(Dictionary<string, string> db, bool forced = false)
         {
             //Stopwatch timer = new Stopwatch();
             //timer.Start();
@@ -406,30 +404,32 @@ namespace TranslationHelper.Functions
         /// load translation from dictionary to dataset tables (Parallell tables variant)
         /// </summary>
         /// <param name="db"></param>
-        /// <param name="forced"></param>
-        internal void THLoadDBCompareFromDictionaryParallellTables(Dictionary<string/*original*/, Dictionary<string/*table name*/, Dictionary<int/*row index*/, string/*translation*/>>> db, bool forced = false)
+        /// <param name="forceOverwriteTranslations"></param>
+        internal static void THLoadDBCompareFromDictionaryParallellTables(Dictionary<string/*original*/, Dictionary<string/*table name*/, Dictionary<int/*row index*/, string/*translation*/>>> db, bool forceOverwriteTranslations = false)
         {
             //Stopwatch timer = new Stopwatch();
             //timer.Start();
 
+            var tables = AppData.CurrentProject.FilesContent.Tables;
+
             //Для оптимизации поиск оригинала в обеих таблицах перенесен в начало, чтобы не повторялся
-            int otranscol = AppData.CurrentProject.FilesContent.Tables[0].Columns[THSettings.TranslationColumnName].Ordinal;
+            int otranscol = tables[0].Columns[THSettings.TranslationColumnName].Ordinal;
             if (otranscol == 0 || otranscol == -1)//если вдруг колонка была только одна
             {
                 return;
             }
 
             //int RecordsCounter = 1;
-            int tcount = AppData.CurrentProject.FilesContent.Tables.Count;
-            string infomessage = T._("Load") + " " + T._(THSettings.TranslationColumnName) + ":";
+            int tablesCount = tables.Count;
+            string infoMessage = T._("Load") + " " + T._(THSettings.TranslationColumnName) + ":";
             //проход по всем таблицам рабочего dataset
 
-            Parallel.For(0, tcount, t =>
+            Parallel.For(0, tablesCount, tableIndex =>
             //for (int t = 0; t < tcount; t++)
             {
                 //выключение таблицы, если она была открыта, для предотвращения тормозов из за прорисовки
                 bool b = false;
-                AppData.Main.Invoke((Action)(() => b = AppData.Main.THFileElementsDataGridView.DataSource != null && AppData.Main.THFilesList.GetSelectedIndex() == t));
+                AppData.Main.Invoke((Action)(() => b = AppData.Main.THFileElementsDataGridView.DataSource != null && AppData.Main.THFilesList.GetSelectedIndex() == tableIndex));
                 if (b)
                 {
                     AppData.Main.Invoke((Action)(() => AppData.Main.THFileElementsDataGridView.DataSource = null));
@@ -437,71 +437,47 @@ namespace TranslationHelper.Functions
                     AppData.Main.Invoke((Action)(() => AppData.Main.THFileElementsDataGridView.Refresh()));
                 }
 
-                using (var Table = AppData.CurrentProject.FilesContent.Tables[t])
+                using (var table = tables[tableIndex])
                 {
-                    var RowIndexShift = 0;
-
                     //skip table if there is no untranslated lines
-                    if (!forced && FunctionsTable.IsTableColumnCellsAll(Table))
+                    if (!forceOverwriteTranslations && FunctionsTable.IsTableColumnCellsAll(table))
                         return;
 
-                    string tableprogressinfo = infomessage + Table.TableName + ">" + t + "/" + tcount;
-                    AppData.Main.ProgressInfo(true, tableprogressinfo);
+                    string tableProgressInfo = infoMessage + table.TableName + ">" + tableIndex + "/" + tablesCount;
+                    AppData.Main.ProgressInfo(true, tableProgressInfo);
 
-                    int rcount = Table.Rows.Count;
+                    var rows = table.Rows;
+                    int rowsCount = rows.Count;
                     //проход по всем строкам таблицы рабочего dataset
-                    for (int r = 0; r < rcount; r++)
+                    for (int rowIndex = 0; rowIndex < rowsCount; rowIndex++)
                     {
-                        //ProjectData.Main.ProgressInfo(true, tableprogressinfo + "[" + r + "/" + rcount + "]");
-                        var Row = Table.Rows[r];
-                        var CellTranslation = Row.Field<string>(otranscol);
-                        if (forced || CellTranslation == null || string.IsNullOrEmpty(CellTranslation))
+                        var row = rows[rowIndex];
+                        var translationValue = row.Field<string>(otranscol);
+                        if (forceOverwriteTranslations || string.IsNullOrEmpty(translationValue))
                         {
-                            var origCellValue = Row.Field<string>(0);
+                            var origCellValue = row.Field<string>(0);
                             var found = false;
                             bool isRN = origCellValue.IndexOf("\r\n") != -1;
-                            if (db.ContainsKey(origCellValue) || db.ContainsKey(origCellValue = origCellValue.Replace(isRN ? "\r\n" : "\n", isRN ? "\n" : "\r\n")))
+                            bool isFoundByOriginal = db.TryGetValue(origCellValue, out var dbFilesListByOriginal);
+                            if (!isFoundByOriginal) origCellValue = origCellValue.Replace(isRN ? "\r\n" : "\n", isRN ? "\n" : "\r\n");
+                            bool isFoundByOriginalAltNewlineSymbols = db.TryGetValue(origCellValue, out var dbFilesListByOriginalAltNewLine);
+                            if (isFoundByOriginal || isFoundByOriginalAltNewlineSymbols)
                             {
-                                var dbo = db[origCellValue];
-                                if (dbo.ContainsKey(Table.TableName))
+                                var dbFoundFilesListByOriginal = isFoundByOriginal ? dbFilesListByOriginal : dbFilesListByOriginalAltNewLine;
+                                if (dbFoundFilesListByOriginal.TryGetValue(table.TableName, out var dbFileLinesListByRowIndex))
                                 {
-                                    var RowIndexWithShift = r + RowIndexShift;
-                                    var dbt = dbo[Table.TableName];
-                                    if (dbt.ContainsKey(r) /*&& !string.IsNullOrEmpty(db[origCellValue][Table.TableName][RowIndexWithShift])*/)
+                                    var dbTranslations = dbFileLinesListByRowIndex;
+                                    if (dbTranslations.TryGetValue(rowIndex, out string dbTranslation))
                                     {
-                                        Row[otranscol] = dbt[RowIndexWithShift];
+                                        row.SetField(otranscol, dbTranslation);
                                         found = true;
                                     }
                                     else
                                     {
-                                        //for (int s = 0; s < rcount; s++)
-                                        //{
-                                        //    var sshift = RowIndexShift + s;
-
-                                        //    if (sshift >= rcount)
-                                        //    {
-                                        //        break;
-                                        //    }
-
-                                        //    if (dbt.ContainsKey(RowIndexShift))
-                                        //    {
-                                        //        RowIndexShift = sshift;
-                                        //        Row[otranscol] = dbt[sshift];
-                                        //        found = true;
-                                        //    }
-                                        //}
-                                        //if (!found)
-                                        //{
-                                        //    foreach (var tr in dbt.Values)
-                                        //    {
-                                        //        Row[otranscol] = tr;
-                                        //        found = true;
-                                        //        break;
-                                        //    }
-                                        //}
-                                        foreach (var tr in dbt.Values)
+                                        // get first translation from list
+                                        foreach (var tr in dbTranslations.Values)
                                         {
-                                            Row[otranscol] = tr;
+                                            row.SetField(otranscol, tr);
                                             found = true;
                                             break;
                                         }
@@ -513,7 +489,7 @@ namespace TranslationHelper.Functions
                                     {
                                         foreach (var tr in tn.Values)
                                         {
-                                            Row[otranscol] = tr;
+                                            row.SetField(otranscol, tr);
                                             found = true;
                                             break;
                                         }
@@ -527,16 +503,16 @@ namespace TranslationHelper.Functions
                                 if (origCellValue.IsMultiline())
                                 {
                                     bool IsAllLinesTranslated = true;
-                                    List<string> mergedlines = new List<string>();
+                                    var mergedlines = new List<string>();
                                     foreach (var line in origCellValue.SplitToLines())
                                     {
                                         if (line.HaveMostOfRomajiOtherChars())
                                         {
                                             mergedlines.Add(line);
                                         }
-                                        else if (db.ContainsKey(line) /*&& db[line].Length > 0*/)
+                                        else if (db.TryGetValue(line, out var tablesList))
                                         {
-                                            foreach (var tn in db[line].Values)
+                                            foreach (var tn in tablesList.Values)
                                             {
                                                 foreach (var tr in tn.Values)
                                                 {
@@ -553,7 +529,7 @@ namespace TranslationHelper.Functions
                                     }
                                     if (IsAllLinesTranslated && mergedlines.Count > 0)
                                     {
-                                        Row[otranscol] = string.Join(Environment.NewLine, mergedlines);
+                                        row.SetField(otranscol, string.Join(Environment.NewLine, mergedlines));
                                     }
                                 }
                             }
@@ -566,7 +542,7 @@ namespace TranslationHelper.Functions
                     AppData.Main.Invoke((Action)(() => b = AppData.Main.THFileElementsDataGridView.DataSource == null && AppData.Main.THFilesList.GetSelectedIndex() == -1));
                     if (b)
                     {
-                        AppData.Main.Invoke((Action)(() => AppData.Main.THFileElementsDataGridView.DataSource = AppData.CurrentProject.FilesContent.Tables[t]));
+                        AppData.Main.Invoke((Action)(() => AppData.Main.THFileElementsDataGridView.DataSource = tables[tableIndex]));
                         AppData.Main.Invoke((Action)(() => AppData.Main.THFileElementsDataGridView.Update()));
                         AppData.Main.Invoke((Action)(() => AppData.Main.THFileElementsDataGridView.Refresh()));
                     }
@@ -581,7 +557,7 @@ namespace TranslationHelper.Functions
             System.Media.SystemSounds.Beep.Play();
         }
 
-        internal void THLoadDBCompareFromDictionaryParallelRows(Dictionary<string, string> db)
+        internal static void THLoadDBCompareFromDictionaryParallelRows(Dictionary<string, string> db)
         {
             //Stopwatch timer = new Stopwatch();
             //timer.Start();
@@ -652,7 +628,7 @@ namespace TranslationHelper.Functions
         /// loading dict db but preget table-row data from main tables
         /// </summary>
         /// <param name="db"></param>
-        internal void THLoadDBCompareFromDictionary2(Dictionary<string, string> db)
+        internal static void THLoadDBCompareFromDictionary2(Dictionary<string, string> db)
         {
             //Stopwatch timer = new Stopwatch();
             //timer.Start();
