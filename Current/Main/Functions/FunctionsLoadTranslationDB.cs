@@ -430,11 +430,7 @@ namespace TranslationHelper.Functions
                                     var dbTranslations = dbFileLinesListByRowIndex;
                                     if (dbTranslations.TryGetValue(rowIndex, out string dbTranslation))
                                     {
-                                        if(!row.Field<string>(otranscol).Equals(dbTranslation))
-                                        {
-                                            row.SetField(otranscol, dbTranslation);
-                                        }
-
+                                        row.SetValue(otranscol, dbTranslation);
                                         found = true;
                                     }
                                     else
@@ -442,10 +438,7 @@ namespace TranslationHelper.Functions
                                         // get first translation from list
                                         foreach (var tr in dbTranslations.Values)
                                         {
-                                            if (!row.Field<string>(otranscol).Equals(tr))
-                                            {
-                                                row.SetField(otranscol, tr);
-                                            }
+                                            row.SetValue(otranscol, tr);
                                             found = true;
                                             break;
                                         }
@@ -457,10 +450,7 @@ namespace TranslationHelper.Functions
                                     {
                                         foreach (var tr in tn.Values)
                                         {
-                                            if (!row.Field<string>(otranscol).Equals(tr))
-                                            {
-                                                row.SetField(otranscol, tr);
-                                            }
+                                            row.SetValue(otranscol, tr);
                                             found = true;
                                             break;
                                         }
@@ -500,11 +490,7 @@ namespace TranslationHelper.Functions
                                     }
                                     if (IsAllLinesTranslated && mergedlines.Count > 0)
                                     {
-                                        var mergedTranslation = string.Join(Environment.NewLine, mergedlines);
-                                        if (!row.Field<string>(otranscol).Equals(mergedTranslation))
-                                        {
-                                            row.SetField(otranscol, mergedTranslation);
-                                        }
+                                        row.SetValue(otranscol, string.Join(Environment.NewLine, mergedlines));
                                     }
                                 }
                             }
