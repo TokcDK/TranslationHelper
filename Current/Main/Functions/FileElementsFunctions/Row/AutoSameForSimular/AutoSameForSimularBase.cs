@@ -261,11 +261,14 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
 
         public static void SetSameIfUseDups(DataTable inputTable, string inputOriginalValue, int inputRowIndex, bool inputForceSetValue, string inputTranslationValue)
         {
+            if (!AppData.CurrentProject.OriginalsTableRowCoordinates.TryGetValue(inputOriginalValue, out var storedTableNames)) return;
+
             var inputTableName = inputTable.TableName;
-            foreach (var storedTableName in AppData.CurrentProject.OriginalsTableRowCoordinates[inputOriginalValue])
+            foreach (var storedTableName in storedTableNames)
             {
+                if (!AppData.CurrentProject.FilesContent.Tables.Contains(storedTableName.Key)) continue;
+
                 var table = AppData.CurrentProject.FilesContent.Tables[storedTableName.Key];
-                if (table == null) continue;
 
                 foreach (var storedRowIndex in storedTableName.Value)
                 {

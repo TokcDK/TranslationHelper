@@ -38,6 +38,7 @@
             this.ConfirmReplaceAllCheckBox = new System.Windows.Forms.CheckBox();
             this.SearchAlwaysOnTopCheckBox = new System.Windows.Forms.CheckBox();
             this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
+            this.DoubleSearchOptionCheckBox = new System.Windows.Forms.CheckBox();
             this.chkbxDoNotTouchEqualOT = new System.Windows.Forms.CheckBox();
             this.THSearchMatchCaseCheckBox = new System.Windows.Forms.CheckBox();
             this.SearchInInfoCheckBox = new System.Windows.Forms.CheckBox();
@@ -51,6 +52,8 @@
             this.SearchModeNormalRadioButton = new System.Windows.Forms.RadioButton();
             this.SearchModeRegexRadioButton = new System.Windows.Forms.RadioButton();
             this.panel5 = new System.Windows.Forms.Panel();
+            this.SearchRangeVisibleRadioButton = new System.Windows.Forms.RadioButton();
+            this.SearchRangeSelectedRadioButton = new System.Windows.Forms.RadioButton();
             this.label5 = new System.Windows.Forms.Label();
             this.SearchRangeTableRadioButton = new System.Windows.Forms.RadioButton();
             this.SearchRangeAllRadioButton = new System.Windows.Forms.RadioButton();
@@ -70,8 +73,6 @@
             this.SearchFormFindWhatComboBox = new System.Windows.Forms.ComboBox();
             this.SearchFormReplaceWithComboBox = new System.Windows.Forms.ComboBox();
             this.label1 = new System.Windows.Forms.Label();
-            this.SearchRangeSelectedRadioButton = new System.Windows.Forms.RadioButton();
-            this.SearchRangeVisibleRadioButton = new System.Windows.Forms.RadioButton();
             this.THSearchTabs.SuspendLayout();
             this.THSearch1st.SuspendLayout();
             this.SearchResultsPanel.SuspendLayout();
@@ -140,12 +141,12 @@
             this.SearchResultsDatagridview.CellClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.SearchResultsDatagridview_CellClick_1);
             this.SearchResultsDatagridview.CellEnter += new System.Windows.Forms.DataGridViewCellEventHandler(this.SearchResultsDatagridview_CellEnter);
             // 
-            // lblError
+            // lblSearchMsg
             // 
             this.lblSearchMsg.AutoSize = true;
             this.lblSearchMsg.Location = new System.Drawing.Point(6, 294);
-            this.lblSearchMsg.Name = "lblError";
-            this.lblSearchMsg.Size = new System.Drawing.Size(25, 13);
+            this.lblSearchMsg.Name = "lblSearchMsg";
+            this.lblSearchMsg.Size = new System.Drawing.Size(24, 13);
             this.lblSearchMsg.TabIndex = 18;
             this.lblSearchMsg.Text = "info";
             this.lblSearchMsg.Visible = false;
@@ -188,7 +189,7 @@
             this.ConfirmReplaceAllCheckBox.CheckState = System.Windows.Forms.CheckState.Checked;
             this.ConfirmReplaceAllCheckBox.Location = new System.Drawing.Point(3, 3);
             this.ConfirmReplaceAllCheckBox.Name = "ConfirmReplaceAllCheckBox";
-            this.ConfirmReplaceAllCheckBox.Size = new System.Drawing.Size(87, 17);
+            this.ConfirmReplaceAllCheckBox.Size = new System.Drawing.Size(84, 17);
             this.ConfirmReplaceAllCheckBox.TabIndex = 23;
             this.ConfirmReplaceAllCheckBox.Text = "Confirmation";
             this.ConfirmReplaceAllCheckBox.UseVisualStyleBackColor = true;
@@ -210,28 +211,41 @@
             // 
             this.tableLayoutPanel1.ColumnCount = 1;
             this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.tableLayoutPanel1.Controls.Add(this.DoubleSearchOptionCheckBox, 0, 4);
             this.tableLayoutPanel1.Controls.Add(this.chkbxDoNotTouchEqualOT, 0, 3);
             this.tableLayoutPanel1.Controls.Add(this.THSearchMatchCaseCheckBox, 0, 0);
             this.tableLayoutPanel1.Controls.Add(this.SearchInInfoCheckBox, 0, 1);
             this.tableLayoutPanel1.Controls.Add(this.SearchFindLinesWithPossibleIssuesCheckBox, 0, 2);
             this.tableLayoutPanel1.Location = new System.Drawing.Point(135, 73);
             this.tableLayoutPanel1.Name = "tableLayoutPanel1";
-            this.tableLayoutPanel1.RowCount = 4;
+            this.tableLayoutPanel1.RowCount = 5;
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tableLayoutPanel1.Size = new System.Drawing.Size(283, 102);
+            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
+            this.tableLayoutPanel1.Size = new System.Drawing.Size(283, 118);
             this.tableLayoutPanel1.TabIndex = 27;
             // 
-            // ckkbxDoNotTouchEqualOT
+            // DoubleSearchOptionCheckBox
+            // 
+            this.DoubleSearchOptionCheckBox.AutoSize = true;
+            this.DoubleSearchOptionCheckBox.Location = new System.Drawing.Point(3, 95);
+            this.DoubleSearchOptionCheckBox.Name = "DoubleSearchOptionCheckBox";
+            this.DoubleSearchOptionCheckBox.Size = new System.Drawing.Size(95, 17);
+            this.DoubleSearchOptionCheckBox.TabIndex = 28;
+            this.DoubleSearchOptionCheckBox.Text = "Double search";
+            this.DoubleSearchOptionCheckBox.UseVisualStyleBackColor = true;
+            this.DoubleSearchOptionCheckBox.CheckedChanged += new System.EventHandler(this.DoubleSearchOptionCheckBox_CheckedChanged);
+            // 
+            // chkbxDoNotTouchEqualOT
             // 
             this.chkbxDoNotTouchEqualOT.AutoSize = true;
             this.chkbxDoNotTouchEqualOT.Checked = true;
             this.chkbxDoNotTouchEqualOT.CheckState = System.Windows.Forms.CheckState.Checked;
             this.chkbxDoNotTouchEqualOT.Location = new System.Drawing.Point(3, 72);
-            this.chkbxDoNotTouchEqualOT.Name = "ckkbxDoNotTouchEqualOT";
-            this.chkbxDoNotTouchEqualOT.Size = new System.Drawing.Size(182, 17);
+            this.chkbxDoNotTouchEqualOT.Name = "chkbxDoNotTouchEqualOT";
+            this.chkbxDoNotTouchEqualOT.Size = new System.Drawing.Size(176, 17);
             this.chkbxDoNotTouchEqualOT.TabIndex = 27;
             this.chkbxDoNotTouchEqualOT.Text = "Ignore Original=Translation lines";
             this.chkbxDoNotTouchEqualOT.UseVisualStyleBackColor = true;
@@ -241,7 +255,7 @@
             this.THSearchMatchCaseCheckBox.AutoSize = true;
             this.THSearchMatchCaseCheckBox.Location = new System.Drawing.Point(3, 3);
             this.THSearchMatchCaseCheckBox.Name = "THSearchMatchCaseCheckBox";
-            this.THSearchMatchCaseCheckBox.Size = new System.Drawing.Size(82, 17);
+            this.THSearchMatchCaseCheckBox.Size = new System.Drawing.Size(83, 17);
             this.THSearchMatchCaseCheckBox.TabIndex = 19;
             this.THSearchMatchCaseCheckBox.Text = "Match Case";
             this.THSearchMatchCaseCheckBox.UseVisualStyleBackColor = true;
@@ -251,7 +265,7 @@
             this.SearchInInfoCheckBox.AutoSize = true;
             this.SearchInInfoCheckBox.Location = new System.Drawing.Point(3, 26);
             this.SearchInInfoCheckBox.Name = "SearchInInfoCheckBox";
-            this.SearchInInfoCheckBox.Size = new System.Drawing.Size(59, 17);
+            this.SearchInInfoCheckBox.Size = new System.Drawing.Size(56, 17);
             this.SearchInInfoCheckBox.TabIndex = 26;
             this.SearchInInfoCheckBox.Text = "In Info";
             this.SearchInInfoCheckBox.UseVisualStyleBackColor = true;
@@ -261,7 +275,7 @@
             this.SearchFindLinesWithPossibleIssuesCheckBox.AutoSize = true;
             this.SearchFindLinesWithPossibleIssuesCheckBox.Location = new System.Drawing.Point(3, 49);
             this.SearchFindLinesWithPossibleIssuesCheckBox.Name = "SearchFindLinesWithPossibleIssuesCheckBox";
-            this.SearchFindLinesWithPossibleIssuesCheckBox.Size = new System.Drawing.Size(166, 17);
+            this.SearchFindLinesWithPossibleIssuesCheckBox.Size = new System.Drawing.Size(165, 17);
             this.SearchFindLinesWithPossibleIssuesCheckBox.TabIndex = 22;
             this.SearchFindLinesWithPossibleIssuesCheckBox.Text = "Find lines with possible issues";
             this.SearchFindLinesWithPossibleIssuesCheckBox.UseVisualStyleBackColor = true;
@@ -272,7 +286,7 @@
             this.ClearReplaceWithTextBoxLabel.AutoSize = true;
             this.ClearReplaceWithTextBoxLabel.Location = new System.Drawing.Point(419, 45);
             this.ClearReplaceWithTextBoxLabel.Name = "ClearReplaceWithTextBoxLabel";
-            this.ClearReplaceWithTextBoxLabel.Size = new System.Drawing.Size(13, 13);
+            this.ClearReplaceWithTextBoxLabel.Size = new System.Drawing.Size(12, 13);
             this.ClearReplaceWithTextBoxLabel.TabIndex = 25;
             this.ClearReplaceWithTextBoxLabel.Text = "x";
             this.ClearReplaceWithTextBoxLabel.Click += new System.EventHandler(this.ClearReplaceWithTextBoxLabel_Click);
@@ -282,7 +296,7 @@
             this.ClearFindWhatTextBoxLabel.AutoSize = true;
             this.ClearFindWhatTextBoxLabel.Location = new System.Drawing.Point(419, 18);
             this.ClearFindWhatTextBoxLabel.Name = "ClearFindWhatTextBoxLabel";
-            this.ClearFindWhatTextBoxLabel.Size = new System.Drawing.Size(13, 13);
+            this.ClearFindWhatTextBoxLabel.Size = new System.Drawing.Size(12, 13);
             this.ClearFindWhatTextBoxLabel.TabIndex = 24;
             this.ClearFindWhatTextBoxLabel.Text = "x";
             this.ClearFindWhatTextBoxLabel.Click += new System.EventHandler(this.ClearFindWhatTextBoxLabel_Click);
@@ -322,7 +336,7 @@
             this.label4.AutoSize = true;
             this.label4.Location = new System.Drawing.Point(3, 0);
             this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(33, 13);
+            this.label4.Size = new System.Drawing.Size(31, 13);
             this.label4.TabIndex = 12;
             this.label4.Text = "Input";
             // 
@@ -362,12 +376,34 @@
             this.panel5.Size = new System.Drawing.Size(149, 61);
             this.panel5.TabIndex = 15;
             // 
+            // SearchRangeVisibleRadioButton
+            // 
+            this.SearchRangeVisibleRadioButton.AutoSize = true;
+            this.SearchRangeVisibleRadioButton.Location = new System.Drawing.Point(71, 38);
+            this.SearchRangeVisibleRadioButton.Name = "SearchRangeVisibleRadioButton";
+            this.SearchRangeVisibleRadioButton.Size = new System.Drawing.Size(55, 17);
+            this.SearchRangeVisibleRadioButton.TabIndex = 14;
+            this.SearchRangeVisibleRadioButton.Text = "Visible";
+            this.SearchRangeVisibleRadioButton.UseVisualStyleBackColor = true;
+            this.SearchRangeVisibleRadioButton.Click += new System.EventHandler(this.SearchRangeVisibleRadioButton_Click);
+            // 
+            // SearchRangeSelectedRadioButton
+            // 
+            this.SearchRangeSelectedRadioButton.AutoSize = true;
+            this.SearchRangeSelectedRadioButton.Location = new System.Drawing.Point(71, 16);
+            this.SearchRangeSelectedRadioButton.Name = "SearchRangeSelectedRadioButton";
+            this.SearchRangeSelectedRadioButton.Size = new System.Drawing.Size(67, 17);
+            this.SearchRangeSelectedRadioButton.TabIndex = 13;
+            this.SearchRangeSelectedRadioButton.Text = "Selected";
+            this.SearchRangeSelectedRadioButton.UseVisualStyleBackColor = true;
+            this.SearchRangeSelectedRadioButton.Click += new System.EventHandler(this.SearchRangeSelectedRadioButton_Click);
+            // 
             // label5
             // 
             this.label5.AutoSize = true;
             this.label5.Location = new System.Drawing.Point(3, 0);
             this.label5.Name = "label5";
-            this.label5.Size = new System.Drawing.Size(38, 13);
+            this.label5.Size = new System.Drawing.Size(39, 13);
             this.label5.TabIndex = 12;
             this.label5.Text = "Range";
             // 
@@ -377,8 +413,9 @@
             this.SearchRangeTableRadioButton.Checked = true;
             this.SearchRangeTableRadioButton.Location = new System.Drawing.Point(3, 16);
             this.SearchRangeTableRadioButton.Name = "SearchRangeTableRadioButton";
-            this.SearchRangeTableRadioButton.Size = new System.Drawing.Size(51, 17);
+            this.SearchRangeTableRadioButton.Size = new System.Drawing.Size(52, 17);
             this.SearchRangeTableRadioButton.TabIndex = 7;
+            this.SearchRangeTableRadioButton.TabStop = true;
             this.SearchRangeTableRadioButton.Text = "Table";
             this.SearchRangeTableRadioButton.UseVisualStyleBackColor = true;
             this.SearchRangeTableRadioButton.Click += new System.EventHandler(this.SearchRangeTableRadioButton_Click);
@@ -418,7 +455,7 @@
             this.SearchMethodOriginalToTranslationRadioButton.AutoSize = true;
             this.SearchMethodOriginalToTranslationRadioButton.Location = new System.Drawing.Point(3, 39);
             this.SearchMethodOriginalToTranslationRadioButton.Name = "SearchMethodOriginalToTranslationRadioButton";
-            this.SearchMethodOriginalToTranslationRadioButton.Size = new System.Drawing.Size(215, 17);
+            this.SearchMethodOriginalToTranslationRadioButton.Size = new System.Drawing.Size(212, 17);
             this.SearchMethodOriginalToTranslationRadioButton.TabIndex = 9;
             this.SearchMethodOriginalToTranslationRadioButton.Text = "Find in Original and Paste to Translation";
             this.SearchMethodOriginalToTranslationRadioButton.UseVisualStyleBackColor = true;
@@ -430,7 +467,7 @@
             this.SearchMethodTranslationRadioButton.Checked = true;
             this.SearchMethodTranslationRadioButton.Location = new System.Drawing.Point(3, 16);
             this.SearchMethodTranslationRadioButton.Name = "SearchMethodTranslationRadioButton";
-            this.SearchMethodTranslationRadioButton.Size = new System.Drawing.Size(174, 17);
+            this.SearchMethodTranslationRadioButton.Size = new System.Drawing.Size(175, 17);
             this.SearchMethodTranslationRadioButton.TabIndex = 10;
             this.SearchMethodTranslationRadioButton.TabStop = true;
             this.SearchMethodTranslationRadioButton.Text = "Find and Replace in Translation";
@@ -505,7 +542,7 @@
             // 
             this.SearchFormReplaceWithTextBox.Location = new System.Drawing.Point(81, 29);
             this.SearchFormReplaceWithTextBox.Name = "SearchFormReplaceWithTextBox";
-            this.SearchFormReplaceWithTextBox.Size = new System.Drawing.Size(260, 21);
+            this.SearchFormReplaceWithTextBox.Size = new System.Drawing.Size(260, 20);
             this.SearchFormReplaceWithTextBox.TabIndex = 5;
             // 
             // SearchFormFindWhatTextBox
@@ -514,15 +551,16 @@
             this.SearchFormFindWhatTextBox.AutoCompleteSource = System.Windows.Forms.AutoCompleteSource.CustomSource;
             this.SearchFormFindWhatTextBox.Location = new System.Drawing.Point(81, 2);
             this.SearchFormFindWhatTextBox.Name = "SearchFormFindWhatTextBox";
-            this.SearchFormFindWhatTextBox.Size = new System.Drawing.Size(260, 21);
+            this.SearchFormFindWhatTextBox.Size = new System.Drawing.Size(260, 20);
             this.SearchFormFindWhatTextBox.TabIndex = 4;
+            this.SearchFormFindWhatTextBox.TextChanged += new System.EventHandler(this.SearchFormFindWhatTextBox_TextChanged);
             // 
             // THSearchFindWhatLabel
             // 
             this.THSearchFindWhatLabel.AutoSize = true;
             this.THSearchFindWhatLabel.Location = new System.Drawing.Point(17, 5);
             this.THSearchFindWhatLabel.Name = "THSearchFindWhatLabel";
-            this.THSearchFindWhatLabel.Size = new System.Drawing.Size(58, 13);
+            this.THSearchFindWhatLabel.Size = new System.Drawing.Size(56, 13);
             this.THSearchFindWhatLabel.TabIndex = 1;
             this.THSearchFindWhatLabel.Text = "Find what:";
             // 
@@ -553,28 +591,6 @@
             this.label1.Size = new System.Drawing.Size(72, 13);
             this.label1.TabIndex = 3;
             this.label1.Text = "Replace with:";
-            // 
-            // SearchRangeSelectedRadioButton
-            // 
-            this.SearchRangeSelectedRadioButton.AutoSize = true;
-            this.SearchRangeSelectedRadioButton.Location = new System.Drawing.Point(71, 16);
-            this.SearchRangeSelectedRadioButton.Name = "SearchRangeSelectedRadioButton";
-            this.SearchRangeSelectedRadioButton.Size = new System.Drawing.Size(66, 17);
-            this.SearchRangeSelectedRadioButton.TabIndex = 13;
-            this.SearchRangeSelectedRadioButton.Text = "Selected";
-            this.SearchRangeSelectedRadioButton.UseVisualStyleBackColor = true;
-            this.SearchRangeSelectedRadioButton.Click += new System.EventHandler(this.SearchRangeSelectedRadioButton_Click);
-            // 
-            // SearchRangeVisibleRadioButton
-            // 
-            this.SearchRangeVisibleRadioButton.AutoSize = true;
-            this.SearchRangeVisibleRadioButton.Location = new System.Drawing.Point(71, 38);
-            this.SearchRangeVisibleRadioButton.Name = "SearchRangeVisibleRadioButton";
-            this.SearchRangeVisibleRadioButton.Size = new System.Drawing.Size(54, 17);
-            this.SearchRangeVisibleRadioButton.TabIndex = 14;
-            this.SearchRangeVisibleRadioButton.Text = "Visible";
-            this.SearchRangeVisibleRadioButton.UseVisualStyleBackColor = true;
-            this.SearchRangeVisibleRadioButton.Click += new System.EventHandler(this.SearchRangeVisibleRadioButton_Click);
             // 
             // THfrmSearch
             // 
@@ -664,5 +680,6 @@
         private System.Windows.Forms.CheckBox chkbxDoNotTouchEqualOT;
         private System.Windows.Forms.RadioButton SearchRangeSelectedRadioButton;
         private System.Windows.Forms.RadioButton SearchRangeVisibleRadioButton;
+        private System.Windows.Forms.CheckBox DoubleSearchOptionCheckBox;
     }
 }

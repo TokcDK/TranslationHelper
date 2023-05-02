@@ -160,9 +160,9 @@ namespace TranslationHelper
             SearchRangeAllRadioButton.Checked = true;
         }
 
-        private string GetSearchColumn()
+        private int GetSearchColumnIndex()
         {
-            return SearchMethodTranslationRadioButton.Checked ? THSettings.TranslationColumnName : THSettings.OriginalColumnName;
+            return SearchMethodTranslationRadioButton.Checked ? _translationColumnIndex : _originalColumnIndex;
         }
         private void SearchFormFindNextButton_Click(object sender, EventArgs e)
         {
@@ -174,7 +174,7 @@ namespace TranslationHelper
             bool inputEqualwithLatest = THSearchMatchCaseCheckBox.Checked ? SearchFormFindWhatTextBox.Text == _lastfoundvalue : string.Compare(SearchFormFindWhatTextBox.Text, _lastfoundvalue, true, CultureInfo.InvariantCulture) == 0;
             if (inputEqualwithLatest)
             {
-                string searchColumn = GetSearchColumn();
+                var searchColumn = GetSearchColumnIndex();
                 var foundRowData = _foundRowsList[_startRowSearchIndex];
                 (_selectedTableIndex, _selectedRowIndex) = (foundRowData.TableIndex, foundRowData.RowIndex);
 
@@ -213,7 +213,7 @@ namespace TranslationHelper
 
                 StoryFoundValueToComboBox(SearchFormFindWhatTextBox.Text);
 
-                string searchcolumn = GetSearchColumn();
+                var searchcolumn = GetSearchColumnIndex();
                 var foundRowData = _foundRowsList[_startRowSearchIndex];
                 (_selectedTableIndex, _selectedRowIndex) = (foundRowData.TableIndex, foundRowData.RowIndex);
 
@@ -274,7 +274,7 @@ namespace TranslationHelper
                         arr[i] = Regex.Escape(arr[i]);
                     }
                 }
-                catch(ArgumentException) { }
+                catch (ArgumentException) { }
             }
         }
 
@@ -468,6 +468,8 @@ namespace TranslationHelper
                 this.Height = 368;
             }
         }
+
+        bool _isDoubleSearch = false;
         private void GetSearchResults()
         {
             lblSearchMsg.Visible = false;
@@ -476,10 +478,24 @@ namespace TranslationHelper
             _foundRowsList = new List<FoundRowData>();
             _isAnyRowFound = false;
 
-            string searchColumnIndex = GetSearchColumn();
+            int searchColumnIndex = GetSearchColumnIndex();
             bool isSearchInInfo = SearchInInfoCheckBox.Checked;
             bool isIssuesSearch = SearchFindLinesWithPossibleIssuesCheckBox.Checked;
-            string searchQueryText = SearchFormFindWhatTextBox.Text;
+
+            var searchQueryText = SearchFormFindWhatTextBox.Text.Split(new[] { _doubleSearchMarker }, StringSplitOptions.None);
+            if (searchQueryText.Length == 2 && string.IsNullOrEmpty(searchQueryText[1]))
+            {
+                // when second array element is empty reset array to 1st element
+                searchQueryText = new string[1] { searchQueryText[0] };
+            }
+            if (!SearchFormFindWhatTextBox.Text.Contains(_doubleSearchMarker))
+            {
+                // uncheck double search checkbox if marker is missing in search query
+                DoubleSearchOptionCheckBox.Checked = false;
+            }
+            if (string.IsNullOrEmpty(searchQueryText[0])) return; // return if 1st query is empty
+            _isDoubleSearch = !isSearchInInfo && !isIssuesSearch && searchQueryText.Length == 2;
+
             var searchInSelected = SearchRangeSelectedRadioButton.Checked || SearchRangeVisibleRadioButton.Checked;
             int tableIndexMax = SearchRangeTableRadioButton.Checked || searchInSelected ? _filesList.SelectedIndex + 1 : _tables.Count;
             int initTableIndex = SearchRangeTableRadioButton.Checked || searchInSelected ? _filesList.SelectedIndex : 0;
@@ -508,8 +524,9 @@ namespace TranslationHelper
 
                     if (isSearchInInfo)//search in info box
                     {
-                        var infoValue = (AppData.CurrentProject.FilesContentInfo.Tables[tableIndex].Rows[rowIndex][0] + string.Empty);
-                        if (GetCheckResult(row2check, infoValue, searchQueryText) == SearchResult.Error) return;
+                        // in info always one query
+                        var infoValue = (AppData.CurrentProject.FilesContentInfo.Tables[tableIndex].Rows[rowIndex].Field<string>(0));
+                        if (GetCheckResult(row2check, new string[1] { infoValue }, searchQueryText) == SearchResult.Error) return;
                     }
                     else if (isIssuesSearch && IsTheRowHasPossibleIssues(row2check)) //search rows with possible issues
                     {
@@ -517,14 +534,25 @@ namespace TranslationHelper
                     }
                     else
                     {
-                        string selectedCellValue = _tables[tableIndex].Rows[rowIndex][searchColumnIndex] + string.Empty;
-                        if (GetCheckResult(row2check, selectedCellValue, searchQueryText) == SearchResult.Error) return; // general search
+                        var row = _tables[tableIndex].Rows[rowIndex];
+
+                        string[] text2Search;
+                        if (_isDoubleSearch)
+                        {
+                            text2Search = new string[2] { row.Field<string>(_originalColumnIndex), row.Field<string>(_translationColumnIndex) };
+                        }
+                        else
+                        {
+                            text2Search = new string[1] { row.Field<string>(searchColumnIndex) };
+                        }
+
+                        if (GetCheckResult(row2check, text2Search, searchQueryText) == SearchResult.Error) return; // general search
                     }
                 }
             }
         }
 
-        private bool IsValid2Search(DataRow row2check, string searchcolumn)
+        private bool IsValid2Search(DataRow row2check, int searchcolumn)
         {
             //skip equal lines if need, skip empty search cells && not skip when row issue search
             return (chkbxDoNotTouchEqualOT.Checked && row2check[_originalColumnIndex].Equals(row2check[_translationColumnIndex]))
@@ -533,21 +561,20 @@ namespace TranslationHelper
                         && (row2check[searchcolumn] + string.Empty).Length == 0);
         }
 
-        private SearchResult GetCheckResult(DataRow row, string infoValue, string strQuery)
+        private SearchResult GetCheckResult(DataRow row, string[] textWhereToSearch, string[] strQuery)
         {
             if (SearchModeRegexRadioButton.Checked) // regex check
             {
-                return CheckRegex(row, infoValue, strQuery);
+                return CheckTextByRegex(row, textWhereToSearch, strQuery);
             }
-            else return CheckIsFound(row, infoValue, strQuery); // common check
+            else return CheckText(row, textWhereToSearch, strQuery); // common check
         }
 
-        private SearchResult CheckIsFound(DataRow row, string infoValue, string strQuery)
+        private SearchResult CheckText(DataRow row, string[] textWhereToSearch, string[] strQuery)
         {
             try
             {
-                if ((THSearchMatchCaseCheckBox.Checked && infoValue.Contains(strQuery))
-                    || (!THSearchMatchCaseCheckBox.Checked && infoValue.IndexOf(strQuery, StringComparison.CurrentCultureIgnoreCase) != -1))
+                if (IsMatchedByContains(textWhereToSearch, strQuery))
                 {
                     ImportRowToFound(row);
                     return SearchResult.Found;
@@ -558,12 +585,25 @@ namespace TranslationHelper
             return SearchResult.NotFound;
         }
 
-        private SearchResult CheckRegex(DataRow row, string textWhereSearch, string searchPattern)
+        private bool IsMatchedByContains(string[] textWhereToSearch, string[] strQuery)
+        {
+            if (THSearchMatchCaseCheckBox.Checked)
+            {
+                return textWhereToSearch[0].Contains(strQuery[0])
+                    && (!_isDoubleSearch || textWhereToSearch[1].Contains(strQuery[1]));
+            }
+            else
+            {
+                return textWhereToSearch[0].IndexOf(strQuery[0], StringComparison.CurrentCultureIgnoreCase) != -1
+                    && (!_isDoubleSearch || textWhereToSearch[1].IndexOf(strQuery[1], StringComparison.CurrentCultureIgnoreCase) != -1);
+            }
+        }
+
+        private SearchResult CheckTextByRegex(DataRow row, string[] textWhereSearch, string[] searchPattern)
         {
             try
             {
-                if ((THSearchMatchCaseCheckBox.Checked && Regex.IsMatch(textWhereSearch, searchPattern))
-                    || (!THSearchMatchCaseCheckBox.Checked && Regex.IsMatch(textWhereSearch, searchPattern, RegexOptions.IgnoreCase)))
+                if (IsMatchedByRegex(textWhereSearch, searchPattern))
                 {
                     ImportRowToFound(row);
                     return SearchResult.Found;
@@ -578,6 +618,20 @@ namespace TranslationHelper
             }
 
             return SearchResult.NotFound;
+        }
+
+        private bool IsMatchedByRegex(string[] textWhereSearch, string[] searchPattern)
+        {
+            if (THSearchMatchCaseCheckBox.Checked)
+            {
+                return Regex.IsMatch(textWhereSearch[0], searchPattern[0])
+                    && (!_isDoubleSearch || Regex.IsMatch(textWhereSearch[1], searchPattern[1]));
+            }
+            else
+            {
+                return Regex.IsMatch(textWhereSearch[0], searchPattern[0], RegexOptions.IgnoreCase)
+                    && (!_isDoubleSearch || Regex.IsMatch(textWhereSearch[1], searchPattern[1], RegexOptions.IgnoreCase));
+            }
         }
 
         /// <summary>
@@ -703,7 +757,7 @@ namespace TranslationHelper
 
         private void ShowSelectedCellInMainTable(object sender, DataGridViewCellEventArgs e)
         {
-            string searchcolumn = GetSearchColumn();
+            var searchcolumn = GetSearchColumnIndex();
             try
             {
                 //было исключение, отсутствует позиция, хотя позицияприсутствовала
@@ -723,8 +777,8 @@ namespace TranslationHelper
                     selectstring.Start();
                 }
             }
-            catch (ArgumentException) {  } // ignore errors
-            catch (InvalidOperationException) {  } // ignore errors
+            catch (ArgumentException) { } // ignore errors
+            catch (InvalidOperationException) { } // ignore errors
 
         }
 
@@ -745,7 +799,7 @@ namespace TranslationHelper
                 : string.Compare(SearchFormFindWhatTextBox.Text, _lastfoundvalue, true, CultureInfo.InvariantCulture) == 0;
             if (inputEqualWithLatest)
             {
-                string searchcolumn = GetSearchColumn();
+                var searchcolumn = GetSearchColumnIndex();
 
                 if (_startRowSearchIndex == 0) return;
 
@@ -819,7 +873,7 @@ namespace TranslationHelper
                     _workFileDgv.DataSource = _tables[_selectedTableIndex];
                 }
 
-                _workFileDgv.CurrentCell = _workFileDgv[GetSearchColumn(), _selectedRowIndex];
+                _workFileDgv.CurrentCell = _workFileDgv[GetSearchColumnIndex(), _selectedRowIndex];
 
                 //http://www.sql.ru/forum/1149655/kak-peredat-parametr-s-metodom-delegatom
                 Thread selectstring = new Thread(new ParameterizedThreadStart((obj) => SelectTextInTextBox(SearchFormFindWhatTextBox.Text)));
@@ -871,7 +925,7 @@ namespace TranslationHelper
             lblSearchMsg.Text = T._("Found ") + _foundRowsList.Count + T._(" records");
             this.Height = 589;
 
-            string searchcolumn = GetSearchColumn();
+            var searchcolumn = GetSearchColumnIndex();
             int oDsResultsCount = _foundRowsList.Count;
             for (int r = 0; r < oDsResultsCount; r++)
             {
@@ -927,7 +981,7 @@ namespace TranslationHelper
                 {
                     return Regex.Unescape(text);
                 }
-                catch(ArgumentException) {  }
+                catch (ArgumentException) { }
             }
 
             return text;
@@ -1015,6 +1069,24 @@ namespace TranslationHelper
             SearchRangeVisibleRadioButton.Checked = true;
             SearchRangeTableRadioButton.Checked = false;
             SearchRangeAllRadioButton.Checked = false;
+        }
+
+        readonly string _doubleSearchMarker = "|<OT>|";
+        private void DoubleSearchOptionCheckBox_CheckedChanged(object sender, EventArgs e)
+        {
+            if (DoubleSearchOptionCheckBox.Checked && !SearchFormFindWhatTextBox.Text.Contains(_doubleSearchMarker))
+            {
+                SearchFormFindWhatTextBox.Text += _doubleSearchMarker;
+            }
+            else if (!DoubleSearchOptionCheckBox.Checked && SearchFormFindWhatTextBox.Text.Contains(_doubleSearchMarker))
+            {
+                SearchFormFindWhatTextBox.Text = SearchFormFindWhatTextBox.Text.Replace(_doubleSearchMarker, "");
+            }
+        }
+
+        private void SearchFormFindWhatTextBox_TextChanged(object sender, EventArgs e)
+        {
+            DoubleSearchOptionCheckBox.Checked = SearchFormFindWhatTextBox.Text.Contains(_doubleSearchMarker);
         }
     }
 }
