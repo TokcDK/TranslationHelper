@@ -12,9 +12,9 @@ namespace TranslationHelper.Functions.DBSaveFormats
 {
     class XML : IDataBaseFileFormat
     {
-        string IDataBaseFileFormat.Ext => "xml";
+        public virtual string Ext => "xml";
 
-        string IDataBaseFileFormat.Description => "Uncompressed xml";
+        public virtual string Description => "Uncompressed xml";
 
         public void Read(string fileName, object data)
         {
@@ -31,7 +31,7 @@ namespace TranslationHelper.Functions.DBSaveFormats
         {
             if (!(data is DataSet dataSet))
             {
-                throw new InvalidDataException("data is not dataset!");
+                throw new InvalidDataException($"{nameof(data)} is not dataset!");
             }
 
             Directory.CreateDirectory(Path.GetDirectoryName(fileName));

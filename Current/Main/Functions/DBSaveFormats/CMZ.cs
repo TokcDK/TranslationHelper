@@ -8,9 +8,9 @@ namespace TranslationHelper.Functions.DBSaveFormats
     /// </summary>
     class CMZ : XML, IDataBaseFileFormat
     {
-        string IDataBaseFileFormat.Ext => "cmz";
+        public override string Ext => "cmz";
 
-        string IDataBaseFileFormat.Description => "Deflate Compressed xml";
+        public override string Description => $"({Ext}) Deflate Compressed xml";
 
         protected override Stream FileStreamMod(FileStream dbInputFileStream, bool isRead)
         {

@@ -84,6 +84,18 @@ namespace TranslationHelper.Main.Functions
         //}
 
         /// <summary>
+        /// File browser filters for Database Files
+        /// </summary>
+        /// <returns></returns>
+        public static string GetDBFormatsFilters()
+        {
+            var formats = FunctionsInterfaces.GetDBSaveFormats();
+            var formatsFilters = formats.Select(f => $"*.{f.Ext};");
+            var formatsIndividualFilters = formats.Select(f => $"|{f.Description}|*.{f.Ext}");
+            return $"DB file|{formatsFilters}{formatsIndividualFilters}|All|*.*";
+        }
+
+        /// <summary>
         /// write xml file
         /// </summary>
         /// <param name="dataSet"></param>

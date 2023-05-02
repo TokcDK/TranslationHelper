@@ -1130,17 +1130,17 @@ namespace TranslationHelper
             if (IsOpeningInProcess) return;
 
             IsOpeningInProcess = true;
-            using (OpenFileDialog THFOpenBD = new OpenFileDialog())
+            using (OpenFileDialog openBD = new OpenFileDialog())
             {
-                THFOpenBD.Filter = "DB file|*.xml;*.cmx;*.cmz|XML-file|*.xml|Gzip compressed DB (*.cmx)|*.cmx|Deflate compressed DB (*.cmz)|*.cmz";
+                openBD.Filter = FunctionsDBFile.GetDBFormatsFilters();
 
-                THFOpenBD.InitialDirectory = FunctionsDBFile.GetProjectDBFolder();
+                openBD.InitialDirectory = FunctionsDBFile.GetProjectDBFolder();
 
-                if (THFOpenBD.ShowDialog() == DialogResult.OK)
+                if (openBD.ShowDialog() == DialogResult.OK)
                 {
-                    if (THFOpenBD.FileName.Length > 0)
+                    if (openBD.FileName.Length > 0)
                     {
-                        await Task.Run(() => LoadTranslationFromDB(THFOpenBD.FileName, false, forced)).ConfigureAwait(true);
+                        await Task.Run(() => LoadTranslationFromDB(openBD.FileName, false, forced)).ConfigureAwait(true);
                     }
                 }
             }

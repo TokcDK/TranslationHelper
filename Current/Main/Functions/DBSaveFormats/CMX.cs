@@ -9,9 +9,9 @@ namespace TranslationHelper.Functions.DBSaveFormats
     /// </summary>
     class CMX : XML, IDataBaseFileFormat
     {
-        string IDataBaseFileFormat.Ext => "cmx";
+        public override string Ext => "cmx";
 
-        string IDataBaseFileFormat.Description => "GZip Compressed xml";
+        public override string Description => $"({Ext}) GZip Compressed xml";
 
         protected override Stream FileStreamMod(FileStream dbInputFileStream, bool isRead)
         {

@@ -23,7 +23,8 @@ namespace TranslationHelper.Menus.MainMenus.File
         {
             using (SaveFileDialog THFSaveBDAs = new SaveFileDialog())
             {
-                THFSaveBDAs.Filter = "DB file|*.xml;*.cmx;*.cmz|XML-file|*.xml|Gzip compressed DB (*.cmx)|*.cmx|Deflate compressed DB (*.cmz)|*.cmz";
+                //THFSaveBDAs.Filter = "DB file|*.xml;*.cmx;*.cmz|XML-file|*.xml|Gzip compressed DB (*.cmx)|*.cmx|Deflate compressed DB (*.cmz)|*.cmz";
+                THFSaveBDAs.Filter = FunctionsDBFile.GetDBFormatsFilters();
 
                 THFSaveBDAs.InitialDirectory = FunctionsDBFile.GetProjectDBFolder();
                 THFSaveBDAs.FileName = FunctionsDBFile.GetDBFileName(true) + FunctionsDBFile.GetDBCompressionExt();
@@ -58,6 +59,7 @@ namespace TranslationHelper.Menus.MainMenus.File
                 AppData.Main.ProgressInfo(false);
             }
         }
+
         public override int Order => base.Order + 16;
 
         public override Keys ShortcutKeys => Keys.Control | Keys.Shift | Keys.S;
