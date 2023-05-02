@@ -1021,7 +1021,7 @@ namespace TranslationHelper
             {
                 ProgressInfo(true, "Get all databases");
                 FunctionsDBFile.MergeAllDBtoOne();
-                new FunctionsLoadTranslationDB().THLoadDBCompareFromDictionaryParallellTables(AppData.AllDBmerged);
+                FunctionsLoadTranslationDB.THLoadDBCompareFromDictionaryParallellTables(AppData.AllDBmerged);
             }
             else
             {
@@ -1042,7 +1042,7 @@ namespace TranslationHelper
             _ = THFilesList.Invoke((Action)(() => THFilesList.Refresh()));
         }
 
-        private void ReadDBAndLoadDBCompare(DataSet DBDataSet, string sPath, bool forced = false)
+        private void ReadDBAndLoadDBCompare(DataSet dbDataSet, string sPath, bool forceOverwriteTranslations = false)
         {
             if (sPath.Length == 0)
             {
@@ -1060,7 +1060,7 @@ namespace TranslationHelper
             try
             {
                 //load new data
-                FunctionsDBFile.ReadDBFile(DBDataSet, sPath);
+                FunctionsDBFile.ReadDBFile(dbDataSet, sPath);
 
 
                 //отключение DataSource для избежания проблем от изменений DataGridView
@@ -1086,11 +1086,11 @@ namespace TranslationHelper
                 //new FunctionsLoadTranslationDB().THLoadDBCompareFromDictionary(DBDataSet.ToDictionary(), forced);
                 if (AppData.CurrentProject.DontLoadDuplicates)
                 {
-                    new FunctionsLoadTranslationDB().THLoadDBCompareFromDictionaryParallellTables(DBDataSet.ToDictionary(), forced);
+                    FunctionsLoadTranslationDB.THLoadDBCompareFromDictionaryParallellTables(dbDataSet.ToDictionary(), forceOverwriteTranslations);
                 }
                 else
                 {
-                    new FunctionsLoadTranslationDB().THLoadDBCompareFromDictionaryParallellTables(DBDataSet.ToDictionary2(), forced);
+                    FunctionsLoadTranslationDB.THLoadDBCompareFromDictionaryParallellTables(dbDataSet.ToDictionary2(), forceOverwriteTranslations);
                 }
 
                 //многопоточный вариант предыдущего, но т.к. datatable is threadunsafe то возникают разные ошибки и повреждение внутреннего индекса таблицы, хоть это и быстрее, но после добавления lock разницы не видно
