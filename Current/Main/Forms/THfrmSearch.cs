@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Data;
 using System.Drawing;
 using System.Globalization;
@@ -54,7 +55,10 @@ namespace TranslationHelper
 
             public string Original { get; }
             public string Translation { get; }
+
+            [Browsable(false)]
             public int TableIndex { get; }
+            [Browsable(false)]
             public int RowIndex { get; }
             //DataRow _row { get; set; }
         }
