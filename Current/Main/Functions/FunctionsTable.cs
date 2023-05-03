@@ -346,49 +346,21 @@ namespace TranslationHelper.Main.Functions
         }
 
         /// <summary>
-        /// true if 2 datasets tables and table rows count is identical
+        /// Checks if all rows in column <paramref name="columnName"/> of <paramref name="dataTable"/> if they are <paramref name="complete"/> or not
         /// </summary>
-        /// <param name="dataSet1"></param>
-        /// <param name="dataSet2"></param>
-        /// <returns></returns>
-        public static bool IsDataSetsElementsCountIdentical(DataSet dataSet1, DataSet dataSet2)
-        {
-            if (dataSet1.Tables.Count == dataSet2.Tables.Count)
-            {
-                var tables1 = dataSet1.Tables;
-                var tables2 = dataSet2.Tables;
-                int tables1Count = tables1.Count;
-                for (int t = 0; t < tables1Count; t++)
-                {
-                    if (tables1[t].Rows.Count != tables2[t].Rows.Count)
-                    {
-                        return false;
-                    }
-                }
-                return true; ;
-            }
-            else
-            {
-                return false;
-            }
-        }
-
-        /// <summary>
-        /// Checks if all rows in column <paramref name="columnName"/> of <paramref name="dataTabe"/> if they are <paramref name="complete"/> or not
-        /// </summary>
-        /// <param name="dataTabe">dataset which to check</param>
+        /// <param name="dataTable">dataset which to check</param>
         /// <param name="columnName">column name for check, default is translation</param>
         /// <param name="complete">true - all is empty, false - all have values</param>
         /// <returns>True when <paramref name="complete"/> is true and all values of <paramref name="columnName"/> is NOT empty. True when <paramref name="complete"/> is false and all values of <paramref name="columnName"/> is empty.</returns>
-        public static bool IsTableColumnCellsAll(this DataTable dataTabe, string columnName = null, bool complete = true)
+        public static bool IsTableColumnCellsAll(this DataTable dataTable, string columnName = null, bool complete = true)
         {
-            if (dataTabe == null) return false;
+            if (dataTable == null) return false;
 
-            int DTRowsCount = dataTabe.Rows.Count;
+            int tableRowsCount = dataTable.Rows.Count;
             columnName = columnName ?? THSettings.TranslationColumnName;
-            for (int r = 0; r < DTRowsCount; r++)
+            for (int r = 0; r < tableRowsCount; r++)
             {
-                var cell = dataTabe.Rows[r]?.Field<string>(columnName);
+                var cell = dataTable.Rows[r]?.Field<string>(columnName);
 
                 if ((!complete && (!string.IsNullOrEmpty(cell))) || (complete && (string.IsNullOrEmpty(cell))))
                 {
@@ -410,7 +382,7 @@ namespace TranslationHelper.Main.Functions
             int rowsCount = 0;
 
             var tables = dataSet.Tables;
-            int tablesCount = dataSet.Tables.Count;
+            int tablesCount = tables.Count;
             for (int t = 0; t < tablesCount; t++)
             {
                 rowsCount += tables[t].Rows.Count;
@@ -429,15 +401,16 @@ namespace TranslationHelper.Main.Functions
         {
             if (dataSet == null) return 0;
 
-            int NonEmptyRowsCount = 0;
+            int nonEmptyRowsCount = 0;
             columnName = columnName ?? THSettings.TranslationColumnName;
-            int DTTablesCount = dataSet.Tables.Count;
-            for (int t = 0; t < DTTablesCount; t++)
+            var tables = dataSet.Tables;
+            int tablesCount = tables.Count;
+            for (int t = 0; t < tablesCount; t++)
             {
-                NonEmptyRowsCount += GetTableNonEmptyRowsCount(dataSet.Tables[t], columnName);
+                nonEmptyRowsCount += GetTableNonEmptyRowsCount(tables[t], columnName);
             }
 
-            return NonEmptyRowsCount;
+            return nonEmptyRowsCount;
         }
 
         /// <summary>
