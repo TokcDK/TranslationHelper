@@ -481,9 +481,12 @@ namespace TranslationHelper
             lblSearchMsg.Visible = false;
             if (_tables.Count == 0) return;
 
-            _foundRowsList = new List<FoundRowData>();
             _isAnyRowFound = false;
+            _foundRowsList = EnumerateFoundRows().ToList();
+        }
 
+        private IEnumerable<FoundRowData> EnumerateFoundRows(bool isSearchReplaceMode = false)
+        {
             int searchColumnIndex = GetSearchColumnIndex();
             bool isSearchInInfo = SearchInInfoCheckBox.Checked;
             bool isIssuesSearch = SearchFindLinesWithPossibleIssuesCheckBox.Checked;
@@ -499,16 +502,16 @@ namespace TranslationHelper
                 // uncheck double search checkbox if marker is missing in search query
                 DoubleSearchOptionCheckBox.Checked = false;
             }
-            if (string.IsNullOrEmpty(searchQueryText[0])) return; // return if 1st query is empty
+            if (string.IsNullOrEmpty(searchQueryText[0])) yield break; // return if 1st query is empty
             _isDoubleSearch = !isSearchInInfo && !isIssuesSearch && searchQueryText.Length == 2;
 
             // check if regex pattern is valid
-            if(SearchModeRegexRadioButton.Checked && searchQueryText.Any(v => !v.IsValidRegexPattern()))
+            if (SearchModeRegexRadioButton.Checked && searchQueryText.Any(v => !v.IsValidRegexPattern()))
             {
                 lblSearchMsg.Visible = true;
                 lblSearchMsg.Text = T._("Invalid regex!");
 
-                return;
+                yield break;
             }
 
             var searchInSelected = SearchRangeSelectedRadioButton.Checked || SearchRangeVisibleRadioButton.Checked;
@@ -544,12 +547,12 @@ namespace TranslationHelper
 
                         if (GetCheckResult(new string[1] { infoValue }, searchQueryText))
                         {
-                            ImportRowToFound(row2check);
+                            yield return GetFoundRowData(row2check);
                         }
                     }
                     else if (isIssuesSearch && IsTheRowHasPossibleIssues(row2check)) //search rows with possible issues
                     {
-                        ImportRowToFound(row2check);
+                        yield return GetFoundRowData(row2check);
                     }
                     else
                     {
@@ -568,7 +571,7 @@ namespace TranslationHelper
                         // general search
                         if (GetCheckResult(text2Search, searchQueryText))
                         {
-                            ImportRowToFound(row2check);
+                            yield return GetFoundRowData(row2check);
                         }
                     }
                 }
@@ -640,14 +643,14 @@ namespace TranslationHelper
         /// <param name="row"></param>
         /// <param name="t"></param>
         /// <param name="r"></param>
-        private void ImportRowToFound(DataRow row)
+        private FoundRowData GetFoundRowData(DataRow row)
         {
             if (!_isAnyRowFound)
             {
                 _isAnyRowFound = true;
                 this.Height = 368;
             }
-            _foundRowsList.Add(new FoundRowData(row));
+            return new FoundRowData(row);
         }
 
         readonly List<ISearchIssueChecker> _issueChecers = new List<ISearchIssueChecker>(4)
