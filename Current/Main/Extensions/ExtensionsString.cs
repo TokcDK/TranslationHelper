@@ -14,6 +14,25 @@ namespace TranslationHelper.Extensions
     internal static class ExtensionsString
     {
         /// <summary>
+        /// Check if input string can be use as regex pattern
+        /// </summary>
+        /// <param name="patternString"></param>
+        /// <returns></returns>
+        public static bool IsValidRegexPattern(string patternString)
+        {
+            try
+            {
+                Regex.IsMatch("", patternString);
+                // Attempt to match an empty string against the pattern
+                return true;
+            }
+            catch (ArgumentException)
+            {
+                return false;
+            }
+        }
+
+        /// <summary>
         /// extract captured groups from string
         /// </summary>
         /// <param name="line"></param>
