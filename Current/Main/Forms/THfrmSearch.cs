@@ -484,6 +484,19 @@ namespace TranslationHelper
             _isAnyRowFound = false;
             _foundRowsList = EnumerateFoundRows().ToList();
         }
+        private IEnumerable<FoundRowData> EnumerateSearchResults()
+        {
+            lblSearchMsg.Visible = false;
+            if (_tables.Count == 0) yield break;
+
+            _isAnyRowFound = false;
+
+            foreach(var foundRowData in EnumerateFoundRows())
+            {
+                _foundRowsList.Add(foundRowData);
+                yield return foundRowData;
+            }
+        }
 
         private IEnumerable<FoundRowData> EnumerateFoundRows(bool isSearchReplaceMode = false)
         {
@@ -903,30 +916,13 @@ namespace TranslationHelper
             }
 
             lblSearchMsg.Visible = false;
-            GetSearchResults();
 
-            if (_foundRowsList == null) return;
-
-            if (_foundRowsList.Count == 0)
-            {
-                lblSearchMsg.Visible = true;
-                lblSearchMsg.Text = T._("Nothing Found");
-                this.Height = 368;
-                return;
-            }
-
-            bool storeQueryAndReplacer = false;
-
-            PopulateGrid(_foundRowsList);
-
-            lblSearchMsg.Visible = true;
-            lblSearchMsg.Text = T._("Found ") + _foundRowsList.Count + T._(" records");
-            this.Height = 589;
+            bool isAnyChanged = false;
 
             string searchPattern = SearchFormFindWhatTextBox.Text;
             var searchReplacementUnescaped = FixRegexReplacementFromTextbox(SearchFormReplaceWithTextBox.Text);
             var searchcolumnIndex = GetSearchColumnIndex();
-            foreach (var foundRowData in _foundRowsList)
+            foreach (var foundRowData in EnumerateSearchResults())
             {
                 (_selectedTableIndex, _selectedRowIndex) = (foundRowData.TableIndex, foundRowData.RowIndex);
                 var row = _tables[_selectedTableIndex].Rows[_selectedRowIndex];
@@ -950,7 +946,7 @@ namespace TranslationHelper
                     {
                         if (Regex.IsMatch(searchCoulumnValue, searchPattern, RegexOptions.IgnoreCase))
                         {
-                            storeQueryAndReplacer = true;
+                            isAnyChanged = true;
                             var v = GetDefaultIfEmpty(row.Field<string>(_translationColumnIndex), searchCoulumnValue);
                             row.SetField(_translationColumnIndex,
                                 Regex.Replace(v, searchPattern, searchReplacementUnescaped, RegexOptions.IgnoreCase));
@@ -960,7 +956,7 @@ namespace TranslationHelper
                     {
                         if (searchCoulumnValue.ToUpperInvariant().Contains(searchPattern.ToUpperInvariant()))
                         {
-                            storeQueryAndReplacer = true;
+                            isAnyChanged = true;
                             var v = GetDefaultIfEmpty(row.Field<string>(_translationColumnIndex), searchCoulumnValue);
                             row.SetField(_translationColumnIndex,
                                 ReplaceEx.Replace(v, searchPattern, searchReplacementUnescaped, StringComparison.OrdinalIgnoreCase));
@@ -969,9 +965,20 @@ namespace TranslationHelper
                 }
             }
 
-            if (storeQueryAndReplacer)
+            lblSearchMsg.Visible = true;
+            if (isAnyChanged)
             {
                 StoryFoundValueToComboBox(searchPattern, SearchFormReplaceWithTextBox.Text);
+
+                lblSearchMsg.Text = T._("Found ") + _foundRowsList.Count + T._(" records");
+                this.Height = 589;
+
+                PopulateGrid(_foundRowsList);
+            }
+            else
+            {
+                lblSearchMsg.Text = T._("Nothing Found");
+                this.Height = 368;
             }
         }
 
