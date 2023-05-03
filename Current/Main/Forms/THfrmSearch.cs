@@ -32,6 +32,7 @@ namespace TranslationHelper
         string _lastfoundreplacedvalue = string.Empty;
         string[] _searchQueries;
         string[] _searchReplacers;
+        const string _replaceToEqualMarker = "=";
 
         public enum SearchResult
         {
@@ -817,7 +818,7 @@ namespace TranslationHelper
                             if (Regex.IsMatch(value, SearchFormFindWhatTextBox.Text, RegexOptions.IgnoreCase))
                             {
                                 StoryFoundValueToComboBox(SearchFormFindWhatTextBox.Text, SearchFormReplaceWithTextBox.Text);
-                                _workFileDgv[THSettings.TranslationColumnName, _selectedRowIndex].Value = Regex.Replace(GetFirstIfNotEmpty(_workFileDgv[THSettings.TranslationColumnName, _selectedRowIndex].Value + string.Empty, value), SearchFormFindWhatTextBox.Text, FixRegexReplacementFromTextbox(SearchFormReplaceWithTextBox.Text), RegexOptions.IgnoreCase);
+                                _workFileDgv[THSettings.TranslationColumnName, _selectedRowIndex].Value = Regex.Replace(GetDefaultIfEmpty(_workFileDgv[THSettings.TranslationColumnName, _selectedRowIndex].Value + string.Empty, value), SearchFormFindWhatTextBox.Text, FixRegexReplacementFromTextbox(SearchFormReplaceWithTextBox.Text), RegexOptions.IgnoreCase);
                             }
                         }
                         else
@@ -825,7 +826,7 @@ namespace TranslationHelper
                             if (value.IndexOf(SearchFormFindWhatTextBox.Text, StringComparison.InvariantCultureIgnoreCase) != -1)
                             {
                                 StoryFoundValueToComboBox(SearchFormFindWhatTextBox.Text, SearchFormReplaceWithTextBox.Text);
-                                _workFileDgv[THSettings.TranslationColumnName, _selectedRowIndex].Value = ReplaceEx.Replace(GetFirstIfNotEmpty(_workFileDgv[THSettings.TranslationColumnName, _selectedRowIndex].Value + string.Empty, value), SearchFormFindWhatTextBox.Text, SearchFormReplaceWithTextBox.Text, StringComparison.OrdinalIgnoreCase);
+                                _workFileDgv[THSettings.TranslationColumnName, _selectedRowIndex].Value = ReplaceEx.Replace(GetDefaultIfEmpty(_workFileDgv[THSettings.TranslationColumnName, _selectedRowIndex].Value + string.Empty, value), SearchFormFindWhatTextBox.Text, SearchFormReplaceWithTextBox.Text, StringComparison.OrdinalIgnoreCase);
                             }
                         }
                     }
@@ -888,9 +889,9 @@ namespace TranslationHelper
             }
         }
 
-        private static string GetFirstIfNotEmpty(string first, string defaultvalue)
+        private static string GetDefaultIfEmpty(string inputValue, string defaultvalue)
         {
-            return first.Length == 0 ? defaultvalue : first;
+            return inputValue.Length == 0 ? defaultvalue : inputValue;
         }
 
         private void SearchFormReplaceAllButton_Click(object sender, EventArgs e)
@@ -941,7 +942,7 @@ namespace TranslationHelper
 
                 if (SearchInInfoCheckBox.Checked)
                 {
-                    if (replacementUnescaped == "=")
+                    if (replacementUnescaped == _replaceToEqualMarker)
                     {
                         row.SetField(_translationColumnIndex, row[_originalColumnIndex]);
                     }
@@ -958,7 +959,7 @@ namespace TranslationHelper
                         {
                             StoreQueryAndReplacer = true;
                             row.SetField(_translationColumnIndex,
-                                Regex.Replace(GetFirstIfNotEmpty(row.Field<string>(_translationColumnIndex), value), SearchFormFindWhatTextBox.Text, replacementUnescaped, RegexOptions.IgnoreCase));
+                                Regex.Replace(GetDefaultIfEmpty(row.Field<string>(_translationColumnIndex), value), SearchFormFindWhatTextBox.Text, replacementUnescaped, RegexOptions.IgnoreCase));
                         }
                     }
                     else
@@ -967,7 +968,7 @@ namespace TranslationHelper
                         {
                             StoreQueryAndReplacer = true;
                             row.SetField(_translationColumnIndex,
-                                ReplaceEx.Replace(GetFirstIfNotEmpty(row.Field<string>(_translationColumnIndex), value), SearchFormFindWhatTextBox.Text, replacementUnescaped, StringComparison.OrdinalIgnoreCase));
+                                ReplaceEx.Replace(GetDefaultIfEmpty(row.Field<string>(_translationColumnIndex), value), SearchFormFindWhatTextBox.Text, replacementUnescaped, StringComparison.OrdinalIgnoreCase));
                         }
                     }
                 }
