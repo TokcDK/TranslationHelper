@@ -18,6 +18,10 @@ namespace TranslationHelper
 {
     public partial class THfrmSearch : Form
     {
+        readonly string _doubleSearchMarker = "|<OT>|";
+        const int SEARCH_RESULTS_WINDOW_EXPANDED_HEIGHT = 589;
+        const int SEARCH_RESULTS_WINDOW_NORMAL_HEIGHT = 368;
+
         readonly ListBox _filesList;
         readonly DataGridView _workFileDgv;
         readonly DataTableCollection _tables;
@@ -213,7 +217,7 @@ namespace TranslationHelper
                     //PopulateGrid(null);
                     lblSearchMsg.Visible = true;
                     lblSearchMsg.Text = "Nothing Found.";
-                    this.Height = 368;
+                    this.Height = SEARCH_RESULTS_WINDOW_NORMAL_HEIGHT;
                     return;
                 }
 
@@ -462,7 +466,7 @@ namespace TranslationHelper
 
                 lblSearchMsg.Visible = true;
                 lblSearchMsg.Text = T._("Found ") + _foundRowsList.Count + T._(" records");
-                this.Height = 589;
+                this.Height = SEARCH_RESULTS_WINDOW_EXPANDED_HEIGHT;
             }
             else
             {
@@ -471,7 +475,7 @@ namespace TranslationHelper
                 lblSearchMsg.Text = T._("Nothing Found");
                 SearchResultsDatagridview.DataSource = null;
                 SearchResultsDatagridview.Refresh();
-                this.Height = 368;
+                this.Height = SEARCH_RESULTS_WINDOW_NORMAL_HEIGHT;
             }
         }
 
@@ -661,7 +665,7 @@ namespace TranslationHelper
             if (!_isAnyRowFound)
             {
                 _isAnyRowFound = true;
-                this.Height = 368;
+                this.Height = SEARCH_RESULTS_WINDOW_NORMAL_HEIGHT;
             }
             return new FoundRowData(row);
         }
@@ -691,7 +695,7 @@ namespace TranslationHelper
         private void THSearch_Load(object sender, EventArgs e)
         {
             //some other info: https://stackoverflow.com/questions/20893725/how-to-hide-and-show-panels-on-a-form-and-have-it-resize-to-take-up-slack
-            this.Height = 368;
+            this.Height = SEARCH_RESULTS_WINDOW_NORMAL_HEIGHT;
             _selectedTableIndex = _filesList.SelectedIndex;
 
             LoadSearchQueriesReplacers();
@@ -873,7 +877,7 @@ namespace TranslationHelper
                     //PopulateGrid(null);
                     lblSearchMsg.Visible = true;
                     lblSearchMsg.Text = T._("Nothing Found.");
-                    this.Height = 368;
+                    this.Height = SEARCH_RESULTS_WINDOW_NORMAL_HEIGHT;
                     return;
                 }
 
@@ -971,14 +975,14 @@ namespace TranslationHelper
                 StoryFoundValueToComboBox(searchPattern, SearchFormReplaceWithTextBox.Text);
 
                 lblSearchMsg.Text = T._("Found ") + _foundRowsList.Count + T._(" records");
-                this.Height = 589;
+                this.Height = SEARCH_RESULTS_WINDOW_EXPANDED_HEIGHT;
 
                 PopulateGrid(_foundRowsList);
             }
             else
             {
                 lblSearchMsg.Text = T._("Nothing Found");
-                this.Height = 368;
+                this.Height = SEARCH_RESULTS_WINDOW_NORMAL_HEIGHT;
             }
         }
 
@@ -1080,7 +1084,6 @@ namespace TranslationHelper
             SearchRangeAllRadioButton.Checked = false;
         }
 
-        readonly string _doubleSearchMarker = "|<OT>|";
         private void DoubleSearchOptionCheckBox_CheckedChanged(object sender, EventArgs e)
         {
             if (DoubleSearchOptionCheckBox.Checked && !SearchFormFindWhatTextBox.Text.Contains(_doubleSearchMarker))
