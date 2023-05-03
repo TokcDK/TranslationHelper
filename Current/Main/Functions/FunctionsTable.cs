@@ -336,9 +336,9 @@ namespace TranslationHelper.Main.Functions
                         retDStable.ImportRow(row);
                     }
                 }
-                if (retDStable.Rows.Count == 0)
+                if (retDStable.Rows.Count > 0)
                 {
-                    retDS.Tables.Remove(retDStable);
+                    retDS.Tables.Add(retDStable);
                 }
             }
 
