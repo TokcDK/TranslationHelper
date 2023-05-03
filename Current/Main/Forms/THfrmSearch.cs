@@ -919,7 +919,6 @@ namespace TranslationHelper
 
             if (_foundRowsList.Count == 0)
             {
-                //PopulateGrid(null);
                 lblSearchMsg.Visible = true;
                 lblSearchMsg.Text = T._("Nothing Found");
                 this.Height = 368;
@@ -934,15 +933,14 @@ namespace TranslationHelper
             lblSearchMsg.Text = T._("Found ") + _foundRowsList.Count + T._(" records");
             this.Height = 589;
 
+            string replaceWithValue = SearchFormFindWhatTextBox.Text;
             var searchcolumnIndex = GetSearchColumnIndex();
-            int oDsResultsCount = _foundRowsList.Count;
-            for (int r = 0; r < oDsResultsCount; r++)
+            foreach (var foundRowData in _foundRowsList)
             {
-                var foundRowData = _foundRowsList[r];
                 (_selectedTableIndex, _selectedRowIndex) = (foundRowData.TableIndex, foundRowData.RowIndex);
                 var row = _tables[_selectedTableIndex].Rows[_selectedRowIndex];
-                string value = row.Field<string>(searchcolumnIndex);
-                if (value.Length == 0) continue;
+                string searchCoulumnValue = row.Field<string>(searchcolumnIndex);
+                if (string.IsNullOrEmpty(searchCoulumnValue)) continue;
 
                 if (SearchInInfoCheckBox.Checked)
                 {
@@ -959,20 +957,20 @@ namespace TranslationHelper
                 {
                     if (SearchModeRegexRadioButton.Checked)
                     {
-                        if (Regex.IsMatch(value, SearchFormFindWhatTextBox.Text, RegexOptions.IgnoreCase))
+                        if (Regex.IsMatch(searchCoulumnValue, replaceWithValue, RegexOptions.IgnoreCase))
                         {
                             StoreQueryAndReplacer = true;
                             row.SetField(_translationColumnIndex,
-                                Regex.Replace(GetDefaultIfEmpty(row.Field<string>(_translationColumnIndex), value), SearchFormFindWhatTextBox.Text, replacementUnescaped, RegexOptions.IgnoreCase));
+                                Regex.Replace(GetDefaultIfEmpty(row.Field<string>(_translationColumnIndex), searchCoulumnValue), SearchFormFindWhatTextBox.Text, replacementUnescaped, RegexOptions.IgnoreCase));
                         }
                     }
                     else
                     {
-                        if (value.ToUpperInvariant().Contains(SearchFormFindWhatTextBox.Text.ToUpperInvariant()))
+                        if (searchCoulumnValue.ToUpperInvariant().Contains(replaceWithValue.ToUpperInvariant()))
                         {
                             StoreQueryAndReplacer = true;
                             row.SetField(_translationColumnIndex,
-                                ReplaceEx.Replace(GetDefaultIfEmpty(row.Field<string>(_translationColumnIndex), value), SearchFormFindWhatTextBox.Text, replacementUnescaped, StringComparison.OrdinalIgnoreCase));
+                                ReplaceEx.Replace(GetDefaultIfEmpty(row.Field<string>(_translationColumnIndex), searchCoulumnValue), SearchFormFindWhatTextBox.Text, replacementUnescaped, StringComparison.OrdinalIgnoreCase));
                         }
                     }
                 }
