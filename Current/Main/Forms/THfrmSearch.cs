@@ -9,6 +9,7 @@ using System.Text.RegularExpressions;
 using System.Threading;
 using System.Windows.Forms;
 using TranslationHelper.Data;
+using TranslationHelper.Extensions;
 using TranslationHelper.Functions;
 using TranslationHelper.Functions.FileElementsFunctions.Row.SearchIssueCheckers;
 using TranslationHelper.Main.Functions;
@@ -500,6 +501,15 @@ namespace TranslationHelper
             }
             if (string.IsNullOrEmpty(searchQueryText[0])) return; // return if 1st query is empty
             _isDoubleSearch = !isSearchInInfo && !isIssuesSearch && searchQueryText.Length == 2;
+
+            // check if regex pattern is valid
+            if(SearchModeRegexRadioButton.Checked && searchQueryText.Any(v => !v.IsValidRegexPattern()))
+            {
+                lblSearchMsg.Visible = true;
+                lblSearchMsg.Text = T._("Invalid regex!");
+
+                return;
+            }
 
             var searchInSelected = SearchRangeSelectedRadioButton.Checked || SearchRangeVisibleRadioButton.Checked;
             int tableIndexMax = SearchRangeTableRadioButton.Checked || searchInSelected ? _filesList.SelectedIndex + 1 : _tables.Count;

@@ -18,16 +18,18 @@ namespace TranslationHelper.Extensions
         /// </summary>
         /// <param name="patternString"></param>
         /// <returns></returns>
-        public static bool IsValidRegexPattern(string patternString)
+        internal static bool IsValidRegexPattern(this string patternString)
         {
             try
             {
-                Regex.IsMatch("", patternString);
                 // Attempt to match an empty string against the pattern
+
+                Regex.IsMatch("", patternString);
                 return true;
             }
             catch (ArgumentException)
             {
+                // argument exception when regex is Invalid
                 return false;
             }
         }
