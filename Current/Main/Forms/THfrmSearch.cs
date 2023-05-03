@@ -537,12 +537,15 @@ namespace TranslationHelper
                         continue;
                     }
 
-                    if (isSearchInInfo)//search in info box
+                    if (isSearchInInfo) //search in info box
                     {
                         // in info always one query
                         var infoValue = (AppData.CurrentProject.FilesContentInfo.Tables[tableIndex].Rows[rowIndex].Field<string>(0));
 
-                        if (GetCheckResult(row2check, new string[1] { infoValue }, searchQueryText) == SearchResult.Error) return;
+                        if (GetCheckResult(new string[1] { infoValue }, searchQueryText))
+                        {
+                            ImportRowToFound(row2check);
+                        }
                     }
                     else if (isIssuesSearch && IsTheRowHasPossibleIssues(row2check)) //search rows with possible issues
                     {
@@ -562,7 +565,11 @@ namespace TranslationHelper
                             text2Search = new string[1] { row.Field<string>(searchColumnIndex) };
                         }
 
-                        if (GetCheckResult(row2check, text2Search, searchQueryText) == SearchResult.Error) return; // general search
+                        // general search
+                        if (GetCheckResult(text2Search, searchQueryText))
+                        {
+                            ImportRowToFound(row2check);
+                        }
                     }
                 }
             }
@@ -577,31 +584,19 @@ namespace TranslationHelper
                         && (row2check[searchcolumn] + string.Empty).Length == 0);
         }
 
-        private SearchResult GetCheckResult(DataRow row, string[] textWhereToSearch, string[] strQuery)
+        private bool GetCheckResult(string[] textWhereToSearch, string[] strQuery)
         {
             if (string.IsNullOrEmpty(textWhereToSearch[_isDoubleSearch ? 1 : 0]))
-                return SearchResult.NotFound; // skip when value to search is empty, check translation in case of double search
+                return false; // skip when value to search is empty, check translation in case of double search
 
-            if (SearchModeRegexRadioButton.Checked) // regex check
-            {
-                return CheckTextByRegex(row, textWhereToSearch, strQuery);
-            }
-            else return CheckText(row, textWhereToSearch, strQuery); // common check
+            return SearchModeRegexRadioButton.Checked
+                ? CheckTextByRegex(textWhereToSearch, strQuery) // regex check
+                : CheckText(textWhereToSearch, strQuery); // common check
         }
 
-        private SearchResult CheckText(DataRow row, string[] textWhereToSearch, string[] strQuery)
+        private bool CheckText(string[] textWhereToSearch, string[] strQuery)
         {
-            try
-            {
-                if (IsMatchedByContains(textWhereToSearch, strQuery))
-                {
-                    ImportRowToFound(row);
-                    return SearchResult.Found;
-                }
-            }
-            catch (ArgumentException) { return SearchResult.Error; }
-
-            return SearchResult.NotFound;
+            return IsMatchedByContains(textWhereToSearch, strQuery);
         }
 
         private bool IsMatchedByContains(string[] textWhereToSearch, string[] strQuery)
@@ -618,25 +613,9 @@ namespace TranslationHelper
             }
         }
 
-        private SearchResult CheckTextByRegex(DataRow row, string[] textWhereSearch, string[] searchPattern)
+        private bool CheckTextByRegex(string[] textWhereSearch, string[] searchPattern)
         {
-            try
-            {
-                if (IsMatchedByRegex(textWhereSearch, searchPattern))
-                {
-                    ImportRowToFound(row);
-                    return SearchResult.Found;
-                }
-            }
-            catch (ArgumentException ex)
-            {
-                //при ошибках регекса выходить
-                lblSearchMsg.Visible = true;
-                lblSearchMsg.Text = T._("Invalid regex") + ">" + ex.Message;
-                return SearchResult.Error;
-            }
-
-            return SearchResult.NotFound;
+            return IsMatchedByRegex(textWhereSearch, searchPattern);
         }
 
         private bool IsMatchedByRegex(string[] textWhereSearch, string[] searchPattern)
