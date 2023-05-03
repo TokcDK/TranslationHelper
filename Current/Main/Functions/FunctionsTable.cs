@@ -64,18 +64,18 @@ namespace TranslationHelper.Main.Functions
         /// <summary>
         /// shows first row where translation cell is empty
         /// </summary>
-        /// <param name="projectData"></param>
         internal static void ShowFirstRowWithEmptyTranslation()
         {
-            int TCount = AppData.CurrentProject.FilesContent.Tables.Count;
-            for (int t = 0; t < TCount; t++)
+            var tables = AppData.CurrentProject.FilesContent.Tables;
+            int tablesCount = tables.Count;
+            for (int t = 0; t < tablesCount; t++)
             {
-                var table = AppData.CurrentProject.FilesContent.Tables[t];
+                var table = tables[t];
 
-                int RCount = table.Rows.Count;
-                for (int r = 0; r < RCount; r++)
+                int rowsCount = table.Rows.Count;
+                for (int r = 0; r < rowsCount; r++)
                 {
-                    var cellValue = table.Rows[r].Field<string>(1);
+                    var cellValue = table.Rows[r].Field<string>(THSettings.TranslationColumnName);
                     if (string.IsNullOrEmpty(cellValue))
                     {
                         ShowSelectedRow(t, THSettings.TranslationColumnName, r);
