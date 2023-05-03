@@ -910,8 +910,6 @@ namespace TranslationHelper
                 return;
             }
 
-            var replacementUnescaped = FixRegexReplacementFromTextbox(SearchFormReplaceWithTextBox.Text);
-
             lblSearchMsg.Visible = false;
             GetSearchResults();
 
@@ -925,7 +923,7 @@ namespace TranslationHelper
                 return;
             }
 
-            bool StoreQueryAndReplacer = false;
+            bool storeQueryAndReplacer = false;
 
             PopulateGrid(_foundRowsList);
 
@@ -933,7 +931,8 @@ namespace TranslationHelper
             lblSearchMsg.Text = T._("Found ") + _foundRowsList.Count + T._(" records");
             this.Height = 589;
 
-            string replaceWithValue = SearchFormFindWhatTextBox.Text;
+            string searchPattern = SearchFormFindWhatTextBox.Text;
+            var searchReplacementUnescaped = FixRegexReplacementFromTextbox(SearchFormReplaceWithTextBox.Text);
             var searchcolumnIndex = GetSearchColumnIndex();
             foreach (var foundRowData in _foundRowsList)
             {
@@ -944,11 +943,11 @@ namespace TranslationHelper
 
                 if (SearchInInfoCheckBox.Checked)
                 {
-                    if (replacementUnescaped == _replaceToEqualMarker)
+                    if (searchReplacementUnescaped == _replaceToEqualMarker)
                     {
                         row.SetField(_translationColumnIndex, row[_originalColumnIndex]);
                     }
-                    else if (string.IsNullOrEmpty(replacementUnescaped))
+                    else if (string.IsNullOrEmpty(searchReplacementUnescaped))
                     {
                         row.SetField(_translationColumnIndex, DBNull.Value);
                     }
@@ -957,28 +956,30 @@ namespace TranslationHelper
                 {
                     if (SearchModeRegexRadioButton.Checked)
                     {
-                        if (Regex.IsMatch(searchCoulumnValue, replaceWithValue, RegexOptions.IgnoreCase))
+                        if (Regex.IsMatch(searchCoulumnValue, searchPattern, RegexOptions.IgnoreCase))
                         {
-                            StoreQueryAndReplacer = true;
+                            storeQueryAndReplacer = true;
+                            var v = GetDefaultIfEmpty(row.Field<string>(_translationColumnIndex), searchCoulumnValue);
                             row.SetField(_translationColumnIndex,
-                                Regex.Replace(GetDefaultIfEmpty(row.Field<string>(_translationColumnIndex), searchCoulumnValue), SearchFormFindWhatTextBox.Text, replacementUnescaped, RegexOptions.IgnoreCase));
+                                Regex.Replace(v, searchPattern, searchReplacementUnescaped, RegexOptions.IgnoreCase));
                         }
                     }
                     else
                     {
-                        if (searchCoulumnValue.ToUpperInvariant().Contains(replaceWithValue.ToUpperInvariant()))
+                        if (searchCoulumnValue.ToUpperInvariant().Contains(searchPattern.ToUpperInvariant()))
                         {
-                            StoreQueryAndReplacer = true;
+                            storeQueryAndReplacer = true;
+                            var v = GetDefaultIfEmpty(row.Field<string>(_translationColumnIndex), searchCoulumnValue);
                             row.SetField(_translationColumnIndex,
-                                ReplaceEx.Replace(GetDefaultIfEmpty(row.Field<string>(_translationColumnIndex), searchCoulumnValue), SearchFormFindWhatTextBox.Text, replacementUnescaped, StringComparison.OrdinalIgnoreCase));
+                                ReplaceEx.Replace(v, searchPattern, searchReplacementUnescaped, StringComparison.OrdinalIgnoreCase));
                         }
                     }
                 }
             }
 
-            if (StoreQueryAndReplacer)
+            if (storeQueryAndReplacer)
             {
-                StoryFoundValueToComboBox(SearchFormFindWhatTextBox.Text, SearchFormReplaceWithTextBox.Text);
+                StoryFoundValueToComboBox(searchPattern, SearchFormReplaceWithTextBox.Text);
             }
         }
 
