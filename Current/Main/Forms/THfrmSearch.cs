@@ -929,25 +929,25 @@ namespace TranslationHelper
             lblSearchMsg.Text = T._("Found ") + _foundRowsList.Count + T._(" records");
             this.Height = 589;
 
-            var searchcolumn = GetSearchColumnIndex();
+            var searchcolumnIndex = GetSearchColumnIndex();
             int oDsResultsCount = _foundRowsList.Count;
             for (int r = 0; r < oDsResultsCount; r++)
             {
                 var foundRowData = _foundRowsList[r];
                 (_selectedTableIndex, _selectedRowIndex) = (foundRowData.TableIndex, foundRowData.RowIndex);
                 var row = _tables[_selectedTableIndex].Rows[_selectedRowIndex];
-                string value = row[searchcolumn] + string.Empty;
+                string value = row.Field<string>(searchcolumnIndex);
                 if (value.Length == 0) continue;
 
                 if (SearchInInfoCheckBox.Checked)
                 {
                     if (replacementUnescaped == "=")
                     {
-                        row[THSettings.TranslationColumnName] = row[THSettings.OriginalColumnName];
+                        row.SetField(_translationColumnIndex, row[_originalColumnIndex]);
                     }
                     else if (string.IsNullOrEmpty(replacementUnescaped))
                     {
-                        row[THSettings.TranslationColumnName] = string.Empty;
+                        row.SetField(_translationColumnIndex, DBNull.Value);
                     }
                 }
                 else
@@ -957,7 +957,8 @@ namespace TranslationHelper
                         if (Regex.IsMatch(value, SearchFormFindWhatTextBox.Text, RegexOptions.IgnoreCase))
                         {
                             StoreQueryAndReplacer = true;
-                            row[THSettings.TranslationColumnName] = Regex.Replace(GetFirstIfNotEmpty(row[THSettings.TranslationColumnName] + string.Empty, value), SearchFormFindWhatTextBox.Text, replacementUnescaped, RegexOptions.IgnoreCase);
+                            row.SetField(_translationColumnIndex,
+                                Regex.Replace(GetFirstIfNotEmpty(row.Field<string>(_translationColumnIndex), value), SearchFormFindWhatTextBox.Text, replacementUnescaped, RegexOptions.IgnoreCase));
                         }
                     }
                     else
@@ -965,7 +966,8 @@ namespace TranslationHelper
                         if (value.ToUpperInvariant().Contains(SearchFormFindWhatTextBox.Text.ToUpperInvariant()))
                         {
                             StoreQueryAndReplacer = true;
-                            row[THSettings.TranslationColumnName] = ReplaceEx.Replace(GetFirstIfNotEmpty(row[THSettings.TranslationColumnName] + string.Empty, value), SearchFormFindWhatTextBox.Text, replacementUnescaped, StringComparison.OrdinalIgnoreCase);
+                            row.SetField(_translationColumnIndex,
+                                ReplaceEx.Replace(GetFirstIfNotEmpty(row.Field<string>(_translationColumnIndex), value), SearchFormFindWhatTextBox.Text, replacementUnescaped, StringComparison.OrdinalIgnoreCase));
                         }
                     }
                 }
