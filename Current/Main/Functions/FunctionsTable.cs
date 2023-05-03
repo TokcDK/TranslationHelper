@@ -23,7 +23,6 @@ namespace TranslationHelper.Main.Functions
             var tableIndex = 0;
             AppData.Main.Invoke((Action)(() => tableIndex = AppData.Main.THFilesList.GetSelectedIndex()));
 
-
             int[] selindexes = GetRowIndexesOfSelectedDGVCells(AppData.Main.THFileElementsDataGridView.SelectedCells);
             var selindexesLength = selindexes.Length;
             for (int i = 0; i < selindexesLength; i++)
@@ -49,16 +48,16 @@ namespace TranslationHelper.Main.Functions
 
         internal static int[] GetRowIndexesOfSelectedDGVCells(DataGridViewSelectedCellCollection selectedCells)
         {
-            var rowindexes = new List<int>();
+            var rowIndexes = new List<int>();
             foreach (DataGridViewCell cell in selectedCells)
             {
                 var rowIndex = cell.RowIndex;
-                if (!rowindexes.Contains(rowIndex))
+                if (!rowIndexes.Contains(rowIndex))
                 {
-                    rowindexes.Add(rowIndex);
+                    rowIndexes.Add(rowIndex);
                 }
             }
-            return rowindexes.ToArray();
+            return rowIndexes.ToArray();
         }
 
         /// <summary>
@@ -68,6 +67,7 @@ namespace TranslationHelper.Main.Functions
         {
             var tables = AppData.CurrentProject.FilesContent.Tables;
             int tablesCount = tables.Count;
+            string translationColumnName = THSettings.TranslationColumnName;
             for (int t = 0; t < tablesCount; t++)
             {
                 var table = tables[t];
@@ -75,10 +75,10 @@ namespace TranslationHelper.Main.Functions
                 int rowsCount = table.Rows.Count;
                 for (int r = 0; r < rowsCount; r++)
                 {
-                    var cellValue = table.Rows[r].Field<string>(THSettings.TranslationColumnName);
+                    var cellValue = table.Rows[r].Field<string>(translationColumnName);
                     if (string.IsNullOrEmpty(cellValue))
                     {
-                        ShowSelectedRow(t, THSettings.TranslationColumnName, r);
+                        ShowSelectedRow(t, translationColumnName, r);
                         return;
                     }
                 }
@@ -245,180 +245,6 @@ namespace TranslationHelper.Main.Functions
             return false;
         }
 
-        public static string TranslationCacheFind(DataSet dataSet, string inputString)
-        {
-            if (!AppSettings.EnableTranslationCache)
-            {
-                return string.Empty;
-            }
-            if (string.IsNullOrEmpty(inputString) || dataSet == null)
-            {
-                return string.Empty;
-            }
-            using (var table = dataSet.Tables[0])
-            {
-                if (!GetAlreadyAddedInTableAndTableHasRowsColumns(table, inputString))
-                {
-                    return string.Empty;
-                }
-                var rowsCount = table.Rows.Count;
-                for (int i = 0; i < rowsCount; i++)
-                {
-                    if (Equals(inputString, table.Rows[i].Field<string>(0)))
-                    {
-                        return table.Rows[i].Field<string>(1);
-                    }
-                }
-                return string.Empty;
-            }
-        }
-
-        public static DataTable RemoveAllRowsDuplicatesWithRepeatingOriginals(DataTable table)
-        {
-            //using (DataTable tempTable = new DataTable())
-            {
-                DataTable tempTable = new DataTable();
-                foreach (DataColumn column in table.Columns)
-                {
-                    tempTable.Columns.Add(column.ColumnName);
-                }
-                foreach (DataRow row in table.Rows)
-                {
-                    if (!GetAlreadyAddedInTableAndTableHasRowsColumns_Slower(tempTable, row.Field<string>(0)))
-                    {
-                        tempTable.ImportRow(row);
-                    }
-                }
-                return tempTable;
-            }
-        }
-
-        private static bool GetAlreadyAddedInTableAndTableHasRowsColumns_Slower(DataTable table, string value)
-        {
-            int tableRowsCount = table.Rows.Count;
-            int originalColumnIndex = AppData.CurrentProject.OriginalColumnIndex;
-            for (int i = 0; i < tableRowsCount; i++)
-            {
-                if (table.Rows[i].Field<string>(originalColumnIndex).Equals(value))
-                {
-                    return true;
-                }
-            }
-            return false;
-        }
-
-        public static bool GetAlreadyAddedInTableAndTableHasRowsColumns(DataTable table, string value)
-        {
-            if (string.IsNullOrEmpty(value) || table == null || table.Rows.Count == 0 || table.Columns.Count == 0)
-            {
-                return false;
-            }
-
-            //было отдельно снаружи метода, нужно проверить для чего и будет ли исключение
-            //про primary key взял отсюда: https://stackoverflow.com/questions/3567552/table-doesnt-have-a-primary-key
-            DataColumn[] keyColumns = new DataColumn[1];
-
-            //показать неуникальную строчку из таблицы, если есть. делал, когда была ошибка об неуникальности значения.
-            //for (int i = 0; i < table.Rows.Count; i++)
-            //{
-            //    var value1 = table.Rows[i][0];
-            //    for (int i2 = 0; i2 < table.Rows.Count; i2++)
-            //    {
-            //        var value2 = table.Rows[i2][0];
-            //        if (i != i2 && Equals(value1, value2))
-            //        {
-            //            MessageBox.Show(value2 as string);
-            //        }
-            //    }
-            //}
-
-            keyColumns[0] = table.Columns[0];
-
-            try
-            {
-                //здесь ошибки, когда кеш ломается из за ошибки с автозаменой и в него попадают неуникальные строчки, нужно тогда удалить из таблицы все неуникальные строки
-                table.PrimaryKey = keyColumns;
-            }
-            catch (System.ArgumentException)
-            {
-                table.Rows.Clear();//очистка, если не смогло восстановить строки
-                return false;//возврат false, после стирания строк
-
-
-                ////очистка таблицы от дубликатов, если задание ключа выдало исключение
-                //table = RemoveAllRowsDuplicatesWithRepeatingOriginals(table);
-
-                //try
-                //{
-                //    //перезадание ключа
-                //    keyColumns[0] = table.Columns[0];
-                //    table.PrimaryKey = keyColumns;
-                //}
-                //catch
-                //{
-                //    table.Rows.Clear();//очистка, если не смогло восстановить строки
-                //    return false;//возврат false, после стирания строк
-                //}
-            }
-
-            //очень быстрый способ поиска дубликата значения, два нижник в разы медленней, этот почти не заметен
-            if (table.Rows.Contains(value))
-            {
-                //LogToFile("Value already in table: \r\n"+ value);
-                //MessageBox.Show("found! value=" + value);
-                return true;
-            }
-            /*самый медленный способ, заметно медленней нижнего и непомерно критически медленней верхнего
-            if (ds.Tables[tablename].Select("Original = '" + value.Replace("'", "''") + "'").Length > 0)
-            {
-                //MessageBox.Show("found! value=" + value);
-                return true;
-            }
-            */
-            /*довольно медленный способ, быстрее того, что перед этим с Select, но критически медленней верхнего первого
-            for (int i=0; i < ds.Tables[tablename].Rows.Count; i++)
-            {
-                if (ds.Tables[tablename].Rows[i][0].ToString() == value)
-                {
-                    return true;
-                }
-            }
-            */
-            //LogToFile("Value still not in table: \r\n" + value);
-            return false;
-        }
-
-        //DataSet THTranslationCache = new DataSet();
-        public static void TranslationCacheInit(DataSet dataSet)
-        {
-            if (dataSet == null)
-            {
-                return;
-            }
-
-            dataSet.Reset();
-            if (File.Exists(AppSettings.THTranslationCachePath))
-            {
-                FunctionsDBFile.ReadDBFile(dataSet, AppSettings.THTranslationCachePath);
-            }
-            else
-            {
-                dataSet.Tables.Add("TranslationCache");
-                dataSet.Tables["TranslationCache"].Columns.Add(THSettings.OriginalColumnName);
-                dataSet.Tables["TranslationCache"].Columns.Add(THSettings.TranslationColumnName);
-            }
-            //MessageBox.Show("TranslationCache Rows.Count=" + THTranslationCache.Tables["TranslationCache"].Rows.Count+ "TranslationCache Columns.Count=" + THTranslationCache.Tables["TranslationCache"].Columns.Count);
-        }
-
-        public static void THTranslationCacheAdd(DataSet dataSet, string original, string translation)
-        {
-            if (dataSet != null)
-            {
-                //LogToFile("original=" + original+ ",translation=" + translation,true);
-                dataSet.Tables[0].Rows.Add(original, translation);
-            }
-        }
-
         /// <summary>
         /// Return real row index in Datatable for Datagridviev cell
         /// </summary>
@@ -522,16 +348,19 @@ namespace TranslationHelper.Main.Functions
         /// <summary>
         /// true if 2 datasets tables and table rows count is identical
         /// </summary>
-        /// <param name="DS1"></param>
-        /// <param name="DS2"></param>
+        /// <param name="dataSet1"></param>
+        /// <param name="dataSet2"></param>
         /// <returns></returns>
-        public static bool IsDataSetsElementsCountIdentical(DataSet DS1, DataSet DS2)
+        public static bool IsDataSetsElementsCountIdentical(DataSet dataSet1, DataSet dataSet2)
         {
-            if (DS1.Tables.Count == DS2.Tables.Count)
+            if (dataSet1.Tables.Count == dataSet2.Tables.Count)
             {
-                for (int t = 0; t < DS1.Tables.Count; t++)
+                var tables1 = dataSet1.Tables;
+                var tables2 = dataSet2.Tables;
+                int tables1Count = tables1.Count;
+                for (int t = 0; t < tables1Count; t++)
                 {
-                    if (DS1.Tables[t].Rows.Count != DS2.Tables[t].Rows.Count)
+                    if (tables1[t].Rows.Count != tables2[t].Rows.Count)
                     {
                         return false;
                     }
@@ -553,10 +382,8 @@ namespace TranslationHelper.Main.Functions
         /// <returns>True when <paramref name="complete"/> is true and all values of <paramref name="columnName"/> is NOT empty. True when <paramref name="complete"/> is false and all values of <paramref name="columnName"/> is empty.</returns>
         public static bool IsTableColumnCellsAll(this DataTable dataTabe, string columnName = null, bool complete = true)
         {
-            if (dataTabe == null)
-            {
-                return false;
-            }
+            if (dataTabe == null) return false;
+
             int DTRowsCount = dataTabe.Rows.Count;
             columnName = columnName ?? THSettings.TranslationColumnName;
             for (int r = 0; r < DTRowsCount; r++)
@@ -574,24 +401,22 @@ namespace TranslationHelper.Main.Functions
         /// <summary>
         /// Get rows count from all Dataset tables
         /// </summary>
-        /// <param name="DS"></param>
+        /// <param name="dataSet"></param>
         /// <returns></returns>
-        public static int GetDatasetRowsCount(DataSet DS)
+        public static int GetDatasetRowsCount(DataSet dataSet)
         {
-            if (DS == null)
+            if (dataSet == null) return 0;
+
+            int rowsCount = 0;
+
+            var tables = dataSet.Tables;
+            int tablesCount = dataSet.Tables.Count;
+            for (int t = 0; t < tablesCount; t++)
             {
-                return 0;
+                rowsCount += tables[t].Rows.Count;
             }
 
-            int RowsCount = 0;
-
-            int DTTablesCount = DS.Tables.Count;
-            for (int t = 0; t < DTTablesCount; t++)
-            {
-                RowsCount += DS.Tables[t].Rows.Count;
-            }
-
-            return RowsCount;
+            return rowsCount;
         }
 
         /// <summary>
@@ -602,10 +427,7 @@ namespace TranslationHelper.Main.Functions
         /// <returns></returns>
         public static int GetDatasetNonEmptyRowsCount(DataSet dataSet, string columnName = null)
         {
-            if (dataSet == null)
-            {
-                return 0;
-            }
+            if (dataSet == null) return 0;
 
             int NonEmptyRowsCount = 0;
             columnName = columnName ?? THSettings.TranslationColumnName;
@@ -621,22 +443,19 @@ namespace TranslationHelper.Main.Functions
         /// <summary>
         /// Get count of non empty rows in the Table
         /// </summary>
-        /// <param name="dataTable"></param>
+        /// <param name="table"></param>
         /// <param name="columnName"></param>
         /// <returns></returns>
-        public static int GetTableNonEmptyRowsCount(DataTable dataTable, string columnName = null)
+        public static int GetTableNonEmptyRowsCount(DataTable table, string columnName = null)
         {
-            if (dataTable == null)
-            {
-                return 0;
-            }
+            if (table == null) return 0;
 
-            int NonEmptyRowsCount = 0;
-            int DTRowsCount = dataTable.Rows.Count;
+            int nonEmptyRowsCount = 0;
+            int tableRowsCount = table.Rows.Count;
             columnName = columnName ?? THSettings.TranslationColumnName;
-            for (int r = 0; r < DTRowsCount; r++)
+            for (int r = 0; r < tableRowsCount; r++)
             {
-                var cell = dataTable.Rows[r].Field<string>(columnName);
+                var cell = table.Rows[r].Field<string>(columnName);
 
                 if (string.IsNullOrEmpty(cell))
                 {
@@ -644,11 +463,11 @@ namespace TranslationHelper.Main.Functions
                 }
                 else
                 {
-                    NonEmptyRowsCount++;
+                    nonEmptyRowsCount++;
                 }
             }
 
-            return NonEmptyRowsCount;
+            return nonEmptyRowsCount;
         }
 
         internal static string FixDataTableFilterStringValue(string stringValue)
