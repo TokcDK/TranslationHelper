@@ -110,8 +110,11 @@ namespace TranslationHelper.Projects.RPGMMV
         {
             bool ret = false;
             var dirWhereSearch = new DirectoryInfo(Path.Combine(WWWDir, "data"));
-            if (ProjectToolsOpenSave.OpenSaveFilesBase(this, dirWhereSearch, typeof(ExternMessageCSV), "*.csv")) ret = true;
+            if (ProjectToolsOpenSave.OpenSaveFilesBase(this, dirWhereSearch, typeof(ExternMessageCSV), "ExternMessage.csv")) ret = true;
             if (ProjectToolsOpenSave.OpenSaveFilesBase(this, dirWhereSearch, typeof(QuestsTxt), "Quests.txt", searchOption: SearchOption.TopDirectoryOnly)) ret = true;
+
+            dirWhereSearch = new DirectoryInfo(Path.Combine(WWWDir, "data", "dobbyPlugin","db"));
+            if (ProjectToolsOpenSave.OpenSaveFilesBase(this, dirWhereSearch, typeof(DobbyPluginDBCSV), "*.csv")) ret = true;
 
             dirWhereSearch = new DirectoryInfo(Path.Combine(dirWhereSearch.FullName, "tes"));
             if (ProjectToolsOpenSave.OpenSaveFilesBase(this, dirWhereSearch, typeof(JsonEventCommandsList), "*.json")) ret = true;
