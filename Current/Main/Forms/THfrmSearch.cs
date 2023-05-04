@@ -488,7 +488,7 @@ namespace TranslationHelper
             _isAnyRowFound = false;
             _foundRowsList = EnumerateFoundRows().ToList();
         }
-        private IEnumerable<FoundRowData> EnumerateSearchResults()
+        private IEnumerable<FoundRowData> EnumerateAndFillSearchResults()
         {
             lblSearchMsg.Visible = false;
             if (_tables.Count == 0) yield break;
@@ -927,7 +927,7 @@ namespace TranslationHelper
             string searchPattern = SearchFormFindWhatTextBox.Text;
             var searchReplacementUnescaped = FixRegexReplacementFromTextbox(SearchFormReplaceWithTextBox.Text);
             var searchcolumnIndex = GetSearchColumnIndex();
-            foreach (var foundRowData in EnumerateSearchResults())
+            foreach (var foundRowData in EnumerateAndFillSearchResults())
             {
                 (_selectedTableIndex, _selectedRowIndex) = (foundRowData.TableIndex, foundRowData.RowIndex);
                 var row = _tables[_selectedTableIndex].Rows[_selectedRowIndex];
