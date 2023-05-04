@@ -495,7 +495,8 @@ namespace TranslationHelper
 
             _isAnyRowFound = false;
 
-            foreach(var foundRowData in EnumerateFoundRows())
+            if(_foundRowsList==null) _foundRowsList = new List<FoundRowData>();
+            foreach (var foundRowData in EnumerateFoundRows())
             {
                 _foundRowsList.Add(foundRowData);
                 yield return foundRowData;

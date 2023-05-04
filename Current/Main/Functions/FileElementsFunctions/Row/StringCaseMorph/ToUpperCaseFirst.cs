@@ -4,18 +4,10 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row.StringCaseMorph
 {
     class ToUpperCaseFirst : StringCaseMorphBase
     {
-        public ToUpperCaseFirst()
-        {
-        }
-
         protected override VariantCase Variant => VariantCase.Upper;
     }
-    class ToLowerCaseFirst : StringCaseMorphBase
+    class ToLowerCaseFirstAllLines : StringCaseMorphBase
     {
-        public ToLowerCaseFirst()
-        {
-        }
-
-        protected override VariantCase Variant => VariantCase.lower1st;
+        protected override VariantCase Variant => VariantCase.UpperAllLines;
     }
 }

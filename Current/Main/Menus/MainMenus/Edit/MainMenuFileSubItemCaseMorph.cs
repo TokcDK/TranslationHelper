@@ -10,11 +10,12 @@ namespace TranslationHelper.Menus.MainMenus.Edit
     {
         public override string Text => T._("Case Morph");
 
-        public override IMenuItem[] Childs => new IMenuItem[4] 
+        public override IMenuItem[] Childs => new IMenuItem[5] 
         { 
             new MenuItemCaseMorphLowerVariated(),
             new MenuItemCaseMorphlower1stVariated(),
             new MenuItemCaseMorphUpperVariated(),
+            new MenuItemCaseMorphUpperAllLinesVariated(),
             new MenuItemCaseMorphUPPERAllVariated(),
         };
 
@@ -33,6 +34,18 @@ namespace TranslationHelper.Menus.MainMenus.Edit
 
         protected override void OnRows(object sender, EventArgs e) { new ToLowerCaseAll().Rows(); }
     }
+    internal class MenuItemCaseMorphlower1stVariated : AllTableRowsChildMenuBase
+    {
+        public override string Text => T._("To lower 1st");
+
+        public override string Description => T._("Change first char case of row string to lower");
+
+        protected override void OnAll(object sender, EventArgs e) { _ = new ToLowerCaseFirst().AllT(); }
+
+        protected override void OnTable(object sender, EventArgs e) { _ = new ToLowerCaseFirst().TableT(); }
+
+        protected override void OnRows(object sender, EventArgs e) { new ToLowerCaseFirst().Rows(); }
+    }
 
     internal class MenuItemCaseMorphUpperVariated : AllTableRowsChildMenuBase
     {
@@ -46,17 +59,18 @@ namespace TranslationHelper.Menus.MainMenus.Edit
 
         protected override void OnRows(object sender, EventArgs e) { new ToUpperCaseFirst().Rows(); }
     }
-    internal class MenuItemCaseMorphlower1stVariated : AllTableRowsChildMenuBase
+
+    internal class MenuItemCaseMorphUpperAllLinesVariated : AllTableRowsChildMenuBase
     {
-        public override string Text => T._("To lower 1st");
+        public override string Text => T._("To Upper")+" ("+ T._("All lines") + ")";
 
-        public override string Description => T._("Change first char case of row string to lower");
+        public override string Description => T._("Change first char case of row string to Upper");
 
-        protected override void OnAll(object sender, EventArgs e) { _ = new ToLowerCaseFirst().AllT(); }
+        protected override void OnAll(object sender, EventArgs e) { _ = new ToLowerCaseFirstAllLines().AllT(); }
 
-        protected override void OnTable(object sender, EventArgs e) { _ = new ToLowerCaseFirst().TableT(); }
+        protected override void OnTable(object sender, EventArgs e) { _ = new ToLowerCaseFirstAllLines().TableT(); }
 
-        protected override void OnRows(object sender, EventArgs e) { new ToLowerCaseFirst().Rows(); }
+        protected override void OnRows(object sender, EventArgs e) { new ToLowerCaseFirstAllLines().Rows(); }
     }
 
     internal class MenuItemCaseMorphUPPERAllVariated : AllTableRowsChildMenuBase

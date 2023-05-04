@@ -15,6 +15,8 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row.ExtractedParser
         protected abstract string ActionWithExtractedTranslation(ExtractRegexValueInfo extractOrigValueInfo, ExtractRegexValueInfo extractedTransValueInfo);
         protected abstract string ActionWithOriginalIfNoExtracted(string original, string translation);
 
+        protected bool IsExtracted = false;
+
         // RoweBase
         protected override bool Apply()
         {
@@ -38,6 +40,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row.ExtractedParser
                     var wxtractedOrigValueInfo = etractDataOrig.ExtractedValuesList[i];
                     if (extractedTransValueInfo.Original == wxtractedOrigValueInfo.Original) continue; // do not change when equal to original
 
+                    IsExtracted = true;
                     extractedTransValueInfo.Translation = ActionWithExtractedTranslation(wxtractedOrigValueInfo, extractedTransValueInfo);
 
                     if (extractedTransValueInfo.Translation != extractedTransValueInfo.Original) isChanged = true;
@@ -61,6 +64,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row.ExtractedParser
             }
             else
             {
+                IsExtracted = false;
                 newValue = ActionWithOriginalIfNoExtracted(orig, trans);
             }
 

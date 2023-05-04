@@ -1,5 +1,5 @@
 ﻿using System;
-using System.Globalization;
+using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text.RegularExpressions;
 using TranslationHelper.Extensions;
@@ -50,7 +50,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row.StringCaseMorph
             /// </summary>
             lower = 0,
             /// <summary>
-            /// 1st char to upper case
+            /// 1st char to Upper case
             /// </summary>
             Upper = 1,
             /// <summary>
@@ -61,6 +61,10 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row.StringCaseMorph
             /// 1st char to lower
             /// </summary>
             lower1st = 3,
+            /// <summary>
+            /// 1st char to Upper case in all lines
+            /// </summary>
+            UpperAllLines = 4,
         }
 
         /// <summary>
@@ -70,12 +74,12 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row.StringCaseMorph
 
         protected override string ActionWithExtractedTranslation(ExtractRegexValueInfo extractedOrigValueInfo, ExtractRegexValueInfo extractedTransValueInfo)
         {
-            return ChangeRegistryCaseForTheCell(extractedTransValueInfo.Original, Variant);
+            return ChangeRegistryCaseForTheCell(extractedOrigValueInfo.Original, extractedTransValueInfo.Original, Variant);
         }
 
         protected override string ActionWithOriginalIfNoExtracted(string original, string translation)
         {
-            return ChangeRegistryCaseForTheCell(translation, Variant);
+            return ChangeRegistryCaseForTheCell(original, translation, Variant);
         }
 
         // move base code
@@ -186,29 +190,64 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row.StringCaseMorph
         /// <summary>
         /// 0=lowercase,1=Uppercase,2=UPPERCASE
         /// </summary>
-        /// <param name="dsTransCell"></param>
+        /// <param name="translationString"></param>
         /// <param name="variant"></param>
         /// <returns></returns>
-        private string ChangeRegistryCaseForTheCell(string dsTransCell, VariantCase variant)
+        private string ChangeRegistryCaseForTheCell(string originalString, string translationString, VariantCase variant)
         {
             switch (variant)
             {
                 case VariantCase.lower:
                     //lowercase
-                    return dsTransCell.ToLowerInvariant();
+                    return translationString.ToLowerInvariant();
+                case VariantCase.UpperAllLines:
+                    return ToUpperAllLines(originalString, translationString);
                 case VariantCase.Upper:
                     //Uppercase
                     //https://www.c-sharpcorner.com/blogs/first-letter-in-uppercase-in-c-sharp1
-                    return StringToUpper(dsTransCell);
+                    return StringToUpper(translationString);
                 case VariantCase.UPPER:
                     //UPPERCASE
-                    return dsTransCell.ToUpperInvariant();
+                    return translationString.ToUpperInvariant();
                 case VariantCase.lower1st:
                     //UPPERCASE
-                    return StringToUpper(dsTransCell, isReverse: true);
+                    return StringToUpper(translationString, isReverse: true);
                 default:
-                    return dsTransCell;
+                    return translationString;
             }
+        }
+
+        private string ToUpperAllLines(string originalString, string translationString)
+        {
+            if(IsExtracted) return StringToUpper(translationString);
+
+            var newLineSymbolIndex = translationString.IndexOf("\n");
+            if (newLineSymbolIndex == -1)
+            {
+                // standart ToUpper when single line
+                return StringToUpper(translationString);
+            }
+
+            string newLineSymbol = newLineSymbolIndex > 0 && translationString[newLineSymbolIndex - 1].Equals('\r') ? "\r\n" : "\n";
+
+            string[] linesOfOriginal = originalString.Split(new[] { "\n", "\r\n" }, StringSplitOptions.None);
+            string[] linesOfTranslation = translationString.Split(new[] { newLineSymbol }, StringSplitOptions.None);
+
+            if (linesOfOriginal.Length != linesOfTranslation.Length) return StringToUpper(translationString);
+
+            for (int i = 0; i < linesOfTranslation.Length; i++)
+            {
+                var line = linesOfTranslation[i];
+
+                if (string.IsNullOrWhiteSpace(line)) continue;
+
+                // original line 1st char is equal to translation, skip
+                if (line.Equals(linesOfOriginal[i])) continue;
+
+                linesOfTranslation[i] = StringToUpper(line);
+            }
+
+            return string.Join(newLineSymbol, linesOfTranslation);
         }
 
         /// <summary>
