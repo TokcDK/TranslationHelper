@@ -55,8 +55,34 @@ namespace TranslationHelper
 
         interface ISearchComparer
         {
-            bool IsMatch();
-            void Replace();
+            bool IsMatch(string searchString, string searchPattern, bool isCaseInsensitive = false);
+            void Replace(string searchString, string searchPattern, string replaceString, bool isCaseInsensitive = true);
+        }
+
+        class NormalComparer : ISearchComparer
+        {
+            public bool IsMatch(string searchString, string searchPattern, bool isCaseInsensitive = false)
+            {
+                return searchString.IndexOf(searchPattern, isCaseInsensitive ? StringComparison.OrdinalIgnoreCase : StringComparison.Ordinal) != -1;
+            }
+
+            public void Replace(string searchString, string searchPattern, string replaceString, bool isCaseInsensitive = false)
+            {
+                searchString.Replace(searchPattern, replaceString, isCaseInsensitive ? StringComparison.OrdinalIgnoreCase : StringComparison.Ordinal);
+            }
+        }
+
+        class RegexComparer : ISearchComparer
+        {
+            public bool IsMatch(string searchString, string searchPattern, bool isCaseInsensitive = false)
+            {
+                return Regex.IsMatch(searchString, searchPattern, isCaseInsensitive ? RegexOptions.IgnoreCase : RegexOptions.None);
+            }
+
+            public void Replace(string searchString, string searchPattern, string replaceString, bool isCaseInsensitive = false)
+            {
+                Regex.Replace(searchString, searchPattern, replaceString, isCaseInsensitive ? RegexOptions.IgnoreCase : RegexOptions.None);
+            }
         }
 
         public class FoundRowData
@@ -436,7 +462,7 @@ namespace TranslationHelper
 
             _isAnyRowFound = false;
 
-            if(_foundRowsList==null) _foundRowsList = new List<FoundRowData>();
+            if (_foundRowsList == null) _foundRowsList = new List<FoundRowData>();
             foreach (var foundRowData in EnumerateFoundRows())
             {
                 _foundRowsList.Add(foundRowData);
