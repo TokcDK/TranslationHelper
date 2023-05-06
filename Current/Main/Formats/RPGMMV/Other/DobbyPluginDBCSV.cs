@@ -55,6 +55,7 @@ namespace TranslationHelper.Formats.RPGMMV.Other
             if (!base.IsValidString(inputString)) return false;
             if (string.IsNullOrEmpty(inputString)) return false;
             if (inputString.Equals("-")) return false;
+            if (inputString.Equals("<br>")) return false;
             if (inputString.Equals("TRUE", StringComparison.OrdinalIgnoreCase)) return false;
             if (inputString.Equals("FALSE", StringComparison.OrdinalIgnoreCase)) return false;
             if (inputString.EndsWith(".png", StringComparison.OrdinalIgnoreCase)) return false;
