@@ -48,6 +48,11 @@ namespace TranslationHelper
             Error
         }
 
+        interface SearchMethod
+        {
+            void Search();
+        }
+
         public class FoundRowData
         {
             public FoundRowData(DataRow row)
