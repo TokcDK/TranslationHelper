@@ -48,9 +48,15 @@ namespace TranslationHelper
             Error
         }
 
-        interface SearchMethod
+        interface ISearchMethod
         {
             void Search();
+        }
+
+        interface ISearchComparer
+        {
+            bool IsMatch();
+            void Replace();
         }
 
         public class FoundRowData
