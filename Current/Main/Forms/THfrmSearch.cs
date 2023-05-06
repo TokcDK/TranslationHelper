@@ -7,6 +7,7 @@ using System.Globalization;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 using TranslationHelper.Data;
 using TranslationHelper.Extensions;
@@ -173,74 +174,6 @@ namespace TranslationHelper
         private int GetSearchColumnIndex()
         {
             return SearchMethodTranslationRadioButton.Checked ? _translationColumnIndex : _originalColumnIndex;
-        }
-        private void SearchFormFindNextButton_Click(object sender, EventArgs e)
-        {
-            if (SearchFormFindWhatTextBox.Text.Length == 0 || AppData.CurrentProject.FilesContent == null)
-            {
-                return;
-            }
-
-            bool inputEqualwithLatest = THSearchMatchCaseCheckBox.Checked ? SearchFormFindWhatTextBox.Text == _lastfoundvalue : string.Compare(SearchFormFindWhatTextBox.Text, _lastfoundvalue, true, CultureInfo.InvariantCulture) == 0;
-            if (inputEqualwithLatest)
-            {
-                var searchColumn = GetSearchColumnIndex();
-                var foundRowData = _foundRowsList[_startRowSearchIndex];
-                (_selectedTableIndex, _selectedRowIndex) = (foundRowData.TableIndex, foundRowData.RowIndex);
-
-                if (_selectedTableIndex != _filesList.SelectedIndex || _workFileDgv.DataSource == null)
-                {
-                    _filesList.SelectedItems.Clear();
-                    _filesList.SelectedIndex = _selectedTableIndex;
-                    _workFileDgv.DataSource = _tables[_selectedTableIndex];
-                }
-                _workFileDgv.CurrentCell = _workFileDgv[searchColumn, _selectedRowIndex];
-
-                //подсвечивание найденного
-                //http://www.sql.ru/forum/1149655/kak-peredat-parametr-s-metodom-delegatom
-                Thread selectString = new Thread(new ParameterizedThreadStart((obj) => SelectTextInTextBox(SearchFormFindWhatTextBox.Text)));
-                selectString.Start();
-
-                _startRowSearchIndex++;
-                if (_startRowSearchIndex == _foundRowsList.Count) _startRowSearchIndex = 0;
-            }
-            else
-            {
-                _startRowSearchIndex = 0;
-                lblSearchMsg.Visible = false;
-                GetSearchResults();
-
-                if (_foundRowsList == null) return;
-
-                if (_foundRowsList.Count == 0)
-                {
-                    //PopulateGrid(null);
-                    lblSearchMsg.Visible = true;
-                    lblSearchMsg.Text = "Nothing Found.";
-                    this.Height = SEARCH_RESULTS_WINDOW_NORMAL_HEIGHT;
-                    return;
-                }
-
-                StoryFoundValueToComboBox(SearchFormFindWhatTextBox.Text);
-
-                var searchcolumn = GetSearchColumnIndex();
-                var foundRowData = _foundRowsList[_startRowSearchIndex];
-                (_selectedTableIndex, _selectedRowIndex) = (foundRowData.TableIndex, foundRowData.RowIndex);
-
-                if (_selectedTableIndex != _filesList.SelectedIndex)
-                {
-                    _filesList.SelectedIndex = _selectedTableIndex;
-                    _workFileDgv.DataSource = _tables[_selectedTableIndex];
-                }
-                _workFileDgv.CurrentCell = _workFileDgv[searchcolumn, _selectedRowIndex];
-
-                //http://www.sql.ru/forum/1149655/kak-peredat-parametr-s-metodom-delegatom
-                Thread selectstring = new Thread(new ParameterizedThreadStart((obj) => SelectTextInTextBox(SearchFormFindWhatTextBox.Text)));
-                selectstring.Start();
-
-                _startRowSearchIndex++;
-                if (_startRowSearchIndex == _foundRowsList.Count) _startRowSearchIndex = 0;
-            }
         }
 
         private void LoadSearchQueriesReplacers()
@@ -774,7 +707,7 @@ namespace TranslationHelper
             //ShowSelectedCellInMainTable(sender, e);
         }
 
-        private void ShowSelectedCellInMainTable(object sender, DataGridViewCellEventArgs e)
+        private async void ShowSelectedCellInMainTable(object sender, DataGridViewCellEventArgs e)
         {
             var searchcolumn = GetSearchColumnIndex();
             try
@@ -791,9 +724,7 @@ namespace TranslationHelper
 
                 if (_workFileDgv != null && _workFileDgv.DataSource != null && _workFileDgv.CurrentCell != null)
                 {
-                    //http://www.sql.ru/forum/1149655/kak-peredat-parametr-s-metodom-delegatom
-                    Thread selectstring = new Thread(new ParameterizedThreadStart((obj) => SelectTextInTextBox(_workFileDgv.CurrentCell.Value.ToString())));
-                    selectstring.Start();
+                    await Task.Run(() => SelectTextInTextBox(_workFileDgv.CurrentCell.Value.ToString())).ConfigureAwait(false);
                 }
             }
             catch (ArgumentException) { } // ignore errors
@@ -804,6 +735,75 @@ namespace TranslationHelper
         private void SearchFormFindWhatComboBox_SelectedValueChanged(object sender, EventArgs e)
         {
             SearchFormFindWhatTextBox.Text = SearchFormFindWhatComboBox.SelectedItem.ToString();
+        }
+
+        private void SearchFormFindNextButton_Click(object sender, EventArgs e)
+        {
+            if (SearchFormFindWhatTextBox.Text.Length == 0 || AppData.CurrentProject.FilesContent == null)
+            {
+                return;
+            }
+
+            bool inputEqualwithLatest = THSearchMatchCaseCheckBox.Checked ? SearchFormFindWhatTextBox.Text == _lastfoundvalue : string.Compare(SearchFormFindWhatTextBox.Text, _lastfoundvalue, true, CultureInfo.InvariantCulture) == 0;
+            if (inputEqualwithLatest)
+            {
+                var searchColumn = GetSearchColumnIndex();
+                var foundRowData = _foundRowsList[_startRowSearchIndex];
+                (_selectedTableIndex, _selectedRowIndex) = (foundRowData.TableIndex, foundRowData.RowIndex);
+
+                if (_selectedTableIndex != _filesList.SelectedIndex || _workFileDgv.DataSource == null)
+                {
+                    _filesList.SelectedItems.Clear();
+                    _filesList.SelectedIndex = _selectedTableIndex;
+                    _workFileDgv.DataSource = _tables[_selectedTableIndex];
+                }
+                _workFileDgv.CurrentCell = _workFileDgv[searchColumn, _selectedRowIndex];
+
+                //подсвечивание найденного
+                //http://www.sql.ru/forum/1149655/kak-peredat-parametr-s-metodom-delegatom
+                Thread selectString = new Thread(new ParameterizedThreadStart((obj) => SelectTextInTextBox(SearchFormFindWhatTextBox.Text)));
+                selectString.Start();
+
+                _startRowSearchIndex++;
+                if (_startRowSearchIndex == _foundRowsList.Count) _startRowSearchIndex = 0;
+            }
+            else
+            {
+                _startRowSearchIndex = 0;
+                lblSearchMsg.Visible = false;
+                GetSearchResults();
+
+                if (_foundRowsList == null) return;
+
+                if (_foundRowsList.Count == 0)
+                {
+                    //PopulateGrid(null);
+                    lblSearchMsg.Visible = true;
+                    lblSearchMsg.Text = "Nothing Found.";
+                    this.Height = SEARCH_RESULTS_WINDOW_NORMAL_HEIGHT;
+                    return;
+                }
+
+                StoryFoundValueToComboBox(SearchFormFindWhatTextBox.Text);
+
+                var searchcolumn = GetSearchColumnIndex();
+                var foundRowData = _foundRowsList[_startRowSearchIndex];
+                (_selectedTableIndex, _selectedRowIndex) = (foundRowData.TableIndex, foundRowData.RowIndex);
+
+                if (_selectedTableIndex != _filesList.SelectedIndex)
+                {
+                    _filesList.SelectedIndex = _selectedTableIndex;
+                    _workFileDgv.DataSource = _tables[_selectedTableIndex];
+                }
+                _workFileDgv.CurrentCell = _workFileDgv[searchcolumn, _selectedRowIndex];
+
+                //http://www.sql.ru/forum/1149655/kak-peredat-parametr-s-metodom-delegatom
+                Thread selectstring = new Thread(new ParameterizedThreadStart((obj) => SelectTextInTextBox(SearchFormFindWhatTextBox.Text)));
+                selectstring.Start();
+
+                _startRowSearchIndex++;
+                if (_startRowSearchIndex == _foundRowsList.Count) _startRowSearchIndex = 0;
+            }
         }
 
         private void SearchFormReplaceButton_Click(object sender, EventArgs e)

@@ -501,7 +501,7 @@
             this.SearchFormFindNextButton.Name = "SearchFormFindNextButton";
             this.SearchFormFindNextButton.Size = new System.Drawing.Size(108, 23);
             this.SearchFormFindNextButton.TabIndex = 4;
-            this.SearchFormFindNextButton.Text = "Find Next";
+            this.SearchFormFindNextButton.Text = "Find";
             this.SearchFormFindNextButton.UseVisualStyleBackColor = true;
             this.SearchFormFindNextButton.Click += new System.EventHandler(this.SearchFormFindNextButton_Click);
             // 
