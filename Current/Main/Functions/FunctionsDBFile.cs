@@ -567,27 +567,27 @@ namespace TranslationHelper.Main.Functions
         private static List<KeyValuePair<string, FileInfo>> GetNewestFIlesList(string dbDir)
         {
             var info = new Dictionary<string, FileInfo>();
-            foreach (var DBFile in Directory.EnumerateFiles(dbDir, "*", SearchOption.AllDirectories))
+            foreach (var dbFile in Directory.EnumerateFiles(dbDir, "*", SearchOption.AllDirectories))
             {
-                var ext = Path.GetExtension(DBFile);
-                if ((ext != ".xml" && ext != ".cmx" && ext != ".cmz") || DBFile.Contains("THTranslationCache") || DBFile.Contains("_autosave") || Path.GetFileName(Path.GetDirectoryName(DBFile)) == THSettings.DBAutoSavesDirName)
+                var ext = Path.GetExtension(dbFile);
+                if ((ext != ".xml" && ext != ".cmx" && ext != ".cmz") || dbFile.Contains("THTranslationCache") || dbFile.Contains("_autosave") || Path.GetFileName(Path.GetDirectoryName(dbFile)) == THSettings.DBAutoSavesDirName)
                 {
                     continue;
                 }
 
-                var baseName = GetBaseDBFileName(DBFile);
+                var baseName = GetBaseDBFileName(dbFile);
 
                 if (info.ContainsKey(baseName))
                 {
-                    var DBFInfo = new FileInfo(DBFile);
-                    if (DBFInfo.LastWriteTime > info[baseName].LastWriteTime)
+                    var dbFileInfo = new FileInfo(dbFile);
+                    if (dbFileInfo.LastWriteTime > info[baseName].LastWriteTime)
                     {
-                        info[baseName] = DBFInfo;
+                        info[baseName] = dbFileInfo;
                     }
                 }
                 else
                 {
-                    info.Add(baseName, new FileInfo(DBFile));
+                    info.Add(baseName, new FileInfo(dbFile));
                 }
             }
 
