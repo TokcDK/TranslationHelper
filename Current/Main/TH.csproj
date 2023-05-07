@@ -123,6 +123,7 @@
     <Compile Include="Formats\Glitch Pitch\Idol Manager\Mod\Params_json.cs" />
     <Compile Include="Formats\Glitch Pitch\Idol Manager\Mod\Params_json_c.cs" />
     <Compile Include="Formats\IFormat.cs" />
+    <Compile Include="Formats\KiriKiri\Games\CSV\CSVDisplayName.cs" />
     <Compile Include="Formats\RimWorld\RimWorldLanguageDataXML.cs" />
     <Compile Include="Formats\RPGMakerVXAce\RVData2\Actors.rvdata2.cs" />
     <Compile Include="Formats\RPGMakerVXAce\RVData2\RVDATA2.cs" />
