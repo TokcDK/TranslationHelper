@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data;
-using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
@@ -283,88 +282,88 @@ namespace TranslationHelper.Functions
         /// <param name="forced"></param>
         internal static void THLoadDBCompareFromDictionaryParallellTables(Dictionary<string, string> db, bool forced = false)
         {
-            //Stopwatch timer = new Stopwatch();
-            //timer.Start();
+            int translationColumnIndex = AppData.CurrentProject.FilesContent.Tables[0].Columns[THSettings.TranslationColumnName].Ordinal;
 
-            //Для оптимизации поиск оригинала в обеих таблицах перенесен в начало, чтобы не повторялся
-            int otranscol = AppData.CurrentProject.FilesContent.Tables[0].Columns[THSettings.TranslationColumnName].Ordinal;
-
-            //если вдруг колонка была только одна
-            if (otranscol == 0 || otranscol == -1) return;
-
-            //int RecordsCounter = 1;
-            int tcount = AppData.CurrentProject.FilesContent.Tables.Count;
-            string infomessage = T._("Load") + " " + T._(THSettings.TranslationColumnName) + ":";
-            //проход по всем таблицам рабочего dataset
-
-            bool DBTryToCheckLinesOfEachMultilineValue = AppSettings.DBTryToCheckLinesOfEachMultilineValue;
-
-            Parallel.For(0, tcount, tableIndex =>
-            //for (int t = 0; t < tcount; t++)
+            if (translationColumnIndex <= 0)
             {
-                //выключение таблицы, если она была открыта, для предотвращения тормозов из за прорисовки
-                bool b = ResetDGVDataSource(tableIndex);
+                return;
+            }
 
-                var table = AppData.CurrentProject.FilesContent.Tables[tableIndex];
+            var workTableDatagridview = AppData.Main.THFileElementsDataGridView;
+            var filesList = AppData.THFilesList;
 
-                //skip table if there is no untranslated lines
-                if (!forced && FunctionsTable.IsTableColumnCellsAll(table)) return;
-
-                string tableprogressinfo = infomessage + table.TableName + ">" + tableIndex + "/" + tcount;
-                AppData.Main.ProgressInfo(true, tableprogressinfo);
-
-                int rcount = table.Rows.Count;
-                //проход по всем строкам таблицы рабочего dataset
-                for (int r = 0; r < rcount; r++)
+            Parallel.ForEach(AppData.CurrentProject.FilesContent.Tables.Cast<DataTable>(), (table, state, tableIndex) =>
+            {
+                if (!forced && FunctionsTable.IsTableColumnCellsAll(table))
                 {
-                    //ProjectData.Main.ProgressInfo(true, tableprogressinfo + "[" + r + "/" + rcount + "]");
-                    var Row = table.Rows[r];
-                    var CellTranslation = Row.Field<string>(otranscol);
-                    if (!forced && CellTranslation != null && !string.IsNullOrEmpty(CellTranslation)) continue;
+                    return;
+                }
 
-                    var origCellValue = Row.Field<string>(0);
-                    var isRN = origCellValue.IndexOf("\r\n") != -1;
-                    if ((db.ContainsKey(origCellValue) && db[origCellValue].Length > 0) || (db.ContainsKey(origCellValue = origCellValue.Replace(isRN ? "\r\n" : "\n", isRN ? "\n" : "\r\n")) && db[origCellValue].Length > 0))
+                bool resetDGV = ResetDGVDataSource(tableIndex, filesList, workTableDatagridview);
+
+                string tableProgressInfo = string.Format("{0} {1}: {2}>{3}/{4}", T._("Load"), T._(THSettings.TranslationColumnName), table.TableName, tableIndex, AppData.CurrentProject.FilesContent.Tables.Count);
+                AppData.Main.ProgressInfo(true, tableProgressInfo);
+
+                bool dbTryToCheckLinesOfEachMultilineValue = AppSettings.DBTryToCheckLinesOfEachMultilineValue;
+
+                foreach (DataRow row in table.Rows)
+                {
+                    var translation = row.Field<string>(translationColumnIndex);
+                    if (!forced && !string.IsNullOrEmpty(translation))
                     {
-                        //ProjectData.THFilesElementsDataset.Tables[t].Rows[r][otranscol] = db[origCellValue];
-                        Row[otranscol] = db[origCellValue];
+                        continue;
                     }
-                    else if (DBTryToCheckLinesOfEachMultilineValue && origCellValue.IsMultiline())
+
+                    var originalCellValue = row.Field<string>(0);
+                    var isRN = originalCellValue.IndexOf("\r\n") != -1;
+                    string translatedValue = null;
+
+                    if (db.TryGetValue(originalCellValue, out translatedValue) || db.TryGetValue(originalCellValue.Replace(isRN ? "\r\n" : "\n", isRN ? "\n" : "\r\n"), out translatedValue))
                     {
-                        bool IsAllLinesTranslated = true;
-                        var mergedlines = new List<string>();
-                        foreach (var line in origCellValue.SplitToLines())
+                        row.SetValue(translationColumnIndex, translatedValue);
+                    }
+                    else if (dbTryToCheckLinesOfEachMultilineValue && originalCellValue.IsMultiline())
+                    {
+                        var mergedLines = new List<string>();
+                        bool isAllLinesTranslated = true;
+
+                        foreach (var line in originalCellValue.SplitToLines())
                         {
                             if (line.HaveMostOfRomajiOtherChars())
                             {
-                                mergedlines.Add(line);
+                                mergedLines.Add(line);
                             }
-                            else if (db.ContainsKey(line) && db[line].Length > 0)
+                            else if (db.TryGetValue(line, out translatedValue))
                             {
-                                mergedlines.Add(db[line]);
+                                if (string.IsNullOrEmpty(translatedValue))
+                                {
+                                    isAllLinesTranslated = false;
+                                    break;
+                                }
+
+                                mergedLines.Add(translatedValue);
                             }
                             else
                             {
-                                IsAllLinesTranslated = false;
+                                isAllLinesTranslated = false;
+                                break;
                             }
                         }
 
-                        if (IsAllLinesTranslated && mergedlines.Count > 0) Row[otranscol] = string.Join(Environment.NewLine, mergedlines);
+                        if (isAllLinesTranslated && mergedLines.Count > 0)
+                        {
+                            row.SetValue(translationColumnIndex, string.Join(Environment.NewLine, mergedLines));
+                        }
                     }
                 }
 
-                table.Dispose();
-
-                if (b)
+                if (resetDGV)
                 {
-                    ResetDGVDataSource(-1, false, table);
+                    ResetDGVDataSource(-1, filesList, workTableDatagridview, false, table);
                 }
+
             });
 
-            //0.051
-            //timer.Stop();
-            //TimeSpan difference = new TimeSpan(timer.ElapsedTicks);
-            //MessageBox.Show(difference.ToString());
             AppData.Main.ProgressInfo(false);
             System.Media.SystemSounds.Beep.Play();
         }
@@ -376,143 +375,117 @@ namespace TranslationHelper.Functions
         /// <param name="forceOverwriteTranslations"></param>
         internal static void THLoadDBCompareFromDictionaryParallellTables(Dictionary<string/*original*/, Dictionary<string/*table name*/, Dictionary<int/*row index*/, string/*translation*/>>> db, bool forceOverwriteTranslations = false)
         {
-            //Stopwatch timer = new Stopwatch();
-            //timer.Start();
-
             var tables = AppData.CurrentProject.FilesContent.Tables;
+            var translationColIndex = tables[0].Columns[THSettings.TranslationColumnName].Ordinal;
 
-            //Для оптимизации поиск оригинала в обеих таблицах перенесен в начало, чтобы не повторялся
-            int otranscol = tables[0].Columns[THSettings.TranslationColumnName].Ordinal;
-            if (otranscol == 0 || otranscol == -1)//если вдруг колонка была только одна
+            if (translationColIndex < 1)
             {
                 return;
             }
 
-            int tablesCount = tables.Count;
-            string infoMessage = T._("Load") + " " + T._(THSettings.TranslationColumnName) + ":";
-            //проход по всем таблицам рабочего dataset
+            var progressMessage = $"{T._("Load")} {T._(THSettings.TranslationColumnName)}:";
 
-            Parallel.For(0, tablesCount, tableIndex =>
+            var workTableDatagridview = AppData.Main.THFileElementsDataGridView;
+            var filesList = AppData.THFilesList;
+
+            var rr = Parallel.ForEach(tables.Cast<DataTable>(), (table, _, tableIndex) =>
             {
-                //выключение таблицы, если она была открыта, для предотвращения тормозов из за прорисовки
-                bool b = ResetDGVDataSource(tableIndex);
+                var isTableReset = ResetDGVDataSource(tableIndex, filesList, workTableDatagridview);
 
-                using (var table = tables[tableIndex])
+                if (!forceOverwriteTranslations && FunctionsTable.IsTableColumnCellsAll(table))
                 {
-                    //skip table if there is no untranslated lines
-                    if (!forceOverwriteTranslations && FunctionsTable.IsTableColumnCellsAll(table))
+                    return;
+                }
+
+                var tableProgressMessage = $"{progressMessage} {table.TableName}>{tableIndex + 1}/{tables.Count}";
+                AppData.Main.ProgressInfo(true, tableProgressMessage);
+
+                var rows = table.Rows;
+                var rowCount = rows.Count;
+
+                for (var rowIndex = 0; rowIndex < rowCount; rowIndex++)
+                {
+                    var row = rows[rowIndex];
+                    var translationValue = row.Field<string>(translationColIndex);
+
+                    if (!forceOverwriteTranslations && !string.IsNullOrEmpty(translationValue))
                     {
-                        return;
-                    }                        
+                        continue;
+                    }
 
-                    string tableProgressInfo = infoMessage + table.TableName + ">" + tableIndex + "/" + tablesCount;
-                    AppData.Main.ProgressInfo(true, tableProgressInfo);
-
-                    var rows = table.Rows;
-                    int rowsCount = rows.Count;
-                    //проход по всем строкам таблицы рабочего dataset
-                    for (int rowIndex = 0; rowIndex < rowsCount; rowIndex++)
+                    var origCellValue = row.Field<string>(0);
+                    var dbFound = db.TryGetValue(origCellValue, out var dbFilesListByOriginal);
+                    if (!dbFound)
                     {
-                        var row = rows[rowIndex];
-                        var translationValue = row.Field<string>(otranscol);
-                        if (!forceOverwriteTranslations && !string.IsNullOrEmpty(translationValue))
-                        {
-                            continue;
-                        }
+                        var isRN = origCellValue.IndexOf("\r\n") != -1;
+                        var altOrigCellValue = origCellValue.Replace(isRN ? "\r\n" : "\n", isRN ? "\n" : "\r\n");
+                        dbFound = db.TryGetValue(altOrigCellValue, out dbFilesListByOriginal);
+                    }
 
-                        var origCellValue = row.Field<string>(0);
-                        var found = false;
-                        bool isRN = origCellValue.IndexOf("\r\n") != -1;
-                        bool isFoundByOriginal = db.TryGetValue(origCellValue, out var dbFilesListByOriginal);
-                        if (!isFoundByOriginal) origCellValue = origCellValue.Replace(isRN ? "\r\n" : "\n", isRN ? "\n" : "\r\n");
-                        bool isFoundByOriginalAltNewlineSymbols = db.TryGetValue(origCellValue, out var dbFilesListByOriginalAltNewLine);
-                        if (isFoundByOriginal || isFoundByOriginalAltNewlineSymbols)
+                    if (dbFound)
+                    {
+                        foreach (var fileLinesListByRowIndex in dbFilesListByOriginal.Values)
                         {
-                            var dbFoundFilesListByOriginal = isFoundByOriginal ? dbFilesListByOriginal : dbFilesListByOriginalAltNewLine;
-                            if (dbFoundFilesListByOriginal.TryGetValue(table.TableName, out var dbFileLinesListByRowIndex))
+                            if (fileLinesListByRowIndex.TryGetValue(rowIndex, out var dbTranslation))
                             {
-                                var dbTranslations = dbFileLinesListByRowIndex;
-                                if (dbTranslations.TryGetValue(rowIndex, out string dbTranslation))
+                                row.SetValue(translationColIndex, dbTranslation);
+                                break;
+                            }
+
+                            if (fileLinesListByRowIndex.Values.FirstOrDefault() is string firstTranslation)
+                            {
+                                row.SetValue(translationColIndex, firstTranslation);
+                                break;
+                            }
+                        }
+                    }
+                    else if (origCellValue.IsMultiline() && AppSettings.DBTryToCheckLinesOfEachMultilineValue)
+                    {
+                        var mergedLines = new List<string>();
+                        var allLinesTranslated = true;
+
+                        foreach (var line in origCellValue.SplitToLines())
+                        {
+                            if (line.HaveMostOfRomajiOtherChars())
+                            {
+                                mergedLines.Add(line);
+                            }
+                            else if (db.TryGetValue(line, out var tablesList))
+                            {
+                                if (tablesList.Values.FirstOrDefault()?.Values.FirstOrDefault() is string translation)
                                 {
-                                    row.SetValue(otranscol, dbTranslation);
-                                    found = true;
+                                    mergedLines.Add(translation);
                                 }
                                 else
                                 {
-                                    // get first translation from list
-                                    foreach (var tr in dbTranslations.Values)
-                                    {
-                                        row.SetValue(otranscol, tr);
-                                        found = true;
-                                        break;
-                                    }
+                                    allLinesTranslated = false;
+                                    break;
                                 }
                             }
                             else
                             {
-                                foreach (var tn in db[origCellValue].Values)
-                                {
-                                    foreach (var tr in tn.Values)
-                                    {
-                                        row.SetValue(otranscol, tr);
-                                        found = true;
-                                        break;
-                                    }
-                                    break;
-                                }
+                                allLinesTranslated = false;
+                                break;
                             }
                         }
 
-                        if (found || !AppSettings.DBTryToCheckLinesOfEachMultilineValue)
+                        if (allLinesTranslated && mergedLines.Count > 0)
                         {
-                            continue;
-                        }
-
-                        if (origCellValue.IsMultiline())
-                        {
-                            bool IsAllLinesTranslated = true;
-                            var mergedlines = new List<string>();
-                            foreach (var line in origCellValue.SplitToLines())
-                            {
-                                if (line.HaveMostOfRomajiOtherChars())
-                                {
-                                    mergedlines.Add(line);
-                                }
-                                else if (db.TryGetValue(line, out var tablesList))
-                                {
-                                    foreach (var tn in tablesList.Values)
-                                    {
-                                        foreach (var tr in tn.Values)
-                                        {
-                                            mergedlines.Add(tr);
-                                            break;
-                                        }
-                                        break;
-                                    }
-                                }
-                                else
-                                {
-                                    IsAllLinesTranslated = false;
-                                }
-                            }
-                            if (IsAllLinesTranslated && mergedlines.Count > 0)
-                            {
-                                row.SetValue(otranscol, string.Join(Environment.NewLine, mergedlines));
-                            }
+                            row.SetValue(translationColIndex, string.Join(Environment.NewLine, mergedLines));
                         }
                     }
                 }
 
-                if (b)
+                if (isTableReset)
                 {
-                    ResetDGVDataSource(-1, false, tables[tableIndex]);
+                    ResetDGVDataSource(-1, filesList, workTableDatagridview, false, table);
                 }
+
+                AppData.Main.ProgressInfo(true, tableProgressMessage);
             });
 
-            //0.051
-            //timer.Stop();
-            //TimeSpan difference = new TimeSpan(timer.ElapsedTicks);
-            //MessageBox.Show(difference.ToString());
+            var rr1 = rr;
+
             AppData.Main.ProgressInfo(false);
             System.Media.SystemSounds.Beep.Play();
         }
@@ -576,21 +549,26 @@ namespace TranslationHelper.Functions
         //    AppData.Main.ProgressInfo(false);
         //    System.Media.SystemSounds.Beep.Play();
         //}
-
-        private static bool ResetDGVDataSource(int tableIndex, bool isReset = true, DataTable table = null)
+        private static bool ResetDGVDataSource(long tableIndex, ListBox filesList, DataGridView dgv, bool isReset = true, DataTable table = null)
         {
             bool b = false;
-            var dgv = AppData.Main.THFileElementsDataGridView;
-            AppData.Main.Invoke((Action)(() => b = (isReset 
-            ? dgv.DataSource != null 
-            : dgv.DataSource == null) 
-            && AppData.Main.THFilesList.GetSelectedIndex() == tableIndex));
-            if (b)
+
+            if (dgv.InvokeRequired)
             {
-                AppData.Main.Invoke((Action)(() => 
-                dgv.DataSource = table));
-                AppData.Main.Invoke((Action)(() => dgv.Update()));
-                AppData.Main.Invoke((Action)(() => dgv.Refresh()));
+                dgv.Invoke(new Action(() =>
+                {
+                    b = ResetDGVDataSource(tableIndex, filesList, dgv, isReset, table);
+                }));
+            }
+            else
+            {
+                if ((isReset && dgv.DataSource != null || !isReset && dgv.DataSource == null) && filesList.SelectedIndex == tableIndex)
+                {
+                    dgv.DataSource = isReset ? null : table;
+                    dgv.Update();
+                    dgv.Refresh();
+                    b = true;
+                }
             }
 
             return b;
