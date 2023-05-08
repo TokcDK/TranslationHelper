@@ -1,7 +1,6 @@
 ﻿using System;
-using System.Collections.Concurrent;
 using System.Collections.Generic;
-using System.Data;
+using System.IO;
 using System.Windows.Forms;
 using TranslationHelper.Functions;
 using TranslationHelper.Functions.FilesListControl;
@@ -34,7 +33,7 @@ namespace TranslationHelper.Data
             //THFilesElementsDictionary = new Dictionary<string, string>();
             //THFilesElementsDictionaryInfo = new Dictionary<string, string>();
 
-            SelectedFilePath = string.Empty;
+            SelectedProjectFilePath = string.Empty;
 
             ProjectsList = ProjectTools.GetListOfProjectTypes();
         }
@@ -71,9 +70,9 @@ namespace TranslationHelper.Data
         internal static List<Type> ProjectsList;
 
         /// <summary>
-        /// usually 'S'elected file 'Path' in file browse dialog when open project
+        /// Usually 'Selected file 'Path' in file browse dialog when open project
         /// </summary>
-        internal static string SelectedFilePath { get; set; }
+        internal static string SelectedProjectFilePath { get; set; }
 
         /// <summary>
         /// Online Translation Cache

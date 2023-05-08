@@ -17,7 +17,7 @@ namespace TranslationHelper.Projects.IdolManager.Mod
 
         private bool ParseFiles()
         {
-            var rootDir = Path.GetDirectoryName(Data.AppData.SelectedFilePath);
+            var rootDir = Path.GetDirectoryName(Data.AppData.SelectedProjectFilePath);
             var ret = false;
 
             var infos = FileInfos(rootDir).Concat(ParamInfos(rootDir));
@@ -48,7 +48,7 @@ namespace TranslationHelper.Projects.IdolManager.Mod
         internal override bool IsValid()
         {
             return
-                string.Equals(Path.GetFileName(Data.AppData.SelectedFilePath), "info.json", StringComparison.InvariantCultureIgnoreCase)
+                string.Equals(Path.GetFileName(Data.AppData.SelectedProjectFilePath), "info.json", StringComparison.InvariantCultureIgnoreCase)
                 ;
         }
     }

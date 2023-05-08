@@ -30,7 +30,7 @@ namespace TranslationHelper.Projects.RPGMMV
 
         internal override bool IsValid()
         {
-            return ProjectTools.IsExe(AppData.SelectedFilePath) && File.Exists(Path.Combine(AppData.CurrentProject.SelectedDir, HasWWWDir ? "www" : "", "data", "system.json"));
+            return ProjectTools.IsExe(AppData.SelectedProjectFilePath) && File.Exists(Path.Combine(AppData.CurrentProject.SelectedDir, HasWWWDir ? "www" : "", "data", "system.json"));
         }
 
         internal override string FileFilter => ProjectTools.GameExeFilter;

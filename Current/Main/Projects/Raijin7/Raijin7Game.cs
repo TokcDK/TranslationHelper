@@ -24,8 +24,8 @@ namespace TranslationHelper.Projects
 
         internal override bool IsValid()
         {
-            string dirPath = Path.GetDirectoryName(AppData.SelectedFilePath);
-            return Path.GetExtension(AppData.SelectedFilePath) == ".exe"
+            string dirPath = Path.GetDirectoryName(AppData.SelectedProjectFilePath);
+            return Path.GetExtension(AppData.SelectedProjectFilePath) == ".exe"
                 && Directory.Exists(Path.Combine(dirPath, "eve"))
                 && Directory.Exists(Path.Combine(dirPath, "csv"))
                 ;
@@ -47,7 +47,7 @@ namespace TranslationHelper.Projects
 
         bool OpenSave()
         {
-            var dirPath = Path.GetDirectoryName(AppData.SelectedFilePath);
+            var dirPath = Path.GetDirectoryName(AppData.SelectedProjectFilePath);
             var ret = false;
 
             if (ProjectToolsOpenSave.OpenSaveFilesBase(this, Path.Combine(dirPath, "eve"), typeof(TXT), "*.txt"))
@@ -61,8 +61,8 @@ namespace TranslationHelper.Projects
         public override bool BakCreate()
         {
             return ProjectToolsBackup.BackupRestorePaths(new[] { 
-                Path.Combine(Path.GetDirectoryName(AppData.SelectedFilePath), "eve"),
-                Path.Combine(Path.GetDirectoryName(AppData.SelectedFilePath), "csv")
+                Path.Combine(Path.GetDirectoryName(AppData.SelectedProjectFilePath), "eve"),
+                Path.Combine(Path.GetDirectoryName(AppData.SelectedProjectFilePath), "csv")
             });
         }
 
@@ -73,8 +73,8 @@ namespace TranslationHelper.Projects
         public override bool BakRestore()
         {
             return ProjectToolsBackup.BackupRestorePaths(new[] {
-                Path.Combine(Path.GetDirectoryName(AppData.SelectedFilePath), "eve"),
-                Path.Combine(Path.GetDirectoryName(AppData.SelectedFilePath), "csv")
+                Path.Combine(Path.GetDirectoryName(AppData.SelectedProjectFilePath), "eve"),
+                Path.Combine(Path.GetDirectoryName(AppData.SelectedProjectFilePath), "csv")
             }
             ,false);
         }

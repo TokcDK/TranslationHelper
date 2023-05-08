@@ -35,10 +35,10 @@ namespace TranslationHelper.Projects.KiriKiri
 
         public override bool Open()
         {
-            if (ExtractXP3files(AppData.SelectedFilePath))
+            if (ExtractXP3files(AppData.SelectedProjectFilePath))
             {
                 var KiriKiriFiles = new List<string>();
-                string DirName = Path.GetFileName(Path.GetDirectoryName(AppData.SelectedFilePath));
+                string DirName = Path.GetFileName(Path.GetDirectoryName(AppData.SelectedProjectFilePath));
                 string KiriKiriWorkFolder = Path.Combine(Application.StartupPath, "Work", "KiriKiri", DirName);
 
                 foreach (FileInfo file in (new DirectoryInfo(KiriKiriWorkFolder)).EnumerateFiles("*.scn", SearchOption.AllDirectories))

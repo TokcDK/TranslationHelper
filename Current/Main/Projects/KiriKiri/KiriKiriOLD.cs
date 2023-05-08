@@ -24,23 +24,23 @@ namespace TranslationHelper.Projects.KiriKiri
         internal bool OpenDetect()
         {
             return
-                AppData.SelectedFilePath.ToUpper(CultureInfo.InvariantCulture).EndsWith(".KS")
+                AppData.SelectedProjectFilePath.ToUpper(CultureInfo.InvariantCulture).EndsWith(".KS")
                 ||
-                AppData.SelectedFilePath.ToUpper(CultureInfo.InvariantCulture).EndsWith(".SCN")
+                AppData.SelectedProjectFilePath.ToUpper(CultureInfo.InvariantCulture).EndsWith(".SCN")
                 ;
         }
 
         internal string KiriKiriScriptScenario()
         {
-            string filename = Path.GetFileNameWithoutExtension(AppData.SelectedFilePath);
-            string extension = Path.GetExtension(AppData.SelectedFilePath);
+            string filename = Path.GetFileNameWithoutExtension(AppData.SelectedProjectFilePath);
+            string extension = Path.GetExtension(AppData.SelectedProjectFilePath);
 
             _ = AppData.CurrentProject.FilesContent.Tables.Add(filename);
             _ = AppData.CurrentProject.FilesContent.Tables[filename].Columns.Add(THSettings.OriginalColumnName);
             _ = AppData.CurrentProject.FilesContentInfo.Tables.Add(filename);
             _ = AppData.CurrentProject.FilesContentInfo.Tables[filename].Columns.Add(THSettings.OriginalColumnName);
 
-            DataTable DT = KiriKiriScriptScenarioOpen(AppData.SelectedFilePath, AppData.CurrentProject.FilesContent.Tables[0], AppData.CurrentProject.FilesContentInfo.Tables[0]);
+            DataTable DT = KiriKiriScriptScenarioOpen(AppData.SelectedProjectFilePath, AppData.CurrentProject.FilesContent.Tables[0], AppData.CurrentProject.FilesContentInfo.Tables[0]);
             if (DT == null || DT.Rows.Count == 0)
             {
                 AppData.CurrentProject.FilesContent.Tables.Remove(filename);
@@ -65,10 +65,10 @@ namespace TranslationHelper.Projects.KiriKiri
         internal bool KiriKiriGame()
         {
             bool ret = false;
-            if (XP3.ExtractXP3files(AppData.SelectedFilePath))
+            if (XP3.ExtractXP3files(AppData.SelectedProjectFilePath))
             {
                 var KiriKiriFiles = new List<string>();
-                string DirName = Path.GetFileName(Path.GetDirectoryName(AppData.SelectedFilePath));
+                string DirName = Path.GetFileName(Path.GetDirectoryName(AppData.SelectedProjectFilePath));
                 string KiriKiriWorkFolder = Path.Combine(Application.StartupPath, "Work", "KiriKiri", DirName);
 
                 foreach (FileInfo file in (new DirectoryInfo(KiriKiriWorkFolder)).GetFiles("*.scn", SearchOption.AllDirectories))

@@ -29,11 +29,11 @@ namespace TranslationHelper.Projects.IrisField
 
         internal override bool IsValid()
         {
-            return Path.GetExtension(AppData.SelectedFilePath) == ".exe"
+            return Path.GetExtension(AppData.SelectedProjectFilePath) == ".exe"
                 &&
-                Path.GetFileNameWithoutExtension(AppData.SelectedFilePath) == GameExeName
+                Path.GetFileNameWithoutExtension(AppData.SelectedProjectFilePath) == GameExeName
                 &&
-                Directory.Exists(Path.Combine(Path.GetDirectoryName(AppData.SelectedFilePath), "data", "Script"));
+                Directory.Exists(Path.Combine(Path.GetDirectoryName(AppData.SelectedProjectFilePath), "data", "Script"));
         }
 
         internal override string FileFilter => ProjectTools.GameExeFilter;
@@ -53,8 +53,8 @@ namespace TranslationHelper.Projects.IrisField
         {
             var ret = false;
 
-            AppData.Main.ProgressInfo(true, Path.GetFileName(AppData.SelectedFilePath));
-            var openPath = new DirectoryInfo(Path.GetDirectoryName(AppData.SelectedFilePath));
+            AppData.Main.ProgressInfo(true, Path.GetFileName(AppData.SelectedProjectFilePath));
+            var openPath = new DirectoryInfo(Path.GetDirectoryName(AppData.SelectedProjectFilePath));
             if (ProjectToolsOpenSave.OpenSaveFilesBase(this, openPath, GameExeFormatType, GameExeName + ".exe", searchOption: SearchOption.TopDirectoryOnly))
             {
                 ret = true;

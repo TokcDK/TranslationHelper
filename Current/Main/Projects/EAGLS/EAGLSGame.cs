@@ -11,8 +11,8 @@ namespace TranslationHelper.Projects.EAGLS
 
         internal override bool IsValid()
         {
-            return File.Exists(Path.Combine(Path.GetDirectoryName(AppData.SelectedFilePath), "Script", "SCPACK.pak"))
-                && File.Exists(Path.Combine(Path.GetDirectoryName(AppData.SelectedFilePath), "Script", "SCPACK.idx"));
+            return File.Exists(Path.Combine(Path.GetDirectoryName(AppData.SelectedProjectFilePath), "Script", "SCPACK.pak"))
+                && File.Exists(Path.Combine(Path.GetDirectoryName(AppData.SelectedProjectFilePath), "Script", "SCPACK.idx"));
         }
 
         internal override string FileFilter => ProjectTools.GameExeFilter;
@@ -28,7 +28,7 @@ namespace TranslationHelper.Projects.EAGLS
             return PackUnpackFiles() && OpenFiles();
         }
 
-        public override string Name => ProjectTitlePrefix+ Path.GetFileName(Path.GetDirectoryName(AppData.SelectedFilePath));
+        public override string Name => ProjectTitlePrefix+ Path.GetFileName(Path.GetDirectoryName(AppData.SelectedProjectFilePath));
 
         public override bool Save()
         {

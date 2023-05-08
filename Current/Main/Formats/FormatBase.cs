@@ -40,7 +40,7 @@ namespace TranslationHelper.Formats
                 //    FilePath = ProjectData.FilePath;
                 //}
                 //else
-                if (!string.IsNullOrWhiteSpace(AppData.SelectedFilePath)) FilePath = AppData.SelectedFilePath;
+                if (!string.IsNullOrWhiteSpace(AppData.SelectedProjectFilePath)) FilePath = AppData.SelectedProjectFilePath;
             }
 
             // DontLoadDuplicates options

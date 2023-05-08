@@ -17,7 +17,7 @@ namespace TranslationHelper.Projects.KiriKiri.Games.PGroup1.VirginLode2
         {
             if (CheckKiriKiriBase())
             {
-                if (exeCRC.Length > 0 && AppData.SelectedFilePath.GetMD5() == exeCRC)
+                if (exeCRC.Length > 0 && AppData.SelectedProjectFilePath.GetMD5() == exeCRC)
                 {
                     return true;
                 }

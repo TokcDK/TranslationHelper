@@ -22,14 +22,14 @@ namespace TranslationHelper.Projects.RPGMVXAce
         {
             return ProjectToolsOpenSave
                 .OpenSaveFilesBase(this, 
-                Path.Combine(Path.GetDirectoryName(Data.AppData.SelectedFilePath), "Data"), 
+                Path.Combine(Path.GetDirectoryName(Data.AppData.SelectedProjectFilePath), "Data"), 
                 typeof(RVDATA2), 
                 "*.rvdata2");
         }
 
         internal override bool IsValid()
         {
-            var parent = Path.GetDirectoryName(Data.AppData.SelectedFilePath);
+            var parent = Path.GetDirectoryName(Data.AppData.SelectedProjectFilePath);
             var data = Path.Combine(parent, "Data");
 
             return Directory.Exists(data) && Directory.EnumerateFiles(data, "*.rvdata2").Any();

@@ -15,7 +15,7 @@ namespace TranslationHelper.Projects.KiriKiri.Games
             return CheckKiriKiriBase();
         }
 
-        public override string Name => Path.GetFileName(AppData.CurrentProject.ProjectWorkDir) + "(" + AppData.SelectedFilePath + ")";
+        public override string Name => Path.GetFileName(AppData.CurrentProject.ProjectWorkDir) + "(" + AppData.SelectedProjectFilePath + ")";
 
         protected override List<System.Type> FormatType()
         {

@@ -13,7 +13,7 @@ namespace TranslationHelper.Projects.EAGLS
         bool ISpak;
         internal override bool IsValid()
         {
-            return (ISpak = Path.GetFileName(AppData.SelectedFilePath) == "SCPACK.pak") && File.Exists(Path.Combine(Path.GetDirectoryName(AppData.SelectedFilePath), "SCPACK.idx")) || (Path.GetFileName(AppData.SelectedFilePath) == "SCPACK.idx") && File.Exists(Path.Combine(Path.GetDirectoryName(AppData.SelectedFilePath), "SCPACK.pak"));
+            return (ISpak = Path.GetFileName(AppData.SelectedProjectFilePath) == "SCPACK.pak") && File.Exists(Path.Combine(Path.GetDirectoryName(AppData.SelectedProjectFilePath), "SCPACK.idx")) || (Path.GetFileName(AppData.SelectedProjectFilePath) == "SCPACK.idx") && File.Exists(Path.Combine(Path.GetDirectoryName(AppData.SelectedProjectFilePath), "SCPACK.pak"));
         }
 
         internal override string FileFilter => "EAGLS SCPACK|SCPACK.pak;SCPACK.idx";
@@ -25,12 +25,12 @@ namespace TranslationHelper.Projects.EAGLS
 
         private bool UnpackSCPACK()
         {
-            ProjectName = "SCPACK" + (ISpak ? "pak" : "idx") + "_" + AppData.SelectedFilePath.GetCrc32();
+            ProjectName = "SCPACK" + (ISpak ? "pak" : "idx") + "_" + AppData.SelectedProjectFilePath.GetCrc32();
             ScriptDir = AppData.CurrentProject.SelectedGameDir;
             return PackUnpackFiles() && OpenFiles();
         }
 
-        public override string Name => ProjectTitlePrefix+ Path.GetFileName(Path.GetDirectoryName(AppData.SelectedFilePath));
+        public override string Name => ProjectTitlePrefix+ Path.GetFileName(Path.GetDirectoryName(AppData.SelectedProjectFilePath));
 
         public override bool Save()
         {

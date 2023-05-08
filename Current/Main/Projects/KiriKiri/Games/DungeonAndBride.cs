@@ -15,7 +15,7 @@ namespace TranslationHelper.Projects.KiriKiri.Games
 
         internal override bool IsValid()
         {
-            return CheckKiriKiriBase() && ExtensionsFileFolder.GetCrc32(AppData.SelectedFilePath) == "7c2bfd95";
+            return CheckKiriKiriBase() && ExtensionsFileFolder.GetCrc32(AppData.SelectedProjectFilePath) == "7c2bfd95";
         }
 
         public override string Name => "Dungeon & Bride";

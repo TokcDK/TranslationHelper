@@ -22,7 +22,7 @@ namespace TranslationHelper.Formats
         /// </summary>
         protected override void FileOpen()
         {
-            using (ParseData.FStream = new FileStream(AppData.SelectedFilePath, FileMode.Open, FileAccess.Read))
+            using (ParseData.FStream = new FileStream(AppData.SelectedProjectFilePath, FileMode.Open, FileAccess.Read))
             using (ParseData.BReader = new BinaryReader(ParseData.FStream, DefaultEncoding()))
             {
                 PreParseBytes();

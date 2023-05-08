@@ -41,7 +41,7 @@ namespace TranslationHelper.Projects.RimWorld
             var variant = GetVariant();
             if (string.IsNullOrWhiteSpace(variant)) { return false; }
 
-            string defsDirPath = Path.GetDirectoryName(variant == "Keyed" ? Data.AppData.SelectedFilePath : Path.GetDirectoryName(Data.AppData.SelectedFilePath));
+            string defsDirPath = Path.GetDirectoryName(variant == "Keyed" ? Data.AppData.SelectedProjectFilePath : Path.GetDirectoryName(Data.AppData.SelectedProjectFilePath));
 
             var languageDirPath = Path.GetDirectoryName(defsDirPath);
 
@@ -81,14 +81,14 @@ namespace TranslationHelper.Projects.RimWorld
         private string GetVariant()
         {
             // make sure it is file in Languages dir
-            if (string.IsNullOrWhiteSpace(Data.AppData.SelectedFilePath)) return null;
-            var ext = Path.GetExtension(Data.AppData.SelectedFilePath);
+            if (string.IsNullOrWhiteSpace(Data.AppData.SelectedProjectFilePath)) return null;
+            var ext = Path.GetExtension(Data.AppData.SelectedProjectFilePath);
             if (string.IsNullOrWhiteSpace(ext)) return null;
 
             string defsDirPath;
             try
             {
-                defsDirPath = Path.GetDirectoryName(Path.GetDirectoryName(Data.AppData.SelectedFilePath));
+                defsDirPath = Path.GetDirectoryName(Path.GetDirectoryName(Data.AppData.SelectedProjectFilePath));
             }
             catch { return null; }
 
@@ -101,7 +101,7 @@ namespace TranslationHelper.Projects.RimWorld
             {
                 if (!string.Equals(Path.GetFileName(defsDirPath), "DefInjected", StringComparison.InvariantCultureIgnoreCase))
                 {
-                    defsDirPath = Path.GetDirectoryName(Data.AppData.SelectedFilePath);
+                    defsDirPath = Path.GetDirectoryName(Data.AppData.SelectedProjectFilePath);
                     if (!string.Equals(Path.GetFileName(defsDirPath),"Keyed", StringComparison.InvariantCultureIgnoreCase))
                     {
                         return null;

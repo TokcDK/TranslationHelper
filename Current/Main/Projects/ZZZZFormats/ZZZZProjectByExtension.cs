@@ -20,7 +20,7 @@ namespace TranslationHelper.Projects.ZZZZFormats
 
         internal override bool IsValid()
         {
-            var fileExt = Path.GetExtension(AppData.SelectedFilePath);
+            var fileExt = Path.GetExtension(AppData.SelectedProjectFilePath);
             foreach (var formatType in GetFormatTypes(typeof(FormatBase)))
                 if (IsValidFormat(formatType, fileExt)) return true;
 
@@ -46,7 +46,7 @@ namespace TranslationHelper.Projects.ZZZZFormats
 
         public override bool Open()
         {
-            var fileExt = Path.GetExtension(AppData.SelectedFilePath);
+            var fileExt = Path.GetExtension(AppData.SelectedProjectFilePath);
             var foundTypes = new List<Type>();
             foreach (var formatType in GetFormatTypes(typeof(FormatBase)))
                 if (IsValidFormat(formatType, fileExt)) foundTypes.Add(formatType);
@@ -73,7 +73,7 @@ namespace TranslationHelper.Projects.ZZZZFormats
 
         bool OpenSave()
         {
-            var dir = Path.GetDirectoryName(AppData.SelectedFilePath);
+            var dir = Path.GetDirectoryName(AppData.SelectedProjectFilePath);
             var ext = Format.Extension;
             int extCnt = 0;
             foreach (var i in Directory.EnumerateFiles(dir, "*" + ext)) if (++extCnt > 1) break;

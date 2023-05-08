@@ -16,7 +16,7 @@ namespace TranslationHelper.Projects.KiriKiri.Games.PGroup1.RJ297684GoblinsCave
 
         internal override bool IsValid()
         {
-            return CheckKiriKiriBase() && exeCRC.Length > 0 && AppData.SelectedFilePath.GetCrc32() == exeCRC;
+            return CheckKiriKiriBase() && exeCRC.Length > 0 && AppData.SelectedProjectFilePath.GetCrc32() == exeCRC;
         }
 
         protected override List<Type> FormatType()

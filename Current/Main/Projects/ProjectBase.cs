@@ -118,10 +118,10 @@ namespace TranslationHelper.Projects
         /// </summary>
         public virtual void Init()
         {
-            if (string.IsNullOrWhiteSpace(AppData.SelectedFilePath)) return;
+            if (string.IsNullOrWhiteSpace(AppData.SelectedProjectFilePath)) return;
 
-            AppData.CurrentProject.SelectedGameDir = Path.GetDirectoryName(AppData.SelectedFilePath);
-            AppData.CurrentProject.SelectedDir = Path.GetDirectoryName(AppData.SelectedFilePath);
+            AppData.CurrentProject.SelectedGameDir = Path.GetDirectoryName(AppData.SelectedProjectFilePath);
+            AppData.CurrentProject.SelectedDir = Path.GetDirectoryName(AppData.SelectedProjectFilePath);
             AppData.CurrentProject.ProjectWorkDir = Path.Combine(THSettings.WorkDirPath, ProjectDBFolderName, ProjectName);
         }
 
@@ -129,7 +129,7 @@ namespace TranslationHelper.Projects
         /// Name of selected project
         /// </summary>
         /// <returns></returns>
-        internal virtual string ProjectName => Path.GetFileName(Path.GetDirectoryName(AppData.SelectedFilePath));
+        internal virtual string ProjectName => Path.GetFileName(Path.GetDirectoryName(AppData.SelectedProjectFilePath));
 
         /// <summary>
         /// Conditions to detect on open

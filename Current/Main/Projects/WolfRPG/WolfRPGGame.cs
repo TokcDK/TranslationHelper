@@ -226,7 +226,7 @@ namespace TranslationHelper.Projects.WolfRPG
 
         public override bool BakRestore()
         {
-            foreach (var bak in Directory.EnumerateFiles(Path.GetDirectoryName(AppData.SelectedFilePath), "*.wolf.bak", SearchOption.AllDirectories))
+            foreach (var bak in Directory.EnumerateFiles(Path.GetDirectoryName(AppData.SelectedProjectFilePath), "*.wolf.bak", SearchOption.AllDirectories))
             {
                 var ExtractedDirPath = bak.Remove(bak.Length - 9, 9);
                 if (!Directory.Exists(ExtractedDirPath) && new FileInfo(bak).Length > 1000)
@@ -234,7 +234,7 @@ namespace TranslationHelper.Projects.WolfRPG
                     Directory.Move(bak, bak.Remove(bak.Length - 4, 4));
                 }
             }
-            return ProjectToolsBackup.BackupRestorePaths(Directory.GetFiles(Path.GetDirectoryName(AppData.SelectedFilePath), "*.bak", SearchOption.AllDirectories).Where(filePath => !filePath.EndsWith(".wolf.bak")).Concat(new[] { Path.Combine(AppData.CurrentProject.SelectedGameDir, "data", "Evtext") }), false);
+            return ProjectToolsBackup.BackupRestorePaths(Directory.GetFiles(Path.GetDirectoryName(AppData.SelectedProjectFilePath), "*.bak", SearchOption.AllDirectories).Where(filePath => !filePath.EndsWith(".wolf.bak")).Concat(new[] { Path.Combine(AppData.CurrentProject.SelectedGameDir, "data", "Evtext") }), false);
         }
 
         internal override bool CheckForRowIssue(System.Data.DataRow row)

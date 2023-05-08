@@ -27,9 +27,9 @@ namespace TranslationHelper.Projects.WolfRPG
         internal override bool IsValid()
         {
             string d;
-            return ProjectTools.IsExe(AppData.SelectedFilePath)
-                && (File.Exists(Path.Combine(d = Path.GetDirectoryName(AppData.SelectedFilePath), "DATA.wolf"))
-                || FunctionsFileFolder.IsInDirExistsAnyFile(d = Path.GetDirectoryName(AppData.SelectedFilePath), "*.wolf", recursive: true)
+            return ProjectTools.IsExe(AppData.SelectedProjectFilePath)
+                && (File.Exists(Path.Combine(d = Path.GetDirectoryName(AppData.SelectedProjectFilePath), "DATA.wolf"))
+                || FunctionsFileFolder.IsInDirExistsAnyFile(d = Path.GetDirectoryName(AppData.SelectedProjectFilePath), "*.wolf", recursive: true)
                 || (Directory.Exists(d = Path.Combine(d, "Data")) && FunctionsFileFolder.IsInDirExistsAnyFile(d, "*.wolf", recursive: true))
                 || (Directory.Exists(d = Path.Combine(d, "MapData")) && FunctionsFileFolder.IsInDirExistsAnyFile(d, "*.mps", recursive: true))
                 || (Directory.Exists(d = Path.Combine(d, "BasicData")) && FunctionsFileFolder.IsInDirExistsAnyFile(d, "*.dat", recursive: true))

@@ -31,7 +31,7 @@ namespace TranslationHelper.Menus.MainMenus.File
             if (!AppData.ConfigIni.SectionExistsAndNotEmpty("RecentFiles"))
             {
                 changed = true;
-                items = new[] { AppData.SelectedFilePath };
+                items = new[] { AppData.SelectedProjectFilePath };
             }
             else
             {
@@ -45,16 +45,16 @@ namespace TranslationHelper.Menus.MainMenus.File
                 }
 
                 // check if last value is on first place else update
-                if (!values.Contains(AppData.SelectedFilePath) && !string.IsNullOrWhiteSpace(AppData.SelectedFilePath))
+                if (!values.Contains(AppData.SelectedProjectFilePath) && !string.IsNullOrWhiteSpace(AppData.SelectedProjectFilePath))
                 {
                     changed = true;
-                    values.Insert(0, AppData.SelectedFilePath);
+                    values.Insert(0, AppData.SelectedProjectFilePath);
                 }
-                else if (values.IndexOf(AppData.SelectedFilePath) > 0)
+                else if (values.IndexOf(AppData.SelectedProjectFilePath) > 0)
                 {
                     changed = true;
-                    values.Remove(AppData.SelectedFilePath);
-                    values.Insert(0, AppData.SelectedFilePath);
+                    values.Remove(AppData.SelectedProjectFilePath);
+                    values.Insert(0, AppData.SelectedProjectFilePath);
                 }
 
                 items = values.ToArray();

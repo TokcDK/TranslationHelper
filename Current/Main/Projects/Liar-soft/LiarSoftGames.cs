@@ -13,7 +13,7 @@ namespace TranslationHelper.Projects.Liar_soft
 
         internal override bool IsValid()
         {
-            return Path.GetExtension(AppData.SelectedFilePath).ToUpperInvariant()==".EXE" && File.Exists(Path.Combine(Path.GetDirectoryName(AppData.SelectedFilePath), "scr.xfl"));
+            return Path.GetExtension(AppData.SelectedProjectFilePath).ToUpperInvariant()==".EXE" && File.Exists(Path.Combine(Path.GetDirectoryName(AppData.SelectedProjectFilePath), "scr.xfl"));
         }
 
         public override string Name => "Liar-Soft";
