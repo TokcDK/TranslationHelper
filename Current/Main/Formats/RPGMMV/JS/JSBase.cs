@@ -18,7 +18,7 @@ namespace TranslationHelper.Formats.RPGMMV.JS
 
         public override string Extension => ".js";
 
-        public override string Name => "RPGMakerMV plugin js file";
+        public override string Description => "RPGMakerMV plugin js file";
 
         /// <summary>
         /// Get all inherited classes of an abstract class

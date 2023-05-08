@@ -106,7 +106,7 @@ namespace TranslationHelper.Functions
 
                 var formatData = new FormatFilterData();
 
-                formatData.Name = format.Name;
+                formatData.Name = format.Description;
                 if (string.IsNullOrWhiteSpace(formatData.Name))
                 {
                     formatData.Name = format

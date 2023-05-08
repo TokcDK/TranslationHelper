@@ -89,10 +89,10 @@ namespace TranslationHelper.Formats
         public abstract string Extension { get; }
 
         /// <summary>
-        /// name of format
+        /// Short description of the format
         /// </summary>
         /// <returns></returns>
-        public virtual string Name => string.Empty;
+        public virtual string Description => string.Empty;
 
         public bool OpenFileMode { get; set; } = true;
         public bool SaveFileMode { get => !OpenFileMode; set => OpenFileMode = !value; }

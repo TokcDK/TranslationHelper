@@ -42,7 +42,7 @@ namespace TranslationHelper.Projects.ZZZZFormats
 
         FormatBase Format;
 
-        public override string Name => Format == null ? T._("Try open file by extension") : string.IsNullOrWhiteSpace(Format.Name) ? Format.Extension : Format.Name;
+        public override string Name => Format == null ? T._("Try open file by extension") : string.IsNullOrWhiteSpace(Format.Description) ? Format.Extension : Format.Description;
 
         public override bool Open()
         {

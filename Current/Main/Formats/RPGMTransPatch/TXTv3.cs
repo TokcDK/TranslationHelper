@@ -9,7 +9,7 @@ namespace TranslationHelper.Formats.RPGMTransPatch
         {
         }
 
-        public override string Name => "RPGMTrans patch txt";
+        public override string Description => "RPGMTrans patch txt";
 
         protected override string PatchFileID()
         {

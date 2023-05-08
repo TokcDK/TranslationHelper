@@ -9,7 +9,7 @@ namespace TranslationHelper.Formats.WolfRPG.WolfTrans
         {
         }
 
-        public override string Name => "WolfRPG patch txt";
+        public override string Description => "WolfRPG patch txt";
 
         protected override string PatchFileID()
         {

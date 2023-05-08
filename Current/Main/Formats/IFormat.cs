@@ -8,7 +8,7 @@ namespace TranslationHelper.Formats
 {
     internal interface IFormat
     {
-        string Name { get; }
+        string Description { get; }
         string Extension { get; }
         bool Open();
         bool Save();
