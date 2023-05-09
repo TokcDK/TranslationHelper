@@ -54,15 +54,15 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
         internal class LineTranslationData
         {
             internal readonly int LineIndex;
-            internal readonly string OriginalText;
-            internal string TranslationText;
+            internal readonly string Original;
+            internal string Translation;
             internal ExtractRegexInfo RegexExtractionData;
 
             public LineTranslationData(int lineIndex, string originalText)
             {
                 LineIndex = lineIndex;
-                OriginalText = originalText;
-                RegexExtractionData = new ExtractRegexInfo(OriginalText);
+                Original = originalText;
+                RegexExtractionData = new ExtractRegexInfo(Original);
             }
         }
 
@@ -177,10 +177,10 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
                 var lineData = rowData.Lines.FirstOrDefault(d => d.LineIndex == lineNum);
 
                 // skip if line already exists?
-                if (lineData != null && string.IsNullOrEmpty(lineData.TranslationText) && lineData.TranslationText != lineData.OriginalText) { lineNum++; continue; }
+                if (lineData != null && string.IsNullOrEmpty(lineData.Translation) && lineData.Translation != lineData.Original) { lineNum++; continue; }
 
                 // init line data
-                lineData = new LineTranslationData(lineNum, line) { TranslationText = line };
+                lineData = new LineTranslationData(lineNum, line) { Translation = line };
                 rowData.Lines.Add(lineData);
 
                 //check for line valid
@@ -228,12 +228,12 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
                     var linecache = AppData.OnlineTranslationCache.GetValueFromCacheOrReturnEmpty(line);
                     if (!string.IsNullOrEmpty(linecache))
                     {
-                        lineData.TranslationText = linecache;
+                        lineData.Translation = linecache;
                         lineNum++;
                         continue;
                     }
 
-                    Size += lineData.OriginalText.Length; // increase size of string for translation for check later
+                    Size += lineData.Original.Length; // increase size of string for translation for check later
                 }
 
                 // when max limit of string size for translation
@@ -324,7 +324,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
                             continue;
                         }
 
-                        if (!orig.Contains(lineData.OriginalText) && (lineData.TranslationText == null || lineData.TranslationText == lineData.OriginalText) && lineData.OriginalText.IsValidForTranslation()) orig.Add(lineData.OriginalText);
+                        if (!orig.Contains(lineData.Original) && (lineData.Translation == null || lineData.Translation == lineData.Original) && lineData.Original.IsValidForTranslation()) orig.Add(lineData.Original);
                     }
                 }
             }
@@ -432,22 +432,31 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
                 {
                     foreach (var value in lineData.RegexExtractionData.ExtractedValuesList)
                     {
-                        if (value.Translation != null && value.Translation != value.Original) continue;
-                        if (!value.Original.IsValidForTranslation()) continue;
-                        if (!translations.TryGetValue(value.Original, out var v)) continue;
+                        if (TryGetTranslation(translations, value.Original, value.Translation, out var v)) continue;
 
                         value.Translation = v;
                     }
                 }
                 else
                 {
-                    if (lineData.TranslationText != null && lineData.TranslationText != lineData.OriginalText) continue;
-                    if (!lineData.OriginalText.IsValidForTranslation()) continue;
-                    if (!translations.TryGetValue(lineData.OriginalText, out var v)) continue;
+                    if (TryGetTranslation(translations, lineData.Original, lineData.Translation, out var v)) continue;
 
-                    lineData.TranslationText = v;
+                    lineData.Translation = v;
                 }
             }
+        }
+
+        private bool TryGetTranslation(Dictionary<string, string> translations, string original, string translation, out string outTranslation)
+        {
+            outTranslation = default;
+
+            if (translation != null && translation != original) return false;
+            if (!original.IsValidForTranslation()) return false;
+            if (!translations.TryGetValue(original, out var v)) return false;
+
+            outTranslation = v;
+
+            return true;
         }
 
         private IEnumerable<LineTranslationData> EnumerateLineData(List<TranslationData> buffer)
@@ -529,12 +538,12 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
                 {
                     yield return MergeExtracted(lineData);
                 }
-                else if (string.IsNullOrWhiteSpace(lineData.TranslationText) || lineData.TranslationText.Equals(line) || line.IsSoundsText())
+                else if (string.IsNullOrWhiteSpace(lineData.Translation) || lineData.Translation.Equals(line) || line.IsSoundsText())
                 {
                     // when null,=original or issoundstext. jusst insert original line
                     yield return line;
                 }
-                else yield return lineData.TranslationText;
+                else yield return lineData.Translation;
             }
         }
 
@@ -556,7 +565,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
                     : TranslationRegexExtractType.Replacer;
             }
 
-            var newLineText = new StringBuilder(lineData.OriginalText);
+            var newLineText = new StringBuilder(lineData.Original);
 
             var list = lineData.RegexExtractionData.ExtractedValuesList;
             var maxValueDataIndex = list.Count - 1;
