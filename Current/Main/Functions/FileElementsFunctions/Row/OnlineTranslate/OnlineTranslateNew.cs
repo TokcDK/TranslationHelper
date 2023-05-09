@@ -376,7 +376,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
             return translatedLines;
         }
 
-        GoogleTranslator translator = new GoogleTranslator();
+        //readonly GoogleTranslator translator = new GoogleTranslator();
 
         /// <summary>
         /// translate originals in selected translator
@@ -385,16 +385,18 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
         /// <returns></returns>
         private string[] TranslateOriginals(string[] originals)
         {
-            string[] translated = null;
+            if (originals==null || originals.Length==0) return Array.Empty<string>();
+
+            string[] translated = Array.Empty<string>();
             try
             {
                 var originalLinesArePreApplied = ApplyProjectPretranslationAction(originals);
-                if (originalLinesArePreApplied.Length > 0)
-                {
-                    translated = _translator.Translate(originalLinesArePreApplied);
-                    if (translated == null || originals.Length != translated.Length) return new string[1] { "" };
-                    translated = ApplyProjectPosttranslationAction(originals, translated);
-                }
+                if (originalLinesArePreApplied.Length == 0) return translated;
+
+                translated = _translator.Translate(originalLinesArePreApplied);
+                if (translated == null || originals.Length != translated.Length) return Array.Empty<string>();
+                
+                translated = ApplyProjectPosttranslationAction(originals, translated);
             }
             catch (Exception ex)
             {
@@ -422,9 +424,12 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
             var translations = new Dictionary<string, string>();
             for (int i = 0; i < originals.Length; i++)
             {
-                translations.Add(originals[i], translated[i]);
+                var original = originals[i];
+                var translation = translated[i];
 
-                FunctionsOnlineCache.TryAdd(originals[i], translated[i]);
+                translations.Add(original, translation);
+
+                FunctionsOnlineCache.TryAdd(original, translation);
             }
 
             Parallel.ForEach(EnumerateLineData(_buffer), lineData =>
