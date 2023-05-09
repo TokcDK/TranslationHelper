@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -532,22 +533,25 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
             return true;
         }
 
+        static readonly Regex _replacerListTypeRegex = new Regex(@"^\$[0-9]+(,\$[0-9]+)+$", RegexOptions.Compiled);
+        static readonly Regex _oneMatchNeedInsertTextRegex = new Regex(@"^\$[0-9]+$", RegexOptions.Compiled);
+        static readonly Regex _groupReplacerMarkerRegex = new Regex(@"\$[0-9]+", RegexOptions.Compiled);
         private static string MergeExtracted(LineTranslationData lineData)
         {
             // replace all groups with translation of selected value
             bool isMarked = false;
-            var replacerMatches = Regex.Matches(lineData.RegexExtractionData.Replacer, @"\$[0-9]+");
+            var replacerMatches = _groupReplacerMarkerRegex.Matches(lineData.RegexExtractionData.Replacer);
             var matchesCount = replacerMatches.Count;
             var replacerType = TranslationRegexExtractType.ReplaceOne;
-            bool isOneMatchNeedInsertText = matchesCount == 1 && Regex.IsMatch(lineData.RegexExtractionData.Replacer.Trim(), @"^\$[0-9]+$");
+            bool isOneMatchNeedInsertText = matchesCount == 1 && _oneMatchNeedInsertTextRegex.IsMatch(lineData.RegexExtractionData.Replacer.Trim());
             if (!isOneMatchNeedInsertText)
             {
-                replacerType = Regex.IsMatch(lineData.RegexExtractionData.Replacer.Trim(), @"^\$[0-9]+(,\$[0-9]+)+$")
+                replacerType = _replacerListTypeRegex.IsMatch(lineData.RegexExtractionData.Replacer.Trim())
                     ? TranslationRegexExtractType.ReplaceList
                     : TranslationRegexExtractType.Replacer;
             }
 
-            var newLineText = lineData.OriginalText;
+            var newLineText = new StringBuilder(lineData.OriginalText);
 
             var list = lineData.RegexExtractionData.ExtractedValuesList;
             var maxValueDataIndex = list.Count - 1;
@@ -567,9 +571,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
                         try
                         {
                             // replace original value text with translation
-                            newLineText = newLineText
-                                .Remove(group.Index, group.Length)
-                                .Insert(group.Index, valueData.Translation ?? group.Value);
+                            newLineText.Remove(group.Index, group.Length).Insert(group.Index, valueData.Translation ?? group.Value);
                         }
                         catch { }
                     }
@@ -585,14 +587,14 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
                 {
                     isMarked = true; // mark only one time
 
-                    newLineText = lineData.RegexExtractionData.Replacer;
+                    newLineText = new StringBuilder(lineData.RegexExtractionData.Replacer);
 
                     // mark all matches for precise replacement, $1 to %$1%
                     for (int i2 = matchesCount - 1; i2 >= 0; i2--)
                     {
                         var match = replacerMatches[i2];
 
-                        newLineText = newLineText.Remove(match.Index, match.Length)
+                        newLineText.Remove(match.Index, match.Length)
                             .Insert(match.Index, $"%{match.Value}%");
                         ;
                     }
@@ -601,12 +603,12 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
                 // replace group mark with translation
                 foreach (var matchGroup in valueData.MatchGroups)
                 {
-                    newLineText = newLineText.Replace($"%${matchGroup.Name}%", valueData.Translation ?? matchGroup.Value);
+                    newLineText.Replace($"%${matchGroup.Name}%", valueData.Translation ?? matchGroup.Value);
                 }
                 ////
             }
 
-            return newLineText;
+            return newLineText.ToString();
         }
     }
 }
