@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -477,15 +478,15 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
             for (int t = _buffer.Count - 1; t >= 0; t--) if (_buffer[t].Rows.Count == 0) _buffer.RemoveAt(t);
         }
 
-        private static bool WriteRowData(RowsTranslationData rowData, int tableIndex)
+        private bool WriteRowData(RowsTranslationData rowData, int tableIndex)
         {
             if (!rowData.IsAllLinesAdded) return false; // skip if row is not fully translated
 
             var row = AppData.CurrentProject.FilesContent.Tables[tableIndex].Rows[rowData.RowIndex];
 
             // skip equal
-            var o = row[0]+"";
-            var t = row[1]+"";
+            var o = row.Field<string>(AppData.CurrentProject.OriginalColumnIndex);
+            var t = row.Field<string>(AppData.CurrentProject.TranslationColumnIndex);
             var cellTranslationEqualOriginal = Equals(t,o);
             if (AppSettings.IgnoreOrigEqualTransLines && cellTranslationEqualOriginal) return false;
 
@@ -496,21 +497,23 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
             var newValue = new List<string>();
             var lineNum = 0;
             var rowValue = cellTranslationIsNotEmptyAndNotEqualOriginal ? t : o;
+            var rowDataLines = rowData.Lines;
+            int rowDataLinesCount = rowDataLines.Count;
             foreach (var line in rowValue.SplitToLines())
             {
                 //if (lineNum >= rowData.Lines.Count) break; // multyline row was not fully translated, skip to translate later on next loop
-                if (lineNum >= rowData.Lines.Count)
+                if (lineNum >= rowDataLinesCount)
                 {
                     break; // temp check if this condition is useless because IsAllLinesAdded must skip it
                 }
 
-                var lineData = rowData.Lines[lineNum];
+                var lineData = rowDataLines[lineNum];
 
                 if (lineData.RegexExtractionData.ExtractedValuesList.Count > 0) // when line has extracted values
                 {
                     newValue.Add(MergeExtracted(lineData));
                 }
-                else if (lineData.TranslationText == null || lineData.TranslationText == line || line.IsSoundsText())
+                else if (string.IsNullOrWhiteSpace(lineData.TranslationText) || lineData.TranslationText.Equals(line) || line.IsSoundsText())
                 {
                     // when null,=original or issoundstext. jusst insert original line
                     newValue.Add(line);
