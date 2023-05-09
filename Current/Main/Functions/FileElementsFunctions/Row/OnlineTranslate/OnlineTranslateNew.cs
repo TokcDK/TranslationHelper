@@ -524,7 +524,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
             }
 
             // set new row value
-            row.SetValue(1, string.Join(Environment.NewLine, newValue));
+            row.SetValue(AppData.CurrentProject.TranslationColumnIndex, string.Join(Environment.NewLine, newValue));
 
             // dont need now. if (row.HasAnyTranslationLineValidAndEqualSameOrigLine(false)) return false; // continue if any original line equal to translation line with same index
 
