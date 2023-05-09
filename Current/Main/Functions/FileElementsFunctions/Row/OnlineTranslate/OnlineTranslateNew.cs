@@ -487,12 +487,12 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
             // skip equal
             var o = row.Field<string>(AppData.CurrentProject.OriginalColumnIndex);
             var t = row.Field<string>(AppData.CurrentProject.TranslationColumnIndex);
-            var cellTranslationEqualOriginal = Equals(t,o);
+            var cellTranslationEqualOriginal = Equals(t, o);
             if (AppSettings.IgnoreOrigEqualTransLines && cellTranslationEqualOriginal) return false;
 
             // skip when translation not equal to original and and have No any original line equal translation
             var cellTranslationIsNotEmptyAndNotEqualOriginal = !string.IsNullOrEmpty(t) && !cellTranslationEqualOriginal;
-            if (cellTranslationIsNotEmptyAndNotEqualOriginal && !o.HasAnyTranslationLineValidAndEqualSameOrigLine(t,false)) return false;
+            if (cellTranslationIsNotEmptyAndNotEqualOriginal && !o.HasAnyTranslationLineValidAndEqualSameOrigLine(t, false)) return false;
 
             var newValue = new List<string>();
             var lineNum = 0;
@@ -578,7 +578,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
                                 , valueData.Translation ?? group.Value
                                 , group.Index, group.Length);
                         }
-                        catch(IndexOutOfRangeException) { }
+                        catch (IndexOutOfRangeException) { }
                     }
 
                     if (replacerType == TranslationRegexExtractType.ReplaceOne) break; // exit from values loop, to not execute lines below
