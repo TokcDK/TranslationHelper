@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
@@ -304,34 +305,36 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
         /// <returns></returns>
         private string[] GetOriginals()
         {
-            var orig = new List<string>();
-            foreach (var data in _buffer) // get data
-            {
-                foreach (var rowData in data.Rows) // get rows data
-                {
-                    foreach (var lineData in rowData.Lines) // get line data
+            return EnumerateLineData(_buffer)
+                .AsParallel()
+                .Aggregate(
+                    new ConcurrentBag<string>(),
+                    (originalLines, lineData) =>
                     {
                         if (lineData.RegexExtractionData.ExtractedValuesList.Count > 0)
                         {
                             foreach (var value in lineData.RegexExtractionData.ExtractedValuesList)
                             {
-                                if (!orig.Contains(value.Original)
-                                    && (string.IsNullOrEmpty(value.Translation))
-                                    && value.Original.IsValidForTranslation())
-                                {
-                                    orig.Add(value.Original);
-                                }
+                                AddOriginalLineIfValid(originalLines, value.Original, value.Translation);
                             }
-
-                            continue;
+                        }
+                        else
+                        {
+                            AddOriginalLineIfValid(originalLines, lineData.Original, lineData.Translation);
                         }
 
-                        if (!orig.Contains(lineData.Original) && (lineData.Translation == null || lineData.Translation == lineData.Original) && lineData.Original.IsValidForTranslation()) orig.Add(lineData.Original);
+                        return originalLines;
                     }
-                }
-            }
+                )
+                .ToArray();
+        }
 
-            return orig.ToArray();
+        private void AddOriginalLineIfValid(ConcurrentBag<string> originalLines, string originalLine, string translatedLine)
+        {
+            if (!originalLines.Contains(originalLine) && string.IsNullOrEmpty(translatedLine) && originalLine.IsValidForTranslation())
+            {
+                originalLines.Add(originalLine);
+            }
         }
 
         /// <summary>
