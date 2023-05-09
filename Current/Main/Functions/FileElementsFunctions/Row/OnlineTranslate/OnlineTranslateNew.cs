@@ -341,17 +341,27 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
         /// <returns></returns>
         private static string[] ApplyProjectPretranslationAction(string[] originalLines)
         {
-            if (AppData.CurrentProject.HideVARSMatchCollectionsList != null
-                && AppData.CurrentProject.HideVARSMatchCollectionsList.Count > 0) AppData.CurrentProject.HideVARSMatchCollectionsList.Clear();//clean of found maches collections
-
-            var newOriginalLines = new string[originalLines.Length];
-            Array.Copy(originalLines, newOriginalLines, originalLines.Length);
-            for (int i = 0; i < newOriginalLines.Length; i++)
+            if (AppData.CurrentProject.HideVARSMatchCollectionsList?.Count > 0)
             {
-                var s = AppData.CurrentProject.OnlineTranslationProjectSpecificPretranslationAction(originalLines[i], string.Empty);
-                if (!string.IsNullOrEmpty(s)) newOriginalLines[i] = s;
+                // Clear the collection of found matches
+                AppData.CurrentProject.HideVARSMatchCollectionsList.Clear();
             }
-            return newOriginalLines;
+
+            int numOriginalLines = originalLines.Length;
+
+            var preTranslatedLines = new string[numOriginalLines];
+            Array.Copy(originalLines, preTranslatedLines, numOriginalLines);
+
+            for (int i = 0; i < numOriginalLines; i++)
+            {
+                var preTranslatedLine = AppData.CurrentProject.OnlineTranslationProjectSpecificPretranslationAction(originalLines[i], null);
+                if (!string.IsNullOrEmpty(preTranslatedLine))
+                {
+                    preTranslatedLines[i] = preTranslatedLine;
+                }
+            }
+
+            return preTranslatedLines;
         }
 
         /// <summary>
@@ -360,7 +370,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
         /// <param name="originalLines"></param>
         /// <param name="translatedLines"></param>
         /// <returns></returns>
-        private static string[] ApplyProjectPosttranslationAction(string[] originalLines, string[] translatedLines)
+        private static string[] ApplyProjectPostTranslationAction(string[] originalLines, string[] translatedLines)
         {
             for (int i = 0; i < translatedLines.Length; i++)
             {
@@ -396,7 +406,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
                 translated = _translator.Translate(originalLinesArePreApplied);
                 if (translated == null || originals.Length != translated.Length) return Array.Empty<string>();
                 
-                translated = ApplyProjectPosttranslationAction(originals, translated);
+                translated = ApplyProjectPostTranslationAction(originals, translated);
             }
             catch (Exception ex)
             {
