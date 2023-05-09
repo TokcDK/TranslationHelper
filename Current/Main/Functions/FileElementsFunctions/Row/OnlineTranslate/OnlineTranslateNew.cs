@@ -472,11 +472,14 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
 
                 // clean rows
                 foreach (var rowdata in translatedRowsData) data.Rows.Remove(rowdata);
-                translatedRowsData = null;
             }
 
             // clean empty tables
-            for (int t = _buffer.Count - 1; t >= 0; t--) if (_buffer[t].Rows.Count == 0) _buffer.RemoveAt(t);
+            int maxIndex = _buffer.Count - 1;
+            for (int t = maxIndex; t >= 0; t--)
+            {
+                if (_buffer[t].Rows.Count == 0) _buffer.RemoveAt(t);
+            }
         }
 
         private readonly int _originalColumnIndex = AppData.CurrentProject.OriginalColumnIndex;
