@@ -431,8 +431,7 @@ namespace TranslationHelper.Functions
                                 row.SetValue(translationColIndex, dbTranslation);
                                 break;
                             }
-
-                            if (fileLinesListByRowIndex.Values.FirstOrDefault() is string firstTranslation)
+                            else if (fileLinesListByRowIndex.Values.FirstOrDefault() is string firstTranslation)
                             {
                                 row.SetValue(translationColIndex, firstTranslation);
                                 break;
@@ -623,14 +622,14 @@ namespace TranslationHelper.Functions
             var loadFoundDBQuestion = MessageBox.Show(T._("Found translation DB. Load it?"), T._("Load translation DB"), MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
             if (loadFoundDBQuestion == DialogResult.Yes)
             {
-                await Task.Run(() => AppData.Main.LoadTranslationFromDB(dbPath, false, true)).ConfigureAwait(false);
+                await Task.Run(() => AppData.Main.LoadTranslationFromDB(sPath: dbPath, UseAllDB: false, forced: true)).ConfigureAwait(false);
             }
             else
             {
                 var loadTranslationsFromAllDBQuestion = MessageBox.Show(T._("Try to find translations in all avalaible DB? (Can take some time)"), T._("Load all DB"), MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
                 if (loadTranslationsFromAllDBQuestion != DialogResult.Yes) return;
 
-                await Task.Run(() => AppData.Main.LoadTranslationFromDB(string.Empty, true)).ConfigureAwait(false);
+                await Task.Run(() => AppData.Main.LoadTranslationFromDB(sPath: string.Empty, UseAllDB: true)).ConfigureAwait(false);
             }
         }
     }
