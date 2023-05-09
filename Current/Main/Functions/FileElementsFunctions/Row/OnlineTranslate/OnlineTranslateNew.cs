@@ -11,6 +11,7 @@ using TranslationHelper.Data;
 using TranslationHelper.Extensions;
 using TranslationHelper.Functions.FileElementsFunctions.Row.HardFixes;
 using TranslationHelper.Main.Functions;
+using static TranslationHelper.Functions.FileElementsFunctions.Row.OnlineTranslateNew;
 
 namespace TranslationHelper.Functions.FileElementsFunctions.Row
 {
@@ -478,48 +479,29 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
             for (int t = _buffer.Count - 1; t >= 0; t--) if (_buffer[t].Rows.Count == 0) _buffer.RemoveAt(t);
         }
 
-        readonly RowBase _hardFixes = new AllHardFixes();
-        readonly RowBase _fixCells = new FixCells();
+        private readonly int _originalColumnIndex = AppData.CurrentProject.OriginalColumnIndex;
+        private readonly int _translationColumnIndex = AppData.CurrentProject.TranslationColumnIndex;
+        private readonly RowBase _hardFixes = new AllHardFixes();
+        private readonly RowBase _fixCells = new FixCells();
         private bool WriteRowData(RowsTranslationData rowData, int tableIndex)
         {
             if (!rowData.IsAllLinesAdded) return false; // skip if row is not fully translated
 
             var row = AppData.CurrentProject.FilesContent.Tables[tableIndex].Rows[rowData.RowIndex];
+            var ignoreOrigEqualTransLines = AppSettings.IgnoreOrigEqualTransLines;
 
             // skip equal
-            var o = row.Field<string>(AppData.CurrentProject.OriginalColumnIndex);
-            var t = row.Field<string>(AppData.CurrentProject.TranslationColumnIndex);
-            var cellTranslationEqualOriginal = Equals(t, o);
-            if (AppSettings.IgnoreOrigEqualTransLines && cellTranslationEqualOriginal) return false;
+            var originalText = row.Field<string>(_originalColumnIndex);
+            var translationText = row.Field<string>(_translationColumnIndex);
+            var cellTranslationEqualOriginal = Equals(translationText, originalText);
+            if (ignoreOrigEqualTransLines && cellTranslationEqualOriginal) return false;
 
             // skip when translation not equal to original and and have No any original line equal translation
-            var cellTranslationIsNotEmptyAndNotEqualOriginal = !string.IsNullOrEmpty(t) && !cellTranslationEqualOriginal;
-            if (cellTranslationIsNotEmptyAndNotEqualOriginal && !o.HasAnyTranslationLineValidAndEqualSameOrigLine(t, false)) return false;
-
-            var newValue = new List<string>();
-            var lineNum = 0;
-            var rowValue = cellTranslationIsNotEmptyAndNotEqualOriginal ? t : o;
-            var rowDataLines = rowData.Lines;
-            foreach (var line in rowValue.SplitToLines())
-            {
-                var lineData = rowDataLines[lineNum];
-
-                if (lineData.RegexExtractionData.ExtractedValuesList.Count > 0) // when line has extracted values
-                {
-                    newValue.Add(MergeExtracted(lineData));
-                }
-                else if (string.IsNullOrWhiteSpace(lineData.TranslationText) || lineData.TranslationText.Equals(line) || line.IsSoundsText())
-                {
-                    // when null,=original or issoundstext. jusst insert original line
-                    newValue.Add(line);
-                }
-                else newValue.Add(lineData.TranslationText);
-
-                lineNum++;
-            }
+            var cellTranslationIsNotEmptyAndNotEqualOriginal = !string.IsNullOrEmpty(translationText) && !cellTranslationEqualOriginal;
+            if (cellTranslationIsNotEmptyAndNotEqualOriginal && !originalText.HasAnyTranslationLineValidAndEqualSameOrigLine(translationText, false)) return false;
 
             // set new row value
-            row.SetValue(AppData.CurrentProject.TranslationColumnIndex, string.Join(Environment.NewLine, newValue));
+            row.SetValue(_translationColumnIndex, string.Join(Environment.NewLine, EnumerableNewLines(cellTranslationIsNotEmptyAndNotEqualOriginal ? translationText : originalText, rowData.Lines)));
 
             // apply fixes for cell
             // apply only for finished rows
@@ -527,6 +509,26 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
             _fixCells.Selected(row, tableIndex, rowData.RowIndex);
 
             return true;
+        }
+
+        private IEnumerable<string> EnumerableNewLines(string rowValue, List<LineTranslationData> rowDataLines)
+        {
+            int lineNum = -1;
+            foreach (var line in rowValue.SplitToLines())
+            {
+                var lineData = rowDataLines[lineNum++];
+
+                if (lineData.RegexExtractionData.ExtractedValuesList.Count > 0) // when line has extracted values
+                {
+                    yield return MergeExtracted(lineData);
+                }
+                else if (string.IsNullOrWhiteSpace(lineData.TranslationText) || lineData.TranslationText.Equals(line) || line.IsSoundsText())
+                {
+                    // when null,=original or issoundstext. jusst insert original line
+                    yield return line;
+                }
+                else yield return lineData.TranslationText;
+            }
         }
 
         static readonly Regex _replacerListTypeRegex = new Regex(@"^\$[0-9]+(,\$[0-9]+)+$", RegexOptions.Compiled);
