@@ -575,7 +575,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
                                 , valueData.Translation ?? group.Value
                                 , group.Index, group.Length);
                         }
-                        catch { }
+                        catch(IndexOutOfRangeException) { }
                     }
 
                     if (replacerType == TranslationRegexExtractType.ReplaceOne) break; // exit from values loop, to not execute lines below
