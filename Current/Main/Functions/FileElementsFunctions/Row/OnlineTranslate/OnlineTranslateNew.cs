@@ -40,7 +40,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
         internal class TranslationData
         {
             internal int TableIndex;
-            internal HashSet<RowsTranslationData> Rows = new HashSet<RowsTranslationData>();
+            internal List<RowsTranslationData> Rows = new List<RowsTranslationData>();
         }
 
         internal class RowsTranslationData
@@ -460,25 +460,20 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
         /// </summary>
         private void SetBufferToRows()
         {
-            //get all coordinate keys
-            foreach (var data in _buffer)
+            for (int i = _buffer.Count - 1; i >= 0; i--)
             {
-                var translatedRowsData = new HashSet<RowsTranslationData>();
-                foreach (var rowData in data.Rows)
+                var data = _buffer[i];
+                var dataRows = data.Rows;
+                for (int n = dataRows.Count - 1; n >= 0; n--)
                 {
+                    var rowData = dataRows[n];
                     if (WriteRowData(rowData, data.TableIndex))
-                        translatedRowsData.Add(rowData); // add rowData to translated
+                    {
+                        dataRows.Remove(rowData);
+                    }
                 }
 
-                // clean rows
-                foreach (var rowdata in translatedRowsData) data.Rows.Remove(rowdata);
-            }
-
-            // clean empty tables
-            int maxIndex = _buffer.Count - 1;
-            for (int t = maxIndex; t >= 0; t--)
-            {
-                if (_buffer[t].Rows.Count == 0) _buffer.RemoveAt(t);
+                if (dataRows.Count == 0) _buffer.Remove(data);
             }
         }
 
