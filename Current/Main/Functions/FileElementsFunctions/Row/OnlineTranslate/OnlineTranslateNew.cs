@@ -500,15 +500,8 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
             var lineNum = 0;
             var rowValue = cellTranslationIsNotEmptyAndNotEqualOriginal ? t : o;
             var rowDataLines = rowData.Lines;
-            int rowDataLinesCount = rowDataLines.Count;
             foreach (var line in rowValue.SplitToLines())
             {
-                //if (lineNum >= rowData.Lines.Count) break; // multyline row was not fully translated, skip to translate later on next loop
-                if (lineNum >= rowDataLinesCount)
-                {
-                    break; // temp check if this condition is useless because IsAllLinesAdded must skip it
-                }
-
                 var lineData = rowDataLines[lineNum];
 
                 if (lineData.RegexExtractionData.ExtractedValuesList.Count > 0) // when line has extracted values
@@ -527,8 +520,6 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
 
             // set new row value
             row.SetValue(AppData.CurrentProject.TranslationColumnIndex, string.Join(Environment.NewLine, newValue));
-
-            // dont need now. if (row.HasAnyTranslationLineValidAndEqualSameOrigLine(false)) return false; // continue if any original line equal to translation line with same index
 
             // apply fixes for cell
             // apply only for finished rows
