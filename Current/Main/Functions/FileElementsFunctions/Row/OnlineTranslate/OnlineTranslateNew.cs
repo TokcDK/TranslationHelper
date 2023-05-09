@@ -372,15 +372,23 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
         /// <returns></returns>
         private static string[] ApplyProjectPostTranslationAction(string[] originalLines, string[] translatedLines)
         {
-            for (int i = 0; i < translatedLines.Length; i++)
+            int numTranslatedLines = translatedLines.Length;
+            for (int i = 0; i < numTranslatedLines; i++)
             {
-                var s = AppData.CurrentProject.OnlineTranslationProjectSpecificPosttranslationAction(originalLines[i], translatedLines[i]);
-                if (!string.IsNullOrEmpty(s) && s != translatedLines[i]) translatedLines[i] = s;
+                string translatedLine = translatedLines[i];
+
+                var postTranslatedLine = AppData.CurrentProject.OnlineTranslationProjectSpecificPostTranslationAction(originalLines[i], translatedLine);
+                if (!string.IsNullOrEmpty(postTranslatedLine) && postTranslatedLine != translatedLine)
+                {
+                    translatedLines[i] = postTranslatedLine;
+                }
             }
 
-            if (AppData.CurrentProject.HideVARSMatchCollectionsList != null && AppData.CurrentProject.HideVARSMatchCollectionsList.Count > 0)
+            var hideVarsMatchCollections = AppData.CurrentProject.HideVARSMatchCollectionsList;
+            if (hideVarsMatchCollections?.Count > 0)
             {
-                AppData.CurrentProject.HideVARSMatchCollectionsList.Clear();//clean of found maches collections
+                // Clear the collection of found matches
+                hideVarsMatchCollections.Clear();
             }
 
             return translatedLines;

@@ -249,7 +249,7 @@ namespace TranslationHelper.Projects
         /// <param name="tind"></param>
         /// <param name="rind"></param>
         /// <returns></returns>
-        internal virtual string OnlineTranslationProjectSpecificPosttranslationAction(string o, string t, int tind = -1, int rind = -1)
+        internal virtual string OnlineTranslationProjectSpecificPostTranslationAction(string o, string t, int tind = -1, int rind = -1)
         {
             return RestoreVARS(t);
         }

@@ -264,7 +264,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
         {
             for (int i = 0; i < translatedLines.Length; i++)
             {
-                var s = AppData.CurrentProject.OnlineTranslationProjectSpecificPosttranslationAction(originalLines[i], translatedLines[i]);
+                var s = AppData.CurrentProject.OnlineTranslationProjectSpecificPostTranslationAction(originalLines[i], translatedLines[i]);
                 if (!string.IsNullOrEmpty(s) && s != translatedLines[i]) translatedLines[i] = s;
             }
 
