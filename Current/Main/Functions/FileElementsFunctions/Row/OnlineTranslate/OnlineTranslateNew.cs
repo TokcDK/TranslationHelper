@@ -289,6 +289,8 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
         {
             var originals = GetOriginals();
 
+            if (originals.Length == 0) return;
+
             var translated = TranslateOriginals(originals);
 
             SetTranslationsToBuffer(originals, translated);
@@ -431,14 +433,14 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
                 {
                     foreach (var value in lineData.RegexExtractionData.ExtractedValuesList)
                     {
-                        if (TryGetTranslation(translations, value.Original, value.Translation, out var v)) return;
+                        if (!TryGetTranslation(translations, value.Original, value.Translation, out var v)) return;
 
                         value.Translation = v;
                     }
                 }
                 else
                 {
-                    if (TryGetTranslation(translations, lineData.Original, lineData.Translation, out var v)) return;
+                    if (!TryGetTranslation(translations, lineData.Original, lineData.Translation, out var v)) return;
 
                     lineData.Translation = v;
                 }
@@ -528,7 +530,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
 
         private IEnumerable<string> EnumerableNewLines(string rowValue, List<LineTranslationData> rowDataLines)
         {
-            int lineNum = -1;
+            int lineNum = 0;
             foreach (var line in rowValue.SplitToLines())
             {
                 var lineData = rowDataLines[lineNum++];
