@@ -478,6 +478,8 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
             for (int t = _buffer.Count - 1; t >= 0; t--) if (_buffer[t].Rows.Count == 0) _buffer.RemoveAt(t);
         }
 
+        readonly RowBase _hardFixes = new AllHardFixes();
+        readonly RowBase _fixCells = new FixCells();
         private bool WriteRowData(RowsTranslationData rowData, int tableIndex)
         {
             if (!rowData.IsAllLinesAdded) return false; // skip if row is not fully translated
@@ -530,8 +532,8 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
 
             // apply fixes for cell
             // apply only for finished rows
-            new AllHardFixes().Selected(row, tableIndex, rowData.RowIndex);
-            new FixCells().Selected(row, tableIndex, rowData.RowIndex);
+            _hardFixes.Selected(row, tableIndex, rowData.RowIndex);
+            _fixCells.Selected(row, tableIndex, rowData.RowIndex);
 
             return true;
         }
