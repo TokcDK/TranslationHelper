@@ -571,7 +571,9 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
                         try
                         {
                             // replace original value text with translation
-                            newLineText.Remove(group.Index, group.Length).Insert(group.Index, valueData.Translation ?? group.Value);
+                            newLineText.Replace(group.Value
+                                , valueData.Translation ?? group.Value
+                                , group.Index, group.Length);
                         }
                         catch { }
                     }
@@ -594,9 +596,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
                     {
                         var match = replacerMatches[i2];
 
-                        newLineText.Remove(match.Index, match.Length)
-                            .Insert(match.Index, $"%{match.Value}%");
-                        ;
+                        newLineText.Replace(match.Value, $"%{match.Value}%", match.Index, match.Length);
                     }
                 }
                 //
