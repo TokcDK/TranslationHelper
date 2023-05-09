@@ -414,36 +414,35 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
         /// <param name="translated"></param>
         private void SetTranslationsToBuffer(string[] originals, string[] translated)
         {
+            if (originals == null || translated == null || originals.Length != translated.Length)
+                return;
+
             var translations = new Dictionary<string, string>();
-            if (originals != null && translated != null && originals.Length > 0 && originals.Length == translated.Length)
+            for (int i = 0; i < originals.Length; i++)
             {
-                for (int i = 0; i < originals.Length; i++)
-                {
-                    translations.Add(originals[i], translated[i]);
+                translations.Add(originals[i], translated[i]);
 
-                    FunctionsOnlineCache.TryAdd(originals[i], translated[i]);
-                }
+                FunctionsOnlineCache.TryAdd(originals[i], translated[i]);
             }
-            else return;
 
-            foreach (var lineData in EnumerateLineData(_buffer))
+            Parallel.ForEach(EnumerateLineData(_buffer), lineData =>
             {
                 if (lineData.RegexExtractionData.ExtractedValuesList.Count > 0)
                 {
                     foreach (var value in lineData.RegexExtractionData.ExtractedValuesList)
                     {
-                        if (TryGetTranslation(translations, value.Original, value.Translation, out var v)) continue;
+                        if (TryGetTranslation(translations, value.Original, value.Translation, out var v)) return;
 
                         value.Translation = v;
                     }
                 }
                 else
                 {
-                    if (TryGetTranslation(translations, lineData.Original, lineData.Translation, out var v)) continue;
+                    if (TryGetTranslation(translations, lineData.Original, lineData.Translation, out var v)) return;
 
                     lineData.Translation = v;
                 }
-            }
+            });
         }
 
         private bool TryGetTranslation(Dictionary<string, string> translations, string original, string translation, out string outTranslation)
