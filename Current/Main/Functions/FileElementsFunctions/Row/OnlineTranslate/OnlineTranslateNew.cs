@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using System.Web.Util;
 using System.Windows.Forms;
 using GoogleTranslateFreeApi;
 using TranslationHelper.Data;
@@ -425,31 +426,39 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
             }
             else return;
 
+            foreach (var lineData in EnumerateLineData(_buffer))
+            {
+                if (lineData.RegexExtractionData.ExtractedValuesList.Count > 0)
+                {
+                    foreach (var value in lineData.RegexExtractionData.ExtractedValuesList)
+                    {
+                        if (value.Translation != null && value.Translation != value.Original) continue;
+                        if (!value.Original.IsValidForTranslation()) continue;
+                        if (!translations.TryGetValue(value.Original, out var v)) continue;
+
+                        value.Translation = v;
+                    }
+                }
+                else
+                {
+                    if (lineData.TranslationText != null && lineData.TranslationText != lineData.OriginalText) continue;
+                    if (!lineData.OriginalText.IsValidForTranslation()) continue;
+                    if (!translations.TryGetValue(lineData.OriginalText, out var v)) continue;
+
+                    lineData.TranslationText = v;
+                }
+            }
+        }
+
+        private IEnumerable<LineTranslationData> EnumerateLineData(List<TranslationData> buffer)
+        {
             foreach (var data in _buffer) // get data
             {
                 foreach (var rowData in data.Rows) // get rows data
                 {
                     foreach (var lineData in rowData.Lines) // get line data
                     {
-                        if (lineData.RegexExtractionData.ExtractedValuesList.Count > 0)
-                        {
-                            foreach (var value in lineData.RegexExtractionData.ExtractedValuesList)
-                            {
-                                if (value.Translation != null && value.Translation != value.Original) continue;
-                                if (!value.Original.IsValidForTranslation()) continue;
-                                if (!translations.ContainsKey(value.Original)) continue;
-
-                                value.Translation = translations[value.Original];
-                            }
-
-                            continue;
-                        }
-
-                        if (lineData.TranslationText != null && lineData.TranslationText != lineData.OriginalText) continue;
-                        if (!lineData.OriginalText.IsValidForTranslation()) continue;
-                        if (!translations.ContainsKey(lineData.OriginalText)) continue;
-
-                        lineData.TranslationText = translations[lineData.TranslationText];
+                        yield return lineData;
                     }
                 }
             }
