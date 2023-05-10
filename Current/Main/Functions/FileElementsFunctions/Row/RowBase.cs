@@ -316,7 +316,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
             if (!IsAll && !IsTables)
             {
                 IsTable = true;
-                Tablescount = 1;
+                TablesCount = 1;
             }
 
             GetTableData();
@@ -369,8 +369,8 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
 #else
             tables = _allTables.GetTablesByIndexes(tableindexes);
 #endif
-            Tablescount = tables.Length;
-            IsTables = Tablescount > 1;
+            TablesCount = tables.Length;
+            IsTables = TablesCount > 1;
 
             if (!IsAll && IsTables)
             {
@@ -417,7 +417,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
         protected int SelectedTableIndex = -1;
         protected DataRow SelectedRow;
         protected int SelectedRowIndex;
-        protected int Tablescount = 0;
+        protected int TablesCount = 0;
         /// <summary>
         /// true when processed all tables
         /// </summary>
@@ -434,28 +434,31 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
 
             Init();
 
-            int tindex = 0;
-            var tables = AllTables.Tables;
-            Tablescount = tables.Count;
+            var allTables = AllTables.Tables;
+            TablesCount = allTables.Count;
+
             SetSelectedRowsCountForAll();
 
             ActionsInit();
-
             ActionsPreTablesApply();
 
-            foreach (DataTable table in tables)
+            for (SelectedTableIndex = 0; SelectedTableIndex < TablesCount; SelectedTableIndex++)
             {
-                SelectedTable = table;
-                SelectedTableIndex = tindex++; // set and increase table index
+                SelectedTable = allTables[SelectedTableIndex];
 
-                try { Table(table); }
-                catch (Exception ex) { _log.LogToFile("An error occured while rowbase all tables table parse. Error:" + ex); }
+                try
+                {
+                    Table(SelectedTable);
+                }
+                catch (Exception ex)
+                {
+                    _log.LogToFile($"An error occurred while parsing all tables in method '{nameof(All)}'. Error: {ex}");
+                }
             }
 
+
             ActionsPostTablesApply();
-
             ActionsFinalize();
-
             CompleteSound();
 
             return Ret;
