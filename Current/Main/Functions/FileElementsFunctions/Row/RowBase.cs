@@ -357,31 +357,31 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
 
             Init();
 
-            int[] tableindexes = null;
+            int[] selectedTableIndexes = null;
 #if DEBUG
-            FilesList.Invoke((Action)(() => tableindexes = FilesList.CopySelectedIndexes()));
+            FilesList.Invoke((Action)(() => selectedTableIndexes = FilesList.CopySelectedIndexes()));
 #else
             tableindexes = _filesList.CopySelectedIndexes();
 #endif
-            DataTable[] tables = null;
+            DataTable[] selectedTables = null;
 #if DEBUG
-            AppData.Main.Invoke((Action)(() => tables = AllTables.GetTablesByIndexes(tableindexes)));
+            AppData.Main.Invoke((Action)(() => selectedTables = AllTables.GetTablesByIndexes(selectedTableIndexes)));
 #else
             tables = _allTables.GetTablesByIndexes(tableindexes);
 #endif
-            TablesCount = tables.Length;
+            TablesCount = selectedTables.Length;
             IsTables = TablesCount > 1;
 
             if (!IsAll && IsTables)
             {
-                SetSelectedRowsCountForTables(tables);
+                SetSelectedRowsCountForTables(selectedTables);
 
                 ActionsInit();
 
                 ActionsPreTablesApply();
             }
 
-            foreach (var table in tables) Table(table);
+            foreach (var table in selectedTables) Table(table);
 
             if (!IsAll && IsTables)
             {
