@@ -6,14 +6,11 @@ using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
-using System.Web.Util;
 using System.Windows.Forms;
-using GoogleTranslateFreeApi;
 using TranslationHelper.Data;
 using TranslationHelper.Extensions;
 using TranslationHelper.Functions.FileElementsFunctions.Row.HardFixes;
 using TranslationHelper.Main.Functions;
-using static TranslationHelper.Functions.FileElementsFunctions.Row.OnlineTranslateNew;
 
 namespace TranslationHelper.Functions.FileElementsFunctions.Row
 {
@@ -189,7 +186,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
                 // If the line data does not exist, create a new one
                 if (lineData == null)
                 {
-                    lineData = new LineTranslationData(lineNumber, line) { Translation = line };
+                    lineData = new LineTranslationData(lineNumber, line);
                     selectedRowData.Lines.Add(lineData);
                 }
 
@@ -304,7 +301,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
         {
             var originals = GetOriginals();
 
-            if (originals.Length == 0) return;
+            if (originals.Length == 0 && _buffer.Count == 0) return;
 
             var translated = TranslateOriginals(originals);
 
@@ -420,7 +417,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
         /// <returns></returns>
         private string[] TranslateOriginals(string[] originals)
         {
-            if (originals==null || originals.Length==0) return Array.Empty<string>();
+            if (originals == null || originals.Length == 0) return Array.Empty<string>();
 
             string[] translated = Array.Empty<string>();
             try
@@ -430,7 +427,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
 
                 translated = _translator.Translate(originalLinesArePreApplied);
                 if (translated == null || originals.Length != translated.Length) return Array.Empty<string>();
-                
+
                 translated = ApplyProjectPostTranslationAction(originals, translated);
             }
             catch (Exception ex)
