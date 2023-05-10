@@ -322,7 +322,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
                     new ConcurrentBag<string>(),
                     (originalLines, lineData) =>
                     {
-                        foreach((string original, string translation) in GetOriginalTranslation(lineData))
+                        foreach((string original, string translation) in EnumerateOriginalTranslation(lineData))
                         {
                             AddOriginalLineIfValid(originalLines, original, translation);
                         }
@@ -333,7 +333,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
                 .ToArray();
         }
 
-        private IEnumerable<(string original, string translation)> GetOriginalTranslation(LineTranslationData lineData)
+        private IEnumerable<(string original, string translation)> EnumerateOriginalTranslation(LineTranslationData lineData)
         {
             if (lineData.RegexExtractionData.ExtractedValuesList.Count > 0)
             {
