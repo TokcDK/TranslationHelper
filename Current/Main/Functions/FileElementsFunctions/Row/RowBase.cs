@@ -472,7 +472,10 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
             if (!IsAll) return;
 
             SelectedRowsCount = 0;
-            foreach (DataTable table in AllTables.Tables) SelectedRowsCount += table.Rows.Count;
+            foreach (DataTable table in AllTables.Tables)
+            {
+                SelectedRowsCount += table.Rows.Count;
+            }
         }
 
         /// <summary>
@@ -503,7 +506,8 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
 
         protected virtual void ApplyConditions()
         {
-            if (_setRestRows)//set rest of rows with bool just because bool is faster
+            //set rest of rows with bool just because bool is faster
+            if (_setRestRows)
             {
                 _setRestRows = false;
                 SelectedRowsCountRest = SelectedRowsCount;
@@ -514,7 +518,12 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
             IsLastRow = --SelectedRowsCountRest == 0;
 
             if (!IsValidRow()) return;
-            try { if (Apply()) Ret = true; } catch { }
+
+            try 
+            { 
+                if (Apply()) Ret = true; 
+            } 
+            catch { }
         }
 
         /// <summary>
