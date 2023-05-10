@@ -40,10 +40,10 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
         internal class TranslationData
         {
             internal int TableIndex;
-            internal List<RowsTranslationData> Rows = new List<RowsTranslationData>();
+            internal List<RowTranslationData> Rows = new List<RowTranslationData>();
         }
 
-        internal class RowsTranslationData
+        internal class RowTranslationData
         {
             internal bool IsAllLinesAdded = false;
             internal int RowIndex;
@@ -163,7 +163,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
             var selectedRowData = selectedTableData.Rows.FirstOrDefault(rowData => rowData.RowIndex == SelectedRowIndex);
             if (selectedRowData == null)
             {
-                selectedRowData = new RowsTranslationData();
+                selectedRowData = new RowTranslationData();
                 selectedRowData.RowIndex = SelectedRowIndex;
                 selectedTableData.Rows.Add(selectedRowData);
             }
@@ -532,7 +532,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
         private readonly int _translationColumnIndex = AppData.CurrentProject.TranslationColumnIndex;
         private readonly RowBase _hardFixes = new AllHardFixes();
         private readonly RowBase _fixCells = new FixCells();
-        private bool WriteRowData(RowsTranslationData rowData, int tableIndex)
+        private bool WriteRowData(RowTranslationData rowData, int tableIndex)
         {
             if (!rowData.IsAllLinesAdded) return false; // skip if row is not fully translated
 
