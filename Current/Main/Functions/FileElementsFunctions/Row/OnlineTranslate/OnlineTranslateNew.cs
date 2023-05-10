@@ -23,16 +23,16 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
         /// <summary>
         /// buffer for lines
         /// </summary>
-        internal class Buffer
+        internal class Buffer : IOriginalTranslationUser
         {
-            internal string GetOriginal { get; }
-            internal string GetTranslation { get; set; }
+            public string Original { get; }
+            public string Translation { get; set; }
             internal bool GetIsExtracted { get; }
 
             internal Buffer(string original, string translation, bool isExtracted)
             {
-                GetOriginal = original;
-                GetTranslation = translation;
+                Original = original;
+                Translation = translation;
                 GetIsExtracted = isExtracted;
             }
         }
@@ -84,8 +84,8 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
         protected override bool IsValidRow()
         {
             return !AppSettings.InterruptTtanslation && base.IsValidRow()
-                && string.IsNullOrEmpty(Translation)
-                || Original.HasAnyTranslationLineValidAndEqualSameOrigLine(Translation);
+                && (string.IsNullOrEmpty(Translation)
+                || Original.HasAnyTranslationLineValidAndEqualSameOrigLine(Translation));
         }
 
         /// <summary>
@@ -323,7 +323,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
                     new ConcurrentBag<string>(),
                     (originalLines, lineData) =>
                     {
-                        foreach(var originalTranslationData in EnumerateOriginalTranslation(lineData))
+                        foreach (var originalTranslationData in EnumerateOriginalTranslation(lineData))
                         {
                             if (!originalLines.Contains(originalTranslationData.Original) && string.IsNullOrEmpty(originalTranslationData.Translation) && originalTranslationData.Original.IsValidForTranslation())
                             {
@@ -470,7 +470,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
 
             Parallel.ForEach(EnumerateLineData(_buffer), lineData =>
             {
-                foreach(var originalTranslation in EnumerateOriginalTranslation(lineData))
+                foreach (var originalTranslation in EnumerateOriginalTranslation(lineData))
                 {
                     if (!TryGetTranslation(translations, originalTranslation.Original, originalTranslation.Translation, out var v)) return;
 
