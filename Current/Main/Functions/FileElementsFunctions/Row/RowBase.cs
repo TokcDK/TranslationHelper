@@ -4,12 +4,13 @@ using System.Data;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using TranslationHelper.Data;
+using TranslationHelper.Data.Interfaces;
 using TranslationHelper.Extensions;
 using TranslationHelper.Main.Functions;
 
 namespace TranslationHelper.Functions.FileElementsFunctions.Row
 {
-    internal abstract class RowBase
+    internal abstract class RowBase : IOriginalTranslationUser
     {
         /// <summary>
         /// execute one time
