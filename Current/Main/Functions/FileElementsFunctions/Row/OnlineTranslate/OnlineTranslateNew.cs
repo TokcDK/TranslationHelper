@@ -322,22 +322,30 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
                     new ConcurrentBag<string>(),
                     (originalLines, lineData) =>
                     {
-                        if (lineData.RegexExtractionData.ExtractedValuesList.Count > 0)
+                        foreach((string original, string translation) in GetOriginalTranslation(lineData))
                         {
-                            foreach (var value in lineData.RegexExtractionData.ExtractedValuesList)
-                            {
-                                AddOriginalLineIfValid(originalLines, value.Original, value.Translation);
-                            }
-                        }
-                        else
-                        {
-                            AddOriginalLineIfValid(originalLines, lineData.Original, lineData.Translation);
+                            AddOriginalLineIfValid(originalLines, original, translation);
                         }
 
                         return originalLines;
                     }
                 )
                 .ToArray();
+        }
+
+        private IEnumerable<(string original, string translation)> GetOriginalTranslation(LineTranslationData lineData)
+        {
+            if (lineData.RegexExtractionData.ExtractedValuesList.Count > 0)
+            {
+                foreach (var value in lineData.RegexExtractionData.ExtractedValuesList)
+                {
+                    yield return (value.Original, value.Translation);
+                }
+            }
+            else
+            {
+                yield return (lineData.Original, lineData.Translation);
+            }
         }
 
         private void AddOriginalLineIfValid(ConcurrentBag<string> originalLines, string originalLine, string translatedLine)
