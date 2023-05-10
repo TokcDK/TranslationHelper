@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Data;
 using System.Threading.Tasks;
+using System.Windows.Forms;
 using TranslationHelper.Data;
 using TranslationHelper.Extensions;
 using TranslationHelper.Main.Functions;
@@ -27,20 +28,14 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
             NeedInit = false;
         }
 
-        /// <summary>
-        /// Main app data
-        /// </summary>
-
+        protected readonly ListBox FilesList = AppData.THFilesList;
+        protected readonly DataSet AllTables = AppData.CurrentProject.FilesContent;
+        protected readonly DataGridView WorkTableDatagridView = AppData.Main.THFileElementsDataGridView;
 
         /// <summary>
         /// return value for Table/All functions. Depends on return of Apply
         /// </summary>
         protected bool Ret;
-
-        /// <summary>
-        /// link to FileElements datagridview
-        /// </summary>
-        protected System.Windows.Forms.DataGridView Dgv;
 
         /// <summary>
         /// an be used by some functions
@@ -68,14 +63,14 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
 
                     if (IsSelectedRows) SelectedRowsCount = 1;
 
-                    if (Dgv == null)
-                    {
-#if DEBUG
-                        AppData.Main.THFileElementsDataGridView.Invoke((Action)(() => Dgv = AppData.Main.THFileElementsDataGridView));
-#else
-                            Dgv = AppData.Main.THFileElementsDataGridView;
-#endif
-                    }
+//                    if (Dgv == null)
+//                    {
+//#if DEBUG
+//                        AppData.Main.THFileElementsDataGridView.Invoke((Action)(() => Dgv = AppData.Main.THFileElementsDataGridView));
+//#else
+//                            Dgv = AppData.Main.THFileElementsDataGridView;
+//#endif
+//                    }
                 }
 
                 SelectedRow = row;
@@ -151,16 +146,16 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
 
             Init();
 
-            if (Dgv == null)
-            {
-#if DEBUG
-                AppData.Main.THFileElementsDataGridView.Invoke((Action)(() => Dgv = AppData.Main.THFileElementsDataGridView));
-#else
-                Dgv = AppData.Main.THFileElementsDataGridView;
-#endif
-            }
+//            if (Dgv == null)
+//            {
+//#if DEBUG
+//                AppData.Main.THFileElementsDataGridView.Invoke((Action)(() => Dgv = AppData.Main.THFileElementsDataGridView));
+//#else
+//                Dgv = AppData.Main.THFileElementsDataGridView;
+//#endif
+//            }
 
-            SelectedRowsCount = Dgv.GetCountOfRowsWithSelectedCellsCount();
+            SelectedRowsCount = WorkTableDatagridView.GetCountOfRowsWithSelectedCellsCount();
 
             if (SelectedRowsCount <= 0) return Ret;
 
@@ -182,7 +177,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
 
                 var selectedRowIndexses = new int[SelectedRowsCount];
                 var addedRows = new HashSet<int>(SelectedRowsCount);
-                var dgvSelectedCells = Dgv.SelectedCells;
+                var dgvSelectedCells = WorkTableDatagridView.SelectedCells;
                 var dgvSelectedCellsCount = dgvSelectedCells.Count;
                 var ind = 0; // index for SelectedRowIndexses
                 for (int i = 0; i < dgvSelectedCellsCount; i++)
@@ -302,7 +297,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
                 }
             }
 
-            if (SelectedTable == null) SelectedTable = AppData.CurrentProject.FilesContent.Tables[SelectedTableIndex];
+            if (SelectedTable == null) SelectedTable = AllTables.Tables[SelectedTableIndex];
 
             if (needToGetOrigTransColumnsNum)
             {
@@ -385,15 +380,15 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
 
             int[] tableindexes = null;
 #if DEBUG
-            AppData.THFilesList.Invoke((Action)(() => tableindexes = AppData.THFilesList.CopySelectedIndexes()));
+            FilesList.Invoke((Action)(() => tableindexes = FilesList.CopySelectedIndexes()));
 #else
-            tableindexes = AppData.THFilesList.CopySelectedIndexes();
+            tableindexes = _filesList.CopySelectedIndexes();
 #endif
             DataTable[] tables = null;
 #if DEBUG
-            AppData.Main.Invoke((Action)(() => tables = AppData.CurrentProject.FilesContent.GetTablesByIndexes(tableindexes)));
+            AppData.Main.Invoke((Action)(() => tables = AllTables.GetTablesByIndexes(tableindexes)));
 #else
-            tables = AppData.CurrentProject.FilesContent.GetTablesByIndexes(tableindexes);
+            tables = _allTables.GetTablesByIndexes(tableindexes);
 #endif
             Tablescount = tables.Length;
             IsTables = Tablescount > 1;
@@ -461,7 +456,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
             Init();
 
             int tindex = 0;
-            var tables = AppData.CurrentProject.FilesContent.Tables;
+            var tables = AllTables.Tables;
             Tablescount = tables.Count;
             SetSelectedRowsCountForAll();
 
@@ -495,7 +490,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
             if (!IsAll) return;
 
             SelectedRowsCount = 0;
-            foreach (DataTable table in AppData.CurrentProject.FilesContent.Tables) SelectedRowsCount += table.Rows.Count;
+            foreach (DataTable table in AllTables.Tables) SelectedRowsCount += table.Rows.Count;
         }
 
         /// <summary>
