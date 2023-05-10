@@ -8,6 +8,7 @@ using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using TranslationHelper.Data;
+using TranslationHelper.Data.Interfaces;
 using TranslationHelper.Extensions;
 using TranslationHelper.Functions.FileElementsFunctions.Row.HardFixes;
 using TranslationHelper.Main.Functions;
@@ -49,11 +50,11 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
             internal List<LineTranslationData> Lines = new List<LineTranslationData>();
         }
 
-        internal class LineTranslationData
+        internal class LineTranslationData : IOriginalTranslationUser
         {
             internal readonly int LineIndex;
-            internal readonly string Original;
-            internal string Translation;
+            public string Original { get; }
+            public string Translation { get; set; }
             internal ExtractRegexInfo RegexExtractionData;
 
             public LineTranslationData(int lineIndex, string originalText)
@@ -322,11 +323,11 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
                     new ConcurrentBag<string>(),
                     (originalLines, lineData) =>
                     {
-                        foreach((string original, string translation) in EnumerateOriginalTranslation(lineData))
+                        foreach(var originalTranslationData in EnumerateOriginalTranslation(lineData))
                         {
-                            if (!originalLines.Contains(original) && string.IsNullOrEmpty(translation) && original.IsValidForTranslation())
+                            if (!originalLines.Contains(originalTranslationData.Original) && string.IsNullOrEmpty(originalTranslationData.Translation) && originalTranslationData.Original.IsValidForTranslation())
                             {
-                                originalLines.Add(original);
+                                originalLines.Add(originalTranslationData.Original);
                             }
                         }
 
@@ -336,18 +337,18 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
                 .ToArray();
         }
 
-        private IEnumerable<(string original, string translation)> EnumerateOriginalTranslation(LineTranslationData lineData)
+        private IEnumerable<IOriginalTranslationUser> EnumerateOriginalTranslation(LineTranslationData lineData)
         {
             if (lineData.RegexExtractionData.ExtractedValuesList.Count > 0)
             {
                 foreach (var value in lineData.RegexExtractionData.ExtractedValuesList)
                 {
-                    yield return (value.Original, value.Translation);
+                    yield return value;
                 }
             }
             else
             {
-                yield return (lineData.Original, lineData.Translation);
+                yield return lineData;
             }
         }
 
@@ -469,20 +470,11 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
 
             Parallel.ForEach(EnumerateLineData(_buffer), lineData =>
             {
-                if (lineData.RegexExtractionData.ExtractedValuesList.Count > 0)
+                foreach(var originalTranslation in EnumerateOriginalTranslation(lineData))
                 {
-                    foreach (var value in lineData.RegexExtractionData.ExtractedValuesList)
-                    {
-                        if (!TryGetTranslation(translations, value.Original, value.Translation, out var v)) return;
+                    if (!TryGetTranslation(translations, originalTranslation.Original, originalTranslation.Translation, out var v)) return;
 
-                        value.Translation = v;
-                    }
-                }
-                else
-                {
-                    if (!TryGetTranslation(translations, lineData.Original, lineData.Translation, out var v)) return;
-
-                    lineData.Translation = v;
+                    originalTranslation.Translation = v;
                 }
             });
         }

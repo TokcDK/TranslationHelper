@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
 using TranslationHelper.Data;
+using TranslationHelper.Data.Interfaces;
 using TranslationHelper.Extensions;
 
 namespace TranslationHelper.Functions.FileElementsFunctions.Row
@@ -126,7 +127,8 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
         }
         int retryCount = 0;
     }
-    public class ExtractRegexValueInfo
+
+    public class ExtractRegexValueInfo : IOriginalTranslationUser
     {
         public ExtractRegexValueInfo(string original)
         {
@@ -141,7 +143,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
         /// <summary>
         /// Captured group match value translation
         /// </summary>
-        public string Translation;
+        public string Translation { get; set; }
 
         /// <summary>
         /// Captured groups for the original text value
