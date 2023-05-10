@@ -63,15 +63,6 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
                     GetTableData(tableIndex);
 
                     if (IsSelectedRows) SelectedRowsCount = 1;
-
-//                    if (Dgv == null)
-//                    {
-//#if DEBUG
-//                        AppData.Main.THFileElementsDataGridView.Invoke((Action)(() => Dgv = AppData.Main.THFileElementsDataGridView));
-//#else
-//                            Dgv = AppData.Main.THFileElementsDataGridView;
-//#endif
-//                    }
                 }
 
                 SelectedRow = row;
@@ -147,15 +138,6 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
 
             Init();
 
-//            if (Dgv == null)
-//            {
-//#if DEBUG
-//                AppData.Main.THFileElementsDataGridView.Invoke((Action)(() => Dgv = AppData.Main.THFileElementsDataGridView));
-//#else
-//                Dgv = AppData.Main.THFileElementsDataGridView;
-//#endif
-//            }
-
             SelectedRowsCount = WorkTableDatagridView.GetCountOfRowsWithSelectedCellsCount();
 
             if (SelectedRowsCount <= 0) return Ret;
@@ -188,10 +170,6 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
                     if (addedRows.Contains(dgvRowIndex)) continue; // skip if parent row index already was added
 
                     addedRows.Add(dgvRowIndex); // add row index as added
-
-                    //log.DebugData.Add("SelectedTableIndex=" + SelectedTableIndex);
-                    //log.DebugData.Add("DataGridView RowIndex=" + DGVRowIndex);
-                    //log.DebugData.Add("i=" + i);
 
                     try
                     {
