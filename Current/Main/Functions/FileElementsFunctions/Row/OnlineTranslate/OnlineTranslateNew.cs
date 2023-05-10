@@ -337,7 +337,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
                 .ToArray();
         }
 
-        private IEnumerable<IOriginalTranslationUser> EnumerateOriginalTranslation(LineTranslationData lineData)
+        private static IEnumerable<IOriginalTranslationUser> EnumerateOriginalTranslation(LineTranslationData lineData)
         {
             if (lineData.RegexExtractionData.ExtractedValuesList.Count > 0)
             {
@@ -479,7 +479,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
             });
         }
 
-        private bool TryGetTranslation(Dictionary<string, string> translations, string original, string translation, out string outTranslation)
+        private static bool TryGetTranslation(Dictionary<string, string> translations, string original, string translation, out string outTranslation)
         {
             outTranslation = default;
 
@@ -560,7 +560,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
             return true;
         }
 
-        private IEnumerable<string> EnumerableNewLines(string rowValue, List<LineTranslationData> rowDataLines)
+        private static IEnumerable<string> EnumerableNewLines(string rowValue, List<LineTranslationData> rowDataLines)
         {
             int lineNum = 0;
             foreach (var line in rowValue.SplitToLines())
