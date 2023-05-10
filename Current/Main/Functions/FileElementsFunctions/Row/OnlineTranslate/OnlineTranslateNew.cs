@@ -324,7 +324,10 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
                     {
                         foreach((string original, string translation) in EnumerateOriginalTranslation(lineData))
                         {
-                            AddOriginalLineIfValid(originalLines, original, translation);
+                            if (!originalLines.Contains(original) && string.IsNullOrEmpty(translation) && original.IsValidForTranslation())
+                            {
+                                originalLines.Add(original);
+                            }
                         }
 
                         return originalLines;
@@ -345,14 +348,6 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
             else
             {
                 yield return (lineData.Original, lineData.Translation);
-            }
-        }
-
-        private void AddOriginalLineIfValid(ConcurrentBag<string> originalLines, string originalLine, string translatedLine)
-        {
-            if (!originalLines.Contains(originalLine) && string.IsNullOrEmpty(translatedLine) && originalLine.IsValidForTranslation())
-            {
-                originalLines.Add(originalLine);
             }
         }
 
