@@ -27,13 +27,13 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
         {
             public string Original { get; }
             public string Translation { get; set; }
-            internal bool GetIsExtracted { get; }
+            internal bool IsExtracted { get; }
 
             internal Buffer(string original, string translation, bool isExtracted)
             {
                 Original = original;
                 Translation = translation;
-                GetIsExtracted = isExtracted;
+                IsExtracted = isExtracted;
             }
         }
 
