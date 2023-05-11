@@ -336,7 +336,10 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
             var rowsCount = SelectedTable.Rows.Count;
             if (!IsAll && !IsTables && IsTable) SelectedRowsCount = rowsCount; //|| (IsAll && SelectedTableIndex == tablescount - 1)set rows count to selectedrowscount for last table but forgot for which purpose it is
 
-            for (int i = 0; i < rowsCount; i++) Selected(SelectedTable.Rows[i], SelectedTableIndex, i);
+            for (int i = 0; i < rowsCount; i++)
+            {
+                Selected(SelectedTable.Rows[i], SelectedTableIndex, i);
+            }
 
             ActionsPostRowsApply(); // need here also as in All because must be executed even if only one table was selected
 
