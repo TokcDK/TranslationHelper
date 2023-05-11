@@ -171,12 +171,8 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
 
                     addedRows.Add(dgvRowIndex); // add row index as added
 
-                    try
-                    {
-                        //add row index
-                        selectedRowIndexses[ind] = FunctionsTable.GetDGVSelectedRowIndexInDatatable(SelectedTableIndex, dgvRowIndex);
-                    }
-                    catch { }
+                    //add row index
+                    selectedRowIndexses[ind] = FunctionsTable.GetDGVSelectedRowIndexInDatatable(SelectedTableIndex, dgvRowIndex);
 
                     ind++; //raise added index
                 }
