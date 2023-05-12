@@ -4,13 +4,41 @@ using System.Data;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using TranslationHelper.Data;
 
 namespace TranslationHelper.Functions.RowParsersParallel
 {
     public abstract class RowParallelParserBase
     {
+        #region Shared
+
+        /// <summary>
+        /// Parse all rows in all tables
+        /// </summary>
+        public void All()
+        {
+            ParseSelectedTables(AppData.CurrentProject.FilesContent.Tables.AsParallel().OfType<DataTable>());
+        }
+        /// <summary>
+        /// Parse all rows in selected table[s]
+        /// </summary>
+        public void Table()
+        {
+            var tables = AppData.CurrentProject.FilesContent.Tables;
+            ParseSelectedTables(AppData.FilesListControl.GetSelectedIndexes().Select(i=> tables[i]));
+        }
+        /// <summary>
+        /// Parse selected rows
+        /// </summary>
+        public void Row()
+        {
+
+        }
+
+        #endregion Shared
+
         #region Tables
-        void ParseSelectedTables(DataTable[] tables)
+        void ParseSelectedTables(IEnumerable<DataTable> tables)
         {
             _rowsLeftToProcess = tables.Select(t => t.Rows.Count).Sum();
 
