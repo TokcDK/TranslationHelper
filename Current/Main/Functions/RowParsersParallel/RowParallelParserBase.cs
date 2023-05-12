@@ -58,19 +58,19 @@ namespace TranslationHelper.Functions.RowParsersParallel
 
             Parallel.ForEach(tables, table =>
             {
-                if (!IsValidTable(table)) return;
-
                 Parse(table);
             });
         }
 
-        private bool IsValidTable(DataTable table)
+        protected virtual bool IsValidTable(DataTable table)
         {
             return true;
         }
 
         void Parse(DataTable table)
         {
+            if (!IsValidTable(table)) return;
+
             ParseSelectedRows(table.Rows.AsParallel().OfType<DataRow>());
         }
 
@@ -88,10 +88,6 @@ namespace TranslationHelper.Functions.RowParsersParallel
         {
             Parallel.ForEach(rows, row =>
             {
-                IsLastRow = --_rowsLeftToProcess == 0;
-
-                if (!IsValidRow(row)) return;
-
                 Parse(row);
             });
         }
@@ -101,7 +97,14 @@ namespace TranslationHelper.Functions.RowParsersParallel
             return true;
         }
 
-        protected abstract bool Parse(DataRow row);
+        bool Parse(DataRow row)
+        {
+            IsLastRow = --_rowsLeftToProcess == 0;
+
+            return IsValidRow(row) && Process(row);
+        }
+
+        protected abstract bool Process(DataRow row);
 
         #endregion Rows
     }
