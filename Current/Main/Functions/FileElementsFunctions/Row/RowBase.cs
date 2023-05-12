@@ -138,7 +138,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
 
             Init();
 
-            SelectedRowsCount = WorkTableDatagridView.GetCountOfRowsWithSelectedCellsCount();
+            SelectedRowsCount = WorkTableDatagridView.GetSelectedRowsCount();
 
             if (SelectedRowsCount <= 0) return Ret;
 

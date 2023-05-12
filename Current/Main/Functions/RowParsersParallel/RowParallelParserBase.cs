@@ -4,12 +4,23 @@ using System.Data;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Forms;
 using TranslationHelper.Data;
+using TranslationHelper.Extensions;
 
 namespace TranslationHelper.Functions.RowParsersParallel
 {
     public abstract class RowParallelParserBase
     {
+        #region General
+
+
+        protected readonly ListBox FilesList = AppData.THFilesList;
+        protected readonly DataSet AllTables = AppData.CurrentProject.FilesContent;
+        protected readonly DataGridView WorkTableDatagridView = AppData.Main.THFileElementsDataGridView;
+
+        #endregion General
+
         #region Shared
 
         /// <summary>
@@ -17,12 +28,12 @@ namespace TranslationHelper.Functions.RowParsersParallel
         /// </summary>
         public void All()
         {
-            ParseSelectedTables(AppData.CurrentProject.FilesContent.Tables.AsParallel().OfType<DataTable>());
+            ParseSelectedTables(AllTables.Tables.AsParallel().OfType<DataTable>());
         }
         /// <summary>
         /// Parse all rows in selected table[s]
         /// </summary>
-        public void Table()
+        public void Tables()
         {
             var tables = AppData.CurrentProject.FilesContent.Tables;
             ParseSelectedTables(AppData.FilesListControl.GetSelectedIndexes().Select(i=> tables[i]));
@@ -30,8 +41,10 @@ namespace TranslationHelper.Functions.RowParsersParallel
         /// <summary>
         /// Parse selected rows
         /// </summary>
-        public void Row()
+        public void Rows()
         {
+            _rowsLeftToProcess = WorkTableDatagridView.GetSelectedRowsCount();
+
 
         }
 

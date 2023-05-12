@@ -54,7 +54,7 @@ namespace TranslationHelper.Extensions
         /// </summary>
         /// <param name="DGV"></param>
         /// <returns></returns>
-        internal static int GetCountOfRowsWithSelectedCellsCount(this DataGridView DGV)
+        internal static int GetSelectedRowsCount(this DataGridView DGV)
         {
             int cnt;
             if (DGV.SelectedRows.Count == (cnt = DGV.Rows.Count))
