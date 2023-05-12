@@ -89,6 +89,17 @@ namespace TranslationHelper.Extensions
         }
 
         /// <summary>
+        /// Return DataRow with real index in Datatable for Datagridviev selected cell index. For case when row filter or sort is activated
+        /// </summary>
+        /// <param name="table"></param>
+        /// <param name="rowIndex"></param>
+        /// <returns></returns>
+        public static DataRow GetRealRow(this DataTable table, DataGridViewRow dataGridViewRow)
+        {
+            return table.Rows[table.GetRealRowIndex(dataGridViewRow)];
+        }
+
+        /// <summary>
         /// Return real row index in Datatable for Datagridviev selected cell index. For case when row filter or sort is activated
         /// </summary>
         /// <param name="table"></param>

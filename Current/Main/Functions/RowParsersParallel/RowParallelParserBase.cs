@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Data;
 using System.Linq;
 using System.Threading.Tasks;
@@ -45,11 +46,15 @@ namespace TranslationHelper.Functions.RowParsersParallel
 
             _rowsLeftToProcess = selectedRowsIndexes.Length;
 
-            foreach(var index in selectedRowsIndexes)
+            ParseSelectedRows(EnumerateRowsByRealRowIndexes(selectedRowsIndexes));
+        }
+
+        private IEnumerable<DataRow> EnumerateRowsByRealRowIndexes(int[] selectedRowsIndexes)
+        {
+            var table = WorkTableDatagridView.DataSource as DataTable;
+            for (int i = 0; i < _rowsLeftToProcess; i++)
             {
-                var dataGridViewRow = WorkTableDatagridView.Rows[index];
-
-
+                yield return table.GetRealRow(WorkTableDatagridView.Rows[selectedRowsIndexes[i]]);
             }
         }
 
