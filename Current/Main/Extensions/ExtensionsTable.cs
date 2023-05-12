@@ -66,5 +66,32 @@ namespace TranslationHelper.Extensions
             return DGV.SelectedCells.Cast<DataGridViewCell>()
                                        .Select(c => c.RowIndex).Distinct().Count();
         }
+
+        /// <summary>
+        /// Return real row index in Datatable for Datagridviev selected cell index. For case when row filter or sort is activated
+        /// </summary>
+        /// <param name="table"></param>
+        /// <param name="rowIndex"></param>
+        /// <returns></returns>
+        public static int GetRealRowIndex(this DataTable table, int rowIndex)
+        {
+            try
+            {
+                if (string.IsNullOrEmpty(table.DefaultView.Sort) && string.IsNullOrEmpty(table.DefaultView.RowFilter))
+                {
+                    return rowIndex;
+                }
+
+                var dataRow = AppData.Main.THFileElementsDataGridView.Rows[rowIndex];
+                var dataBoundItem = (DataRowView)dataRow.DataBoundItem;
+                var dataBoundItemRow = dataBoundItem.Row;
+                var realIndex = table.Rows.IndexOf(dataBoundItemRow);
+                return realIndex;
+            }
+            catch
+            {
+                return -1;
+            }
+        }
     }
 }

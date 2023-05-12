@@ -36,7 +36,7 @@ namespace TranslationHelper.Main.Functions
                 //DataGridViewRow to DataRow: https://stackoverflow.com/questions/1822314/how-do-i-get-a-datarow-from-a-row-in-a-datagridview
                 //DataRow row = ((DataRowView)THFileElementsDataGridView.SelectedCells[i].OwningRow.DataBoundItem).Row;
                 //int index = THFilesElementsDataset.Tables[tableindex].Rows.IndexOf(row);
-                selindexes[i] = GetDGVSelectedRowIndexInDatatable(tableIndex, selindexes[i]);
+                selindexes[i] = GetRealRowIndex(tableIndex, selindexes[i]);
 
                 //selindexes[i] = THFileElementsDataGridView.SelectedCells[i].RowIndex;
             }
@@ -251,26 +251,9 @@ namespace TranslationHelper.Main.Functions
         /// <param name="tableIndex"></param>
         /// <param name="rowIndex"></param>
         /// <returns></returns>
-        public static int GetDGVSelectedRowIndexInDatatable(int tableIndex, int rowIndex)
+        public static int GetRealRowIndex(int tableIndex, int rowIndex)
         {
-            try
-            {
-                var table = AppData.CurrentProject.FilesContent.Tables[tableIndex];
-                if (string.IsNullOrEmpty(table.DefaultView.Sort) && string.IsNullOrEmpty(table.DefaultView.RowFilter))
-                {
-                    return rowIndex;
-                }
-
-                var dataRow = AppData.Main.THFileElementsDataGridView.Rows[rowIndex];
-                var dataBoundItem = (DataRowView)dataRow.DataBoundItem;
-                var dataBoundItemRow = dataBoundItem.Row;
-                var realIndex = table.Rows.IndexOf(dataBoundItemRow);
-                return realIndex;
-            }
-            catch
-            {
-                return -1;
-            }
+            return AppData.CurrentProject.FilesContent.Tables[tableIndex].GetRealRowIndex(rowIndex);
         }
 
         /// <summary>
@@ -294,7 +277,7 @@ namespace TranslationHelper.Main.Functions
                         continue;
                     }
 
-                    selected.Add(GetDGVSelectedRowIndexInDatatable(tableindex, row.Index));
+                    selected.Add(GetRealRowIndex(tableindex, row.Index));
                 }
             }
             else
@@ -304,7 +287,7 @@ namespace TranslationHelper.Main.Functions
                     var rowindex = dgv.SelectedCells[i].RowIndex;
                     if (!selected.Contains(rowindex))
                     {
-                        selected.Add(GetDGVSelectedRowIndexInDatatable(tableindex, rowindex));
+                        selected.Add(GetRealRowIndex(tableindex, rowindex));
                     }
                 }
             }

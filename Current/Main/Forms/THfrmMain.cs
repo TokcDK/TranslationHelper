@@ -478,7 +478,7 @@ namespace TranslationHelper
                 var rowIndex = AppSettings.DGVSelectedRowIndex = THFileElementsDataGridView.CurrentCell.RowIndex;
                 if (rowIndex == -1) return;
 
-                var realrowIndex = AppSettings.DGVSelectedRowRealIndex = FunctionsTable.GetDGVSelectedRowIndexInDatatable(tableIndex, rowIndex);
+                var realrowIndex = AppSettings.DGVSelectedRowRealIndex = FunctionsTable.GetRealRowIndex(tableIndex, rowIndex);
                 if (realrowIndex == -1) return;
 
                 UpdateRowInfo(tableIndex, columnIndex, realrowIndex);
@@ -801,7 +801,7 @@ namespace TranslationHelper
 
             var grid = sender as DataGridView;
 
-            int rowIdx = FunctionsTable.GetDGVSelectedRowIndexInDatatable(THFilesList.GetSelectedIndex(), e.RowIndex);//здесь получаю реальный индекс из Datatable
+            int rowIdx = FunctionsTable.GetRealRowIndex(THFilesList.GetSelectedIndex(), e.RowIndex);//здесь получаю реальный индекс из Datatable
             //string rowIdx = (e.RowIndex + 1) + string.Empty;
 
             using (StringFormat centerFormat = new StringFormat()
@@ -1302,7 +1302,7 @@ namespace TranslationHelper
         {
             if (THFileElementsDataGridView.SelectedCells.Count > 0)
             {
-                SelectedRowRealIndex = FunctionsTable.GetDGVSelectedRowIndexInDatatable
+                SelectedRowRealIndex = FunctionsTable.GetRealRowIndex
                     (
                     THFilesList.GetSelectedIndex(),
                     THFileElementsDataGridView.SelectedCells[0].RowIndex
@@ -1448,7 +1448,7 @@ namespace TranslationHelper
                     if (tableindex > -1 && cell != null)
                     {
                         columnName = THFileElementsDataGridView.Columns[cell.ColumnIndex].Name;
-                        realRowIndex = FunctionsTable.GetDGVSelectedRowIndexInDatatable(tableindex, cell.RowIndex);
+                        realRowIndex = FunctionsTable.GetRealRowIndex(tableindex, cell.RowIndex);
                     }
 
                     for (int c = 0; c < THFiltersDataGridView.Columns.Count; c++)
@@ -1668,7 +1668,7 @@ namespace TranslationHelper
             int fileIndex = AppSettings.THFilesListSelectedIndex;
             foreach (DataGridViewRow row in THFileElementsDataGridView.Rows)
             {
-                int realrowindex = FunctionsTable.GetDGVSelectedRowIndexInDatatable(fileIndex, row.Index);
+                int realrowindex = FunctionsTable.GetRealRowIndex(fileIndex, row.Index);
                 if (SelectedRowRealIndex != realrowindex) continue;
 
                 int rowindex;
