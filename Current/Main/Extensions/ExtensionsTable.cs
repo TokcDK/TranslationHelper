@@ -73,25 +73,35 @@ namespace TranslationHelper.Extensions
         /// <param name="table"></param>
         /// <param name="rowIndex"></param>
         /// <returns></returns>
-        public static int GetRealRowIndex(this DataTable table, int rowIndex)
+        public static int GetRealRowIndex(this DataTable table, DataGridView dataGridView, int rowIndex)
         {
             try
             {
-                if (string.IsNullOrEmpty(table.DefaultView.Sort) && string.IsNullOrEmpty(table.DefaultView.RowFilter))
+                var tableDataView = table.DefaultView;
+                if (string.IsNullOrEmpty(tableDataView.Sort) && string.IsNullOrEmpty(tableDataView.RowFilter))
                 {
                     return rowIndex;
                 }
 
-                var dataRow = AppData.Main.THFileElementsDataGridView.Rows[rowIndex];
+                var dataRow = dataGridView.Rows[rowIndex];
                 var dataBoundItem = (DataRowView)dataRow.DataBoundItem;
-                var dataBoundItemRow = dataBoundItem.Row;
-                var realIndex = table.Rows.IndexOf(dataBoundItemRow);
-                return realIndex;
+                return table.Rows.IndexOf(dataBoundItem.Row);
             }
             catch
             {
                 return -1;
             }
+        }
+
+        /// <summary>
+        /// Return real row index in Datatable for Datagridviev selected cell index. For case when row filter or sort is activated
+        /// </summary>
+        /// <param name="table"></param>
+        /// <param name="rowIndex"></param>
+        /// <returns></returns>
+        public static int GetRealRowIndex(this DataTable table, int rowIndex)
+        {
+            return table.GetRealRowIndex(AppData.Main.THFileElementsDataGridView, rowIndex);
         }
     }
 }

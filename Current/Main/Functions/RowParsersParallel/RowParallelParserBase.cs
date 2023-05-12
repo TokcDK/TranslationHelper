@@ -35,7 +35,7 @@ namespace TranslationHelper.Functions.RowParsersParallel
         /// </summary>
         public void Tables()
         {
-            var tables = AppData.CurrentProject.FilesContent.Tables;
+            var tables = AllTables.Tables;
             ParseSelectedTables(AppData.FilesListControl.GetSelectedIndexes().Select(i=> tables[i]));
         }
         /// <summary>
