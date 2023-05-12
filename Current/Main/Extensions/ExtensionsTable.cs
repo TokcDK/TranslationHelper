@@ -78,6 +78,29 @@ namespace TranslationHelper.Extensions
         }
 
         /// <summary>
+        /// Enumerate selected DataRows by selected indexes in <paramref name="dataGridView"/>
+        /// </summary>
+        /// <param name="dataGridView"></param>
+        /// <param name="selectedRowsIndexes"></param>
+        /// <returns></returns>
+        public static IEnumerable<DataRow> EnumerateSelectedRowsByRealRowIndexes(this DataGridView dataGridView, int[] selectedRowsIndexes = null)
+        {
+            if (!(dataGridView.DataSource is DataTable table)) yield break;
+
+            if (selectedRowsIndexes == null)
+            {
+                selectedRowsIndexes = dataGridView.GetSelectedRowsIndexes().OrderBy(i => i).ToArray();
+            }
+
+            var indexesCount = selectedRowsIndexes.Length;
+
+            for (int i = 0; i < indexesCount; i++)
+            {
+                yield return table.GetRealRow(dataGridView.Rows[selectedRowsIndexes[i]]);
+            }
+        }
+
+        /// <summary>
         /// Return real row index in Datatable for Datagridviev selected cell index. For case when row filter or sort is activated
         /// </summary>
         /// <param name="table"></param>

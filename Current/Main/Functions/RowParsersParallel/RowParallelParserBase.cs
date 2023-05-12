@@ -46,16 +46,7 @@ namespace TranslationHelper.Functions.RowParsersParallel
 
             _rowsLeftToProcess = selectedRowsIndexes.Length;
 
-            ParseSelectedRows(EnumerateRowsByRealRowIndexes(selectedRowsIndexes));
-        }
-
-        private IEnumerable<DataRow> EnumerateRowsByRealRowIndexes(int[] selectedRowsIndexes)
-        {
-            var table = WorkTableDatagridView.DataSource as DataTable;
-            for (int i = 0; i < _rowsLeftToProcess; i++)
-            {
-                yield return table.GetRealRow(WorkTableDatagridView.Rows[selectedRowsIndexes[i]]);
-            }
+            ParseSelectedRows(WorkTableDatagridView.EnumerateSelectedRowsByRealRowIndexes(selectedRowsIndexes));
         }
 
         #endregion Shared
