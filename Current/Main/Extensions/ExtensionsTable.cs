@@ -85,22 +85,25 @@ namespace TranslationHelper.Extensions
         /// <returns></returns>
         public static int GetRealRowIndex(this DataTable table, DataGridView dataGridView, int rowIndex)
         {
-            try
-            {
-                var tableDataView = table.DefaultView;
-                if (string.IsNullOrEmpty(tableDataView.Sort) && string.IsNullOrEmpty(tableDataView.RowFilter))
-                {
-                    return rowIndex;
-                }
+            return table.GetRealRowIndex(dataGridView.Rows[rowIndex]);
+        }
 
-                var dataRow = dataGridView.Rows[rowIndex];
-                var dataBoundItem = (DataRowView)dataRow.DataBoundItem;
-                return table.Rows.IndexOf(dataBoundItem.Row);
-            }
-            catch
+        /// <summary>
+        /// Return real row index in Datatable for Datagridviev selected cell index. For case when row filter or sort is activated
+        /// </summary>
+        /// <param name="table"></param>
+        /// <param name="rowIndex"></param>
+        /// <returns></returns>
+        public static int GetRealRowIndex(this DataTable table, DataGridViewRow dataGridViewRow)
+        {
+            var tableDataView = table.DefaultView;
+            if (string.IsNullOrEmpty(tableDataView.Sort) && string.IsNullOrEmpty(tableDataView.RowFilter))
             {
-                return -1;
+                return dataGridViewRow.Index;
             }
+
+            var dataBoundItem = (DataRowView)dataGridViewRow.DataBoundItem;
+            return table.Rows.IndexOf(dataBoundItem.Row);
         }
 
         /// <summary>

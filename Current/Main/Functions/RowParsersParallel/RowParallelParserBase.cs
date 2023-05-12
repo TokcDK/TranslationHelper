@@ -1,8 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Data;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using TranslationHelper.Data;
@@ -36,16 +34,23 @@ namespace TranslationHelper.Functions.RowParsersParallel
         public void Tables()
         {
             var tables = AllTables.Tables;
-            ParseSelectedTables(AppData.FilesListControl.GetSelectedIndexes().Select(i=> tables[i]));
+            ParseSelectedTables(AppData.FilesListControl.GetSelectedIndexes().Select(i => tables[i]));
         }
         /// <summary>
         /// Parse selected rows
         /// </summary>
         public void Rows()
         {
-            _rowsLeftToProcess = WorkTableDatagridView.GetSelectedRowsCount();
+            var selectedRowsIndexes = WorkTableDatagridView.GetSelectedRowsIndexes().OrderBy(i => i).ToArray();
+
+            _rowsLeftToProcess = selectedRowsIndexes.Length;
+
+            foreach(var index in selectedRowsIndexes)
+            {
+                var dataGridViewRow = WorkTableDatagridView.Rows[index];
 
 
+            }
         }
 
         #endregion Shared
@@ -55,11 +60,11 @@ namespace TranslationHelper.Functions.RowParsersParallel
         {
             _rowsLeftToProcess = tables.Select(t => t.Rows.Count).Sum();
 
-            Parallel.ForEach(tables, table => 
+            Parallel.ForEach(tables, table =>
             {
                 if (!IsValidTable(table)) return;
 
-                Parse(table); 
+                Parse(table);
             });
         }
 
@@ -85,13 +90,13 @@ namespace TranslationHelper.Functions.RowParsersParallel
 
         void ParseSelectedRows(IEnumerable<DataRow> rows)
         {
-            Parallel.ForEach(rows, row => 
+            Parallel.ForEach(rows, row =>
             {
                 IsLastRow = --_rowsLeftToProcess == 0;
 
                 if (!IsValidRow(row)) return;
 
-                Parse(row); 
+                Parse(row);
             });
         }
 
