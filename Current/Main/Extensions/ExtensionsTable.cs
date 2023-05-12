@@ -54,6 +54,18 @@ namespace TranslationHelper.Extensions
         /// </summary>
         /// <param name="DGV"></param>
         /// <returns></returns>
+        internal static IEnumerable<int> GetSelectedRowsIndexes(this DataGridView DGV)
+        {
+            //https://stackoverflow.com/questions/47357051/c-datagridview-how-to-get-selected-count-with-cells-and-rows
+            return DGV.SelectedCells.Cast<DataGridViewCell>()
+                                       .Select(c => c.RowIndex).Distinct();
+        }
+
+        /// <summary>
+        /// Will return count of selected rows in datagridview
+        /// </summary>
+        /// <param name="DGV"></param>
+        /// <returns></returns>
         internal static int GetSelectedRowsCount(this DataGridView DGV)
         {
             int cnt;
@@ -62,9 +74,7 @@ namespace TranslationHelper.Extensions
                 return cnt;
             }
 
-            //https://stackoverflow.com/questions/47357051/c-datagridview-how-to-get-selected-count-with-cells-and-rows
-            return DGV.SelectedCells.Cast<DataGridViewCell>()
-                                       .Select(c => c.RowIndex).Distinct().Count();
+            return DGV.GetSelectedRowsIndexes().Count();
         }
 
         /// <summary>
