@@ -9,6 +9,7 @@ using TranslationHelper.Data;
 using TranslationHelper.Formats.RPGMaker.Functions;
 using TranslationHelper.Functions;
 using TranslationHelper.Functions.FileElementsFunctions.Row;
+using TranslationHelper.Functions.RowParsersParallel;
 using TranslationHelper.Main.Functions;
 using TranslationHelper.Menus.FileRowMenus;
 using TranslationHelper.Menus.MainMenus.File;
@@ -27,7 +28,8 @@ namespace TranslationHelper.Menus.MainMenus.Edit.TextCutCopyPaste
         {
             if (AppSettings.IsRowInEditMode) return;
 
-            _ = new ClearCells().Rows();
+            //_ = new ClearCells().Rows();
+            _ = new ClearCellsParallel().Rows();
         }
 
         public override Keys ShortcutKeys => Keys.Control | Keys.D;

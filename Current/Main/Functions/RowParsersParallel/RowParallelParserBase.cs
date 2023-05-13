@@ -11,8 +11,28 @@ namespace TranslationHelper.Functions.RowParsersParallel
 {
     public abstract class RowParallelParserBase
     {
-        #region General
+        public class DataRowData
+        {
+            public DataRowData(DataRow row)
+            {
+                Row = row;
+            }
 
+            int OriginalColumnIndex { get; } = AppData.CurrentProject.OriginalColumnIndex;
+            int TranslationColumnIndex { get; } = AppData.CurrentProject.TranslationColumnIndex;
+
+            public DataRow Row { get; }
+
+            public string Original { get => Row.Field<string>(OriginalColumnIndex); }
+
+            public string Translation
+            {
+                get => Row.Field<string>(TranslationColumnIndex);
+                set => Row.SetValue(TranslationColumnIndex, value);
+            }
+        }
+
+        #region General
 
         protected readonly ListBox FilesList = AppData.THFilesList;
         protected readonly DataSet AllTables = AppData.CurrentProject.FilesContent;
@@ -25,28 +45,29 @@ namespace TranslationHelper.Functions.RowParsersParallel
         /// <summary>
         /// Parse all rows in all tables
         /// </summary>
-        public void All()
+        public async Task All()
         {
-            ParseSelectedTables(AllTables.Tables.AsParallel().OfType<DataTable>());
+            await Task.Run(() => ParseSelectedTables(AllTables.Tables.AsParallel().OfType<DataTable>())).ConfigureAwait(false);
         }
         /// <summary>
         /// Parse all rows in selected table[s]
         /// </summary>
-        public void Tables()
+        public async void Tables()
         {
             var tables = AllTables.Tables;
-            ParseSelectedTables(AppData.FilesListControl.GetSelectedIndexes().Select(i => tables[i]));
+            await Task.Run(() => ParseSelectedTables(AppData.FilesListControl.GetSelectedIndexes().Select(i => tables[i]))).ConfigureAwait(false);
         }
+
         /// <summary>
         /// Parse selected rows
         /// </summary>
-        public void Rows()
+        public async Task Rows()
         {
             var selectedRowsIndexes = WorkTableDatagridView.GetSelectedRowsIndexes().OrderBy(i => i).ToArray();
 
             _rowsLeftToProcess = selectedRowsIndexes.Length;
 
-            ParseSelectedRows(WorkTableDatagridView.EnumerateSelectedRowsByRealRowIndexes(selectedRowsIndexes));
+            await Task.Run(() => ParseSelectedRows(WorkTableDatagridView.EnumerateSelectedRowsByRealRowIndexes(selectedRowsIndexes))).ConfigureAwait(false);
         }
 
         #endregion Shared
@@ -92,7 +113,7 @@ namespace TranslationHelper.Functions.RowParsersParallel
             });
         }
 
-        protected virtual bool IsValidRow(DataRow row)
+        protected virtual bool IsValidRow(DataRowData row)
         {
             return true;
         }
@@ -101,10 +122,11 @@ namespace TranslationHelper.Functions.RowParsersParallel
         {
             IsLastRow = --_rowsLeftToProcess == 0;
 
-            return IsValidRow(row) && Process(row);
+            var rowData = new DataRowData(row);
+            return IsValidRow(rowData) && Process(rowData);
         }
 
-        protected abstract bool Process(DataRow row);
+        protected abstract bool Process(DataRowData row);
 
         #endregion Rows
     }
