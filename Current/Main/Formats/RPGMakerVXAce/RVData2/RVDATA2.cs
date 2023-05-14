@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 using RPGMakerVXRVData2Assistant;
@@ -78,25 +79,52 @@ namespace TranslationHelper.Formats.RPGMakerVX.RVData2
             }
 
         }
-
         protected override string FixInvalidSymbols(string str)
         {
-            if (_isScripts)
+            if (!_isScripts || string.IsNullOrWhiteSpace(str) || str.Length < 3)
             {
-                // fix not escaped symbols for sccripts
-                foreach (var c in new[] { '"', '\\' })
+                return base.FixInvalidSymbols(str);
+            }
+
+            // Fix not escaped symbols for scripts
+            char[] symbolsToEscape = { '"', '\'' };
+            int maxStringIndex = str.Length - 1;
+            foreach (char symbol in symbolsToEscape)
+            {
+                if (str[0] != symbol || str[maxStringIndex] != symbol) continue;
+
+                var sb = new StringBuilder();
+                sb.Append(symbol);
+
+                bool isEscaped = false;
+                for (int i = 1; i < maxStringIndex; i++)
                 {
-                    int ind = str.LastIndexOf('"');
-                    while (ind != -1)
+                    char c = str[i];
+                    if (c == symbol)
                     {
-                        var checkIndex = ind - 1;
-                        if (checkIndex > -1 && str[checkIndex] != '\\')
+                        if (!isEscaped)
                         {
-                            str = str.Insert(ind, "\\");
+                            sb.Append('\\');
                         }
-                        ind = str.LastIndexOf('"', checkIndex);
+                        else
+                        {
+                            isEscaped = false;
+                        }
                     }
+                    else if (c == '\\')
+                    {
+                        isEscaped = true;
+                    }
+                    else
+                    {
+                        isEscaped = false;
+                    }
+                    sb.Append(c);
                 }
+
+                sb.Append(symbol);
+
+                break;
             }
 
             return base.FixInvalidSymbols(str);
