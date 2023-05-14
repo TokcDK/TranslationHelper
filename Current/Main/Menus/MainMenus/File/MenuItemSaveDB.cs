@@ -56,13 +56,13 @@ namespace TranslationHelper.Menus.MainMenus.File
                 MoveFile(dir, name, ext, i, maxBakIndex);
             }
 
-            MoveFile(dir, name, ext, 0, maxBakIndex);
+            System.IO.File.Move(path, Path.Combine(dir, name + _saveFileBakSuffix + ext));
         }
 
         readonly string _saveFileBakSuffix = "_bak";
         private void MoveFile(string dir, string name, string ext, int index, int maxBakIndex)
         {
-            var path = Path.Combine(dir, name + _saveFileBakSuffix + (index > 0 ? index + "" : "") + ext);
+            var path = Path.Combine(dir, name + _saveFileBakSuffix + index + ext);
             if (!System.IO.File.Exists(path)) return;
 
             if (index == maxBakIndex)
