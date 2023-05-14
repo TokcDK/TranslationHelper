@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
+using System.Text;
 using System.Text.RegularExpressions;
 using TranslationHelper.Data;
 using TranslationHelper.Functions;
@@ -13,6 +14,55 @@ namespace TranslationHelper.Extensions
 {
     internal static class ExtensionsString
     {
+        /// <summary>
+        /// escape all <paramref name="quoteSymbol"/> by \
+        /// </summary>
+        /// <param name="str"></param>
+        /// <param name="quoteSymbol"></param>
+        /// <returns></returns>
+        public static string EscapeQuotes(this string str, char quoteSymbol = '"')
+        {
+            if (string.IsNullOrEmpty(str) || str.Length < 3 || str.IndexOf(quoteSymbol) == -1)
+            {
+                return str;
+            }
+
+            const int chunkSize = 4096;
+            StringBuilder sb = new StringBuilder(str.Length);
+            bool isEscaped = false;
+            int i = 0;
+            var strLength = str.Length;
+            while (i < strLength)
+            {
+                int chunkLength = Math.Min(chunkSize, strLength - i);
+                string chunk = str.Substring(i, chunkLength);
+                foreach (char c in chunk)
+                {
+                    if (c == quoteSymbol)
+                    {
+                        if (!isEscaped)
+                        {
+                            sb.Append('\\');
+                        }
+                        isEscaped = false;
+                    }
+                    else if (c == '\\')
+                    {
+                        isEscaped = true;
+                    }
+                    else
+                    {
+                        isEscaped = false;
+                    }
+
+                    sb.Append(c);
+                }
+                i += chunkSize;
+            }
+
+            return sb.ToString();
+        }
+
         /// <summary>
         /// Check if input string can be use as regex pattern
         /// </summary>

@@ -5,6 +5,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using RPGMakerVXRVData2Assistant;
 using TranslationHelper.Data;
+using TranslationHelper.Extensions;
 using TranslationHelper.Formats.RPGMMV;
 using TranslationHelper.Main.Functions;
 
@@ -54,7 +55,7 @@ namespace TranslationHelper.Formats.RPGMakerVX.RVData2
                             isChanged = true;
                             scriptContentToChange = scriptContentToChange
                                 .Remove(m.Index, m.Length)
-                                .Insert(m.Index, "\"" + s + "\"");
+                                .Insert(m.Index, "\"" + s.EscapeQuotes() + "\"");
                         }
                     }
 
@@ -78,56 +79,6 @@ namespace TranslationHelper.Formats.RPGMakerVX.RVData2
                 }
             }
 
-        }
-        protected override string FixInvalidSymbols(string str)
-        {
-            if (!_isScripts || string.IsNullOrWhiteSpace(str) || str.Length < 3)
-            {
-                return base.FixInvalidSymbols(str);
-            }
-
-            // Fix not escaped symbols for scripts
-            char[] symbolsToEscape = { '"', '\'' };
-            int maxStringIndex = str.Length - 1;
-            foreach (char symbol in symbolsToEscape)
-            {
-                if (str[0] != symbol || str[maxStringIndex] != symbol) continue;
-
-                var sb = new StringBuilder();
-                sb.Append(symbol);
-
-                bool isEscaped = false;
-                for (int i = 1; i < maxStringIndex; i++)
-                {
-                    char c = str[i];
-                    if (c == symbol)
-                    {
-                        if (!isEscaped)
-                        {
-                            sb.Append('\\');
-                        }
-                        else
-                        {
-                            isEscaped = false;
-                        }
-                    }
-                    else if (c == '\\')
-                    {
-                        isEscaped = true;
-                    }
-                    else
-                    {
-                        isEscaped = false;
-                    }
-                    sb.Append(c);
-                }
-
-                sb.Append(symbol);
-
-                break;
-            }
-
-            return base.FixInvalidSymbols(str);
         }
 
         const string _codeInfoText = "Command code: ";
