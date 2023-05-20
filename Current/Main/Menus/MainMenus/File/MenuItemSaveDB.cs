@@ -46,17 +46,23 @@ namespace TranslationHelper.Menus.MainMenus.File
 
         private void ShiftToBakups(string path)
         {
-            var dir = Path.GetDirectoryName(path);
-            var name = Path.GetFileNameWithoutExtension(path);
-            var ext = Path.GetExtension(path);
-
-            int maxBakIndex = 9;
-            for (int i = maxBakIndex; i >= 1; i--)
+            try
             {
-                MoveFile(dir, name, ext, i, maxBakIndex);
-            }
+                var dir = Path.GetDirectoryName(path);
+                var name = Path.GetFileNameWithoutExtension(path);
+                var ext = Path.GetExtension(path);
 
-            System.IO.File.Move(path, Path.Combine(dir, name + _saveFileBakSuffix + ext));
+                int maxBakIndex = 9;
+                for (int i = maxBakIndex; i >= 1; i--)
+                {
+                    MoveFile(dir, name, ext, i, maxBakIndex);
+                }
+
+                System.IO.File.Move(path, Path.Combine(dir, name + _saveFileBakSuffix + 1 + ext));
+            }
+            catch (Exception ex)
+            {
+            }
         }
 
         readonly string _saveFileBakSuffix = "_bak";
