@@ -974,7 +974,7 @@ namespace TranslationHelper
 
         private static string GetDefaultIfEmpty(string inputValue, string defaultvalue)
         {
-            return inputValue.Length == 0 ? defaultvalue : inputValue;
+            return string.IsNullOrEmpty(inputValue) ? defaultvalue : inputValue;
         }
 
         private void SearchFormReplaceAllButton_Click(object sender, EventArgs e)
