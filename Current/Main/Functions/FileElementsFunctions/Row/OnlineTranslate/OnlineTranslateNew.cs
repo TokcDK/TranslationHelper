@@ -550,7 +550,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
             if (cellTranslationIsNotEmptyAndNotEqualOriginal && !originalText.HasAnyTranslationLineValidAndEqualSameOrigLine(translationText, false)) return false;
 
             // set new row value
-            row.SetValue(_translationColumnIndex, string.Join(Environment.NewLine, EnumerableNewLines(cellTranslationIsNotEmptyAndNotEqualOriginal ? translationText : originalText, rowData.Lines)));
+            row.SetValue(_translationColumnIndex, string.Join(Environment.NewLine, EnumerateNewLines(cellTranslationIsNotEmptyAndNotEqualOriginal ? translationText : originalText, rowData.Lines)));
 
             // apply fixes for cell
             // apply only for finished rows
@@ -560,7 +560,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
             return true;
         }
 
-        private static IEnumerable<string> EnumerableNewLines(string rowValue, List<LineTranslationData> rowDataLines)
+        private static IEnumerable<string> EnumerateNewLines(string rowValue, List<LineTranslationData> rowDataLines)
         {
             int lineNum = 0;
             foreach (var line in rowValue.SplitToLines())
