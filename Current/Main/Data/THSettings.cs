@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Runtime.CompilerServices;
@@ -27,7 +27,25 @@ namespace TranslationHelper.Data
 
 
         internal static string DBDirName => "DB";
-
+        internal static string DBDirPathByLanguage 
+        { 
+            get 
+            {
+                try
+                {
+                    if (!Directory.Exists(DBDirPath))
+                    {
+                        Directory.CreateDirectory(DBDirPath);
+                    }
+                    return Path.Combine(DBDirPath, THSettings.SourceLanguage, THSettings.TargetLanguage);
+                }
+                catch (Exception ex)
+                {
+                    new Functions.FunctionsLogs().LogToFile("An error occured while creating directory. error:\r\n" + ex);
+                    return string.Empty;
+                }
+            } 
+        }
         internal static string DBDirPath => Path.Combine(Application.StartupPath, DBDirName);
         internal static string DBDirPathByLanguage => Path.Combine(DBDirPath, THSettings.SourceLanguage, THSettings.TargetLanguage);
 
@@ -96,7 +114,7 @@ namespace TranslationHelper.Data
 
         internal static string PyLiveMakerLMPATCHExtractionToolPath => Path.Combine(PyLiveMakerExtractionToolsPath, PyLiveMakerLMPATCHExtractionToolEXEName);
 
-        
+
         internal static string RPGMakerTransEXEPath => Path.Combine(RPGMakerTransDirPath, RPGMakerTransEXEName);
 
 
@@ -192,7 +210,7 @@ namespace TranslationHelper.Data
 
         internal static string SourceLanguageName => SourceLanguage.Split(' ')[0];
 
-        
+
         internal static string SourceLanguageCode => SourceLanguage.Split(' ')[1];
 
 
@@ -201,7 +219,7 @@ namespace TranslationHelper.Data
 
         internal static string TargetLanguageName => TargetLanguage.Split(' ')[0];
 
-        
+
         internal static string TargetLanguageCode => TargetLanguage.Split(' ')[1];
 
 
@@ -224,16 +242,16 @@ namespace TranslationHelper.Data
 
         internal static string PythonExePath => Path.Combine(PythonPath, "python.exe");
 
-        
+
         internal static string OriginalColumnName => "Original";
 
-        
+
         internal static string TranslationColumnName => "Translation";
 
-        
-        internal static string Python37ExePathRelative => PythonPathRelative+ @"\python.exe";
 
-        
+        internal static string Python37ExePathRelative => PythonPathRelative + @"\python.exe";
+
+
         internal static string SCPackerPath => Path.Combine(ResDirPath, "scpacker");
 
 
@@ -242,8 +260,8 @@ namespace TranslationHelper.Data
 
         internal static string SCPackerPYPath => Path.Combine(ResDirPath, "scpacker", "scpacker.py");
 
-        
-        internal static string SCPackerPYPath2 => SCPackerPathRelative+ @"\scpacker.py";
+
+        internal static string SCPackerPYPath2 => SCPackerPathRelative + @"\scpacker.py";
 
 
         internal static string THTranslationCacheFileName => "THTranslationCache.cmx";
@@ -251,7 +269,7 @@ namespace TranslationHelper.Data
 
         internal static string THTranslationCacheFilePath => Path.Combine(DBDirPath, THTranslationCacheFileName);
 
-        
+
         internal static string WolfRPGExtractorExePath => WolfRPGExtractorsList[1];
 
         /// <summary>
@@ -304,13 +322,13 @@ namespace TranslationHelper.Data
 
         internal static string TranslationRegexRulesFilePath => Path.Combine(ApplicationStartupPath, TranslationRegexRulesFileName);
 
-        
+
         internal static string WolfTransPath => Path.Combine(ResDirPath, "wolftrans", "bin", "wolftrans");
 
-        
+
         internal static string RubyPath => Path.Combine(ResDirPath, "ruby", "bin", "ruby.exe");
 
-        
+
         internal static string THLogPath => Path.Combine(ApplicationStartupPath, AppSettings.ApplicationProductName + ".log");
 
 
@@ -328,13 +346,13 @@ namespace TranslationHelper.Data
 
         internal static string KiriKiriToolExePath => Path.Combine(KiriKiriToolDirPath, "kikiriki.exe");
 
-        
+
         internal static string KiriKiriToolDllPath => Path.Combine(KiriKiriToolDirPath, "madCHook.dll");
 
-        
+
         internal static string LocaleEmulatorEXE => Path.Combine(ResDirPath, "localeemulator", "LEProc.exe");
 
-        
+
         internal static string DBAutoSavesDirName => "Auto";
 
 
@@ -367,7 +385,8 @@ namespace TranslationHelper.Data
 
         internal static string CustomDBPath => Path.Combine(DBDirPath, CustomDBName);
 
-        
+
         internal static string SoundsTextRegexPattern => "(((ぴちゃ)|(ぬっぶ)|(ぬっぷ)|(にちゅ)|(ひぇぐ)|(くにゅ)|(にゅく)|(べ[(ちゃ)]+)|(グル+)|(くちゅ)|(ぶちゅる+[ぅう]+)|(ちゅぷ)|(んほ[ぇえ]+)|(ギ+[ィイ]+)|(ふ[えぇ]+[ぁあ}+)|(ぐぢゅ[う]*)|(ぢゅる+)|(フ[ギャ]+)|(ずぶ+[ぅう]*)|(ぐぶ+)|(ぐぢゅう*)|(にゅっ?ぷ)|([クヌプ]チュ)|([ぷぴぬずぐ]ちゅ)|(ヒ+イ+)|(グヒ+)|(キヒ+)|(クホ+)|(グフ+)|(ぬるぅ)|(ぴゅ)|(くち)|(くっ)|(んく)|(ちゅ)|(イクう*)|(びゅる+)|(ずぶ[うぅ]+)|(ぬぷ+)|(ぶず+)|(フゴ[ォオ]+)|(んぎゅン)|(ドチュル+ゥ)|(ブ?(ビュ)+ゥ*)|(ウグ+)|(びゅ[ぐく])|(ん?は[ぁあ]+[ーっンッ]*)|(ん[ぅう…]*え)|(いや[ぁあ]+)|(ギィヒ+)|(ン[ぁあ]+)|(ん?…*[ふぅう]+[ぁあ]*)|(ぶ[(じゅ)]+)|(ぶ[りゅ]+)|(ふ[ぅう]+)|(う[んぁあ]+[ーっン]*)|(んゃ+[ぁあ]*[ーっン]*)|(へ[ぁあ]+)|(ん[ぁあ]*[ーっン]*)|(キ[ャアァ]+)|(あぎ)|(キ[イィ]+)|(ン?ぐ、?[ぅうぁあ]+)|([あは]+)|(く、?[ぅう]+[ーっン]*)|([ぅう]+)|(ひん+)|([ギ]+[ィ]*)|(へ[えぇ]+)|(ほ[お]+)|(ン?[オォおぉ]+)|(ふ+…+)|(や?[ぁあ]+[ーっン]*)|([いぃ]+)|(ゲ+)|(ン+)|(ッ+)|(く+)|(ひ+)|(グ+))[、…ーっッ]*)+";
     }
 }
+
