@@ -1,4 +1,5 @@
-﻿using System.IO;
+using System;
+using System.IO;
 
 namespace TranslationHelper.Data
 {
@@ -24,8 +25,26 @@ namespace TranslationHelper.Data
         public static string THSelectedDir { get; set; } = "";
         public static string RPGMTransPatchVersion { get; set; } = "3";
         public static string THSelectedSourceType { get; set; } = "";
-        public static int THFilesListSelectedIndex { get; set; } = 0;
-        public static string THTranslationCachePath { get; set; } = Path.Combine(THSettings.DBDirPathByLanguage, "THTranslationCache");
+        public static string THTranslationCachePath
+        {
+            get
+            {
+                try
+                {
+                    if (!Directory.Exists(THSettings.DBDirPathByLanguage))
+                    {
+                        Directory.CreateDirectory(THSettings.DBDirPathByLanguage);
+                    }
+                    return Path.Combine(THSettings.DBDirPathByLanguage, "THTranslationCache");
+                }
+                catch (Exception ex)
+                {
+                    new Functions.FunctionsLogs().LogToFile("An error occurred while creating directory. error:\r\n" + ex);
+                    return string.Empty;
+                }
+            }
+            set { }
+        }
         public static bool EnableTranslationCache { get; set; } = true;
         public static string ProjectNewLineSymbol { get; set; } = "\r\n";
         public static string NewLine { get; set; } = "\r\n";
@@ -61,3 +80,4 @@ namespace TranslationHelper.Data
         public static bool IsJapaneseSourceLanguage { get => OnlineTranslationSourceLanguage.Equals("Japanese ja"); }
     }
 }
+
