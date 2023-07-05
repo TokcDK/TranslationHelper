@@ -74,7 +74,10 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
 
                 ApplyConditions();
             }
-            catch { }
+            catch (Exception ex)
+            {
+                _log.LogToFile($"An error occurred in the Selected method. Error: {ex}");
+            }
 
             ActionsPostRowApply();
 
