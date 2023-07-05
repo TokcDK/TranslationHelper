@@ -74,6 +74,10 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
 
                 ApplyConditions();
             }
+            catch (Exception ex)
+            {
+                _log.LogToFile($"An error occurred in the Selected method. Error: {ex}");
+            }
             catch { }
 
             ActionsPostRowApply();
@@ -131,7 +135,6 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
         /// <summary>
         /// proceed 1 or more of selected rows
         /// </summary>
-        /// <returns></returns>
         internal bool Rows()
         {
             if (!IsOkSelected()) return false;
@@ -179,7 +182,10 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
 
                 if (IsSelectedRows) Array.Sort(selectedRowIndexses);//sort indexes
 
-                foreach (int rowIndex in selectedRowIndexses) Selected(SelectedTable.Rows[rowIndex], SelectedTableIndex, rowIndex);
+                Parallel.ForEach(selectedRowIndexses, rowIndex =>
+                {
+                    Selected(SelectedTable.Rows[rowIndex], SelectedTableIndex, rowIndex);
+                });
 
                 if (IsSelectedRows)
                 {
@@ -192,6 +198,166 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
 
             return Ret;
         }
+
+        /// <summary>
+        /// proceed selected table. Multithreaded.
+        /// </summary>
+        /// <returns></returns>
+        internal async Task<bool> TableT() => await Task.Run(() => Table()).ConfigureAwait(false);
+
+        protected DataTable SelectedTable;
+        protected int SelectedTableIndex = -1;
+        protected DataRow SelectedRow;
+        protected int SelectedRowIndex;
+        protected int TablesCount = 0;
+        /// <summary>
+        /// true when processed all tables
+        /// </summary>
+        protected bool IsAll;
+        /// <summary>
+        /// Proceed all tables
+        /// </summary>
+        /// <returns></returns>
+        internal bool All()
+        {
+            if (!IsOkAll()) return false;
+
+            IsAll = true;
+
+            Init();
+
+            var allTables = AllTables.Tables;
+            TablesCount = allTables.Count;
+
+            SetSelectedRowsCountForAll();
+
+            ActionsInit();
+            ActionsPreTablesApply();
+
+            for (SelectedTableIndex = 0; SelectedTableIndex < TablesCount; SelectedTableIndex++)
+            {
+                SelectedTable = allTables[SelectedTableIndex];
+
+                try
+                {
+                    Table(SelectedTable);
+                }
+                catch (Exception ex)
+                {
+                    _log.LogToFile($"An error occurred while parsing all tables in method '{nameof(All)}'. Error: {ex}");
+                }
+            }
+
+
+            ActionsPostTablesApply();
+            ActionsFinalize();
+            CompleteSound();
+
+            return Ret;
+        }
+
+        /// <summary>
+        /// proceed selected tables
+        /// </summary>
+        /// <returns></returns>
+        internal bool Table()
+        {
+            if (!IsOkTable()) return false;
+
+            Init();
+
+            int[] selectedTableIndexes = null;
+#if DEBUG
+            FilesList.Invoke((Action)(() => selectedTableIndexes = FilesList.CopySelectedIndexes()));
+#else
+            tableindexes = _filesList.CopySelectedIndexes();
+#endif
+            DataTable[] selectedTables = null;
+#if DEBUG
+            AppData.Main.Invoke((Action)(() => selectedTables = AllTables.GetTablesByIndexes(selectedTableIndexes)));
+#else
+            tables = _allTables.GetTablesByIndexes(tableindexes);
+#endif
+            TablesCount = selectedTables.Length;
+            IsTables = TablesCount > 1;
+
+            if (!IsAll && IsTables)
+            {
+                SetSelectedRowsCountForTables(selectedTables);
+
+                ActionsInit();
+
+                ActionsPreTablesApply();
+            }
+
+            foreach (var table in selectedTables) Table(table);
+
+            if (!IsAll && IsTables)
+            {
+                ActionsPostTablesApply();
+
+                ActionsFinalize();
+
+                CompleteSound();
+            }
+
+            return Ret;
+        }
+
+        /// <summary>
+        /// proceed selected table
+        /// </summary>
+        /// <param name="dataTable"></param>
+        /// <returns></returns>
+        internal bool Table(DataTable dataTable)
+        {
+            SelectedTable = dataTable;
+
+            Init();
+
+            if (!IsAll && !IsTables)
+            {
+                IsTable = true;
+                TablesCount = 1;
+            }
+
+            GetTableData();
+
+            if (SelectedTableIndex == -1) return false; // return when table is not selected
+
+            if (!IsValidTable(SelectedTable)) return false;
+
+            if (!IsAll && !IsTables) ActionsInit();
+
+            ActionsPreTableApply();
+
+            ActionsPreRowsApply();
+
+            _isInternalSelectedRowExecution = true;
+
+            var rowsCount = SelectedTable.Rows.Count;
+            if (!IsAll && !IsTables && IsTable) SelectedRowsCount = rowsCount; //|| (IsAll && SelectedTableIndex == tablescount - 1)set rows count to selectedrowscount for last table but forgot for which purpose it is
+
+            for (int i = 0; i < rowsCount; i++)
+            {
+                Selected(SelectedTable.Rows[i], SelectedTableIndex, i);
+            }
+
+            ActionsPostRowsApply(); // need here also as in All because must be executed even if only one table was selected
+
+            ActionsPostTableApply();
+
+            if (!IsAll && !IsTables) ActionsFinalize();
+
+            return Ret;
+        }
+
+        /// <summary>
+        /// Check if table is valid. Can be used by any finction to not make same check in line checking for perfomance issues.
+        /// </summary>
+        /// <param name="table"></param>
+        /// <returns>Default is always true</returns>
+        protected virtual bool IsValidTable(DataTable table) => true;
 
         /// <summary>
         /// apply the actions before selected row will be parsed
@@ -395,73 +561,10 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
         }
 
         /// <summary>
-        /// Check if table is valid. Can be used by any finction to not make same check in line checking for perfomance issues.
-        /// </summary>
-        /// <param name="table"></param>
-        /// <returns>Default is always true</returns>
-        protected virtual bool IsValidTable(DataTable table) => true;
-
-        /// <summary>
-        /// True when selected more of one table
-        /// </summary>
-        protected bool IsTables;
-
-        /// <summary>
-        /// Proceed all tables. Multithreaded.
+        /// proceed all tables. Multithreaded.
         /// </summary>
         /// <returns></returns>
         internal async Task<bool> AllT() => await Task.Run(() => All()).ConfigureAwait(false);
-
-        protected DataTable SelectedTable;
-        protected int SelectedTableIndex = -1;
-        protected DataRow SelectedRow;
-        protected int SelectedRowIndex;
-        protected int TablesCount = 0;
-        /// <summary>
-        /// true when processed all tables
-        /// </summary>
-        protected bool IsAll;
-        /// <summary>
-        /// Proceed all tables
-        /// </summary>
-        /// <returns></returns>
-        internal bool All()
-        {
-            if (!IsOkAll()) return false;
-
-            IsAll = true;
-
-            Init();
-
-            var allTables = AllTables.Tables;
-            TablesCount = allTables.Count;
-
-            SetSelectedRowsCountForAll();
-
-            ActionsInit();
-            ActionsPreTablesApply();
-
-            for (SelectedTableIndex = 0; SelectedTableIndex < TablesCount; SelectedTableIndex++)
-            {
-                SelectedTable = allTables[SelectedTableIndex];
-
-                try
-                {
-                    Table(SelectedTable);
-                }
-                catch (Exception ex)
-                {
-                    _log.LogToFile($"An error occurred while parsing all tables in method '{nameof(All)}'. Error: {ex}");
-                }
-            }
-
-
-            ActionsPostTablesApply();
-            ActionsFinalize();
-            CompleteSound();
-
-            return Ret;
-        }
 
         /// <summary>
         /// get rows count from all tables
@@ -518,10 +621,10 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
 
             if (!IsValidRow()) return;
 
-            try 
-            { 
-                if (Apply()) Ret = true; 
-            } 
+            try
+            {
+                if (Apply()) Ret = true;
+            }
             catch { }
         }
 
@@ -542,3 +645,4 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
         }
     }
 }
+
