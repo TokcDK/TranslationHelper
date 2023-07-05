@@ -10,6 +10,43 @@ using TranslationHelper.Main.Functions;
 
 namespace TranslationHelper.Functions.FileElementsFunctions.Row
 {
+    public class TableData
+    {
+        public TableData(DataTable selectedTable, int selectedTableIndex)
+        {
+            SelectedTable = selectedTable;
+            SelectedTableIndex = selectedTableIndex;
+        }
+
+        public DataTable SelectedTable { get; set; }
+        public int SelectedTableIndex { get; set; }
+    }
+
+    public class RowData
+    {
+        public RowData(DataRow row, int rowIndex, TableData table) 
+        { 
+            SelectedRow = row;
+            SelectedRowIndex = rowIndex;
+            TableData = table;
+        }
+        public static int ColumnIndexOriginal { get => AppData.CurrentProject.OriginalColumnIndex; }
+        public static int ColumnIndexTranslation { get => AppData.CurrentProject.TranslationColumnIndex; }
+        public TableData TableData { get; }
+
+        public DataRow SelectedRow { get; }
+        public int SelectedRowIndex { get; }
+        public bool IsLastRow { get; set; } = false;
+
+        public string Original { get => SelectedRow.Field<string>(ColumnIndexOriginal); }
+
+        public string Translation
+        {
+            get => SelectedRow.Field<string>(ColumnIndexTranslation);
+            set => SelectedRow.SetValue(ColumnIndexTranslation, value);
+        }
+    }
+
     internal abstract class RowBase : IOriginalTranslationUser
     {
         /// <summary>
@@ -52,7 +89,12 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
         /// proceed 1 selected row
         /// </summary>
         /// <returns></returns>
-        internal bool Selected(DataRow row, int tableIndex = -1, int rowIndex = -1)
+        internal bool Selected(DataRow row, int tableIndex, int rowIndex)
+        {
+            var table = AppData.CurrentProject.FilesContent.Tables[tableIndex];
+        }
+
+        bool Selected(RowData rowData)
         {
             try
             {
@@ -60,19 +102,19 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
                 {
                     Init();
 
-                    GetTableData(tableIndex);
+                    GetTableData(rowData.TableData);
 
                     if (IsSelectedRows) SelectedRowsCount = 1;
                 }
 
-                SelectedRow = row;
-                SelectedRowIndex = GetRowIndex(rowIndex);
+                //SelectedRow = rowData.SelectedRow;
+                //SelectedRowIndex = GetRowIndex(rowData.ro);
 
                 if (!IsAll && !IsTables && !IsTable && !IsSelectedRows) ActionsInit();
 
-                ActionsPreRowApply();
+                ActionsPreRowApply(rowData);
 
-                ApplyConditions();
+                ApplyConditions(rowData);
             }
             catch (Exception ex)
             {
@@ -104,18 +146,18 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
         /// <returns>State if All() can be continue</returns>
         protected virtual bool IsOkAll() => true;
 
-        /// <summary>
-        /// get index of selected row
-        /// </summary>
-        /// <param name="rowIndex"></param>
-        /// <returns></returns>
-        private int GetRowIndex(int rowIndex = -1)
-        {
-            if (rowIndex != -1) { SelectedRowIndex = rowIndex; }
-            else if (SelectedRowIndex == -1) SelectedRowIndex = SelectedTable.Rows.IndexOf(SelectedRow);
+        ///// <summary>
+        ///// get index of selected row
+        ///// </summary>
+        ///// <param name="rowIndex"></param>
+        ///// <returns></returns>
+        //private int GetRowIndex(int rowIndex = -1)
+        //{
+        //    if (rowIndex != -1) { SelectedRowIndex = rowIndex; }
+        //    else if (SelectedRowIndex == -1) SelectedRowIndex = SelectedTable.Rows.IndexOf(SelectedRow);
 
-            return SelectedRowIndex;
-        }
+        //    return SelectedRowIndex;
+        //}
 
         /// <summary>
         /// Application log
@@ -135,7 +177,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
         /// proceed 1 or more of selected rows
         /// </summary>
         /// <returns></returns>
-        internal bool Rows()
+        internal bool Rows(TableData tableData)
         {
             if (!IsOkSelected()) return false;
 
@@ -147,10 +189,10 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
 
             try
             {
-                GetTableData();
+                GetTableData(tableData);
 
                 // parse table instead of selected cells when all cells in the table are selected
-                if (SelectedRowsCount == SelectedTable.Rows.Count) return Table();
+                if (SelectedRowsCount == tableData.SelectedTable.Rows.Count) return Table();
 
                 _isInternalSelectedRowExecution = true;
 
@@ -175,16 +217,21 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
                     addedRows.Add(dgvRowIndex); // add row index as added
 
                     //add row index
-                    selectedRowIndexses[ind] = FunctionsTable.GetRealRowIndex(SelectedTableIndex, dgvRowIndex);
+                    selectedRowIndexses[ind] = FunctionsTable.GetRealRowIndex(tableData.SelectedTableIndex, dgvRowIndex);
 
                     ind++; //raise added index
                 }
 
                 if (IsSelectedRows) Array.Sort(selectedRowIndexses);//sort indexes
-                
+
                 // here could be parallel foreach but there is some issues with it because IsLastRow, Original, Translation and other variables
                 // need make var like IsLastRow avalaible only for parsing row
-                foreach (int rowIndex in selectedRowIndexses) Selected(SelectedTable.Rows[rowIndex], SelectedTableIndex, rowIndex);
+                Parallel.ForEach(selectedRowIndexses, rowIndex =>
+                {
+                    var rowData = new RowData(tableData.SelectedTable.Rows[rowIndex], rowIndex, tableData);
+                    Selected(rowData);
+                });
+                //foreach (int rowIndex in selectedRowIndexses) Selected(tableData.SelectedTable.Rows[rowIndex]);
 
                 if (IsSelectedRows)
                 {
@@ -202,7 +249,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
         /// apply the actions before selected row will be parsed
         /// will be executed in any case
         /// </summary>
-        protected virtual void ActionsPreRowApply() { }
+        protected virtual void ActionsPreRowApply(RowData rowData) { }
 
         /// <summary>
         /// apply the actions before all rows for selected,table or all was applied
@@ -262,22 +309,18 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
         /// init selected table's data
         /// </summary>
         /// <param name="tableIndex"></param>
-        private void GetTableData(int tableIndex = -1)
+        private void GetTableData(TableData tableData)
         {
-            if (SelectedTableIndex == -1)
+            if (tableData.SelectedTableIndex == -1)
             {
-                if (tableIndex != -1) { SelectedTableIndex = tableIndex; }
-                else
-                {
 #if DEBUG
-                    AppData.Main.Invoke((Action)(() => SelectedTableIndex = AppData.Main.THFilesList.GetSelectedIndex()));
+                AppData.Main.Invoke((Action)(() => tableData.SelectedTableIndex = AppData.Main.THFilesList.GetSelectedIndex()));
 #else
-                    SelectedTableIndex = AppData.Main.THFilesList.GetSelectedIndex();
+                tableData.SelectedTableIndex = AppData.Main.THFilesList.GetSelectedIndex();
 #endif
-                }
             }
 
-            if (SelectedTable == null) SelectedTable = AllTables.Tables[SelectedTableIndex];
+            if (tableData.SelectedTable == null) tableData.SelectedTable = AllTables.Tables[tableData.SelectedTableIndex];
 
             if (needToGetOrigTransColumnsNum)
             {
@@ -308,9 +351,9 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
         /// </summary>
         /// <param name="dataTable"></param>
         /// <returns></returns>
-        internal bool Table(DataTable dataTable)
+        internal bool Table(TableData tableData)
         {
-            SelectedTable = dataTable;
+            //SelectedTable = dataTable;
 
             Init();
 
@@ -320,11 +363,11 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
                 TablesCount = 1;
             }
 
-            GetTableData();
+            GetTableData(tableData);
 
-            if (SelectedTableIndex == -1) return false; // return when table is not selected
+            if (tableData.SelectedTableIndex == -1) return false; // return when table is not selected
 
-            if (!IsValidTable(SelectedTable)) return false;
+            if (!IsValidTable(tableData)) return false;
 
             if (!IsAll && !IsTables) ActionsInit();
 
@@ -334,9 +377,10 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
 
             _isInternalSelectedRowExecution = true;
 
-            var rowsCount = SelectedTable.Rows.Count;
+            var rowsCount = tableData.SelectedTable.Rows.Count;
             if (!IsAll && !IsTables && IsTable) SelectedRowsCount = rowsCount; //|| (IsAll && SelectedTableIndex == tablescount - 1)set rows count to selectedrowscount for last table but forgot for which purpose it is
 
+            Parallel
             for (int i = 0; i < rowsCount; i++)
             {
                 Selected(SelectedTable.Rows[i], SelectedTableIndex, i);
@@ -385,7 +429,13 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
                 ActionsPreTablesApply();
             }
 
-            foreach (var table in selectedTables) Table(table);
+            Parallel.ForEach(selectedTables, table =>
+            {
+                var tableData = new TableData(); 
+                Table(table);
+            });
+
+            //foreach (var table in selectedTables) Table(table);
 
             if (!IsAll && IsTables)
             {
@@ -404,7 +454,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
         /// </summary>
         /// <param name="table"></param>
         /// <returns>Default is always true</returns>
-        protected virtual bool IsValidTable(DataTable table) => true;
+        protected virtual bool IsValidTable(TableData tableData) => true;
 
         /// <summary>
         /// True when selected more of one table
@@ -417,10 +467,10 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
         /// <returns></returns>
         internal async Task<bool> AllT() => await Task.Run(() => All()).ConfigureAwait(false);
 
-        protected DataTable SelectedTable;
-        protected int SelectedTableIndex = -1;
-        protected DataRow SelectedRow;
-        protected int SelectedRowIndex;
+        //DataTable SelectedTable;
+        //int SelectedTableIndex = -1;
+        //DataRow SelectedRow;
+        //int SelectedRowIndex;
         protected int TablesCount = 0;
         /// <summary>
         /// true when processed all tables
@@ -446,13 +496,14 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
             ActionsInit();
             ActionsPreTablesApply();
 
-            for (SelectedTableIndex = 0; SelectedTableIndex < TablesCount; SelectedTableIndex++)
+            for (int selectedTableIndex = 0; selectedTableIndex < TablesCount; selectedTableIndex++)
             {
-                SelectedTable = allTables[SelectedTableIndex];
+                var selectedTable = allTables[selectedTableIndex];
+                var tableData = new TableData(selectedTable, selectedTableIndex);
 
                 try
                 {
-                    Table(SelectedTable);
+                    Table(tableData);
                 }
                 catch (Exception ex)
                 {
@@ -503,12 +554,12 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
         /// determine if SelectedRowsCountRest need to set
         /// </summary>
         bool _setRestRows = true;//
-        /// <summary>
-        /// true when last row processed
-        /// </summary>
-        protected bool IsLastRow;
+        ///// <summary>
+        ///// true when last row processed
+        ///// </summary>
+        //protected bool IsLastRow;
 
-        protected virtual void ApplyConditions()
+        protected virtual void ApplyConditions(RowData rowData)
         {
             //set rest of rows with bool just because bool is faster
             if (_setRestRows)
@@ -519,7 +570,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
 
             //reduce rest of rows by 1
             //set IsLastRow to true because it is last processed row
-            IsLastRow = --SelectedRowsCountRest == 0;
+            rowData.IsLastRow = --SelectedRowsCountRest == 0;
 
             if (!IsValidRow()) return;
 
