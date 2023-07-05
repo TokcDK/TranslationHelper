@@ -61,3 +61,4 @@ namespace TranslationHelper.Data
         public static bool IsJapaneseSourceLanguage { get => OnlineTranslationSourceLanguage.Equals("Japanese ja"); }
     }
 }
+
