@@ -184,7 +184,11 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
                 
                 // here could be parallel foreach but there is some issues with it because IsLastRow, Original, Translation and other variables
                 // need make var like IsLastRow avalaible only for parsing row
-                foreach (int rowIndex in selectedRowIndexses) Selected(SelectedTable.Rows[rowIndex], SelectedTableIndex, rowIndex);
+                Parallel.ForEach(selectedRowIndexses, rowIndex => 
+                {
+                    var rowData = new RowData(SelectedTable.Rows[rowIndex]);
+                    Selected(rowData, SelectedTableIndex, rowIndex);
+                });
 
                 if (IsSelectedRows)
                 {
@@ -546,4 +550,6 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
             set => SelectedRow.SetValue(ColumnIndexTranslation, value);
         }
     }
+
 }
+
