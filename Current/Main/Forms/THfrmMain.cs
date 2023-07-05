@@ -452,7 +452,7 @@ namespace TranslationHelper
 
         private void THFileElementsDataGridView_CellEnter(object sender, DataGridViewCellEventArgs e)
         {
-            _ = this.Invoke((Action)(() => CellEnterActions(sender, e)));
+            //_ = this.Invoke((Action)(() => CellEnterActions(sender, e)));
         }
 
         private void CellEnterActions(object sender, DataGridViewCellEventArgs e)
