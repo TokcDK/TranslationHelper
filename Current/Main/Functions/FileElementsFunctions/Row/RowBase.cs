@@ -181,7 +181,9 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
                 }
 
                 if (IsSelectedRows) Array.Sort(selectedRowIndexses);//sort indexes
-
+                
+                // here could be parallel foreach but there is some issues with it because IsLastRow, Original, Translation and other variables
+                // need make var like IsLastRow avalaible only for parsing row
                 foreach (int rowIndex in selectedRowIndexses) Selected(SelectedTable.Rows[rowIndex], SelectedTableIndex, rowIndex);
 
                 if (IsSelectedRows)
