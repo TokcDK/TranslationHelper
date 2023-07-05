@@ -11,9 +11,9 @@ namespace TranslationHelper.Functions.RowParsersParallel
 {
     public abstract class RowParallelParserBase
     {
-        public class DataRowData
+        public class RowData
         {
-            public DataRowData(DataRow row)
+            public RowData(DataRow row)
             {
                 Row = row;
             }
@@ -104,30 +104,23 @@ namespace TranslationHelper.Functions.RowParsersParallel
         /// </summary>
         protected bool IsLastRow = false;
         int _rowsLeftToProcess = 0;
-
         void ParseSelectedRows(IEnumerable<DataRow> rows)
         {
             Parallel.ForEach(rows, row =>
             {
-                Parse(row);
+                var rowData = new RowData(row);
+                Parse(rowData);
             });
         }
 
-        protected virtual bool IsValidRow(DataRowData row)
-        {
-            return true;
-        }
-
-        bool Parse(DataRow row)
+        bool Parse(RowData rowData)
         {
             IsLastRow = --_rowsLeftToProcess == 0;
 
-            var rowData = new DataRowData(row);
             return IsValidRow(rowData) && Process(rowData);
         }
-
-        protected abstract bool Process(DataRowData row);
 
         #endregion Rows
     }
 }
+
