@@ -126,407 +126,172 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
 
             if (AppSettings.InterruptTtanslation) AppSettings.InterruptTtanslation = false;
         }
+protected override bool Apply(RowData rowData)
+{
+    try
+    {
+        AppData.Main.ProgressInfo(true, "Translate" + " " + rowData.SelectedTable.TableName + "/" + rowData.RowIndex);
 
-        protected override bool Apply()
+        SetRowLinesToBuffer(rowData);
+
+        AppData.Main.ProgressInfo(false);
+        return true;
+    }
+    catch
+    {
+    }
+
+    return false;
+}
+
+private void SetRowLinesToBuffer(RowData rowData)
+{
+    var originalText = rowData.Original;
+    var lineNumber = 0;
+
+    // Find the table data for the selected table index, or create a new one if it doesn't exist
+    var selectedTableData = _buffer.FirstOrDefault(tableData => tableData.TableIndex == SelectedTableIndex);
+    if (selectedTableData == null)
+    {
+        selectedTableData = new TranslationData();
+        selectedTableData.TableIndex = SelectedTableIndex;
+        _buffer.Add(selectedTableData);
+    }
+
+    // Find the row data for the selected row index under the selected table, or create a new one if it doesn't exist
+    var selectedRowData = selectedTableData.Rows.FirstOrDefault(rowData => rowData.RowIndex == SelectedRowIndex);
+    if (selectedRowData == null)
+    {
+        selectedRowData = new RowTranslationData();
+        selectedRowData.RowIndex = SelectedRowIndex;
+        selectedTableData.Rows.Add(selectedRowData);
+    }
+
+    var originalTextSize = Size;
+
+    // Parse each line of the original text
+    foreach (var line in originalText.SplitToLines())
+    {
+        // Find the line data for the current line under the selected row, or create a new one if it doesn't exist
+        var lineCoordinates = SelectedTableIndex + "," + SelectedRowIndex;
+        var lineData = selectedRowData.Lines.FirstOrDefault(data => data.LineIndex == lineNumber);
+
+        // If the line data already exists and is not translatable, skip it and move to the next line
+        if (lineData != null && string.IsNullOrEmpty(lineData.Translation) && lineData.Translation != lineData.Original)
         {
-            try
-            {
-                AppData.Main.ProgressInfo(true, "Translate" + " " + SelectedTable.TableName + "/" + SelectedRowIndex);
-
-                SetRowLinesToBuffer();
-
-                AppData.Main.ProgressInfo(false);
-                return true;
-            }
-            catch
-            {
-            }
-
-            return false;
+            lineNumber++;
+            continue;
         }
 
-        private void SetRowLinesToBuffer()
+        // If the line data does not exist, create a new one
+        if (lineData == null)
         {
-            var originalText = Original;
-            var lineNumber = 0;
-
-            // Find the table data for the selected table index, or create a new one if it doesn't exist
-            var selectedTableData = _buffer.FirstOrDefault(tableData => tableData.TableIndex == SelectedTableIndex);
-            if (selectedTableData == null)
-            {
-                selectedTableData = new TranslationData();
-                selectedTableData.TableIndex = SelectedTableIndex;
-                _buffer.Add(selectedTableData);
-            }
-
-            // Find the row data for the selected row index under the selected table, or create a new one if it doesn't exist
-            var selectedRowData = selectedTableData.Rows.FirstOrDefault(rowData => rowData.RowIndex == SelectedRowIndex);
-            if (selectedRowData == null)
-            {
-                selectedRowData = new RowTranslationData();
-                selectedRowData.RowIndex = SelectedRowIndex;
-                selectedTableData.Rows.Add(selectedRowData);
-            }
-
-            var originalTextSize = Size;
-
-            // Parse each line of the original text
-            foreach (var line in originalText.SplitToLines())
-            {
-                // Find the line data for the current line under the selected row, or create a new one if it doesn't exist
-                var lineCoordinates = SelectedTableIndex + "," + SelectedRowIndex;
-                var lineData = selectedRowData.Lines.FirstOrDefault(data => data.LineIndex == lineNumber);
-
-                // If the line data already exists and is not translatable, skip it and move to the next line
-                if (lineData != null && string.IsNullOrEmpty(lineData.Translation) && lineData.Translation != lineData.Original)
-                {
-                    lineNumber++;
-                    continue;
-                }
-
-                // If the line data does not exist, create a new one
-                if (lineData == null)
-                {
-                    lineData = new LineTranslationData(lineNumber, line);
-                    selectedRowData.Lines.Add(lineData);
-                }
-
-                // If the line is not valid for translation, add the original as the translation and move to the next line
-                if (!line.IsValidForTranslation())
-                {
-                    lineData.Translation = line;
-                    lineNumber++;
-                    continue;
-                }
-
-                // Extract information from the line using regex
-                var extractData = new ExtractRegexInfo(line);
-                lineData.RegexExtractionData = extractData;
-                var extractedValuesCount = extractData.ExtractedValuesList.Count;
-                bool isExtracted = extractedValuesCount > 0;
-
-                int skippedValuesCount = 0;
-
-                // Parse each extracted value from the line
-                foreach (var extractedValueData in extractData.ExtractedValuesList)
-                {
-                    // Get the translation from the translation cache, if available
-                    var translationCache = AppData.OnlineTranslationCache.GetValueFromCacheOrReturnEmpty(extractedValueData.Original);
-
-                    if (!string.IsNullOrEmpty(translationCache))
-                    {
-                        skippedValuesCount++;
-                        extractedValueData.Translation = translationCache; // add translation from cache if found
-                    }
-                    else if (extractedValueData.Original.IsSoundsText() || !extractedValueData.Original.IsValidForTranslation())
-                    {
-                        skippedValuesCount++;
-                        extractedValueData.Translation = extractedValueData.Original; // original=translation when value is soundtext
-                    }
-                    else
-                    {
-                        Size += extractedValueData.Original.Length; // increase size of string for translation for check later
-                    }
-                }
-
-                // If all extracted values were skipped, don't translate this line and move to the next one
-                if (extractedValuesCount > 0 && skippedValuesCount == extractedValuesCount)
-                {
-                    lineNumber++;
-                    continue;
-                }
-
-                // If the line is not extracted and its translation is available in the cache, use the cached translation
-                if (!isExtracted)
-                {
-                    var lineCache = AppData.OnlineTranslationCache.GetValueFromCacheOrReturnEmpty(line);
-                    if (!string.IsNullOrEmpty(lineCache))
-                    {
-                        lineData.Translation = lineCache;
-                        lineNumber++;
-                        continue;
-                    }
-
-                    Size += lineData.Original.Length; // increase size of string for translation for check later
-                }
-
-                // If we've reached the maximum size for translation, translate the strings and reset the size counter
-                if (IsMax())
-                {
-                    TranslateStrings();
-
-                    Size = 0;
-
-                    // Write the translation cache periodically
-                    AppData.OnlineTranslationCache.Write();
-
-                    // Stop translating after the last pack of text if translation is interrupted
-                    if (AppSettings.InterruptTtanslation) return;
-                }
-
-                lineNumber++;
-            }
-
-            // Mark the row data as having all lines added
-            selectedRowData.IsAllLinesAdded = true;
-
-            // If no text has been added for translation, clean up the data and return
-            if (originalTextSize == Size)
-            {
-                if (WriteRowData(selectedRowData, selectedTableData.TableIndex))
-                {
-                    selectedRowData = null;
-                    selectedTableData.Rows.Remove(selectedRowData);
-                    if (selectedTableData.Rows.Count > 0) selectedTableData = null;
-                    return;
-                }
-            }
-
-            // If this is not the last row and fewer than 300 rows have been added to the buffer, return
-            if (!IsLastRow && _buffer.Count < 300) return;
-
-            // Translate the strings and reset the buffer
-            TranslateStrings();
-            Size = 0;
-            _buffer = new List<TranslationData>();
-
-            // Write the translation cache periodically
-            AppData.OnlineTranslationCache.Write();
+            lineData = new LineTranslationData(lineNumber, line);
+            selectedRowData.Lines.Add(lineData);
         }
 
-        readonly GoogleAPIOLD _translator;
-        /// <summary>
-        /// get originals and translate them
-        /// </summary>
-        private void TranslateStrings()
+        // If the line is not valid for translation, add the original as the translation and move to the next line
+        if (!line.IsValidForTranslation())
         {
-            var originals = GetOriginals();
-
-            if (originals.Length == 0 && _buffer.Count == 0) return;
-
-            var translated = TranslateOriginals(originals);
-
-            SetTranslationsToBuffer(originals, translated);
-
-            SetBufferToRows();
+            lineData.Translation = line;
+            lineNumber++;
+            continue;
         }
 
-        /// <summary>
-        /// get valid unique originals from buffer
-        /// </summary>
-        /// <returns></returns>
-        private string[] GetOriginals()
-        {
-            return EnumerateLineData(_buffer)
-                .AsParallel()
-                .Aggregate(
-                    new ConcurrentBag<string>(),
-                    (originalLines, lineData) =>
-                    {
-                        foreach (var originalTranslationData in EnumerateOriginalTranslation(lineData))
-                        {
-                            if (!originalLines.Contains(originalTranslationData.Original) && string.IsNullOrEmpty(originalTranslationData.Translation) && originalTranslationData.Original.IsValidForTranslation())
-                            {
-                                originalLines.Add(originalTranslationData.Original);
-                            }
-                        }
+        // Extract information from the line using regex
+        var extractData = new ExtractRegexInfo(line);
+        lineData.RegexExtractionData = extractData;
+        var extractedValuesCount = extractData.ExtractedValuesList.Count;
+        bool isExtracted = extractedValuesCount > 0;
 
-                        return originalLines;
-                    }
-                )
-                .ToArray();
-        }
+        int skippedValuesCount = 0;
 
-        private static IEnumerable<IOriginalTranslationUser> EnumerateOriginalTranslation(LineTranslationData lineData)
+        // Parse each extracted value from the line
+        foreach (var extractedValueData in extractData.ExtractedValuesList)
         {
-            if (lineData.RegexExtractionData.ExtractedValuesList.Count > 0)
+            // Get the translation from the translation cache, if available
+            var translationCache = AppData.OnlineTranslationCache.GetValueFromCacheOrReturnEmpty(extractedValueData.Original);
+
+            if (!string.IsNullOrEmpty(translationCache))
             {
-                foreach (var value in lineData.RegexExtractionData.ExtractedValuesList)
-                {
-                    yield return value;
-                }
+                skippedValuesCount++;
+                extractedValueData.Translation = translationCache; // add translation from cache if found
+            }
+            else if (extractedValueData.Original.IsSoundsText() || !extractedValueData.Original.IsValidForTranslation())
+            {
+                skippedValuesCount++;
+                extractedValueData.Translation = extractedValueData.Original; // original=translation when value is soundtext
             }
             else
             {
-                yield return lineData;
+                Size += extractedValueData.Original.Length; // increase size of string for translation for check later
             }
         }
 
-        /// <summary>
-        /// apply project specific pre actions like hide variables to original lines before they will be translated
-        /// </summary>
-        /// <param name="originalLines"></param>
-        /// <returns></returns>
-        private static string[] ApplyProjectPretranslationAction(string[] originalLines)
+        // If all extracted values were skipped, don't translate this line and move to the next one
+        if (extractedValuesCount > 0 && skippedValuesCount == extractedValuesCount)
         {
-            if (AppData.CurrentProject.HideVARSMatchCollectionsList?.Count > 0)
-            {
-                // Clear the collection of found matches
-                AppData.CurrentProject.HideVARSMatchCollectionsList.Clear();
-            }
-
-            int numOriginalLines = originalLines.Length;
-
-            var preTranslatedLines = new string[numOriginalLines];
-            Array.Copy(originalLines, preTranslatedLines, numOriginalLines);
-
-            for (int i = 0; i < numOriginalLines; i++)
-            {
-                var preTranslatedLine = AppData.CurrentProject.OnlineTranslationProjectSpecificPretranslationAction(originalLines[i], null);
-                if (!string.IsNullOrEmpty(preTranslatedLine))
-                {
-                    preTranslatedLines[i] = preTranslatedLine;
-                }
-            }
-
-            return preTranslatedLines;
+            lineNumber++;
+            continue;
         }
 
-        /// <summary>
-        /// apply project specific post actions like unhide variables to original lines after they was translated
-        /// </summary>
-        /// <param name="originalLines"></param>
-        /// <param name="translatedLines"></param>
-        /// <returns></returns>
-        private static string[] ApplyProjectPostTranslationAction(string[] originalLines, string[] translatedLines)
+        // If the line is not extracted and its translation is available in the cache, use the cached translation
+        if (!isExtracted)
         {
-            int numTranslatedLines = translatedLines.Length;
-            for (int i = 0; i < numTranslatedLines; i++)
+            var lineCache = AppData.OnlineTranslationCache.GetValueFromCacheOrReturnEmpty(line);
+            if (!string.IsNullOrEmpty(lineCache))
             {
-                string translatedLine = translatedLines[i];
-
-                var postTranslatedLine = AppData.CurrentProject.OnlineTranslationProjectSpecificPostTranslationAction(originalLines[i], translatedLine);
-                if (!string.IsNullOrEmpty(postTranslatedLine) && postTranslatedLine != translatedLine)
-                {
-                    translatedLines[i] = postTranslatedLine;
-                }
+                lineData.Translation = lineCache;
+                lineNumber++;
+                continue;
             }
 
-            var hideVarsMatchCollections = AppData.CurrentProject.HideVARSMatchCollectionsList;
-            if (hideVarsMatchCollections?.Count > 0)
-            {
-                // Clear the collection of found matches
-                hideVarsMatchCollections.Clear();
-            }
-
-            return translatedLines;
+            Size += lineData.Original.Length; // increase size of string for translation for check later
         }
 
-        //readonly GoogleTranslator translator = new GoogleTranslator();
-
-        /// <summary>
-        /// translate originals in selected translator
-        /// </summary>
-        /// <param name="originals"></param>
-        /// <returns></returns>
-        private string[] TranslateOriginals(string[] originals)
+        // If we've reached the maximum size for translation, translate the strings and reset the size counter
+        if (IsMax())
         {
-            if (originals == null || originals.Length == 0) return Array.Empty<string>();
+            TranslateStrings();
 
-            string[] translated = Array.Empty<string>();
-            try
-            {
-                var originalLinesArePreApplied = ApplyProjectPretranslationAction(originals);
-                if (originalLinesArePreApplied.Length == 0) return translated;
+            Size = 0;
 
-                translated = _translator.Translate(originalLinesArePreApplied);
-                if (translated == null || originals.Length != translated.Length) return Array.Empty<string>();
+            // Write the translation cache periodically
+            AppData.OnlineTranslationCache.Write();
 
-                translated = ApplyProjectPostTranslationAction(originals, translated);
-            }
-            catch (Exception ex)
-            {
-                _log.LogToFile("Error while translation:"
-                    + Environment.NewLine
-                    + ex
-                    + Environment.NewLine
-                    + "OriginalLines="
-                    + string.Join(Environment.NewLine + "</br>" + Environment.NewLine, originals));
-            }
-
-            return translated;
+            // Stop translating after the last pack of text if translation is interrupted
+            if (AppSettings.InterruptTtanslation) return;
         }
 
-        /// <summary>
-        /// set translations to buffer data
-        /// </summary>
-        /// <param name="originals"></param>
-        /// <param name="translated"></param>
-        private void SetTranslationsToBuffer(string[] originals, string[] translated)
+        lineNumber++;
+    }
+
+    // Mark the row data as having all lines added
+    selectedRowData.IsAllLinesAdded = true;
+
+    // If no text has been added for translation, clean up the data and return
+    if (originalTextSize == Size)
+    {
+        if (WriteRowData(selectedRowData, selectedTableData.TableIndex))
         {
-            if (originals == null || translated == null || originals.Length != translated.Length)
-                return;
-
-            var translations = new Dictionary<string, string>();
-            for (int i = 0; i < originals.Length; i++)
-            {
-                var original = originals[i];
-                var translation = translated[i];
-
-                translations.Add(original, translation);
-
-                FunctionsOnlineCache.TryAdd(original, translation);
-            }
-
-            Parallel.ForEach(EnumerateLineData(_buffer), lineData =>
-            {
-                foreach (var originalTranslation in EnumerateOriginalTranslation(lineData))
-                {
-                    if (!TryGetTranslation(translations, originalTranslation.Original, originalTranslation.Translation, out var v)) return;
-
-                    originalTranslation.Translation = v;
-                }
-            });
+            selectedRowData = null;
+            selectedTableData.Rows.Remove(selectedRowData);
+            if (selectedTableData.Rows.Count > 0) selectedTableData = null;
+            return;
         }
+    }
 
-        private static bool TryGetTranslation(Dictionary<string, string> translations, string original, string translation, out string outTranslation)
-        {
-            outTranslation = default;
+    // If this is not the last row and fewer than 300 rows have been added to the buffer, return
+    if (!IsLastRow && _buffer.Count < 300) return;
 
-            if (translation != null && translation != original) return false;
-            if (!original.IsValidForTranslation()) return false;
-            if (!translations.TryGetValue(original, out var v)) return false;
+    // Translate the strings and reset the buffer
+    TranslateStrings();
+    Size = 0;
+    _buffer = new List<TranslationData>();
 
-            outTranslation = v;
-
-            return true;
-        }
-
-        private IEnumerable<LineTranslationData> EnumerateLineData(List<TranslationData> buffer)
-        {
-            foreach (var data in _buffer) // get data
-            {
-                foreach (var rowData in data.Rows) // get rows data
-                {
-                    foreach (var lineData in rowData.Lines) // get line data
-                    {
-                        yield return lineData;
-                    }
-                }
-            }
-        }
-
-        /// <summary>
-        /// set buffer content to rows by coordinates
-        /// </summary>
-        private void SetBufferToRows()
-        {
-            for (int i = _buffer.Count - 1; i >= 0; i--)
-            {
-                var data = _buffer[i];
-                var dataRows = data.Rows;
-                for (int n = dataRows.Count - 1; n >= 0; n--)
-                {
-                    var rowData = dataRows[n];
-                    if (WriteRowData(rowData, data.TableIndex))
-                    {
-                        dataRows.Remove(rowData);
-                    }
-                }
-
-                if (dataRows.Count == 0) _buffer.Remove(data);
-            }
-        }
+    // Write the translation cache periodically
+    AppData.OnlineTranslationCache.Write();
+}
 
         private readonly int _originalColumnIndex = AppData.CurrentProject.OriginalColumnIndex;
         private readonly int _translationColumnIndex = AppData.CurrentProject.TranslationColumnIndex;
@@ -659,3 +424,4 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
         }
     }
 }
+
