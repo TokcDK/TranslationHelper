@@ -91,7 +91,10 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
         /// <returns></returns>
         internal bool Selected(DataRow row, int tableIndex, int rowIndex)
         {
-            var table = AppData.CurrentProject.FilesContent.Tables[tableIndex];
+            var table = AllTables.Tables[tableIndex];
+            var tableData = new TableData(table, tableIndex);
+            var rowData = new RowData(row, rowIndex, tableData);
+            return Selected(rowData);
         }
 
         bool Selected(RowData rowData)
@@ -380,11 +383,10 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
             var rowsCount = tableData.SelectedTable.Rows.Count;
             if (!IsAll && !IsTables && IsTable) SelectedRowsCount = rowsCount; //|| (IsAll && SelectedTableIndex == tablescount - 1)set rows count to selectedrowscount for last table but forgot for which purpose it is
 
-            Parallel
-            for (int i = 0; i < rowsCount; i++)
+            Parallel.For(0, rowsCount, i =>
             {
-                Selected(SelectedTable.Rows[i], SelectedTableIndex, i);
-            }
+                Selected(tableData.SelectedTable.Rows[i], tableData.SelectedTableIndex, i);
+            });
 
             ActionsPostRowsApply(); // need here also as in All because must be executed even if only one table was selected
 
