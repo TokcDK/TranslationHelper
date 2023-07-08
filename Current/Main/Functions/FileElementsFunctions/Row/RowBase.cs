@@ -433,8 +433,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
 
             Parallel.ForEach(selectedTables, table =>
             {
-                var tableData = new TableData(); 
-                Table(table);
+                Table(new TableData(table, selectedTableIndex: AllTables.Tables.IndexOf(table)));
             });
 
             //foreach (var table in selectedTables) Table(table);
