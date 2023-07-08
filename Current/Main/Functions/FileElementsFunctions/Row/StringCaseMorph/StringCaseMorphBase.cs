@@ -20,22 +20,22 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row.StringCaseMorph
         /// Maybe here will be better to make project specific string case morph from Project.StringCaseMorph()
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        void CheckAnims()
+        void CheckAnims(TableData tableData)
         {
-            _isAnimations = SelectedTable.TableName == Animations;
+            _isAnimations = tableData.SelectedTable.TableName == Animations;
         }
 
-        protected override void ActionsPreRowsApply()
+        protected override void ActionsPreRowsApply(TableData tableData)
         {
             if (!IsAll && !IsTable)
             {
-                CheckAnims();
+                CheckAnims(tableData);
             }
         }
 
-        protected override void ActionsPreTableApply()
+        protected override void ActionsPreTableApply(TableData tableData)
         {
-            CheckAnims();
+            CheckAnims(tableData);
         }
 
         /// <summary>
@@ -205,13 +205,13 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row.StringCaseMorph
                 case VariantCase.Upper:
                     //Uppercase
                     //https://www.c-sharpcorner.com/blogs/first-letter-in-uppercase-in-c-sharp1
-                    return StringToUpper(translationString);
+                    return StringToUpper(translationString, originalString);
                 case VariantCase.UPPER:
                     //UPPERCASE
                     return translationString.ToUpperInvariant();
                 case VariantCase.lower1st:
                     //UPPERCASE
-                    return StringToUpper(translationString, isReverse: true);
+                    return StringToUpper(translationString, originalString, isReverse: true);
                 default:
                     return translationString;
             }
@@ -219,13 +219,13 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row.StringCaseMorph
 
         private string ToUpperAllLines(string originalString, string translationString)
         {
-            if(IsExtracted) return StringToUpper(translationString);
+            if(IsExtracted) return StringToUpper(translationString, originalString);
 
             var newLineSymbolIndex = translationString.IndexOf("\n");
             if (newLineSymbolIndex == -1)
             {
                 // standart ToUpper when single line
-                return StringToUpper(translationString);
+                return StringToUpper(translationString, originalString);
             }
 
             string newLineSymbol = newLineSymbolIndex > 0 && translationString[newLineSymbolIndex - 1].Equals('\r') ? "\r\n" : "\n";
@@ -233,7 +233,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row.StringCaseMorph
             string[] linesOfOriginal = originalString.Split(new[] { "\n", "\r\n" }, StringSplitOptions.None);
             string[] linesOfTranslation = translationString.Split(new[] { newLineSymbol }, StringSplitOptions.None);
 
-            if (linesOfOriginal.Length != linesOfTranslation.Length) return StringToUpper(translationString);
+            if (linesOfOriginal.Length != linesOfTranslation.Length) return StringToUpper(translationString, originalString);
 
             for (int i = 0; i < linesOfTranslation.Length; i++)
             {
@@ -244,7 +244,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row.StringCaseMorph
                 // original line 1st char is equal to translation, skip
                 if (line.Equals(linesOfOriginal[i])) continue;
 
-                linesOfTranslation[i] = StringToUpper(line);
+                linesOfTranslation[i] = StringToUpper(line, originalString);
             }
 
             return string.Join(newLineSymbol, linesOfTranslation);
@@ -256,13 +256,13 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row.StringCaseMorph
         /// <param name="inputString"></param>
         /// <param name="isReverse">1st har change to lower instead of Upper</param>
         /// <returns></returns>
-        internal string StringToUpper(string inputString, bool isReverse = false)
+        internal string StringToUpper(string inputString, string original, bool isReverse = false)
         {
             if (string.IsNullOrWhiteSpace(inputString)) return inputString;
 
             if (char.IsLetter(inputString[0]))
             {
-                if (Original[0] != inputString[0]) // skip if char in original equals char in translation with same index
+                if (original[0] != inputString[0]) // skip if char in original equals char in translation with same index
                 {
                     inputString = (isReverse ? char.ToLowerInvariant(inputString[0]) : char.ToUpperInvariant(inputString[0])) + inputString.Substring(1);
                 }
@@ -278,7 +278,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row.StringCaseMorph
                     string orig;
                     if ((c > 0 && (@char == 's' && inputString[c - 1] == '\'' || inputString[c - 1] == '\\')) // 's or \s
                         ||
-                        (orig = Original).Length > c && orig[c] == inputString[c]) // skip if char in original equals char in translation with same index
+                        (orig = original).Length > c && orig[c] == inputString[c]) // skip if char in original equals char in translation with same index
                     { }
                     else inputString = inputString.Substring(0, c) + (isReverse ? char.ToLowerInvariant(inputString[c]) : char.ToUpperInvariant(inputString[c])) + (c == dsTransCellLength - 1 ? string.Empty : inputString.Substring(c + 1));
 
@@ -301,7 +301,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row.StringCaseMorph
                         resultLine += Environment.NewLine;
                         if (lineCnt == 1)
                         {
-                            resultLine += StringToUpper(line, isReverse);
+                            resultLine += StringToUpper(line, original, isReverse);
                         }
                         else
                         {

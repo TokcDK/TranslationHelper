@@ -8,6 +8,7 @@ using TranslationHelper.Data;
 using TranslationHelper.Extensions;
 using TranslationHelper.Functions.FileElementsFunctions.Row.HardFixes;
 using TranslationHelper.Main.Functions;
+using static TranslationHelper.Functions.FileElementsFunctions.Row.OnlineTranslateNew;
 
 namespace TranslationHelper.Functions.FileElementsFunctions.Row
 {
@@ -46,11 +47,11 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
             if (_translator == null) _translator = new GoogleAPIOLD();
         }
 
-        protected override bool IsValidRow(RowData rowData)
+        protected override bool IsValidRow(RowBaseRowData rowData)
         {
-            return !AppSettings.InterruptTtanslation && base.IsValidRow()
-                && (string.IsNullOrEmpty(Translation)
-                || Original.HasAnyTranslationLineValidAndEqualSameOrigLine(Translation));
+            return !AppSettings.InterruptTtanslation && base.IsValidRow(rowData)
+                && (string.IsNullOrEmpty(rowData.Translation)
+                || rowData.Original.HasAnyTranslationLineValidAndEqualSameOrigLine(rowData.Translation));
         }
 
         /// <summary>
@@ -93,13 +94,13 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
             if (AppSettings.InterruptTtanslation) AppSettings.InterruptTtanslation = false;
         }
 
-        protected override bool Apply(RowData rowData)
+        protected override bool Apply(RowBaseRowData rowData)
         {
             try
             {
-                AppData.Main.ProgressInfo(true, "Translate" + " " + SelectedTable.TableName + "/" + SelectedRowIndex);
+                AppData.Main.ProgressInfo(true, "Translate" + " " + rowData.SelectedTable.TableName + "/" + rowData.SelectedRowIndex);
 
-                SetRowLinesToBuffer();
+                SetRowLinesToBuffer(rowData);
 
                 AppData.Main.ProgressInfo(false);
                 return true;
@@ -107,17 +108,16 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
             catch
             {
             }
-
             return false;
         }
 
-        private void SetRowLinesToBuffer()
+        private void SetRowLinesToBuffer(RowBaseRowData rowData)
         {
-            var original = Original;
+            var original = rowData.Original;
             var lineNum = 0;
             foreach (var line in original.SplitToLines())
             {
-                var lineCoordinates = SelectedTableIndex + "," + SelectedRowIndex;
+                var lineCoordinates = rowData.SelectedTableIndex + "," + rowData.SelectedRowIndex;
 
                 //init data
                 //add lineCoordinates and row data
@@ -187,7 +187,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
             }
 
             //translate if is last row or was added 300+ rows to buffer
-            if (!IsLastRow && _buffer.Count < 300) return;
+            if (!rowData.IsLastRow && _buffer.Count < 300) return;
 
             TranslateStrings();
 

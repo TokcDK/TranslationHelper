@@ -25,10 +25,10 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row.HardFixes
 　No matter how much attention I pay, curse grants are rare
 　Expresses beyond my consciousness" 
 */
-        protected override bool Apply(RowData rowData)
+        protected override bool Apply(RowBaseRowData rowData)
         {
             var ret = false;
-            var translation = Translation;
+            var translation = rowData.Translation;
 
             string[][] quotes = new string[][]
             {
@@ -36,7 +36,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row.HardFixes
                  new string[] { "「", "」"}
             };
 
-            var original = Original;
+            var original = rowData.Original;
             foreach (var quote in quotes)
             {
                 if (original.TrimStart().StartsWith(quote[0]) && original.TrimEnd().EndsWith(quote[1]))
@@ -95,7 +95,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row.HardFixes
             }
 
             if (ret)
-                Translation = translation;
+                rowData.Translation = translation;
 
             return ret;
         }

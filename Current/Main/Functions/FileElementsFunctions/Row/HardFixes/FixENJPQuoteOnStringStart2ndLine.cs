@@ -20,11 +20,11 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row.HardFixes
         //“…………….
         //　What are you doing? I…….
         /////////////////////////////////	
-        protected override bool Apply(RowData rowData)
+        protected override bool Apply(RowBaseRowData rowData)
         {
             try
             {
-                var originalValue = Original;
+                var originalValue = rowData.Original;
                 if (originalValue.IsMultiline())
                 {
                     string origSecondLine = string.Empty;
@@ -57,7 +57,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row.HardFixes
                     {
                         bool endsWith = false;
 
-                        var translationValue = Translation;
+                        var translationValue = rowData.Translation;
                         if (translationValue.IsMultiline())
                         {
                             string quoteString;
@@ -204,7 +204,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row.HardFixes
                                     resultString = (endsWith ? resultString.Remove(resultString.Length - endQuoteStringEnLength, endQuoteStringEnLength) : resultString) + endQuoteString;
                                 }
 
-                                Translation = resultString;
+                                rowData.Translation = resultString;
                                 return true;
                             }
                         }

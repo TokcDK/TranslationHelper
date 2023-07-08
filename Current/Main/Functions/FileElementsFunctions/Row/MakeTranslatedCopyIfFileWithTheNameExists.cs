@@ -16,7 +16,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
 
         bool _needToAddFilePaths = true;
         Dictionary<string, PathsForTheName> _gameFilesList;
-        protected override void ActionsPreRowsApply()
+        protected override void ActionsPreRowsApply(TableData tableData)
         {
             if (_needToAddFilePaths)
             {
@@ -42,16 +42,16 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
             internal List<string> PathsList = new List<string>();
         }
 
-        protected override bool Apply(RowData rowData)
+        protected override bool Apply(RowBaseRowData rowData)
         {
 
-            string orig = Original;
+            string orig = rowData.Original;
             if (orig.IsMultiline()) // skip multiline
             {
                 return false;
             }
 
-            string trans = Translation;
+            string trans = rowData.Translation;
             if (trans.IsMultiline()) // skip multiline
             {
                 return false;
@@ -125,7 +125,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
             }
             catch (Exception ex)
             {
-                _log.LogToFile(@"An error occured while file copy\write:\r\n" + ex + "\r\noriginal=" + Original + "\r\ntranslation=" + Translation);
+                _log.LogToFile(@"An error occured while file copy\write:\r\n" + ex + "\r\noriginal=" + rowData.Original + "\r\ntranslation=" + rowData.Translation);
             }
             return false;
         }

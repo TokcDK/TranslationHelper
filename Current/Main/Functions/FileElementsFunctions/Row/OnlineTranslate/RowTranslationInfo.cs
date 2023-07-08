@@ -14,7 +14,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
             /// <summary>
             /// table number / row data
             /// </summary>
-            public Dictionary<int, List<RowData>> TableRowNumbers = new Dictionary<int, List<RowData>>();
+            public Dictionary<int, List<TranslatingRowData>> TableRowNumbers = new Dictionary<int, List<TranslatingRowData>>();
         }
     }
 }

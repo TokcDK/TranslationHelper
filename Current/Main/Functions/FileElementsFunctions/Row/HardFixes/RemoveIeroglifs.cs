@@ -12,9 +12,9 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row.HardFixes
 
         string[] _jpKatakana;
 
-        protected override bool Apply(RowData rowData)
+        protected override bool Apply(RowBaseRowData rowData)
         {
-            var translation = Translation;
+            var translation = rowData.Translation;
             if (FunctionsRomajiKana.HasNOJPcharacters(translation))
             {
                 return false;
@@ -37,7 +37,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row.HardFixes
             {
                 System.Threading.Thread.Sleep(100);
             }
-            Translation = translation;
+            rowData.Translation = translation;
             return true;
         }
     }

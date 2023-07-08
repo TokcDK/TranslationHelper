@@ -8,16 +8,16 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
         {
         }
 
-        protected override bool IsValidRow(RowData rowData)
+        protected override bool IsValidRow(RowBaseRowData rowData)
         {
             return true;
         }
 
         protected readonly List<string> _bufferedOriginals = new List<string>();
 
-        protected override bool Apply(RowData rowData)
+        protected override bool Apply(RowBaseRowData rowData)
         {
-            _bufferedOriginals.Add(Original);//add original value
+            _bufferedOriginals.Add(rowData.Original);//add original value
 
             return true;
         }

@@ -8,7 +8,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row.HardFixes
     {
         Dictionary<string, string> _cache;
         bool needInit = true;
-        protected override void ActionsPreRowsApply()
+        protected override void ActionsPreRowsApply(TableData tableData)
         {
             if (needInit)
             {
@@ -17,23 +17,23 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row.HardFixes
             }
         }
 
-        protected override bool Apply(RowData rowData)
+        protected override bool Apply(RowBaseRowData rowData)
         {
-            var orig = Original;
+            var orig = rowData.Original;
 
             if (orig.IsMultiline()) // skip multiline
             {
                 return false;
             }
 
-            var trans = Translation;
+            var trans = rowData.Translation;
 
             if (_cache.ContainsKey(orig))
             {
                 var cachedTrans = _cache[orig];
                 if (orig != cachedTrans)
                 {
-                    SelectedRow[1] = cachedTrans;
+                    rowData.SelectedRow[1] = cachedTrans;
                 }
             }
 
@@ -58,7 +58,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row.HardFixes
                 var cachedTranslation = _cache[extractedFromOrig[0]];
                 if (cachedTranslation != extractedFromTrans[0]) // replace translation if it is not equals of same in cache
                 {
-                    Translation = trans
+                    rowData.Translation = trans
                     .Remove(indexes[0], extractedFromTrans[0].Length)
                     .Insert(indexes[0], cachedTranslation);
                 }

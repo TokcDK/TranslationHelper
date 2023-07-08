@@ -2,9 +2,9 @@
 {
     class TrimEndSpace : RowBase
     {
-        protected override bool Apply(RowData rowData)
+        protected override bool Apply(RowBaseRowData rowData)
         {
-            SelectedRow[1] = (SelectedRow[1] + "").TrimEnd();
+            rowData.SelectedRow[1] = (rowData.SelectedRow[1] + "").TrimEnd();
 
             return true;
         }

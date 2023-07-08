@@ -19,22 +19,22 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
             _simpleNumRegex = new Regex(@"\d+", RegexOptions.Compiled); //reg равняется любым цифрам, простое сравнение
         }
 
-        protected override bool IsValidRow(RowData rowData)
+        protected override bool IsValidRow(RowBaseRowData rowData)
         {
-            return !string.IsNullOrEmpty(Translation); // not empty original translation
+            return !string.IsNullOrEmpty(rowData.Translation); // not empty original translation
         }
 
         protected virtual bool IsForce => false;
-        protected override bool Apply(RowData rowData)
+        protected override bool Apply(RowBaseRowData rowData)
         {
-            Set();
+            Set(rowData);
 
             return true;
         }
 
-        private async void Set()
+        private async void Set(RowBaseRowData rowData)
         {
-            await Task.Run(() => Set(inputTableIndex: SelectedTableIndex, inputRowIndex: SelectedRowIndex, inputForceSetValue: IsForce)).ConfigureAwait(false);
+            await Task.Run(() => Set(inputTableIndex: rowData.SelectedTableIndex, inputRowIndex: rowData.SelectedRowIndex, inputForceSetValue: IsForce)).ConfigureAwait(false);
 
         }
 

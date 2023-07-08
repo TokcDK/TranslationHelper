@@ -8,14 +8,14 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row.HardFixes.Temp
         {
         }
 
-        protected override bool Apply(RowData rowData)
+        protected override bool Apply(RowBaseRowData rowData)
         {
             bool lia;
-            var original = Original;
+            var original = rowData.Original;
             string translation;
-            if (original.StartsWith("ルア") && ((lia = (translation = Translation).StartsWith("Lia")) || translation.StartsWith("Lila")))
+            if (original.StartsWith("ルア") && ((lia = (translation = rowData.Translation).StartsWith("Lia")) || translation.StartsWith("Lila")))
             {
-                Translation = "Lua" + translation.Remove(0, lia ? 3 : 4);
+                rowData.Translation = "Lua" + translation.Remove(0, lia ? 3 : 4);
                 return true;
             }
 

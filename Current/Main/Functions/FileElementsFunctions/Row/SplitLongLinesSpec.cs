@@ -13,22 +13,22 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
         {
         }
 
-        protected override bool IsValidTable(DataTable table)
+        protected override bool IsValidTable(TableData table)
         {
-            return !AppData.CurrentProject.LineSplitProjectSpecificSkipForTable(table);
+            return !AppData.CurrentProject.LineSplitProjectSpecificSkipForTable(table.SelectedTable);
         }
 
-        protected override bool Apply(RowData rowData)
+        protected override bool Apply(RowBaseRowData rowData)
         {
-            string origCellValue = Original as string;
-            string transCellValue = Translation + string.Empty;
+            string origCellValue = rowData.Original as string;
+            string transCellValue = rowData.Translation + string.Empty;
             if (!string.IsNullOrWhiteSpace(transCellValue)
                 && transCellValue != origCellValue
                 && FunctionsString.GetLongestLineLength(transCellValue) > AppSettings.THOptionLineCharLimit
                 /*&& !FunctionsString.IsStringContainsSpecialSymbols(transCellValue)*/
-                && !AppData.CurrentProject.LineSplitProjectSpecificSkipForLine(origCellValue, transCellValue, SelectedTableIndex, SelectedRowIndex))
+                && !AppData.CurrentProject.LineSplitProjectSpecificSkipForLine(origCellValue, transCellValue, rowData.SelectedTableIndex, rowData.SelectedRowIndex))
             {
-                Translation = SplitNew(transCellValue);
+                rowData.Translation = SplitNew(transCellValue);
 
 
                 //Translation = transCellValue.SplitMultiLineIfBeyondOfLimit(AppSettings.THOptionLineCharLimit);

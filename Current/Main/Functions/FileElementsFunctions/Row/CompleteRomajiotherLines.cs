@@ -8,13 +8,13 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
         {
         }
 
-        protected override bool Apply(RowData rowData)
+        protected override bool Apply(RowBaseRowData rowData)
         {
-            var o = Original;
-            var t = Translation;
+            var o = rowData.Original;
+            var t = rowData.Translation;
             if ((string.IsNullOrEmpty(t) || !Equals(t, o)) && o.HaveMostOfRomajiOtherChars() || !o.HasLetters())
             {
-                Translation = o;
+                rowData.Translation = o;
                 return true;
             }
             return false;

@@ -2,7 +2,7 @@
 {
     partial class OnlineTranslateNew
     {
-        public class RowData
+        public class TranslatingRowData
         {
             public int RowNumber { get; set; }
             public int LineNumber { get; set; }

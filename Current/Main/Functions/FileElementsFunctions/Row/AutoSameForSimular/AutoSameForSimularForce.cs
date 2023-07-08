@@ -2,9 +2,9 @@
 {
     class AutoSameForSimularForce : AutoSameForSimularBase
     {
-        protected override bool IsValidRow(RowData rowData)
+        protected override bool IsValidRow(RowBaseRowData rowData)
         {
-            return !string.IsNullOrEmpty(Original);
+            return !string.IsNullOrEmpty(rowData.Original);
         }
 
         protected override bool IsForce => true; // force set values

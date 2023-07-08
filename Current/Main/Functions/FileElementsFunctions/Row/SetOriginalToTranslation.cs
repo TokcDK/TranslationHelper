@@ -7,11 +7,11 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
         public SetOriginalToTranslation()
         {
         }
-        protected override bool Apply(RowData rowData)
+        protected override bool Apply(RowBaseRowData rowData)
         {
             try
             {
-                Translation = Original;
+                rowData.Translation = rowData.Original;
             }
             catch
             {

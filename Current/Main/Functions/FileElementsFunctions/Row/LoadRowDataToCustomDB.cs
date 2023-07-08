@@ -49,10 +49,10 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
             AppData.Main.ProgressInfo(false);
         }
 
-        protected override bool Apply(RowData rowData)
+        protected override bool Apply(RowBaseRowData rowData)
         {
-            var orig = Original;
-            var trans = Translation;
+            var orig = rowData.Original;
+            var trans = rowData.Translation;
 
             //add orig or replace exist
             if (_dict.ContainsKey(orig))

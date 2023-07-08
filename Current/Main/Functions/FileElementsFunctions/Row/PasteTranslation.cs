@@ -6,9 +6,9 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
 {
     class PasteTranslation : RowBase
     {
-        protected override bool IsValidRow(RowData rowData)
+        protected override bool IsValidRow(RowBaseRowData rowData)
         {
-            return base.IsValidRow() && (SelectedRow[1] == null || string.IsNullOrEmpty(SelectedRow[1].ToString()));
+            return base.IsValidRow(rowData) && (rowData.SelectedRow[1] == null || string.IsNullOrEmpty(rowData.SelectedRow[1].ToString()));
         }
 
         string[] _buffer;
@@ -20,9 +20,9 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
         }
 
         int _lineIndex = 0;
-        protected override bool Apply(RowData rowData)
+        protected override bool Apply(RowBaseRowData rowData)
         {
-            var origValue = Original;
+            var origValue = rowData.Original;
             var selectedRowOriginalLinesCount = origValue.GetLinesCount();
             if (_lineIndex + selectedRowOriginalLinesCount > _bufferLength)
             {
@@ -44,7 +44,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
             //    translation += _buffer[_lineIndex];
             //}
 
-            Translation = translation;
+            rowData.Translation = translation;
             return true;
         }
     }

@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using TranslationHelper.Data;
-using TranslationHelper.Data.Interfaces;
 using TranslationHelper.Extensions;
 using TranslationHelper.Main.Functions;
 
@@ -22,10 +22,10 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
         public int SelectedTableIndex { get; set; }
     }
 
-    public class RowData
+    public class RowBaseRowData
     {
-        public RowData(DataRow row, int rowIndex, TableData table) 
-        { 
+        public RowBaseRowData(DataRow row, int rowIndex, TableData table)
+        {
             SelectedRow = row;
             SelectedRowIndex = rowIndex;
             TableData = table;
@@ -45,6 +45,8 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
             get => SelectedRow.Field<string>(ColumnIndexTranslation);
             set => SelectedRow.SetValue(ColumnIndexTranslation, value);
         }
+        public DataTable SelectedTable { get => TableData.SelectedTable; }
+        public int SelectedTableIndex { get => TableData.SelectedTableIndex; }
     }
 
     internal abstract class RowBase
@@ -67,7 +69,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
         }
 
         protected readonly ListBox FilesList = AppData.THFilesList;
-        protected readonly DataSet AllTables = AppData.CurrentProject.FilesContent;
+        protected readonly DataSet AllFiles = AppData.CurrentProject.FilesContent;
         protected readonly DataGridView WorkTableDatagridView = AppData.Main.THFileElementsDataGridView;
 
         /// <summary>
@@ -89,15 +91,37 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
         /// proceed 1 selected row
         /// </summary>
         /// <returns></returns>
-        internal bool Selected(DataRow row, int tableIndex, int rowIndex)
+        internal bool Selected(DataRow row, int tableIndex = -1, int rowIndex = -1)
         {
-            var table = AllTables.Tables[tableIndex];
+            if (tableIndex == -1)
+            {
+                if(FilesList.SelectedIndex==-1) return false;
+
+                tableIndex = FilesList.SelectedIndex;
+            }
+
+            var table = AllFiles.Tables[tableIndex];
             var tableData = new TableData(table, tableIndex);
-            var rowData = new RowData(row, rowIndex, tableData);
+
+            int rowsCount = WorkTableDatagridView.GetSelectedRowsCount();
+            if (rowIndex == -1)
+            {
+
+                if (rowsCount == 0) return false;
+
+                if (rowsCount==1)
+                {
+                    rowIndex = WorkTableDatagridView.GetSelectedRowsIndexes().First();
+                }
+            }
+
+            if(rowsCount==1 && row == null) row = table.Rows[rowIndex];
+
+            var rowData = new RowBaseRowData(row, rowIndex, tableData);
             return Selected(rowData);
         }
 
-        bool Selected(RowData rowData)
+        bool Selected(RowBaseRowData rowData)
         {
             try
             {
@@ -135,13 +159,13 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
         /// Check before processing Selected().
         /// </summary>
         /// <returns>State if Selected() can be continue</returns>
-        protected virtual bool IsOkSelected() => true;
+        protected virtual bool IsOkSelected(TableData tableData) => true;
 
         /// <summary>
         /// Check before processing Table().
         /// </summary>
         /// <returns>State if Table() can be continue</returns>
-        protected virtual bool IsOkTable() => true;
+        protected virtual bool IsOkTable(TableData tableData) => true;
 
         /// <summary>
         /// Check before processing All().
@@ -180,15 +204,20 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
         /// proceed 1 or more of selected rows
         /// </summary>
         /// <returns></returns>
-        internal bool Rows(TableData tableData)
+        internal bool Rows()
         {
-            if (!IsOkSelected()) return false;
+            if (FilesList.SelectedIndex == -1) return false;
+
+            var table = AllFiles.Tables[FilesList.SelectedIndex];
+            var tableData = new TableData(table, FilesList.SelectedIndex);
+
+            if (!IsOkSelected(tableData)) return false;
 
             Init();
 
             SelectedRowsCount = WorkTableDatagridView.GetSelectedRowsCount();
 
-            if (SelectedRowsCount <= 0) return Ret;
+            if (SelectedRowsCount <= 0) return false;
 
             try
             {
@@ -203,7 +232,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
                 {
                     ActionsInit();
 
-                    ActionsPreRowsApply(); // need here also when not table but selected rows more of one
+                    ActionsPreRowsApply(tableData); // need here also when not table but selected rows more of one
                 }
 
                 var selectedRowIndexses = new int[SelectedRowsCount];
@@ -231,14 +260,14 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
                 // need make var like IsLastRow avalaible only for parsing row
                 Parallel.ForEach(selectedRowIndexses, rowIndex =>
                 {
-                    var rowData = new RowData(tableData.SelectedTable.Rows[rowIndex], rowIndex, tableData);
+                    var rowData = new RowBaseRowData(tableData.SelectedTable.Rows[rowIndex], rowIndex, tableData);
                     Selected(rowData);
                 });
                 //foreach (int rowIndex in selectedRowIndexses) Selected(tableData.SelectedTable.Rows[rowIndex]);
 
                 if (IsSelectedRows)
                 {
-                    ActionsPostRowsApply(); // when selected more of one row
+                    ActionsPostRowsApply(tableData); // when selected more of one row
 
                     ActionsFinalize();
                 }
@@ -252,13 +281,13 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
         /// apply the actions before selected row will be parsed
         /// will be executed in any case
         /// </summary>
-        protected virtual void ActionsPreRowApply(RowData rowData) { }
+        protected virtual void ActionsPreRowApply(RowBaseRowData rowData) { }
 
         /// <summary>
         /// apply the actions before all rows for selected,table or all was applied
         /// will be executed if parse more of one row
         /// </summary>
-        protected virtual void ActionsPreRowsApply() { }
+        protected virtual void ActionsPreRowsApply(TableData tableData) { }
 
         /// <summary>
         /// apply the actions before several tables will be parsed
@@ -270,7 +299,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
         /// apply the actions before selected table wil be processed
         /// will be executed when one or more tables parsed
         /// </summary>
-        protected virtual void ActionsPreTableApply() { }
+        protected virtual void ActionsPreTableApply(TableData tableData) { }
 
         /// <summary>
         /// apply the actions before selected type of object will be parsed
@@ -288,13 +317,13 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
         /// apply the actions after several rows was parsed
         /// will be executed after all rows of table or more of one selected rows was parsed
         /// </summary>
-        protected virtual void ActionsPostRowsApply() { }
+        protected virtual void ActionsPostRowsApply(TableData tableData) { }
 
         /// <summary>
         /// apply the actions after selected table will be processed
         /// will be executed each time when table was parsed
         /// </summary>
-        protected virtual void ActionsPostTableApply() { }
+        protected virtual void ActionsPostTableApply(TableData tableData) { }
 
         /// <summary>
         /// apply the actions after all tables was parsed
@@ -323,7 +352,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
 #endif
             }
 
-            if (tableData.SelectedTable == null) tableData.SelectedTable = AllTables.Tables[tableData.SelectedTableIndex];
+            if (tableData.SelectedTable == null) tableData.SelectedTable = AllFiles.Tables[tableData.SelectedTableIndex];
 
             if (needToGetOrigTransColumnsNum)
             {
@@ -374,9 +403,9 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
 
             if (!IsAll && !IsTables) ActionsInit();
 
-            ActionsPreTableApply();
+            ActionsPreTableApply(tableData);
 
-            ActionsPreRowsApply();
+            ActionsPreRowsApply(tableData);
 
             _isInternalSelectedRowExecution = true;
 
@@ -388,9 +417,9 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
                 Selected(tableData.SelectedTable.Rows[i], tableData.SelectedTableIndex, i);
             });
 
-            ActionsPostRowsApply(); // need here also as in All because must be executed even if only one table was selected
+            ActionsPostRowsApply(tableData); // need here also as in All because must be executed even if only one table was selected
 
-            ActionsPostTableApply();
+            ActionsPostTableApply(tableData);
 
             if (!IsAll && !IsTables) ActionsFinalize();
 
@@ -403,8 +432,6 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
         /// <returns></returns>
         internal bool Table()
         {
-            if (!IsOkTable()) return false;
-
             Init();
 
             int[] selectedTableIndexes = null;
@@ -415,7 +442,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
 #endif
             DataTable[] selectedTables = null;
 #if DEBUG
-            AppData.Main.Invoke((Action)(() => selectedTables = AllTables.GetTablesByIndexes(selectedTableIndexes)));
+            AppData.Main.Invoke((Action)(() => selectedTables = AllFiles.GetTablesByIndexes(selectedTableIndexes)));
 #else
             tables = _allTables.GetTablesByIndexes(tableindexes);
 #endif
@@ -433,7 +460,11 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
 
             Parallel.ForEach(selectedTables, table =>
             {
-                Table(new TableData(table, selectedTableIndex: AllTables.Tables.IndexOf(table)));
+                var tableData = new TableData(table, selectedTableIndex: AllFiles.Tables.IndexOf(table));
+
+                if (!IsOkTable(tableData)) return;
+
+                Table(tableData);
             });
 
             //foreach (var table in selectedTables) Table(table);
@@ -489,7 +520,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
 
             Init();
 
-            var allTables = AllTables.Tables;
+            var allTables = AllFiles.Tables;
             TablesCount = allTables.Count;
 
             SetSelectedRowsCountForAll();
@@ -528,7 +559,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
             if (!IsAll) return;
 
             SelectedRowsCount = 0;
-            foreach (DataTable table in AllTables.Tables)
+            foreach (DataTable table in AllFiles.Tables)
             {
                 SelectedRowsCount += table.Rows.Count;
             }
@@ -560,7 +591,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
         ///// </summary>
         //protected bool IsLastRow;
 
-        protected virtual void ApplyConditions(RowData rowData)
+        protected virtual void ApplyConditions(RowBaseRowData rowData)
         {
             //set rest of rows with bool just because bool is faster
             if (_setRestRows)
@@ -575,10 +606,10 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
 
             if (!IsValidRow(rowData)) return;
 
-            try 
-            { 
-                if (Apply(rowData)) Ret = true; 
-            } 
+            try
+            {
+                if (Apply(rowData)) Ret = true;
+            }
             catch { }
         }
 
@@ -586,8 +617,8 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
         /// check if row is valid for parse
         /// </summary>
         /// <returns></returns>
-        protected virtual bool IsValidRow(RowData rowData) => AppSettings.IgnoreOrigEqualTransLines || !Equals(rowData.Original, rowData.Translation);
+        protected virtual bool IsValidRow(RowBaseRowData rowData) => AppSettings.IgnoreOrigEqualTransLines || !Equals(rowData.Original, rowData.Translation);
 
-        protected abstract bool Apply(RowData rowData);
+        protected abstract bool Apply(RowBaseRowData rowData);
     }
 }

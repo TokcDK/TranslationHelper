@@ -7,14 +7,14 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row.FillEmptyTablesL
 {
     abstract class FillEmptyTablesLinesDictBase : RowBase
     {
-        protected override bool IsOkSelected()
+        protected override bool IsOkSelected(TableData tableData)
         {
             return false;
         }
 
-        protected override bool IsOkTable()
+        protected override bool IsOkTable(TableData tableData)
         {
-            return IsOkSelected();
+            return IsOkSelected(tableData);
         }
 
         /// <summary>
@@ -35,9 +35,9 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row.FillEmptyTablesL
             return (!ForceRun || (AppData.CurrentProject.DontLoadDuplicates)) && (Translations == null || Translations.Count == 0);
         }
 
-        protected override bool IsValidRow(RowData rowData)
+        protected override bool IsValidRow(RowBaseRowData rowData)
         {
-            return IsAll && base.IsValidRow() && !string.IsNullOrWhiteSpace(SelectedRow[0].ToString()) && !string.IsNullOrWhiteSpace(SelectedRow[1] + string.Empty);
+            return IsAll && base.IsValidRow(rowData) && !string.IsNullOrWhiteSpace(rowData.SelectedRow[0].ToString()) && !string.IsNullOrWhiteSpace(rowData.SelectedRow[1] + string.Empty);
         }
 
         internal ConcurrentDictionary<string, string> Translations;
@@ -47,9 +47,9 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row.FillEmptyTablesL
             Translations = new ConcurrentDictionary<string, string>();
         }
 
-        protected override bool Apply(RowData rowData)
+        protected override bool Apply(RowBaseRowData rowData)
         {
-            Translations.TryAdd(SelectedRow[0] + "", SelectedRow[1] + "");
+            Translations.TryAdd(rowData.SelectedRow[0] + "", rowData.SelectedRow[1] + "");
 
             return true;
         }

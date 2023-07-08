@@ -18,10 +18,10 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row.ExtractedParser
         protected bool IsExtracted = false;
 
         // RoweBase
-        protected override bool Apply(RowData rowData)
+        protected override bool Apply(RowBaseRowData rowData)
         {
-            var orig = Original;
-            var trans = Translation;
+            var orig = rowData.Original;
+            var trans = rowData.Translation;
 
             if (string.IsNullOrWhiteSpace(trans)) return false;
 
@@ -70,7 +70,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row.ExtractedParser
 
             if (newValue == trans) return false;
 
-            Translation = newValue;
+            rowData.Translation = newValue;
 
             return true;
         }

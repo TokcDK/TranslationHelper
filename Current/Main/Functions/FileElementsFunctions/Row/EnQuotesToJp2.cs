@@ -24,9 +24,9 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
 
         bool IsNotJPLang = false;
         bool IsLangChecked = false;
-        protected override bool IsValidRow(RowData rowData)
+        protected override bool IsValidRow(RowBaseRowData rowData)
         {
-            if (IsNotJPLang || !base.IsValidRow()) return false;
+            if (IsNotJPLang || !base.IsValidRow(rowData)) return false;
 
             if (!IsLangChecked)
             {
@@ -42,13 +42,13 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
             return true;
         }
 
-        protected override bool Apply(RowData rowData)
+        protected override bool Apply(RowBaseRowData rowData)
         {
-            var o = Original;
-            var changed = ReplaceQuotesInTranslation(Original, Translation);
+            var o = rowData.Original;
+            var changed = ReplaceQuotesInTranslation(rowData.Original, rowData.Translation);
             if (changed == o) return false;
 
-            Translation = changed;
+            rowData.Translation = changed;
 
             return true;
         }

@@ -9,13 +9,13 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row.HardFixes
         {
         }
 
-        protected override bool Apply(RowData rowData)
+        protected override bool Apply(RowBaseRowData rowData)
         {
-            var translation = Translation;
-            var newtranslation = AppData.CurrentProject.HardcodedFixes(Original, translation);
+            var translation = rowData.Translation;
+            var newtranslation = AppData.CurrentProject.HardcodedFixes(rowData.Original, translation);
             if (newtranslation != translation)
             {
-                Translation = newtranslation;
+                rowData.Translation = newtranslation;
                 return true;
             }
             return false;

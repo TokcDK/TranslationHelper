@@ -25,9 +25,9 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
 
         bool IsNotJPLang = false;
         bool IsLangChecked = false;
-        protected override bool IsValidRow(RowData rowData)
+        protected override bool IsValidRow(RowBaseRowData rowData)
         {
-            if (IsNotJPLang || !base.IsValidRow()) return false;
+            if (IsNotJPLang || !base.IsValidRow(rowData)) return false;
 
             if (!IsLangChecked)
             {
@@ -59,9 +59,9 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
         {
         }
 
-        protected override bool Apply(RowData rowData)
+        protected override bool Apply(RowBaseRowData rowData)
         {
-            return ChangeQuotes1();
+            return ChangeQuotes1(rowData);
         }
 
         readonly HashSet<char> jpQuotes = new HashSet<char>
@@ -76,11 +76,11 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
             '?'
         };
 
-        private bool ChangeQuotes1()
+        private bool ChangeQuotes1(RowBaseRowData rowData)
         {
             try
             {
-                var translation = Translation;
+                var translation = rowData.Translation;
                 if (translation.Length == 0) return false;
 
                 if (
@@ -90,7 +90,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
                     && !translation.Contains("”")
                     ) return false;
 
-                string originalValue = Original;
+                string originalValue = rowData.Original;
 
                 var frontQuote = string.Empty;
                 var backQuote = string.Empty;
@@ -193,7 +193,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
                     }
                 }
 
-                if(changed) Translation = result;
+                if(changed) rowData.Translation = result;
             }
             catch
             {

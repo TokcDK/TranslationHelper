@@ -14,12 +14,12 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
         {
         }
 
-        protected override bool Apply(RowData rowData)
+        protected override bool Apply(RowBaseRowData rowData)
         {
-            var o = Original;
+            var o = rowData.Original;
             if (o.IsSoundsText())
             {
-                Translation = o;
+                rowData.Translation = o;
 
                 return true;
             }

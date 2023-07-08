@@ -20,14 +20,14 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row.HardFixes
         /// </summary>
         /// <param name=THSettings.TranslationColumnName></param>
         /// <returns></returns>
-        protected override bool Apply(RowData rowData)
+        protected override bool Apply(RowBaseRowData rowData)
         {
             //вот такой пипец теоритически возможен
             //\\N\\N[\\V[122]]
             //"\\N[\\V[122]]'s blabla... and [1]' s bla...!
             //　\\NIt \\Nseems to[2222] be[1]'s blabla...!
 
-            var translation = Translation;
+            var translation = rowData.Translation;
             var ret = false;
 
             //выдирание совпадений из перевода
@@ -98,7 +98,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row.HardFixes
                 newValue = Regex.Replace(newValue, @"\\\\N\[([0-9]+)\]([a-zA-Z])", @"\\N[$1] $2");
                 newValue = Regex.Replace(newValue, @"([a-zA-Z])\\\\N\[([0-9]+)\]", @"$1 \\N[$2]");
 
-                Translation = newValue;
+                rowData.Translation = newValue;
             }
 
             return ret;

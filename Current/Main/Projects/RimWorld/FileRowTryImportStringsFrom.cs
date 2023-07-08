@@ -58,16 +58,16 @@ namespace TranslationHelper.Projects.RPGMMV.Menus
 
         string _languagesDir = "";
 
-        protected override bool Apply(RowData rowData)
+        protected override bool Apply(RowBaseRowData rowData)
         {
             try
             {
-                string oinfo = AppData.CurrentProject.FilesContentInfo.Tables[SelectedTable.TableName].Rows[SelectedRowIndex].Field<string>(0);
+                string oinfo = AppData.CurrentProject.FilesContentInfo.Tables[rowData.SelectedTable.TableName].Rows[rowData.SelectedRowIndex].Field<string>(0);
                 var match = Regex.Match(oinfo, @"Element: \""([^\""]+)\""");
                 if (!match.Success) return false;
                 var k = match.Groups[1].Value;
 
-                if (dict.TryGetValue(k, out string value)) Translation = value;
+                if (dict.TryGetValue(k, out string value)) rowData.Translation = value;
             }
             catch
             {

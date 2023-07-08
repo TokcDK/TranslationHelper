@@ -8,13 +8,13 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row.HardFixes
         {
         }
 
-        protected override bool Apply(RowData rowData)
+        protected override bool Apply(RowBaseRowData rowData)
         {
-            var translation = Translation;
-            var original = Original;
+            var translation = rowData.Translation;
+            var original = rowData.Original;
             if (translation.Length > 1 && translation[translation.Length - 1] == '"' && original.Length > 0 && original[original.Length - 1] != '"')
             {
-                Translation = translation.Remove(translation.Length - 1, 1) + original[original.Length - 1];
+                rowData.Translation = translation.Remove(translation.Length - 1, 1) + original[original.Length - 1];
                 return true;
             }
             return false;

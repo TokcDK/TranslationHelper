@@ -24,13 +24,13 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row.HardFixes
 
         protected List<HardFixesBase> HardFixesList;
 
-        protected override bool Apply(RowData rowData)
+        protected override bool Apply(RowBaseRowData rowData)
         {
             var ret = false;
 
             foreach (var hardfix in HardFixesList)
             {
-                if (SelectedRow != null ? hardfix.Selected(SelectedRow) : hardfix.Rows())
+                if (rowData.SelectedRow != null ? hardfix.Selected(rowData.SelectedRow) : hardfix.Rows())
                 {
                     ret = true;
                 }

@@ -8,15 +8,15 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row.HardFixes
         {
         }
 
-        protected override bool Apply(RowData rowData)
+        protected override bool Apply(RowBaseRowData rowData)
         {
-            var newtransValue = Translation;
+            var newtransValue = rowData.Translation;
             var ret = false;
             //в оригинале " на начале и конце, а в переводе есть также " в середине, что может быть воспринято игрой как ошибка
             //также фикс, когда в оригинале кавычки в начале и конце, а в переводе нет в начале или конце
             bool cvalueStartsWith = newtransValue.StartsWith("\"");
             bool cvalueEndsWith = newtransValue.EndsWith("\"");
-            var origValue = Original;
+            var origValue = rowData.Original;
             if (
                  //если оригинал начинается и кончается на ", а в переводе " отсутствует на начале или конце
                  (origValue.StartsWith("\"") && origValue.EndsWith("\"") && (!cvalueStartsWith || !cvalueEndsWith))
@@ -68,7 +68,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row.HardFixes
 
             if (ret)
             {
-                Translation = newtransValue;
+                rowData.Translation = newtransValue;
             }
             return ret;
         }

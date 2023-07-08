@@ -46,12 +46,12 @@ namespace TranslationHelper.Projects.RPGMMV.Menus
 
         string _languagesDir = "";
 
-        protected override bool Apply(RowData rowData)
+        protected override bool Apply(RowBaseRowData rowData)
         {
             try
             {
-                var o = Original;
-                if (dict.TryGetValue(o, out string value)) Translation = value;
+                var o = rowData.Original;
+                if (dict.TryGetValue(o, out string value)) rowData.Translation = value;
             }
             catch
             {

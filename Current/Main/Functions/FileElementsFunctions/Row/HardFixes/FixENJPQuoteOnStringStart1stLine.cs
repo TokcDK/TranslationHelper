@@ -15,9 +15,9 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row.HardFixes
 
 "Challenge the slots for a quick getaway?
 　\\C[16]1 play \\C[0]\\V[7]\\C[16]\\G\\C[0] */
-        protected override bool Apply(RowData rowData)
+        protected override bool Apply(RowBaseRowData rowData)
         {
-            var transValue = Translation;
+            var transValue = rowData.Translation;
 
             string[] quotes; ;
             if (transValue.Length == 0 || !(quotes = new string[4] { "\"", "``", "`", "“" }).Contains(transValue.Substring(0, 1)))
@@ -33,7 +33,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row.HardFixes
             var ret = false;
             for (int i = 0; i < quotes.Length; i++)
             {
-                var origValue = Original;
+                var origValue = rowData.Original;
                 oStartsJp = origValue.StartsWith("「");
                 oEndsJp = origValue.EndsWith("」");
                 tStartsEn = transValue.StartsWith(quotes[i]);
@@ -58,7 +58,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row.HardFixes
             }
 
             if (ret)
-                Translation = transValue;
+                rowData.Translation = transValue;
 
             return ret;
         }

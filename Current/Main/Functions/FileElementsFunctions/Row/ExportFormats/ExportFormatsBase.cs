@@ -54,13 +54,13 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row.ExportFormats
         /// </summary>
         protected virtual Encoding SaveEncoding { get => Encoding.UTF8; }
 
-        protected override bool Apply(RowData rowData)
+        protected override bool Apply(RowBaseRowData rowData)
         {
             Init();
 
-            _allRows.Add(OriginalMod(Original) + MarkerTranslation + TranslationMod(Translation));
+            _allRows.Add(OriginalMod(rowData.Original) + MarkerTranslation + TranslationMod(rowData.Translation));
 
-            if (IsLastRow)
+            if (rowData.IsLastRow)
             {
                 using (var save = new SaveFileDialog())
                 {
@@ -103,7 +103,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row.ExportFormats
             return original;
         }
 
-        protected override bool IsValidRow(RowData rowData)
+        protected override bool IsValidRow(RowBaseRowData rowData)
         {
             return true;
         }

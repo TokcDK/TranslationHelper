@@ -11,16 +11,16 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
         {
         }
 
-        protected override bool Apply(RowData rowData)
+        protected override bool Apply(RowBaseRowData rowData)
         {
-            return CellFixes();
+            return CellFixes(rowData);
         }
 
-        private bool CellFixes()
+        private bool CellFixes(RowBaseRowData rowData)
         {
             try
             {
-                string cvalue = Translation;
+                string cvalue = rowData.Translation;
                 //не трогать строку перевода, если она пустая
                 if (cvalue.Length > 0)
                 {
@@ -87,10 +87,10 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
                     //здесь функция возвращения извлеченного
                     //cvalue = RestoreExtracted(cvalue, row[cind - 1] as string);
 
-                    if (!Equals(Translation, cvalue))
+                    if (!Equals(rowData.Translation, cvalue))
                     {
                         //ProjectData.THFilesElementsDataset.Tables[t].Rows[rowindex][cind] = cvalue;
-                        Translation = cvalue;
+                        rowData.Translation = cvalue;
                         return true;
                     }
                 }
@@ -98,7 +98,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
             catch (System.InvalidOperationException) // in case of collection was changed exception when rules was changed in time of iteration
             {
                 // retry fixes
-                return CellFixes();
+                return CellFixes(rowData);
             }
             return false;
         }

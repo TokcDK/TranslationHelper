@@ -11,11 +11,11 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
         }
 
         bool _dataSourceClear = false;
-        protected override void ActionsPreTableApply()
+        protected override void ActionsPreTableApply(TableData tableData)
         {
             if (IsAll || IsTables || IsTable)
             {
-                if (AppData.Main.THFileElementsDataGridView.DataSource != SelectedTable) return;
+                if (AppData.Main.THFileElementsDataGridView.DataSource != tableData.SelectedTable) return;
 
                 _dataSourceClear = true;
                 //отключение датасорса для убирания тормозов с параллельной прорисовкой
@@ -25,7 +25,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
             }
         }
 
-        protected override void ActionsPostTableApply()
+        protected override void ActionsPostTableApply(TableData tableData)
         {
             if ((IsAll || IsTables || IsTable) && _dataSourceClear)
             {
@@ -34,14 +34,14 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
             }
         }
 
-        protected override bool IsValidRow(RowData rowData)
+        protected override bool IsValidRow(RowBaseRowData rowData)
         {
             return true; //clear any rows
         }
 
-        protected override bool Apply(RowData rowData)
+        protected override bool Apply(RowBaseRowData rowData)
         {
-            Translation = null;
+            rowData.Translation = null;
 
             return true;
         }
