@@ -34,12 +34,12 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
             }
         }
 
-        protected override bool IsValidRow()
+        protected override bool IsValidRow(RowData rowData)
         {
             return true; //clear any rows
         }
 
-        protected override bool Apply()
+        protected override bool Apply(RowData rowData)
         {
             Translation = null;
 

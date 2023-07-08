@@ -6,7 +6,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
 {
     class PasteTranslation : RowBase
     {
-        protected override bool IsValidRow()
+        protected override bool IsValidRow(RowData rowData)
         {
             return base.IsValidRow() && (SelectedRow[1] == null || string.IsNullOrEmpty(SelectedRow[1].ToString()));
         }
@@ -20,7 +20,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
         }
 
         int _lineIndex = 0;
-        protected override bool Apply()
+        protected override bool Apply(RowData rowData)
         {
             var origValue = Original;
             var selectedRowOriginalLinesCount = origValue.GetLinesCount();

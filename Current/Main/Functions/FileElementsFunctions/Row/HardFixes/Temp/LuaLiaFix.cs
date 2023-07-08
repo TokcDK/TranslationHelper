@@ -8,7 +8,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row.HardFixes.Temp
         {
         }
 
-        protected override bool Apply()
+        protected override bool Apply(RowData rowData)
         {
             bool lia;
             var original = Original;

@@ -8,14 +8,14 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
         {
         }
 
-        protected override bool IsValidRow()
+        protected override bool IsValidRow(RowData rowData)
         {
             return true;
         }
 
         protected readonly List<string> _bufferedOriginals = new List<string>();
 
-        protected override bool Apply()
+        protected override bool Apply(RowData rowData)
         {
             _bufferedOriginals.Add(Original);//add original value
 

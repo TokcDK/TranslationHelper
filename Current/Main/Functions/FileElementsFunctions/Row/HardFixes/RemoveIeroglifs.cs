@@ -12,7 +12,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row.HardFixes
 
         string[] _jpKatakana;
 
-        protected override bool Apply()
+        protected override bool Apply(RowData rowData)
         {
             var translation = Translation;
             if (FunctionsRomajiKana.HasNOJPcharacters(translation))

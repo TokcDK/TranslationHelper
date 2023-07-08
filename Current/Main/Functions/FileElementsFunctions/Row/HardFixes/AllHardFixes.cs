@@ -24,7 +24,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row.HardFixes
 
         protected List<HardFixesBase> HardFixesList;
 
-        protected override bool Apply()
+        protected override bool Apply(RowData rowData)
         {
             var ret = false;
 

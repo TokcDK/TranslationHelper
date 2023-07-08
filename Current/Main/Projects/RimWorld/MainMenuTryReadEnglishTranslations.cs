@@ -46,7 +46,7 @@ namespace TranslationHelper.Projects.RPGMMV.Menus
 
         string _languagesDir = "";
 
-        protected override bool Apply()
+        protected override bool Apply(RowData rowData)
         {
             try
             {

@@ -13,7 +13,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
         {
         }
 
-        protected override bool IsValidRow()
+        protected override bool IsValidRow(RowData rowData)
         {
             return true;
         }

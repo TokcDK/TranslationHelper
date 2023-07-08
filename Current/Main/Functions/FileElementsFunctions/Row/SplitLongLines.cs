@@ -15,7 +15,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
             return !AppData.CurrentProject.LineSplitProjectSpecificSkipForTable(table);
         }
 
-        protected override bool Apply()
+        protected override bool Apply(RowData rowData)
         {
             string origCellValue = Original;
             string transCellValue = Translation;

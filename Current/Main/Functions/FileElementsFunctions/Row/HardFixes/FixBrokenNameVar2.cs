@@ -9,7 +9,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row.HardFixes
         {
         }
 
-        protected override bool Apply()
+        protected override bool Apply(RowData rowData)
         {
             var translation = Translation;
             if (Regex.IsMatch(translation, @"\\\\([0-9]{1,3})\[([0-9]{1,3})\]"))

@@ -35,7 +35,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row.FillEmptyTablesL
             return (!ForceRun || (AppData.CurrentProject.DontLoadDuplicates)) && (Translations == null || Translations.Count == 0);
         }
 
-        protected override bool IsValidRow()
+        protected override bool IsValidRow(RowData rowData)
         {
             return IsAll && base.IsValidRow() && !string.IsNullOrWhiteSpace(SelectedRow[0].ToString()) && !string.IsNullOrWhiteSpace(SelectedRow[1] + string.Empty);
         }
@@ -47,7 +47,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row.FillEmptyTablesL
             Translations = new ConcurrentDictionary<string, string>();
         }
 
-        protected override bool Apply()
+        protected override bool Apply(RowData rowData)
         {
             Translations.TryAdd(SelectedRow[0] + "", SelectedRow[1] + "");
 

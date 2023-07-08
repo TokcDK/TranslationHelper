@@ -39,7 +39,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
             }
         }
 
-        protected override bool Apply()
+        protected override bool Apply(RowData rowData)
         {
             if(!THSettings.SourceLanguageIsJapanese)
             {

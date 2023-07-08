@@ -25,7 +25,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row.HardFixes
 　No matter how much attention I pay, curse grants are rare
 　Expresses beyond my consciousness" 
 */
-        protected override bool Apply()
+        protected override bool Apply(RowData rowData)
         {
             var ret = false;
             var translation = Translation;

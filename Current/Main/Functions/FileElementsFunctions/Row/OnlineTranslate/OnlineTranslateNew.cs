@@ -81,7 +81,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
             if (_translator == null) _translator = new GoogleAPIOLD();
         }
 
-        protected override bool IsValidRow()
+        protected override bool IsValidRow(Row.RowData rowData)
         {
             return !AppSettings.InterruptTtanslation && base.IsValidRow()
                 && (string.IsNullOrEmpty(Translation)
@@ -127,7 +127,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
             if (AppSettings.InterruptTtanslation) AppSettings.InterruptTtanslation = false;
         }
 
-        protected override bool Apply()
+        protected override bool Apply(Row.RowData rowData)
         {
             try
             {

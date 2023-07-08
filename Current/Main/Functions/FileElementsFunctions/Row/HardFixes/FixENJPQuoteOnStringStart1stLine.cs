@@ -15,7 +15,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row.HardFixes
 
 "Challenge the slots for a quick getaway?
 　\\C[16]1 play \\C[0]\\V[7]\\C[16]\\G\\C[0] */
-        protected override bool Apply()
+        protected override bool Apply(RowData rowData)
         {
             var transValue = Translation;
 

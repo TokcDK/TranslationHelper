@@ -54,7 +54,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row.ExportFormats
         /// </summary>
         protected virtual Encoding SaveEncoding { get => Encoding.UTF8; }
 
-        protected override bool Apply()
+        protected override bool Apply(RowData rowData)
         {
             Init();
 
@@ -103,7 +103,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row.ExportFormats
             return original;
         }
 
-        protected override bool IsValidRow()
+        protected override bool IsValidRow(RowData rowData)
         {
             return true;
         }

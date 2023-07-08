@@ -4,7 +4,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
 {
     class CopyOriginals : ApplyAfterFillBufferWithOriginalsBase
     {
-        protected override bool IsValidRow()
+        protected override bool IsValidRow(RowData rowData)
         {
             return base.IsValidRow() && string.IsNullOrEmpty(Original);
         }

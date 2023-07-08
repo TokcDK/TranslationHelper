@@ -19,13 +19,13 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
             _simpleNumRegex = new Regex(@"\d+", RegexOptions.Compiled); //reg равняется любым цифрам, простое сравнение
         }
 
-        protected override bool IsValidRow()
+        protected override bool IsValidRow(RowData rowData)
         {
             return !string.IsNullOrEmpty(Translation); // not empty original translation
         }
 
         protected virtual bool IsForce => false;
-        protected override bool Apply()
+        protected override bool Apply(RowData rowData)
         {
             Set();
 

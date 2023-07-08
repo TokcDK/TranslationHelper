@@ -7,7 +7,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
         public SetOriginalToTranslation()
         {
         }
-        protected override bool Apply()
+        protected override bool Apply(RowData rowData)
         {
             try
             {

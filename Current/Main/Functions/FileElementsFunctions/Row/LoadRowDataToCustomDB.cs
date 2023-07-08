@@ -49,7 +49,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
             AppData.Main.ProgressInfo(false);
         }
 
-        protected override bool Apply()
+        protected override bool Apply(RowData rowData)
         {
             var orig = Original;
             var trans = Translation;

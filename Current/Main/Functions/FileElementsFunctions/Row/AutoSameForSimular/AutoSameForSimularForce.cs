@@ -2,7 +2,7 @@
 {
     class AutoSameForSimularForce : AutoSameForSimularBase
     {
-        protected override bool IsValidRow()
+        protected override bool IsValidRow(RowData rowData)
         {
             return !string.IsNullOrEmpty(Original);
         }

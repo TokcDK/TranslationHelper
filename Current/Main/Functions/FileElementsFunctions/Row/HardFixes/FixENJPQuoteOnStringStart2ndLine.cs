@@ -20,7 +20,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row.HardFixes
         //“…………….
         //　What are you doing? I…….
         /////////////////////////////////	
-        protected override bool Apply()
+        protected override bool Apply(RowData rowData)
         {
             try
             {

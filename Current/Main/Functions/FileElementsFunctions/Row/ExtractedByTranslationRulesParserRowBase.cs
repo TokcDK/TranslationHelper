@@ -18,7 +18,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row.ExtractedParser
         protected bool IsExtracted = false;
 
         // RoweBase
-        protected override bool Apply()
+        protected override bool Apply(RowData rowData)
         {
             var orig = Original;
             var trans = Translation;

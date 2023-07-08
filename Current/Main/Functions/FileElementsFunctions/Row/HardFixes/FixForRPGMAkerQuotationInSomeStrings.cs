@@ -8,7 +8,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row.HardFixes
         {
         }
 
-        protected override bool Apply()
+        protected override bool Apply(RowData rowData)
         {
             var newtransValue = Translation;
             var ret = false;

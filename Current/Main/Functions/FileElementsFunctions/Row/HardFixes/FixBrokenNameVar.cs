@@ -20,7 +20,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row.HardFixes
         /// </summary>
         /// <param name=THSettings.TranslationColumnName></param>
         /// <returns></returns>
-        protected override bool Apply()
+        protected override bool Apply(RowData rowData)
         {
             //вот такой пипец теоритически возможен
             //\\N\\N[\\V[122]]

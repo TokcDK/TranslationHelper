@@ -25,7 +25,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
 
         bool IsNotJPLang = false;
         bool IsLangChecked = false;
-        protected override bool IsValidRow()
+        protected override bool IsValidRow(RowData rowData)
         {
             if (IsNotJPLang || !base.IsValidRow()) return false;
 
@@ -59,7 +59,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
         {
         }
 
-        protected override bool Apply()
+        protected override bool Apply(RowData rowData)
         {
             return ChangeQuotes1();
         }

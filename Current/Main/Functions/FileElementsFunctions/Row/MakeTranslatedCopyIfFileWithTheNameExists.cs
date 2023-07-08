@@ -42,7 +42,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
             internal List<string> PathsList = new List<string>();
         }
 
-        protected override bool Apply()
+        protected override bool Apply(RowData rowData)
         {
 
             string orig = Original;
