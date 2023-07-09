@@ -268,16 +268,14 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
                 {
                     Parallel.ForEach(selectedRowIndexses, rowIndex =>
                     {
-                        var rowData = new RowBaseRowData(tableData.SelectedTable.Rows[rowIndex], rowIndex, tableData);
-                        Selected(rowData);
+                        Selected(new RowBaseRowData(tableData.SelectedTable.Rows[rowIndex], rowIndex, tableData));
                     });
                 }
                 else
                 {
                     foreach (var rowIndex in selectedRowIndexses)
                     {
-                        var rowData = new RowBaseRowData(tableData.SelectedTable.Rows[rowIndex], rowIndex, tableData);
-                        Selected(rowData);
+                        Selected(new RowBaseRowData(tableData.SelectedTable.Rows[rowIndex], rowIndex, tableData));
                     }
                 }
                 //foreach (int rowIndex in selectedRowIndexses) Selected(tableData.SelectedTable.Rows[rowIndex]);
@@ -398,25 +396,26 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
         /// </summary>
         /// <param name="dataTable"></param>
         /// <returns></returns>
-        internal bool Table(TableData tableData)
+        internal bool Table(TableData tableData, bool IsInternalTableParse = false)
         {
-            //SelectedTable = dataTable;
-
-            Init();
-
-            if (!IsAll && !IsTables)
+            if (!IsInternalTableParse)
             {
-                IsTable = true;
-                TablesCount = 1;
-            }
+                Init();
 
-            GetTableData(tableData);
+                if (!IsAll && !IsTables)
+                {
+                    IsTable = true;
+                    TablesCount = 1;
+                }
+
+                GetTableData(tableData);
+            }
 
             if (tableData.SelectedTableIndex == -1) return false; // return when table is not selected
 
-            if (!IsValidTable(tableData)) return false;
+            if (!IsInternalTableParse && !IsAll && !IsTables) ActionsInit();
 
-            if (!IsAll && !IsTables) ActionsInit();
+            if (!IsOkTable(tableData)) return false;
 
             ActionsPreTableApply(tableData);
 
@@ -447,7 +446,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
 
             ActionsPostTableApply(tableData);
 
-            if (!IsAll && !IsTables) ActionsFinalize();
+            if (!IsInternalTableParse && !IsAll && !IsTables) ActionsFinalize();
 
             return Ret;
         }
@@ -482,22 +481,14 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
             {
                 var result = Parallel.ForEach(selectedTables, table =>
                 {
-                    var tableData = new TableData(table, selectedTableIndex: AllFiles.Tables.IndexOf(table));
-
-                    if (!IsOkTable(tableData)) return;
-
-                    Table(tableData);
+                    Table(new TableData(table, selectedTableIndex: AllFiles.Tables.IndexOf(table)), IsInternalTableParse: true);
                 });
             }
             else
             {
                 foreach (var table in selectedTables)
                 {
-                    var tableData = new TableData(table, selectedTableIndex: AllFiles.Tables.IndexOf(table));
-
-                    if (!IsOkTable(tableData)) continue;
-
-                    Table(tableData);
+                    Table(new TableData(table, selectedTableIndex: AllFiles.Tables.IndexOf(table)), IsInternalTableParse: true);
                 }
             }
 
@@ -512,13 +503,6 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
 
             return Ret;
         }
-
-        /// <summary>
-        /// Check if table is valid. Can be used by any finction to not make same check in line checking for perfomance issues.
-        /// </summary>
-        /// <param name="table"></param>
-        /// <returns>Default is always true</returns>
-        protected virtual bool IsValidTable(TableData tableData) => true;
 
         /// <summary>
         /// True when selected more of one table
@@ -567,7 +551,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
                     var selectedTable = allTables[selectedTableIndex];
                     var tableData = new TableData(selectedTable, selectedTableIndex);
 
-                    Table(tableData);
+                    Table(tableData, IsInternalTableParse: true);
                 });
             }
             else
@@ -579,7 +563,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
 
                     try
                     {
-                        Table(tableData);
+                        Table(tableData, IsInternalTableParse: true);
                     }
                     catch (Exception ex)
                     {

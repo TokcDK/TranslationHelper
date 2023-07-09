@@ -10,7 +10,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
         {
         }
 
-        protected override bool IsValidTable(TableData tableData)
+        protected override bool IsOkTable(TableData tableData)
         {
             return !AppData.CurrentProject.LineSplitProjectSpecificSkipForTable(tableData.SelectedTable);
         }
