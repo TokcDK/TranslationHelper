@@ -95,9 +95,11 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
         {
             if (tableIndex == -1)
             {
-                if(FilesList.SelectedIndex==-1) return false;
+                FilesList.Invoke((Action)(() =>
+                    tableIndex = FilesList.SelectedIndex
+                ));
 
-                tableIndex = FilesList.SelectedIndex;
+                if (tableIndex == -1) return false;
             }
 
             var table = AllFiles.Tables[tableIndex];
@@ -109,13 +111,13 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
 
                 if (rowsCount == 0) return false;
 
-                if (rowsCount==1)
+                if (rowsCount == 1)
                 {
                     rowIndex = WorkTableDatagridView.GetSelectedRowsIndexes().First();
                 }
             }
 
-            if(rowsCount==1 && row == null) row = table.Rows[rowIndex];
+            if (rowsCount == 1 && row == null) row = table.Rows[rowIndex];
 
             var rowData = new RowBaseRowData(row, rowIndex, tableData);
             return Selected(rowData);
@@ -206,10 +208,15 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
         /// <returns></returns>
         internal bool Rows()
         {
-            if (FilesList.SelectedIndex == -1) return false;
+            int tableIndex = -1;
+            FilesList.Invoke((Action)(() =>
+                tableIndex = FilesList.SelectedIndex
+            ));
 
-            var table = AllFiles.Tables[FilesList.SelectedIndex];
-            var tableData = new TableData(table, FilesList.SelectedIndex);
+            if (tableIndex == -1) return false;
+
+            var table = AllFiles.Tables[tableIndex];
+            var tableData = new TableData(table, tableIndex);
 
             if (!IsOkSelected(tableData)) return false;
 
@@ -345,11 +352,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
         {
             if (tableData.SelectedTableIndex == -1)
             {
-#if DEBUG
-                AppData.Main.Invoke((Action)(() => tableData.SelectedTableIndex = AppData.Main.THFilesList.GetSelectedIndex()));
-#else
-                tableData.SelectedTableIndex = AppData.Main.THFilesList.GetSelectedIndex();
-#endif
+                FilesList.Invoke((Action)(() => tableData.SelectedTableIndex = AppData.Main.THFilesList.GetSelectedIndex()));
             }
 
             if (tableData.SelectedTable == null) tableData.SelectedTable = AllFiles.Tables[tableData.SelectedTableIndex];
@@ -435,17 +438,11 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
             Init();
 
             int[] selectedTableIndexes = null;
-#if DEBUG
             FilesList.Invoke((Action)(() => selectedTableIndexes = FilesList.CopySelectedIndexes()));
-#else
-            tableindexes = _filesList.CopySelectedIndexes();
-#endif
+
             DataTable[] selectedTables = null;
-#if DEBUG
             AppData.Main.Invoke((Action)(() => selectedTables = AllFiles.GetTablesByIndexes(selectedTableIndexes)));
-#else
-            tables = _allTables.GetTablesByIndexes(tableindexes);
-#endif
+
             TablesCount = selectedTables.Length;
             IsTables = TablesCount > 1;
 
