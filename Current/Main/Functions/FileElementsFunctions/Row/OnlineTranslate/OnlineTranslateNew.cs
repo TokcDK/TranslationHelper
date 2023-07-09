@@ -18,6 +18,9 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
 {
     partial class OnlineTranslateNew : RowBase
     {
+        protected override bool IsParallelTables => false;
+        protected override bool IsParallelRows => false;
+
         // full row string
         public Dictionary<string, RowTranslationInfo> TranslationDataList = new Dictionary<string, RowTranslationInfo>();
 
