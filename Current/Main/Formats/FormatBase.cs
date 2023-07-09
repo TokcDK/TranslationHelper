@@ -332,6 +332,7 @@ namespace TranslationHelper.Formats
             {
                 Data.Rows.Add(rowData);
 
+                // trim row info if is too long
                 if(rowInfo!=null && rowInfo.Length > 500)
                 {
                     rowInfo = rowInfo.Remove(500);
