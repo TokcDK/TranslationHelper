@@ -6,20 +6,22 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
 {
     class PasteTranslation : RowBase
     {
-        protected override bool IsValidRow(RowBaseRowData rowData)
-        {
-            return base.IsValidRow(rowData) && (rowData.SelectedRow[1] == null || string.IsNullOrEmpty(rowData.SelectedRow[1].ToString()));
-        }
-
-        string[] _buffer;
-        int _bufferLength;
-        protected override void Init()
+        public PasteTranslation()
         {
             _buffer = Clipboard.GetText().SplitToLines().ToArray();
             _bufferLength = _buffer.Length;
         }
 
+        protected override bool IsValidRow(RowBaseRowData rowData)
+        {
+            return base.IsValidRow(rowData) && (rowData.SelectedRow[1] == null || string.IsNullOrEmpty(rowData.SelectedRow[1].ToString()));
+        }
+
+        readonly string[] _buffer;
+        readonly int _bufferLength;
+
         int _lineIndex = 0;
+
         protected override bool Apply(RowBaseRowData rowData)
         {
             var origValue = rowData.Original;

@@ -9,15 +9,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row.ExportFormats
     {
         protected ExportFormatsBase()
         {
-        }
-
-        protected override void Init()
-        {
-            if (NeedInit)
-            {
-                _allRows = new List<string>(SelectedRowsCount);
-                base.Init();
-            }
+            _allRows = new List<string>(SelectedRowsCount);
         }
 
         /// <summary>
@@ -56,8 +48,6 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row.ExportFormats
 
         protected override bool Apply(RowBaseRowData rowData)
         {
-            Init();
-
             _allRows.Add(OriginalMod(rowData.Original) + MarkerTranslation + TranslationMod(rowData.Translation));
 
             if (rowData.IsLastRow)

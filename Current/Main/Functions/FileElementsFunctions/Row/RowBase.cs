@@ -51,22 +51,16 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
 
     internal abstract class RowBase
     {
+        protected RowBase()
+        {
+            SelectedRowsCount = 0;
+            SelectedRowsCountRest = 0;
+        }
+
         /// <summary>
         /// execute one time
         /// </summary>
         protected bool NeedInit = true;
-
-        /// <summary>
-        /// init some vars
-        /// </summary>
-        protected virtual void Init()
-        {
-            if (!NeedInit) return;
-
-            SelectedRowsCount = 0;
-            SelectedRowsCountRest = 0;
-            NeedInit = false;
-        }
 
         protected readonly ListBox FilesList = AppData.THFilesList;
         protected readonly DataSet AllFiles = AppData.CurrentProject.FilesContent;
@@ -128,8 +122,6 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
             {
                 if (!_isInternalSelectedRowExecution)
                 {
-                    Init();
-
                     GetTableData(rowData.TableData);
 
                     if (IsSelectedRows) SelectedRowsCount = 1;
@@ -218,8 +210,6 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
             var tableData = new TableData(table, tableIndex);
 
             if (!IsOkSelected(tableData)) return false;
-
-            Init();
 
             SelectedRowsCount = WorkTableDatagridView.GetSelectedRowsCount();
 
@@ -400,8 +390,6 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
         {
             if (!IsInternalTableParse)
             {
-                Init();
-
                 if (!IsAll && !IsTables)
                 {
                     IsTable = true;
@@ -457,8 +445,6 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
         /// <returns></returns>
         internal bool Table()
         {
-            Init();
-
             int[] selectedTableIndexes = null;
             FilesList.Invoke((Action)(() => selectedTableIndexes = FilesList.CopySelectedIndexes()));
 
@@ -533,8 +519,6 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
             if (!IsOkAll()) return false;
 
             IsAll = true;
-
-            Init();
 
             var allTables = AllFiles.Tables;
             TablesCount = allTables.Count;
@@ -614,6 +598,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
         /// determine if SelectedRowsCountRest need to set
         /// </summary>
         bool _setRestRows = true;//
+
         ///// <summary>
         ///// true when last row processed
         ///// </summary>
