@@ -331,6 +331,11 @@ namespace TranslationHelper.Formats
             try
             {
                 Data.Rows.Add(rowData);
+
+                if(rowInfo!=null && rowInfo.Length > 500)
+                {
+                    rowInfo = rowInfo.Remove(500);
+                }
                 Info.Rows.Add(rowInfo);
             }
             catch { }
