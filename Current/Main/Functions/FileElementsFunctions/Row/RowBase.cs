@@ -108,7 +108,6 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
             int rowsCount = WorkTableDatagridView.GetSelectedRowsCount();
             if (rowIndex == -1)
             {
-
                 if (rowsCount == 0) return false;
 
                 if (rowsCount == 1)
@@ -265,11 +264,22 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
 
                 // here could be parallel foreach but there is some issues with it because IsLastRow, Original, Translation and other variables
                 // need make var like IsLastRow avalaible only for parsing row
-                Parallel.ForEach(selectedRowIndexses, rowIndex =>
+                if (IsParallelRows)
                 {
-                    var rowData = new RowBaseRowData(tableData.SelectedTable.Rows[rowIndex], rowIndex, tableData);
-                    Selected(rowData);
-                });
+                    Parallel.ForEach(selectedRowIndexses, rowIndex =>
+                    {
+                        var rowData = new RowBaseRowData(tableData.SelectedTable.Rows[rowIndex], rowIndex, tableData);
+                        Selected(rowData);
+                    });
+                }
+                else
+                {
+                    foreach (var rowIndex in selectedRowIndexses)
+                    {
+                        var rowData = new RowBaseRowData(tableData.SelectedTable.Rows[rowIndex], rowIndex, tableData);
+                        Selected(rowData);
+                    }
+                }
                 //foreach (int rowIndex in selectedRowIndexses) Selected(tableData.SelectedTable.Rows[rowIndex]);
 
                 if (IsSelectedRows)
@@ -380,6 +390,8 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
         protected bool IsTable;
         protected static int ColumnIndexOriginal { get => AppData.CurrentProject.OriginalColumnIndex; }
         protected static int ColumnIndexTranslation { get => AppData.CurrentProject.TranslationColumnIndex; }
+        protected virtual bool IsParallelRows { get; } = true;
+        protected virtual bool IsParallelTables { get; } = true;
 
         /// <summary>
         /// proceed selected table
@@ -415,10 +427,21 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
             var rowsCount = tableData.SelectedTable.Rows.Count;
             if (!IsAll && !IsTables && IsTable) SelectedRowsCount = rowsCount; //|| (IsAll && SelectedTableIndex == tablescount - 1)set rows count to selectedrowscount for last table but forgot for which purpose it is
 
-            Parallel.For(0, rowsCount, i =>
+            if (IsParallelRows)
             {
-                Selected(tableData.SelectedTable.Rows[i], tableData.SelectedTableIndex, i);
-            });
+                Parallel.For(0, rowsCount, i =>
+                {
+                    Selected(tableData.SelectedTable.Rows[i], tableData.SelectedTableIndex, i);
+                });
+            }
+            else
+            {
+                for (int i = 0; i < rowsCount; i++)
+                {
+                    Selected(tableData.SelectedTable.Rows[i], tableData.SelectedTableIndex, i);
+                }
+            }
+
 
             ActionsPostRowsApply(tableData); // need here also as in All because must be executed even if only one table was selected
 
@@ -455,16 +478,28 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
                 ActionsPreTablesApply();
             }
 
-            Parallel.ForEach(selectedTables, table =>
+            if (IsParallelTables)
             {
-                var tableData = new TableData(table, selectedTableIndex: AllFiles.Tables.IndexOf(table));
+                var result = Parallel.ForEach(selectedTables, table =>
+                {
+                    var tableData = new TableData(table, selectedTableIndex: AllFiles.Tables.IndexOf(table));
 
-                if (!IsOkTable(tableData)) return;
+                    if (!IsOkTable(tableData)) return;
 
-                Table(tableData);
-            });
+                    Table(tableData);
+                });
+            }
+            else
+            {
+                foreach (var table in selectedTables)
+                {
+                    var tableData = new TableData(table, selectedTableIndex: AllFiles.Tables.IndexOf(table));
 
-            //foreach (var table in selectedTables) Table(table);
+                    if (!IsOkTable(tableData)) continue;
+
+                    Table(tableData);
+                }
+            }
 
             if (!IsAll && IsTables)
             {
@@ -525,21 +560,33 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
             ActionsInit();
             ActionsPreTablesApply();
 
-            for (int selectedTableIndex = 0; selectedTableIndex < TablesCount; selectedTableIndex++)
+            if (IsParallelTables)
             {
-                var selectedTable = allTables[selectedTableIndex];
-                var tableData = new TableData(selectedTable, selectedTableIndex);
+                var result = Parallel.For(0, TablesCount, selectedTableIndex =>
+                {
+                    var selectedTable = allTables[selectedTableIndex];
+                    var tableData = new TableData(selectedTable, selectedTableIndex);
 
-                try
-                {
                     Table(tableData);
-                }
-                catch (Exception ex)
+                });
+            }
+            else
+            {
+                for (int selectedTableIndex = 0; selectedTableIndex < TablesCount; selectedTableIndex++)
                 {
-                    _log.LogToFile($"An error occurred while parsing all tables in method '{nameof(All)}'. Error: {ex}");
+                    var selectedTable = allTables[selectedTableIndex];
+                    var tableData = new TableData(selectedTable, selectedTableIndex);
+
+                    try
+                    {
+                        Table(tableData);
+                    }
+                    catch (Exception ex)
+                    {
+                        _log.LogToFile($"An error occurred while parsing all tables in method '{nameof(All)}'. Error: {ex}");
+                    }
                 }
             }
-
 
             ActionsPostTablesApply();
             ActionsFinalize();
