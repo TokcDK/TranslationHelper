@@ -16,7 +16,7 @@ namespace TranslationHelper
     {
         static Catalog GetGlobal()
         {
-            var localesDir = Path.Combine(Directory.GetCurrentDirectory(), "Locale");
+            var localesDir = Path.Combine(Data.THSettings.ResDirPath, "Locale");
             //_Catalog = new Catalog("en", localesDir, new CultureInfo("en-EN"));
             //_Catalog = new Catalog("ru", localesDir, new CultureInfo("ru-RU"));
             //_Catalog = new Catalog("th", localesDir);

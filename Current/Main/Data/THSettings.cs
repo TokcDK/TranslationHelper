@@ -35,7 +35,7 @@ namespace TranslationHelper.Data
         internal static string RPGMakerTransDirName => "rpgmakertrans";
 
 
-        internal static string RPGMakerTransDirPath => Path.Combine(ResDirPath, RPGMakerTransDirName);
+        internal static string RPGMakerTransDirPath => Path.Combine(ToolsDirPath, RPGMakerTransDirName);
 
 
         internal static string RPGMakerTransEXEName => "rpgmt.exe";
@@ -115,6 +115,8 @@ namespace TranslationHelper.Data
         /// <returns></returns>
 
         internal static string ResDirPathRelative => Path.GetFullPath(@".\" + ResDirName);
+        internal static string ToolsDirName => "tools";
+        internal static string ToolsDirPath => Path.Combine(ResDirPathRelative, ToolsDirName);
 
 
         internal static string WorkDirName => "Work";
@@ -172,7 +174,7 @@ namespace TranslationHelper.Data
         internal static string ArcConvDirName => "arc_conv";
 
 
-        internal static string ArcConvDirPath => Path.Combine(ResDirPath, ArcConvDirName);
+        internal static string ArcConvDirPath => Path.Combine(ToolsDirPath, ArcConvDirName);
 
 
         internal static string ArcConvExeName => "arc_conv.exe";
@@ -205,7 +207,7 @@ namespace TranslationHelper.Data
         internal static string TargetLanguageCode => TargetLanguage.Split(' ')[1];
 
 
-        internal static string NScriptDirPath => Path.Combine(ResDirPath, NScriptDirName);
+        internal static string NScriptDirPath => Path.Combine(ToolsDirPath, NScriptDirName);
 
 
         internal static string NSDECexeName => "NSDEC.exe";
@@ -217,9 +219,9 @@ namespace TranslationHelper.Data
         internal static string PythonDirName => "python38";
 
 
-        internal static string PythonPath => Path.Combine(ResDirPath, PythonDirName);
+        internal static string PythonPath => Path.Combine(ToolsDirPath, PythonDirName);
 
-        internal static string PythonPathRelative => @".\" + ResDirName + @"\" + PythonDirName;
+        internal static string PythonPathRelative => @".\" + ResDirName + @"\" + ToolsDirName + @"\" + PythonDirName;
 
 
         internal static string PythonExePath => Path.Combine(PythonPath, "python.exe");
@@ -234,13 +236,12 @@ namespace TranslationHelper.Data
         internal static string Python37ExePathRelative => PythonPathRelative+ @"\python.exe";
 
         
-        internal static string SCPackerPath => Path.Combine(ResDirPath, "scpacker");
+        internal static string SCPackerPath => Path.Combine(ToolsDirPath, "scpacker");
+
+        internal static string SCPackerPathRelative => @".\" + ResDirName + @".\" + ToolsDirName + @"\scpacker";
 
 
-        internal static string SCPackerPathRelative => @".\" + ResDirName + @"\scpacker";
-
-
-        internal static string SCPackerPYPath => Path.Combine(ResDirPath, "scpacker", "scpacker.py");
+        internal static string SCPackerPYPath => Path.Combine(SCPackerPath, "scpacker.py");
 
         
         internal static string SCPackerPYPath2 => SCPackerPathRelative+ @"\scpacker.py";
@@ -269,7 +270,7 @@ namespace TranslationHelper.Data
         internal static string DXExtractDirName => "DXExtract";
 
 
-        internal static string DXExtractDirPath => Path.Combine(ResDirPath, DXExtractDirName);
+        internal static string DXExtractDirPath => Path.Combine(ToolsDirPath, DXExtractDirName);
 
 
         internal static string DXExtractExeName => "DXExtract.exe";
@@ -284,13 +285,13 @@ namespace TranslationHelper.Data
         internal static string WolfDecFolderName => "wolfdec";
 
 
-        internal static string WolfdecDirPath => Path.Combine(ResDirPath, WolfDecFolderName);
+        internal static string WolfdecDirPath => Path.Combine(ToolsDirPath, WolfDecFolderName);
 
 
         internal static string WolfdecExePath => Path.Combine(WolfdecDirPath, "wolfdec.exe");
 
 
-        internal static string DXADecodeWDirPath => Path.Combine(ResDirPath, DXADecodeWFolderName);
+        internal static string DXADecodeWDirPath => Path.Combine(ToolsDirPath, DXADecodeWFolderName);
 
 
         internal static string DXADecodeWExePath => Path.Combine(DXADecodeWDirPath, "DXADecode.exe");
@@ -305,10 +306,10 @@ namespace TranslationHelper.Data
         internal static string TranslationRegexRulesFilePath => Path.Combine(ApplicationStartupPath, TranslationRegexRulesFileName);
 
         
-        internal static string WolfTransPath => Path.Combine(ResDirPath, "wolftrans", "bin", "wolftrans");
+        internal static string WolfTransPath => Path.Combine(ToolsDirPath, "wolftrans", "bin", "wolftrans");
 
         
-        internal static string RubyPath => Path.Combine(ResDirPath, "ruby", "bin", "ruby.exe");
+        internal static string RubyPath => Path.Combine(ToolsDirPath, "ruby", "bin", "ruby.exe");
 
         
         internal static string THLogPath => Path.Combine(ApplicationStartupPath, AppSettings.ApplicationProductName + ".log");
@@ -323,7 +324,7 @@ namespace TranslationHelper.Data
         internal static string KiriKiriToolDirName => "kirikiriunpacker";
 
 
-        internal static string KiriKiriToolDirPath => Path.Combine(ResDirPath, KiriKiriToolDirName);
+        internal static string KiriKiriToolDirPath => Path.Combine(ToolsDirPath, KiriKiriToolDirName);
 
 
         internal static string KiriKiriToolExePath => Path.Combine(KiriKiriToolDirPath, "kikiriki.exe");
@@ -332,7 +333,7 @@ namespace TranslationHelper.Data
         internal static string KiriKiriToolDllPath => Path.Combine(KiriKiriToolDirPath, "madCHook.dll");
 
         
-        internal static string LocaleEmulatorEXE => Path.Combine(ResDirPath, "localeemulator", "LEProc.exe");
+        internal static string LocaleEmulatorEXE => Path.Combine(ToolsDirPath, "localeemulator", "LEProc.exe");
 
         
         internal static string DBAutoSavesDirName => "Auto";
@@ -341,7 +342,7 @@ namespace TranslationHelper.Data
         internal static string RGSSDecrypterDirName => "rgssdecryptor";
 
 
-        internal static string RGSSDecrypterDirPath => Path.Combine(ResDirPath, RGSSDecrypterDirName);
+        internal static string RGSSDecrypterDirPath => Path.Combine(ToolsDirPath, RGSSDecrypterDirName);
 
 
         internal static string RGSSDecrypterEXEName => "RgssDecrypter.exe";
@@ -353,7 +354,7 @@ namespace TranslationHelper.Data
         internal static string AliceToolsDirName => "alice-tools";
 
 
-        internal static string AliceToolsDirPath => Path.Combine(ResDirPath, AliceToolsDirName);
+        internal static string AliceToolsDirPath => Path.Combine(ToolsDirPath, AliceToolsDirName);
 
 
         internal static string AliceToolsExeName => "alice.exe";

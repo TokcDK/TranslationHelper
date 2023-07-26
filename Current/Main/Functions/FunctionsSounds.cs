@@ -1,4 +1,6 @@
-﻿namespace TranslationHelper.Functions
+﻿using System.IO;
+
+namespace TranslationHelper.Functions
 {
     class FunctionsSounds
     {
@@ -48,7 +50,7 @@
         {
             lock (_soundLocker)
             {
-                new System.Media.SoundPlayer(Data.AppSettings.ApplicationStartupPath + @"\RES\sounds\complete.wav").Play();
+                new System.Media.SoundPlayer(Data.THSettings.ResDirPath + @"\sounds\complete.wav").Play();
             }
         }
 

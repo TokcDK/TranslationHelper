@@ -726,7 +726,12 @@
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>ROBOCOPY "$(ProjectDir)Locale " "$(TargetDir)Locale " /MIR
+    <PostBuildEvent>ROBOCOPY "$(ProjectDir)Locale " "$(TargetDir)res\locale " /MIR
+rd "$(TargetDir)res\lib "
+md "$(TargetDir)res\lib "
+move "$(TargetDir)\*.dll " "$(TargetDir)res\lib\ "
+move "$(TargetDir)\*.pdb " "$(TargetDir)res\lib\ "
+move "$(TargetDir)\*.xml " "$(TargetDir)res\lib\ "
 if %25errorlevel%25 leq 4 exit 0 else exit %25errorlevel%25</PostBuildEvent>
   </PropertyGroup>
 </Project>
