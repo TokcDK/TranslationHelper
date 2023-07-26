@@ -585,7 +585,7 @@
     <Compile Include="Old elements\THLang.cs" />
     <Compile Include="SimpleHelpers\FileEncoding.cs" />
     <Compile Include="tests\xorfornscript.cs" />
-    <Compile Include="TranslationHelper\Functions\FunctionsWeb.cs" />
+    <Compile Include="Functions\FunctionsWeb.cs" />
     <EmbeddedResource Include="Forms\THfrmSearch.resx">
       <DependentUpon>THfrmSearch.cs</DependentUpon>
     </EmbeddedResource>
