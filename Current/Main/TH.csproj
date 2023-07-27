@@ -134,6 +134,7 @@
     <Compile Include="Formats\RPGMMV\RPGMVLists.cs" />
     <Compile Include="Formats\RPGMMV\StopCVPluginTXT.cs" />
     <Compile Include="Formats\WolfRPG\TextEPH.cs" />
+    <Compile Include="Functions\DBSaveFormats\Xlsx.cs" />
     <Compile Include="Functions\DBSaveFormats\Bin.cs" />
     <Compile Include="Functions\FileElementsFunctions\Row\EnQuotesToJp2.cs" />
     <Compile Include="Functions\FileElementsFunctions\Row\ExportFormats\ExcelTablesFormat.cs" />
@@ -415,7 +416,7 @@
     <Compile Include="Menus\MainMenus\File\Export\MainMenuFileSubItemExportBase.cs" />
     <Compile Include="Menus\MainMenus\File\Export\MenuItemExportToExcel.cs" />
     <Compile Include="Menus\MainMenus\File\Import\MainMenuFileSubItemImportBase.cs" />
-    <Compile Include="Menus\MainMenus\File\Import\MenuItemExportToRPGMakerTransPatch.cs" />
+    <Compile Include="Menus\MainMenus\File\Import\MenuItemImportFromPOfile.cs" />
     <Compile Include="Menus\MainMenus\File\MainMenuFileSubItemBase.cs" />
     <Compile Include="Menus\MainMenus\File\MenuItemRecent.cs" />
     <Compile Include="Menus\MainMenus\File\Other\MenuItemTestGetXUATranslation.cs" />
