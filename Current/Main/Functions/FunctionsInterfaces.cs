@@ -20,9 +20,9 @@ namespace TranslationHelper.Functions
         /// gets current selected format of database file
         /// </summary>
         /// <returns></returns>
-        internal static IDataBaseFileFormat GetCurrentDBFormat()
+        internal static IDataBaseFileFormat GetCurrentDBFormat(string ext=null)
         {
-            return FunctionsDBFile.GetCurrentDBFormat();
+            return FunctionsDBFile.GetCurrentDBFormat(ext);
         }
     }
 }

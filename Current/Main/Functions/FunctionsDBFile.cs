@@ -8,7 +8,6 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
-using System.Windows.Forms;
 using System.Xml;
 using System.Xml.Linq;
 using TranslationHelper.Data;
@@ -90,7 +89,7 @@ namespace TranslationHelper.Main.Functions
         public static string GetDBFormatsFilters()
         {
             var formats = FunctionsInterfaces.GetDBSaveFormats();
-            var formatsFilters = "DB file|" + string.Join("",formats.Select(f => $"*.{f.Ext};"));
+            var formatsFilters = "DB file|" + string.Join("", formats.Select(f => $"*.{f.Ext};"));
             var formatsIndividualFilters = string.Join("", formats.Select(f => $"|{f.Description}|*.{f.Ext}"));
             return $"{formatsFilters}{formatsIndividualFilters}|All|*.*";
         }
@@ -114,7 +113,7 @@ namespace TranslationHelper.Main.Functions
         /// <param name="isRead"></param>
         internal static void ReadWriteDBFile(DataSet dataSet, string dbFilePath, bool isRead = true, bool useOriginaldbFilePath = false)
         {
-            var dbFormat = FunctionsInterfaces.GetCurrentDBFormat();
+            var dbFormat = FunctionsInterfaces.GetCurrentDBFormat(Path.GetExtension(dbFilePath));
             dbFilePath = useOriginaldbFilePath ? dbFilePath : Path.Combine(Path.GetDirectoryName(dbFilePath), Path.GetFileNameWithoutExtension(dbFilePath) + "." + dbFormat.Ext);
             Directory.CreateDirectory(Path.GetDirectoryName(dbFilePath));
             if (isRead)
@@ -131,12 +130,16 @@ namespace TranslationHelper.Main.Functions
         /// gets current selected format of database file
         /// </summary>
         /// <returns></returns>
-        internal static IDataBaseFileFormat GetCurrentDBFormat()
+        internal static IDataBaseFileFormat GetCurrentDBFormat(string ext = null)
         {
             IDataBaseFileFormat Format = new XML();
             foreach (var f in GetListOfSubClasses.Inherited.GetListOfInterfaceImplimentations<IDataBaseFileFormat>())
             {
-                if (f.Description == AppSettings.DBCompressionExt) return f;
+                if (string.IsNullOrWhiteSpace(ext))
+                {
+                    if (f.Description == AppSettings.DBCompressionExt) return f;
+                }
+                else if (f.Ext == ext || "." + f.Ext == ext) return f;
             }
 
             return Format;
@@ -269,9 +272,9 @@ namespace TranslationHelper.Main.Functions
                             }
                             else continue;
                         }
-                        catch 
-                        { 
-                            continue; 
+                        catch
+                        {
+                            continue;
                         }
                     }
                 }
