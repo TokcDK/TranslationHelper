@@ -378,8 +378,8 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
         protected bool IsTable;
         protected static int ColumnIndexOriginal { get => AppData.CurrentProject.OriginalColumnIndex; }
         protected static int ColumnIndexTranslation { get => AppData.CurrentProject.TranslationColumnIndex; }
-        protected virtual bool IsParallelRows { get; } = true;
-        protected virtual bool IsParallelTables { get; } = true;
+        protected virtual bool IsParallelRows { get; } = false;
+        protected virtual bool IsParallelTables { get; } = false;
 
         /// <summary>
         /// proceed selected table

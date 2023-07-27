@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Text;
 using System.Windows.Forms;
@@ -9,13 +10,16 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row.ExportFormats
     {
         protected ExportFormatsBase()
         {
-            _allRows = new List<string>(SelectedRowsCount);
+            AllRows = new List<string>(SelectedRowsCount);
         }
+
+        protected override bool IsParallelRows => false;
+        protected override bool IsParallelTables => false;
 
         /// <summary>
         /// contains all table rows original translation values
         /// </summary>
-        List<string> _allRows;
+        protected List<string> AllRows;
         /// <summary>
         /// file save dialog filter
         /// determines file's extension
@@ -48,25 +52,31 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row.ExportFormats
 
         protected override bool Apply(RowBaseRowData rowData)
         {
-            _allRows.Add(OriginalMod(rowData.Original) + MarkerTranslation + TranslationMod(rowData.Translation));
+            AllRows.Add(OriginalMod(rowData.Original) + MarkerTranslation + TranslationMod(rowData.Translation));
 
-            if (rowData.IsLastRow)
+            if (!rowData.IsLastRow) return true;
+
+            using (var save = new SaveFileDialog())
             {
-                using (var save = new SaveFileDialog())
+                save.Filter = Filter;
+                if (save.ShowDialog() != DialogResult.OK || string.IsNullOrWhiteSpace(save.FileName))
                 {
-                    save.Filter = Filter;
-                    if (save.ShowDialog() == DialogResult.OK && !string.IsNullOrWhiteSpace(save.FileName))
-                    {
-                        File.WriteAllText(save.FileName,
-                            MarkerFileStart
-                            + MarkerStart
-                            + MarkerOiginal
-                            + string.Join(MarkerEnd + MarkerStart + MarkerOiginal, _allRows)
-                            + MarkerEnd
-                            , SaveEncoding);
-                    }
+                    return true;
                 }
+
+                return WriteFile(save.FileName);
             }
+        }
+
+        protected virtual bool WriteFile(string fileName)
+        {
+            File.WriteAllText(fileName,
+                MarkerFileStart
+                + MarkerStart
+                + MarkerOiginal
+                + string.Join(MarkerEnd + MarkerStart + MarkerOiginal, AllRows)
+                + MarkerEnd
+                , SaveEncoding);
 
             return true;
         }
