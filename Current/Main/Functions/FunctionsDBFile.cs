@@ -133,7 +133,7 @@ namespace TranslationHelper.Main.Functions
         internal static IDataBaseFileFormat GetCurrentDBFormat(string ext = null)
         {
             IDataBaseFileFormat Format = new XML();
-            foreach (var f in GetListOfSubClasses.Inherited.GetListOfInterfaceImplimentations<IDataBaseFileFormat>())
+            foreach (var f in GetListOfSubClasses.Inherited.GetInterfaceImplimentations<IDataBaseFileFormat>())
             {
                 if (string.IsNullOrWhiteSpace(ext))
                 {
