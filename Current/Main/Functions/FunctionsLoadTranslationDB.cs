@@ -378,17 +378,14 @@ namespace TranslationHelper.Functions
             var tables = AppData.CurrentProject.FilesContent.Tables;
             var translationColIndex = tables[0].Columns[THSettings.TranslationColumnName].Ordinal;
 
-            if (translationColIndex < 1)
-            {
-                return;
-            }
+            if (translationColIndex < 1) return;
 
             var progressMessage = $"{T._("Load")} {T._(THSettings.TranslationColumnName)}:";
 
             var workTableDatagridview = AppData.Main.THFileElementsDataGridView;
             var filesList = AppData.THFilesList;
 
-            var rr = Parallel.ForEach(tables.Cast<DataTable>(), (table, _, tableIndex) =>
+            _ = Parallel.ForEach(tables.Cast<DataTable>(), (table, _, tableIndex) =>
             {
                 var isTableReset = ResetDGVDataSource(tableIndex, filesList, workTableDatagridview);
 
@@ -482,8 +479,6 @@ namespace TranslationHelper.Functions
 
                 AppData.Main.ProgressInfo(true, tableProgressMessage);
             });
-
-            var rr1 = rr;
 
             AppData.Main.ProgressInfo(false);
             System.Media.SystemSounds.Beep.Play();
