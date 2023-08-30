@@ -46,11 +46,11 @@ namespace TranslationHelper.Extensions
         /// <returns></returns>
         internal static bool HasAnyTranslationLineValidAndEqualSameOrigLine(this string original, string translation, bool checklinescount = true)
         {
-            if (string.IsNullOrEmpty(original)) return true;
+            if (string.IsNullOrEmpty(translation)) return true;
 
             int originalLinesCount = original.GetLinesCount();
             int translatonLinesCount = translation.GetLinesCount();
-            if (original == translation || (checklinescount && originalLinesCount > 1 && originalLinesCount != translatonLinesCount))
+            if (checklinescount && originalLinesCount != translatonLinesCount)
                 return false;
 
             int i = -1;
