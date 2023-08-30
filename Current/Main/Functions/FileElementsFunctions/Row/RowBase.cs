@@ -462,6 +462,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
 
                 ActionsPreTablesApply();
             }
+            else if (!IsAll && !IsTables && TablesCount == 1) IsTable = true;
 
             if (IsParallelTables)
             {

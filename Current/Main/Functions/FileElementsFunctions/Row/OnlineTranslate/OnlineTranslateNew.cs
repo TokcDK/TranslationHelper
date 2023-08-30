@@ -242,6 +242,11 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
                     continue;
                 }
 
+                if (AppData.OnlineTranslationCache == null)
+                {
+                    FunctionsOnlineCache.Init();
+                }
+
                 // If the line is not extracted and its translation is available in the cache, use the cached translation
                 if (!isExtracted)
                 {
@@ -621,6 +626,9 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
                     {
                         var group = valueData.MatchGroups[i1];
 
+                        if (string.IsNullOrWhiteSpace(group.Value)) continue;
+                        if (string.IsNullOrEmpty(valueData.Translation)) continue;
+
                         try
                         {
                             // replace original value text with translation
@@ -628,7 +636,12 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
                                 , valueData.Translation ?? group.Value
                                 , group.Index, group.Length);
                         }
-                        catch (IndexOutOfRangeException) { }
+                        catch (IndexOutOfRangeException) 
+                        { 
+                        }
+                        catch (ArgumentException) 
+                        { 
+                        }
                     }
 
                     if (replacerType == TranslationRegexExtractType.ReplaceOne) break; // exit from values loop, to not execute lines below
