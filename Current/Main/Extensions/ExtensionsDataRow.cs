@@ -48,18 +48,15 @@ namespace TranslationHelper.Extensions
         {
             if (string.IsNullOrEmpty(translation)) return true;
 
-            int originalLinesCount = original.GetLinesCount();
-            int translatonLinesCount = translation.GetLinesCount();
-            if (checklinescount && originalLinesCount != translatonLinesCount)
-                return false;
 
-            int i = -1;
+            int lineIndex = -1;
             var translationLines = translation.SplitToLines().ToArray();
+            int translatonLinesCount = translationLines.Length;
             foreach (var originalLine in original.SplitToLines())
             {
-                if (++i == translatonLinesCount) return false;
+                if (++lineIndex == translatonLinesCount) return false;
 
-                if (originalLine == translationLines[i]
+                if (originalLine == translationLines[lineIndex]
                     && originalLine.IsValidForTranslation())
                     return true;
 
