@@ -13,8 +13,8 @@ namespace TranslationHelper.Functions
             var ini = Data.AppData.ConfigIni;
             if (!ini.KeyExists("UserAgent", "Translation"))
             {
-                ini.SetKey("Translation", "UserAgent", UserAgents.Chrome_Win7);
-                return UserAgents.Chrome_Win7;
+                ini.SetKey("Translation", "UserAgent", UserAgents.Chrome_Win10);
+                return UserAgents.Chrome_Win10;
             }
             else
             {
