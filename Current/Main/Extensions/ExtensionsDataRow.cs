@@ -2,6 +2,7 @@
 using System.Data;
 using System.Linq;
 using TranslationHelper.Data;
+using TranslationHelper.Functions.FileElementsFunctions.Row;
 
 namespace TranslationHelper.Extensions
 {
@@ -45,16 +46,29 @@ namespace TranslationHelper.Extensions
         /// <returns></returns>
         internal static bool HasAnyTranslationLineValidAndEqualSameOrigLine(this string original, string translation, bool checklinescount = true)
         {
-            string o = original;
-            string t = translation;
-            if (o == t || !o.IsMultiline() || (checklinescount && o.GetLinesCount() != t.GetLinesCount()))
+            if (string.IsNullOrEmpty(original)) return true;
+
+            int originalLinesCount = original.GetLinesCount();
+            int translatonLinesCount = translation.GetLinesCount();
+            if (original == translation || (checklinescount && originalLinesCount > 1 && originalLinesCount != translatonLinesCount))
                 return false;
 
-            var olines = o.SplitToLines().ToArray();
-            var tlines = t.SplitToLines().ToArray();
-            for (int i = 0; i < olines.Length; i++)
+            int i = -1;
+            var translationLines = translation.SplitToLines().ToArray();
+            foreach (var originalLine in original.SplitToLines())
             {
-                if (i < tlines.Length && olines[i] == tlines[i] && olines[i].IsValidForTranslation())
+                if (++i == translatonLinesCount) return false;
+
+                var extractData = new ExtractRegexInfo(originalLine);
+                if (extractData != null
+                    && extractData.ExtractedValuesList.Count > 0
+                    && extractData.ExtractedValuesList.Any(v => !string.IsNullOrWhiteSpace(v.Original) && v.Original.IsValidForTranslation()))
+                {
+                    return true;
+                }
+
+                if (originalLine == translationLines[i]
+                    && originalLine.IsValidForTranslation())
                     return true;
             }
 
