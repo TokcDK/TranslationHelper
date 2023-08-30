@@ -59,6 +59,10 @@ namespace TranslationHelper.Extensions
             {
                 if (++i == translatonLinesCount) return false;
 
+                if (originalLine == translationLines[i]
+                    && originalLine.IsValidForTranslation())
+                    return true;
+
                 var extractData = new ExtractRegexInfo(originalLine);
                 if (extractData != null
                     && extractData.ExtractedValuesList.Count > 0
@@ -66,10 +70,6 @@ namespace TranslationHelper.Extensions
                 {
                     return true;
                 }
-
-                if (originalLine == translationLines[i]
-                    && originalLine.IsValidForTranslation())
-                    return true;
             }
 
             return false;
