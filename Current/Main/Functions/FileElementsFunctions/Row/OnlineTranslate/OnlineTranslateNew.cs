@@ -12,7 +12,6 @@ using TranslationHelper.Data.Interfaces;
 using TranslationHelper.Extensions;
 using TranslationHelper.Functions.FileElementsFunctions.Row.HardFixes;
 using TranslationHelper.Main.Functions;
-using static TranslationHelper.Functions.FileElementsFunctions.Row.OnlineTranslateNew;
 
 namespace TranslationHelper.Functions.FileElementsFunctions.Row
 {
@@ -593,6 +592,11 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
             return true;
         }
 
+        private bool HaveAnyLineExtractedValues(RowTranslationData rowData)
+        {
+            return rowData.Lines.Any(v => v.RegexExtractionData != null);
+        }
+
         private static IEnumerable<string> EnumerateNewLines(string rowValue, List<LineTranslationData> rowDataLines)
         {
             int lineNum = 0;
@@ -658,11 +662,11 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
                                 , valueData.Translation ?? group.Value
                                 , group.Index, group.Length);
                         }
-                        catch (IndexOutOfRangeException) 
-                        { 
+                        catch (IndexOutOfRangeException)
+                        {
                         }
-                        catch (ArgumentException) 
-                        { 
+                        catch (ArgumentException)
+                        {
                         }
                     }
 
