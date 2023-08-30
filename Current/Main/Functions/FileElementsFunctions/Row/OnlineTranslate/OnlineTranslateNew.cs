@@ -71,12 +71,12 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
 
         List<TranslationData> _buffer;
 
-        int Size { get; set; }
-        static int MaxSize { get => 1000; }
+        int TranslationTextLength { get; set; }
+        static int MaxTranslationTextLength { get => 1000; }
 
         bool IsMax()
         {
-            return Size >= MaxSize;
+            return TranslationTextLength >= MaxTranslationTextLength;
         }
 
         public OnlineTranslateNew()
@@ -122,7 +122,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
         protected override void ActionsFinalize()
         {
             TranslateStrings();
-            Size = 0;
+            TranslationTextLength = 0;
             _buffer = null;
             FunctionsOnlineCache.Unload();
 
@@ -131,7 +131,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
             if (AppSettings.InterruptTtanslation) AppSettings.InterruptTtanslation = false;
         }
 
-        protected override bool Apply(Row.RowBaseRowData rowData)
+        protected override bool Apply(RowBaseRowData rowData)
         {
             try
             {
@@ -174,7 +174,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
                 selectedTableData.Rows.Add(selectedRowData);
             }
 
-            var originalTextSize = Size;
+            var originalTextLength = TranslationTextLength;
 
             // Parse each line of the original text
             foreach (var line in originalText.SplitToLines())
@@ -197,43 +197,22 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
                     selectedRowData.Lines.Add(lineData);
                 }
 
-                // If the line is not valid for translation, add the original as the translation and move to the next line
-                if (!line.IsValidForTranslation())
-                {
-                    lineData.Translation = line;
-                    lineNumber++;
-                    continue;
-                }
-
                 // Extract information from the line using regex
                 var extractData = new ExtractRegexInfo(line);
                 lineData.RegexExtractionData = extractData;
                 var extractedValuesCount = extractData.ExtractedValuesList.Count;
                 bool isExtracted = extractedValuesCount > 0;
 
-                int skippedValuesCount = 0;
+                // If the line is not valid for translation, add the original as the translation and move to the next line
+                if (!isExtracted && !line.IsValidForTranslation())
+                {
+                    lineData.Translation = line;
+                    lineNumber++;
+                    continue;
+                }
 
                 // Parse each extracted value from the line
-                foreach (var extractedValueData in extractData.ExtractedValuesList)
-                {
-                    // Get the translation from the translation cache, if available
-                    var translationCache = AppData.OnlineTranslationCache.GetValueFromCacheOrReturnEmpty(extractedValueData.Original);
-
-                    if (!string.IsNullOrEmpty(translationCache))
-                    {
-                        skippedValuesCount++;
-                        extractedValueData.Translation = translationCache; // add translation from cache if found
-                    }
-                    else if (extractedValueData.Original.IsSoundsText() || !extractedValueData.Original.IsValidForTranslation())
-                    {
-                        skippedValuesCount++;
-                        extractedValueData.Translation = extractedValueData.Original; // original=translation when value is soundtext
-                    }
-                    else
-                    {
-                        Size += extractedValueData.Original.Length; // increase size of string for translation for check later
-                    }
-                }
+                GetFromExtracted(extractData, out int skippedValuesCount);
 
                 // If all extracted values were skipped, don't translate this line and move to the next one
                 if (extractedValuesCount > 0 && skippedValuesCount == extractedValuesCount)
@@ -247,33 +226,18 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
                     FunctionsOnlineCache.Init();
                 }
 
-                // If the line is not extracted and its translation is available in the cache, use the cached translation
-                if (!isExtracted)
+                // If the line is not extracted and its translation is available in the cache, use the cached translation            
+                if (!isExtracted && CheckInCache(line, lineData))
                 {
-                    var lineCache = AppData.OnlineTranslationCache.GetValueFromCacheOrReturnEmpty(line);
-                    if (!string.IsNullOrEmpty(lineCache))
-                    {
-                        lineData.Translation = lineCache;
-                        lineNumber++;
-                        continue;
-                    }
-
-                    Size += lineData.Original.Length; // increase size of string for translation for check later
+                    lineNumber++;
+                    continue;
                 }
 
                 // If we've reached the maximum size for translation, translate the strings and reset the size counter
-                if (IsMax())
-                {
-                    TranslateStrings();
+                TranslateIfNeed();
 
-                    Size = 0;
-
-                    // Write the translation cache periodically
-                    AppData.OnlineTranslationCache.Write();
-
-                    // Stop translating after the last pack of text if translation is interrupted
-                    if (AppSettings.InterruptTtanslation) return;
-                }
+                // Stop translating after the last pack of text if translation is interrupted
+                if (AppSettings.InterruptTtanslation) return;
 
                 lineNumber++;
             }
@@ -282,7 +246,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
             selectedRowData.IsAllLinesAdded = true;
 
             // If no text has been added for translation, clean up the data and return
-            if (originalTextSize == Size)
+            if (originalTextLength == TranslationTextLength)
             {
                 if (WriteRowData(selectedRowData, selectedTableData.TableIndex))
                 {
@@ -298,11 +262,69 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
 
             // Translate the strings and reset the buffer
             TranslateStrings();
-            Size = 0;
-            _buffer = new List<TranslationData>();
+            ResetSizeAndBuffer();
 
             // Write the translation cache periodically
             AppData.OnlineTranslationCache.Write();
+        }
+
+        private void ResetSizeAndBuffer()
+        {
+            TranslationTextLength = 0;
+            _buffer = new List<TranslationData>();
+        }
+
+        private void TranslateIfNeed()
+        {
+            if (IsMax())
+            {
+                TranslateStrings();
+
+                TranslationTextLength = 0;
+
+                // Write the translation cache periodically
+                AppData.OnlineTranslationCache.Write();
+            }
+        }
+
+        private bool CheckInCache(string line, LineTranslationData lineData)
+        {
+            var lineCache = AppData.OnlineTranslationCache.GetValueFromCacheOrReturnEmpty(line);
+            if (!string.IsNullOrEmpty(lineCache))
+            {
+                lineData.Translation = lineCache;
+                return true;
+            }
+            else
+            {
+                TranslationTextLength += lineData.Original.Length; // increase size of string for translation for check later
+                return false;
+            }
+        }
+
+        private void GetFromExtracted(ExtractRegexInfo extractData, out int skippedValuesCount)
+        {
+            skippedValuesCount = 0;
+            foreach (var extractedValueData in extractData.ExtractedValuesList)
+            {
+                // Get the translation from the translation cache, if available
+                var translationCache = AppData.OnlineTranslationCache.GetValueFromCacheOrReturnEmpty(extractedValueData.Original);
+
+                if (!string.IsNullOrEmpty(translationCache))
+                {
+                    skippedValuesCount++;
+                    extractedValueData.Translation = translationCache; // add translation from cache if found
+                }
+                else if (extractedValueData.Original.IsSoundsText() || !extractedValueData.Original.IsValidForTranslation())
+                {
+                    skippedValuesCount++;
+                    extractedValueData.Translation = extractedValueData.Original; // original=translation when value is soundtext
+                }
+                else
+                {
+                    TranslationTextLength += extractedValueData.Original.Length; // increase size of string for translation for check later
+                }
+            }
         }
 
         readonly GoogleAPIOLD _translator;
