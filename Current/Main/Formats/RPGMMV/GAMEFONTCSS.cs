@@ -13,6 +13,19 @@ namespace TranslationHelper.Formats.RPGMMV
         {
         }
 
+        readonly Regex _fontSearchPattern = new Regex(@"src: url\(\""([^\""]+)\""\)", RegexOptions.Compiled);
+
+        readonly string _fontInfo = T._(
+                            "GameFont.\nValue in Translation field must be exist font css file name or path.\n" +
+                            "If it is exists, it will be copied into %GAME%\\www\\fonts\\.\n" +
+                            "If value is font file name, it will be searching in system fonts folder location." +
+                            "Useful to change font when need to reduce size of text in game if need." +
+                            "Examples:" +
+                            "browa.ttf\n" +
+                            "c:/windows/fonts/browa.ttf\n" +
+                            "%LocalAppData%/Microsoft/Windows/Fonts/browa.ttf" +
+                            "");
+
         protected override KeywordActionAfter ParseStringFileLine()
         {
             if (ParseData.IsComment)
@@ -29,20 +42,11 @@ namespace TranslationHelper.Formats.RPGMMV
                 else if (ParseData.TrimmedLine.StartsWith("//")) //comment
                 {
                 }
-                else if ((r = Regex.Match(ParseData.Line, @"src: url\(\""([^\""]+)\""\)")).Success)
+                else if ((r = _fontSearchPattern.Match(ParseData.Line)).Success)
                 {
                     if (OpenFileMode)
                     {
-                        ParseData.Ret = AddRowData(r.Result("$1"), T._(
-                            "GameFont.\nValue in Translation field must be exist font css file name or path.\n" +
-                            "If it is exists, it will be copied into %GAME%\\www\\fonts\\.\n" +
-                            "If value is font file name, it will be searching in system fonts folder location." +
-                            "Useful to change font when need to reduce size of text in game if need." +
-                            "Examples:" +
-                            "browa.ttf\n" +
-                            "c:/windows/fonts/browa.ttf\n" +
-                            "%LocalAppData%/Microsoft/Windows/Fonts/browa.ttf" +
-                            ""), isCheckInput: false);
+                        ParseData.Ret = AddRowData(r.Result("$1"), _fontInfo, isCheckInput: false);
 
                         return KeywordActionAfter.Break;
                     }
