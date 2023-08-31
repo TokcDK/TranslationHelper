@@ -46,13 +46,13 @@ namespace TranslationHelper.Formats.RPGMMV
                 {
                     if (OpenFileMode)
                     {
-                        ParseData.Ret = AddRowData(r.Result("$1"), _fontInfo, isCheckInput: false);
+                        ParseData.Ret = AddRowData(r.Groups[1].Value, _fontInfo, isCheckInput: false);
 
                         return KeywordActionAfter.Break;
                     }
                     else
                     {
-                        string str = r.Result("$1");
+                        string str = r.Groups[1].Value;
                         var trans = str;
                         if (SetTranslation(ref trans, isCheckInput: false) && ParseFont(str, ref trans))
                         {
