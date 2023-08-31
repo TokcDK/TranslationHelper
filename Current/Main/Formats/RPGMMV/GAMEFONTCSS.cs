@@ -30,14 +30,14 @@ namespace TranslationHelper.Formats.RPGMMV
         {
             if (ParseData.IsComment)
             {
-                if (ParseData.TrimmedLine.EndsWith("*/")) ParseData.IsComment = false; //comment section end
+                if (IsCommentSectionEnd()) ParseData.IsComment = false; //comment section end
             }
             else
             {
                 Match r;
-                if (ParseData.TrimmedLine.StartsWith("/*")) //comment section start
+                if (IsCommentSectionStart()) //comment section start
                 {
-                    if (!ParseData.TrimmedLine.EndsWith("*/")) ParseData.IsComment = true;
+                    if (!IsCommentSectionEnd()) ParseData.IsComment = true;
                 }
                 else if (ParseData.TrimmedLine.StartsWith("//")) //comment
                 {
@@ -62,7 +62,7 @@ namespace TranslationHelper.Formats.RPGMMV
                                 .Insert(r.Index,
                                 r.Value.Remove(i = r.Value.IndexOf(str), str.Length).Insert(i, Environment.ExpandEnvironmentVariables(trans).Replace("\\", "/"))
                                 );
-                            //ParseData.ResultForWrite.AppendLine(str);
+
                             ParseData.Ret = true;
                         }
                     }
@@ -72,6 +72,16 @@ namespace TranslationHelper.Formats.RPGMMV
             SaveModeAddLine();
 
             return KeywordActionAfter.ReadToEnd;
+        }
+
+        private bool IsCommentSectionEnd()
+        {
+            return ParseData.TrimmedLine.EndsWith("*/");
+        }
+
+        private bool IsCommentSectionStart()
+        {
+            return ParseData.TrimmedLine.StartsWith("/*");
         }
 
         /// <summary>
