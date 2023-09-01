@@ -14,20 +14,22 @@ namespace TranslationHelper.Formats.RPGMMV.JS
         /// </summary>
         protected virtual string PreQuoteRegexPattern => "";
 
+        readonly string[] _quotesList = new[] { "'", "`", @"\""" };
+        readonly string[] _commentMark = new[] { "//" };
         protected override KeywordActionAfter ParseStringFileLine()
         {
             if (!IsEmptyOrComment())
             {
-                foreach (var regexQuote in new[] { "'", @"\""" })
+                foreach (var regexQuote in _quotesList)
                 {
                     // remove comment // area and get matches
-                    var lineNoComment = ParseData.Line.Split(new[] { "//" }, System.StringSplitOptions.None)[0];
+                    var lineNoComment = ParseData.Line.Split(_commentMark, System.StringSplitOptions.None)[0];
                     var mc = Regex.Matches(lineNoComment, AppMethods.GetRegexQuotesCapturePattern(regexQuote));
                     for (int m = mc.Count - 1; m >= 0; m--) // negative because lenght of string will be changing
                     {
                         var match = mc[m];
 
-                        var result = match.Result("$1");
+                        var result = match.Groups[1].Value;
 
                         if (!IsValidString(result)) continue;
 
@@ -56,13 +58,15 @@ namespace TranslationHelper.Formats.RPGMMV.JS
             return 0;
         }
 
+        readonly string _commentZoneStartMark = "/*";
+        readonly string _commentZoneEndMark = "*/";
         private bool IsEmptyOrComment()
         {
-            if (!ParseData.IsComment && ParseData.Line.Contains("/*"))
+            if (!ParseData.IsComment && ParseData.Line.Contains(_commentZoneStartMark))
             {
                 ParseData.IsComment = true;
             }
-            if (ParseData.IsComment && ParseData.Line.Contains("*/"))
+            if (ParseData.IsComment && ParseData.Line.Contains(_commentZoneEndMark))
             {
                 ParseData.IsComment = false;
             }

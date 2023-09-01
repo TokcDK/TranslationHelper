@@ -210,6 +210,11 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
                     continue;
                 }
 
+                if (AppData.OnlineTranslationCache == null)
+                {
+                    FunctionsOnlineCache.Init();
+                }
+
                 // Parse each extracted value from the line
                 GetFromExtracted(extractData, out int skippedValuesCount);
 
@@ -218,11 +223,6 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
                 {
                     lineNumber++;
                     continue;
-                }
-
-                if (AppData.OnlineTranslationCache == null)
-                {
-                    FunctionsOnlineCache.Init();
                 }
 
                 // If the line is not extracted and its translation is available in the cache, use the cached translation            
