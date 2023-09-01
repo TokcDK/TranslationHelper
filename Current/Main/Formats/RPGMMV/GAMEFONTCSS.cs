@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
 using System.Text.RegularExpressions;
+using System.Windows;
 using TranslationHelper.Data;
 
 namespace TranslationHelper.Formats.RPGMMV
@@ -92,8 +93,6 @@ namespace TranslationHelper.Formats.RPGMMV
         /// <returns></returns>
         private bool ParseFont(string orig, ref string trans)
         {
-            ParseData.Ret = false;
-
             string fullPath;
             try
             {
@@ -127,9 +126,8 @@ namespace TranslationHelper.Formats.RPGMMV
                 fullPath = searchFontFilePath;
             }
 
-            ParseData.Ret = File.Exists(fullPath) && string.Equals(Path.GetExtension(fullPath), ".ttf", StringComparison.InvariantCultureIgnoreCase);
-
-            if (!ParseData.Ret) return false;
+            if (!File.Exists(fullPath) || !string.Equals(Path.GetExtension(fullPath), ".ttf", StringComparison.InvariantCultureIgnoreCase)) 
+                return false;
 
             var fontFileName = Path.GetFileName(fullPath);
 
@@ -139,7 +137,7 @@ namespace TranslationHelper.Formats.RPGMMV
 
             File.Copy(fullPath, Path.Combine(targetFontsDirPath, fontFileName));
 
-            return ParseData.Ret;
+            return true;
         }
 
         protected override bool TrySave()
