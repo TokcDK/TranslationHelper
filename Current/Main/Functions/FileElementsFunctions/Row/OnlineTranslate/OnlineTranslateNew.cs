@@ -210,11 +210,6 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
                     continue;
                 }
 
-                if (AppData.OnlineTranslationCache == null)
-                {
-                    FunctionsOnlineCache.Init();
-                }
-
                 // Parse each extracted value from the line
                 GetFromExtracted(extractData, out int skippedValuesCount);
 

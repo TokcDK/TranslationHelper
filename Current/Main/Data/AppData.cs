@@ -77,7 +77,17 @@ namespace TranslationHelper.Data
         /// <summary>
         /// Online Translation Cache
         /// </summary>
-        internal static FunctionsOnlineCache OnlineTranslationCache;
+        internal static FunctionsOnlineCache OnlineTranslationCache 
+        { 
+            get => onlineTranslationCache ?? (onlineTranslationCache = new FunctionsOnlineCache());
+            set 
+            {
+                if (onlineTranslationCache == value) return;
+
+                onlineTranslationCache = value;
+            }
+        }
+        static FunctionsOnlineCache onlineTranslationCache;
 
         /// <summary>
         /// target textbox control value
