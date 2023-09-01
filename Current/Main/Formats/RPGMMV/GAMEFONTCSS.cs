@@ -92,17 +92,16 @@ namespace TranslationHelper.Formats.RPGMMV
         /// <returns></returns>
         private bool ParseFont(string orig, ref string trans)
         {
-            var fullPath = "";
-
             ParseData.Ret = false;
 
+            string fullPath;
             try
             {
                 fullPath = Path.GetFullPath(trans.Contains("%") ? Environment.ExpandEnvironmentVariables(trans).Replace("\\", "/") : trans);
             }
             catch
             {
-                return ParseData.Ret;
+                return false;
             }
 
             var targetFontsDirPath = Path.Combine(AppData.CurrentProject.SelectedGameDir, "www", "Fonts");
