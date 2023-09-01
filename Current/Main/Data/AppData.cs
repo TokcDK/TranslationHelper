@@ -78,11 +78,33 @@ namespace TranslationHelper.Data
         /// Online Translation Cache
         /// </summary>
         internal static FunctionsOnlineCache OnlineTranslationCache 
-        { 
-            get => onlineTranslationCache ?? (onlineTranslationCache = new FunctionsOnlineCache());
-            set 
+        {
+            get
+            {
+                if(onlineTranslationCache == null)
+                {
+                    // autoinit and read
+                    onlineTranslationCache = new FunctionsOnlineCache();
+                    onlineTranslationCache.UsersCount++;
+                    onlineTranslationCache.Read();
+                }
+
+                return onlineTranslationCache;
+            }
+            set
             {
                 if (onlineTranslationCache == value) return;
+
+                if(value == null)
+                {
+                    FunctionsOnlineCache.Unload();
+                    return;
+                }
+                else if (value.cache.Count == 0)
+                {
+                    onlineTranslationCache.UsersCount++;
+                    return;
+                }
 
                 onlineTranslationCache = value;
             }

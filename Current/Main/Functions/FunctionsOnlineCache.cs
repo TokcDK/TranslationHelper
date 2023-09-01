@@ -96,12 +96,6 @@ namespace TranslationHelper.Functions
             //if (!AppSettings.IsTranslationCacheEnabled)
             //    return;
 
-            if (AppData.OnlineTranslationCache == null)
-            {
-                AppData.OnlineTranslationCache = new FunctionsOnlineCache();
-                AppData.OnlineTranslationCache.Read();
-            }
-
             AppData.OnlineTranslationCache.UsersCount++;
         }
 

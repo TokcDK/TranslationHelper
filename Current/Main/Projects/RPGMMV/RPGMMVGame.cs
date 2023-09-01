@@ -476,12 +476,6 @@ namespace TranslationHelper.Projects.RPGMMV
         {
             if (translation.StartsWith(@"\n<>"))
             {
-                if (AppData.OnlineTranslationCache == null)
-                {
-                    AppData.OnlineTranslationCache = new FunctionsOnlineCache();
-                    AppData.OnlineTranslationCache.Read();
-                }
-
                 if (_filler == null)
                 {
                     _filler = new FillEmptyTablesLinesDictForce();
