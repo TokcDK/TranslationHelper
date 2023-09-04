@@ -122,6 +122,8 @@ namespace TranslationHelper.Projects.RPGMMV
             dirWhereSearch = new DirectoryInfo(Path.Combine(WWWDir, "scenarios"));
             if (ProjectToolsOpenSave.OpenSaveFilesBase(this, dirWhereSearch, typeof(StopCVPluginTXT), "*.txt")) ret = true;
 
+            dirWhereSearch = new DirectoryInfo(WWWDir);
+            if (ProjectToolsOpenSave.OpenSaveFilesBase(this, dirWhereSearch, typeof(ValueLocationPresetTxt), "valueLocationPreset.txt")) ret = true;
             return ret;
         }
 

@@ -133,6 +133,7 @@
     <Compile Include="Formats\RPGMMV\PluginsCustom\QuestsTxt.cs" />
     <Compile Include="Formats\RPGMMV\RPGMVLists.cs" />
     <Compile Include="Formats\RPGMMV\StopCVPluginTXT.cs" />
+    <Compile Include="Formats\RPGMMV\ValueLocationPresetTxt.cs" />
     <Compile Include="Formats\WolfRPG\TextEPH.cs" />
     <Compile Include="Functions\DBSaveFormats\Xlsx.cs" />
     <Compile Include="Functions\DBSaveFormats\Bin.cs" />
