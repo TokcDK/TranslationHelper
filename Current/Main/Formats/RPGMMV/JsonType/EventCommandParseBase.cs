@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using System.Text.RegularExpressions;
 using Newtonsoft.Json.Linq;
 using TranslationHelper.Data;
 using TranslationHelper.Extensions;
@@ -81,6 +82,9 @@ namespace TranslationHelper.Formats.RPGMMV.JsonType
             new SoR_GabWindow(),
         };
 
+        readonly string[] _quotesList = new[] { "'" };
+        readonly string[] _commentMark = new[] { "//" };
+
         protected void ParseCommandStrings(List<Command> commands, string info)
         {
             bool isSave = SaveFileMode;
@@ -127,7 +131,10 @@ namespace TranslationHelper.Formats.RPGMMV.JsonType
                     {
                         if (command.Parameters[i] is string s)
                         {
-                            var isScriptCommand = command.Code == 355 || command.Code == 655;
+                            var isScriptCommand = command.Code == 355 
+                                || command.Code == 655 
+                                || command.Code == 356
+                                || command.Code == 656;
                             var commentStr = "";
                             if (isScriptCommand)
                             {
@@ -140,11 +147,60 @@ namespace TranslationHelper.Formats.RPGMMV.JsonType
                             }
 
                             var commentInfo = isScriptCommand && string.IsNullOrWhiteSpace(commentStr) ? "" : $"\r\nComment:{commentStr}";
-                            if (AddRowData(ref s, isSave ? "" : info + $"\r\nCommand code: {command.Code}{RPGMUtils.GetCodeName(command.Code)}\r\n Parameter #: {i}{commentInfo}") && SaveFileMode)
-                            {
-                                if (isScriptCommand) s = s + commentStr;
 
-                                command.Parameters[i] = s;
+                            if (isScriptCommand && _quotesList.Any(q=>s.Contains(q)))
+                            {
+                                bool isChangedCommandString = false;
+                                foreach (var regexQuote in _quotesList)
+                                {
+                                    // remove comment // area and get matches
+                                    var lineNoComment = s.Split(_commentMark, System.StringSplitOptions.None)[0];
+                                    var mc = Regex.Matches(lineNoComment, AppMethods.GetRegexQuotesCapturePattern(regexQuote));
+                                    for (int m = mc.Count - 1; m >= 0; m--) // negative because lenght of string will be changing
+                                    {
+                                        var match = mc[m];
+
+                                        var result = match.Groups[1].Value;
+
+                                        if (!IsValidString(result)) continue;
+
+                                        if (OpenFileMode)
+                                        {
+                                            AddRowData(result, isSave ? "" : info + $"\r\nCommand code: {command.Code}{RPGMUtils.GetCodeName(command.Code)}\r\n Parameter #: {i}{commentInfo}" + "\r\nOriginal line:" + s, isCheckInput: false);
+                                        }
+                                        else
+                                        {
+                                            string translation = result;
+                                            if (!SetTranslation(ref translation)) continue;
+
+                                            isChangedCommandString = true;
+
+                                            //1111 abc "aaa"
+                                            int index = match.Value.IndexOf(result); // get internal index of result
+                                            s = s
+                                                .Remove(index = match.Index + index/*remove only original string*/, result.Length)
+                                                .Insert(index, translation); // paste translation on place of original
+
+                                            ParseData.Ret = true;
+                                        }
+                                    }
+                                }
+
+                                if (isChangedCommandString)
+                                {
+                                    s = s + commentStr;
+
+                                    command.Parameters[i] = s;
+                                }
+                            }
+                            else
+                            {
+                                if (AddRowData(ref s, isSave ? "" : info + $"\r\nCommand code: {command.Code}{RPGMUtils.GetCodeName(command.Code)}\r\n Parameter #: {i}{commentInfo}") && SaveFileMode)
+                                {
+                                    if (isScriptCommand) s = s + commentStr;
+
+                                    command.Parameters[i] = s;
+                                }
                             }
                         }
                         else if (command.Parameters[i] is JToken t)
