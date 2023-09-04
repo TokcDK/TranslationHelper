@@ -138,7 +138,7 @@ namespace TranslationHelper.Formats.RPGMMV.JsonType
 
                             var commentInfo = isScriptCommand && string.IsNullOrWhiteSpace(quotesExtractor.Comment) ? "" : $"\r\nComment:{quotesExtractor.Comment}";
 
-                            if (isScriptCommand)
+                            if (isScriptCommand && quotesExtractor.QuotesList.Any(q=> quotesExtractor.InputString.Contains(q)))
                             {
                                 bool isChangedCommandString = false;
 
@@ -166,9 +166,10 @@ namespace TranslationHelper.Formats.RPGMMV.JsonType
                             }
                             else
                             {
-                                if (AddRowData(ref s, isSave ? "" : info + $"\r\nCommand code: {command.Code}{RPGMUtils.GetCodeName(command.Code)}\r\n Parameter #: {i}{commentInfo}") && SaveFileMode)
+                                var str = quotesExtractor.InputString;
+                                if (AddRowData(ref str, isSave ? "" : info + $"\r\nCommand code: {command.Code}{RPGMUtils.GetCodeName(command.Code)}\r\n Parameter #: {i}{commentInfo}") && SaveFileMode)
                                 {
-                                    command.Parameters[i] = quotesExtractor.ResultString;
+                                    command.Parameters[i] = str + quotesExtractor.Comment;
                                 }
                             }
                         }

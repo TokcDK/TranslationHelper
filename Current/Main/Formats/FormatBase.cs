@@ -223,7 +223,7 @@ namespace TranslationHelper.Formats
             {
                 if (isCheckInput && !IsValidString(rowData)) return false;
 
-                return SetTranslation(ref rowData, existsTranslation);
+                return SetTranslation(ref rowData, existsTranslation, isCheckInput);
             }
         }
 

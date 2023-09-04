@@ -15,7 +15,7 @@ namespace TranslationHelper.Functions
         readonly string[] _quotesList = new[] { "'", "`", @"\""" };
         readonly string _commentMark = "//";
 
-        string _inputString;
+        internal string InputString;
 
         Match _match;
         Group _matchGroup;
@@ -23,18 +23,19 @@ namespace TranslationHelper.Functions
         string _regexQuote;
 
         internal string Comment = "";
+        internal string[] QuotesList { get => _quotesList; }
 
         public QuotedStringsExtractor(string inputString, bool removeComment = false, string[] quotesList = null)
         {
-            _inputString = inputString;
+            InputString = inputString;
 
             if (removeComment)
             {
-                var commentIndex = _inputString.IndexOf(_commentMark);
+                var commentIndex = InputString.IndexOf(_commentMark);
                 if(commentIndex != -1)
                 {
-                    Comment = _inputString.Substring(commentIndex);
-                    _inputString = _inputString.Remove(commentIndex);
+                    Comment = InputString.Substring(commentIndex);
+                    InputString = InputString.Remove(commentIndex);
                 }
             }
 
@@ -55,7 +56,7 @@ namespace TranslationHelper.Functions
             {
                 _regexQuote = regexQuote;
 
-                var mc = Regex.Matches(_inputString, AppMethods.GetRegexQuotesCapturePattern(regexQuote));
+                var mc = Regex.Matches(InputString, AppMethods.GetRegexQuotesCapturePattern(regexQuote));
                 for (int m = mc.Count - 1; m >= 0; m--) // negative because lenght of string will be changing
                 {
                     _match = mc[m];
@@ -74,11 +75,11 @@ namespace TranslationHelper.Functions
         {
             int index = _matchGroup.Index; // get internal index of result
 
-            return _inputString = _inputString.Remove(index, _matchGroup.Length)
+            return InputString = InputString.Remove(index, _matchGroup.Length)
                             .Insert(index, valueToPaste.Replace(_regexQuote, "")); // paste translation on place of original
         }
 
-        internal string ResultString { get => _inputString + Comment; }
+        internal string ResultString { get => InputString + Comment; }
     }
 
     /// <summary>
