@@ -290,6 +290,9 @@ namespace TranslationHelper.Formats
         /// <returns></returns>
         internal bool AddRowData(string tablename, string[] rowData, string rowInfo, bool isCheckInput = true)
         {
+            if (rowData == null) return false;
+            if (rowData[0] == null) return false;
+
             var original = AddRowDataPreAddOriginalStringMod(rowData[0]);
 
             if (isCheckInput && !IsValidString(original)) return false;
