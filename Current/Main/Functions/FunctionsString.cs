@@ -12,7 +12,7 @@ namespace TranslationHelper.Functions
 {
     internal class QuotedStringsExtractor
     {
-        readonly string[] _quotesList = new[] { "'", "`" };
+        readonly string[] _quotesList = new[] { "'", "`", @"\""" };
         readonly string _commentMark = "//";
 
         string _inputString;
@@ -24,7 +24,7 @@ namespace TranslationHelper.Functions
 
         internal string Comment = "";
 
-        public QuotedStringsExtractor(string inputString, bool removeComment = false)
+        public QuotedStringsExtractor(string inputString, bool removeComment = false, string[] quotesList = null)
         {
             _inputString = inputString;
 
@@ -36,6 +36,11 @@ namespace TranslationHelper.Functions
                     Comment = _inputString.Substring(commentIndex);
                     _inputString = _inputString.Remove(commentIndex);
                 }
+            }
+
+            if(quotesList!=null && quotesList.Length > 0)
+            {
+                _quotesList = quotesList;
             }
         }
 

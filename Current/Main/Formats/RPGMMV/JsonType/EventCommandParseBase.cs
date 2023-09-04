@@ -83,9 +83,6 @@ namespace TranslationHelper.Formats.RPGMMV.JsonType
             new SoR_GabWindow(),
         };
 
-        readonly string[] _quotesList = new[] { "'", "`" };
-        readonly string[] _commentMark = new[] { "//" };
-
         protected void ParseCommandStrings(List<Command> commands, string info)
         {
             bool isSave = SaveFileMode;

@@ -16,8 +16,6 @@ namespace TranslationHelper.Formats.RPGMMV.JS
         /// </summary>
         protected virtual string PreQuoteRegexPattern => "";
 
-        readonly string[] _quotesList = new[] { "'", "`", @"\""" };
-        readonly string[] _commentMark = new[] { "//" };
         protected override KeywordActionAfter ParseStringFileLine()
         {
             if (!IsEmptyOrComment())
