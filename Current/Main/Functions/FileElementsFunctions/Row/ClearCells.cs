@@ -10,6 +10,9 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
         {
         }
 
+        protected override bool IsParallelTables => true;
+        protected override bool IsParallelRows => true;
+
         bool _dataSourceClear = false;
         protected override void ActionsPreTableApply(TableData tableData)
         {

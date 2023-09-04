@@ -978,6 +978,8 @@ namespace TranslationHelper
 
         internal async void LoadDB(bool force = true)
         {
+            if (force) await new ClearCells().AllT().ConfigureAwait(true);
+
             var lastautosavepath = Path.Combine(FunctionsDBFile.GetProjectDBFolder(), FunctionsDBFile.GetDBFileName() + FunctionsDBFile.GetDBCompressionExt());
             this.lastautosavepath = lastautosavepath;
             if (File.Exists(lastautosavepath))
@@ -1140,6 +1142,7 @@ namespace TranslationHelper
                 {
                     if (openBD.FileName.Length > 0)
                     {
+                        if (forced) await new ClearCells().AllT().ConfigureAwait(true);
                         await Task.Run(() => LoadTranslationFromDB(openBD.FileName, false, forced)).ConfigureAwait(true);
                     }
                 }

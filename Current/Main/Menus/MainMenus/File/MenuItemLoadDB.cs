@@ -8,6 +8,7 @@ using System.Windows.Forms;
 using TranslationHelper.Data;
 using TranslationHelper.Formats.RPGMaker.Functions;
 using TranslationHelper.Functions;
+using TranslationHelper.Functions.FileElementsFunctions.Row;
 using TranslationHelper.Main.Functions;
 using TranslationHelper.Projects.RPGMTrans;
 
@@ -23,7 +24,7 @@ namespace TranslationHelper.Menus.MainMenus.File
         public override void OnClick(object sender, EventArgs e)
         {
             if (AppData.CurrentProject == null) return;
-
+                        
             AppData.Main.UnLockDBLoad(false);
             AppData.Main.LoadDB();
             //AppData.Main.Invoke((Action)(() => AppData.Main.LoadTranslationToolStripMenuItem.Enabled = true));
