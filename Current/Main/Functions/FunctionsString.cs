@@ -74,7 +74,7 @@ namespace TranslationHelper.Functions
         {
             int index = _matchGroup.Index; // get internal index of result
 
-            return _retValue.Remove(index, _matchGroup.Length)
+            return _inputString = _inputString.Remove(index, _matchGroup.Length)
                             .Insert(index, valueToPaste.Replace(_regexQuote, "")); // paste translation on place of original
         }
 

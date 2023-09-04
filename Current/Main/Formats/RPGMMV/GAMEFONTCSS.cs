@@ -133,7 +133,7 @@ namespace TranslationHelper.Formats.RPGMMV
 
             trans = fontFileName;
 
-            if (File.Exists(targetFontsDirPath)) return true;
+            if (File.Exists(Path.Combine(targetFontsDirPath, fontFileName))) return true;
 
             File.Copy(fullPath, Path.Combine(targetFontsDirPath, fontFileName));
 
