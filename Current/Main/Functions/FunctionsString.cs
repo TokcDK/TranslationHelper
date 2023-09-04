@@ -10,7 +10,7 @@ using WolfTrans.Net.Parsers.Events.Map.Event;
 
 namespace TranslationHelper.Functions
 {
-    internal class QuotedTextExtractor
+    internal class QuotedStringsExtractor
     {
         readonly string[] _quotesList = new[] { "'", "`" };
         readonly string _commentMark = "//";
@@ -24,7 +24,7 @@ namespace TranslationHelper.Functions
 
         internal string Comment = "";
 
-        public QuotedTextExtractor(string inputString, bool removeComment = false)
+        public QuotedStringsExtractor(string inputString, bool removeComment = false)
         {
             _inputString = inputString;
 

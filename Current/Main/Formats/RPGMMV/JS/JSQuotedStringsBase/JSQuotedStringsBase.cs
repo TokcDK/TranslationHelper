@@ -22,7 +22,7 @@ namespace TranslationHelper.Formats.RPGMMV.JS
         {
             if (!IsEmptyOrComment())
             {
-                var quotesExtractor = new QuotedTextExtractor(ParseData.Line, removeComment: true);
+                var quotesExtractor = new QuotedStringsExtractor(ParseData.Line, removeComment: true);
 
                 bool isChanged = false;
                 foreach (var quotedString in quotesExtractor.Extract())

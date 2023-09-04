@@ -137,7 +137,7 @@ namespace TranslationHelper.Formats.RPGMMV.JsonType
                                 || command.Code == 356
                                 || command.Code == 656;
 
-                            var quotesExtractor = new QuotedTextExtractor(s, removeComment:true);
+                            var quotesExtractor = new QuotedStringsExtractor(s, removeComment:true);
 
                             var commentInfo = isScriptCommand && string.IsNullOrWhiteSpace(quotesExtractor.Comment) ? "" : $"\r\nComment:{quotesExtractor.Comment}";
 
