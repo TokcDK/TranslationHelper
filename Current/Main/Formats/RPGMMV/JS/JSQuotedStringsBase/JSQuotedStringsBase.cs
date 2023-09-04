@@ -1,5 +1,7 @@
-﻿using System.Text.RegularExpressions;
+﻿using System.Security.Cryptography.Pkcs;
+using System.Text.RegularExpressions;
 using TranslationHelper.Data;
+using TranslationHelper.Functions;
 
 namespace TranslationHelper.Formats.RPGMMV.JS
 {
@@ -20,37 +22,27 @@ namespace TranslationHelper.Formats.RPGMMV.JS
         {
             if (!IsEmptyOrComment())
             {
-                foreach (var regexQuote in _quotesList)
+                var quotesExtractor = new QuotedTextExtractor(ParseData.Line, removeComment: true);
+
+                bool isChanged = false;
+                foreach (var quotedString in quotesExtractor.Extract())
                 {
-                    // remove comment // area and get matches
-                    var lineNoComment = ParseData.Line.Split(_commentMark, System.StringSplitOptions.None)[0];
-                    var mc = Regex.Matches(lineNoComment, AppMethods.GetRegexQuotesCapturePattern(regexQuote));
-                    for (int m = mc.Count - 1; m >= 0; m--) // negative because lenght of string will be changing
+                    if (OpenFileMode)
                     {
-                        var match = mc[m];
+                        AddRowData(quotedString, ParseData.Line, isCheckInput: false);
+                    }
+                    else
+                    {
+                        string translation = quotedString;
+                        if (!SetTranslation(ref translation, isCheckInput: false)) continue;
 
-                        var result = match.Groups[1].Value;
+                        isChanged = true;
 
-                        if (!IsValidString(result)) continue;
-
-                        if (OpenFileMode)
-                        {
-                            AddRowData(result, ParseData.Line, isCheckInput: false);
-                        }
-                        else
-                        {
-                            string translation = result;
-                            if (!SetTranslation(ref translation)) continue;
-
-                            //1111 abc "aaa"
-                            int index = match.Value.IndexOf(result); // get internal index of result
-                            ParseData.Line = ParseData.Line
-                                .Remove(index = match.Index + index/*remove only original string*/, result.Length)
-                                .Insert(index, translation.Replace(regexQuote, "")); // paste translation on place of original
-                            ParseData.Ret = true;
-                        }
+                        quotesExtractor.ReplaceLastExtractedString(translation);
                     }
                 }
+
+                if (isChanged) ParseData.Line = quotesExtractor.ResultString;
             }
 
             SaveModeAddLine(newline: System.Environment.NewLine);

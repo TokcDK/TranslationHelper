@@ -1,8 +1,81 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Security.Cryptography.Pkcs;
+using System.Text.RegularExpressions;
+using System.Transactions;
+using TranslationHelper.Data;
 using TranslationHelper.Extensions;
+using TranslationHelper.Formats.RPGMMV;
+using WolfTrans.Net.Parsers.Events.Map.Event;
 
 namespace TranslationHelper.Functions
 {
+    internal class QuotedTextExtractor
+    {
+        readonly string[] _quotesList = new[] { "'", "`" };
+        readonly string _commentMark = "//";
+
+        string _inputString;
+
+        Match _match;
+        Group _matchGroup;
+        string _retValue;
+        string _regexQuote;
+
+        internal string Comment = "";
+
+        public QuotedTextExtractor(string inputString, bool removeComment = false)
+        {
+            _inputString = inputString;
+
+            if (removeComment)
+            {
+                var commentIndex = _inputString.IndexOf(_commentMark);
+                if(commentIndex != -1)
+                {
+                    Comment = _inputString.Substring(commentIndex);
+                    _inputString = _inputString.Remove(commentIndex);
+                }
+            }
+        }
+
+        /// <summary>
+        /// Will return all quoted strings if any found
+        /// </summary>
+        /// <param name="removeComment"></param>
+        /// <returns></returns>
+        internal IEnumerable<string> Extract()
+        {
+            foreach (var regexQuote in _quotesList)
+            {
+                _regexQuote = regexQuote;
+
+                var mc = Regex.Matches(_inputString, AppMethods.GetRegexQuotesCapturePattern(regexQuote));
+                for (int m = mc.Count - 1; m >= 0; m--) // negative because lenght of string will be changing
+                {
+                    _match = mc[m];
+
+                    yield return _retValue = (_matchGroup = _match.Groups[1]).Value;
+                }
+            }
+        }
+
+        /// <summary>
+        /// will paste in input string <paramref name="valueToPaste"/> instead of last returned quoted string
+        /// </summary>
+        /// <param name="valueToPaste"></param>
+        /// <returns></returns>
+        internal string ReplaceLastExtractedString(string valueToPaste)
+        {
+            int index = _matchGroup.Index; // get internal index of result
+
+            return _retValue.Remove(index, _matchGroup.Length)
+                            .Insert(index, valueToPaste.Replace(_regexQuote, "")); // paste translation on place of original
+        }
+
+        internal string ResultString { get => _inputString + Comment; }
+    }
+
     /// <summary>
     /// Functions for work with strings
     /// </summary>

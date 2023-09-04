@@ -4,6 +4,7 @@ using System.Text.RegularExpressions;
 using Newtonsoft.Json.Linq;
 using TranslationHelper.Data;
 using TranslationHelper.Extensions;
+using TranslationHelper.Functions;
 using Command = RPGMVJsonParser.Command;
 
 namespace TranslationHelper.Formats.RPGMMV.JsonType
@@ -135,71 +136,42 @@ namespace TranslationHelper.Formats.RPGMMV.JsonType
                                 || command.Code == 655 
                                 || command.Code == 356
                                 || command.Code == 656;
-                            var commentStr = "";
-                            if (isScriptCommand)
-                            {
-                                var comment = s.IndexOf("//");
-                                if (comment != -1)
-                                {
-                                    commentStr = s.Substring(comment);
-                                    s = s.Remove(comment);
-                                }
-                            }
 
-                            var commentInfo = isScriptCommand && string.IsNullOrWhiteSpace(commentStr) ? "" : $"\r\nComment:{commentStr}";
+                            var quotesExtractor = new QuotedTextExtractor(s, removeComment:true);
+
+                            var commentInfo = isScriptCommand && string.IsNullOrWhiteSpace(quotesExtractor.Comment) ? "" : $"\r\nComment:{quotesExtractor.Comment}";
 
                             if (isScriptCommand && _quotesList.Any(q=>s.Contains(q)))
                             {
                                 bool isChangedCommandString = false;
-                                foreach (var regexQuote in _quotesList)
+
+                                foreach (var quotedString in quotesExtractor.Extract())
                                 {
-                                    // remove comment // area and get matches
-                                    var lineNoComment = s.Split(_commentMark, System.StringSplitOptions.None)[0];
-                                    var mc = Regex.Matches(lineNoComment, AppMethods.GetRegexQuotesCapturePattern(regexQuote));
-                                    for (int m = mc.Count - 1; m >= 0; m--) // negative because lenght of string will be changing
+                                    if (OpenFileMode)
                                     {
-                                        var match = mc[m];
+                                        AddRowData(quotedString, isSave ? "" : info + $"\r\nCommand code: {command.Code}{RPGMUtils.GetCodeName(command.Code)}\r\n Parameter #: {i}{commentInfo}" + "\r\nOriginal line:" + s, isCheckInput: false);
+                                    }
+                                    else
+                                    {
+                                        string translation = quotedString;
+                                        if (!SetTranslation(ref translation, isCheckInput: false)) continue;
 
-                                        var result = match.Groups[1].Value;
+                                        isChangedCommandString = true;
 
-                                        if (!IsValidString(result)) continue;
-
-                                        if (OpenFileMode)
-                                        {
-                                            AddRowData(result, isSave ? "" : info + $"\r\nCommand code: {command.Code}{RPGMUtils.GetCodeName(command.Code)}\r\n Parameter #: {i}{commentInfo}" + "\r\nOriginal line:" + s, isCheckInput: false);
-                                        }
-                                        else
-                                        {
-                                            string translation = result;
-                                            if (!SetTranslation(ref translation)) continue;
-
-                                            isChangedCommandString = true;
-
-                                            //1111 abc "aaa"
-                                            int index = match.Value.IndexOf(result); // get internal index of result
-                                            s = s
-                                                .Remove(index = match.Index + index/*remove only original string*/, result.Length)
-                                                .Insert(index, translation.Replace(regexQuote, "")); // paste translation on place of original
-
-                                            ParseData.Ret = true;
-                                        }
+                                        quotesExtractor.ReplaceLastExtractedString(translation);
                                     }
                                 }
 
                                 if (isChangedCommandString)
                                 {
-                                    s = s + commentStr;
-
-                                    command.Parameters[i] = s;
+                                    command.Parameters[i] = quotesExtractor.ResultString;
                                 }
                             }
                             else
                             {
                                 if (AddRowData(ref s, isSave ? "" : info + $"\r\nCommand code: {command.Code}{RPGMUtils.GetCodeName(command.Code)}\r\n Parameter #: {i}{commentInfo}") && SaveFileMode)
                                 {
-                                    if (isScriptCommand) s = s + commentStr;
-
-                                    command.Parameters[i] = s;
+                                    command.Parameters[i] = quotesExtractor.ResultString;
                                 }
                             }
                         }
