@@ -27,12 +27,12 @@ namespace TranslationHelper.Formats.RPGMMV.JS
                 {
                     if (OpenFileMode)
                     {
-                        AddRowData(quotedString, ParseData.Line, isCheckInput: false);
+                        AddRowData(quotedString, ParseData.Line, isCheckInput: true);
                     }
                     else
                     {
                         string translation = quotedString;
-                        if (!SetTranslation(ref translation, isCheckInput: false)) continue;
+                        if (!SetTranslation(ref translation, isCheckInput: true)) continue;
 
                         isChanged = true;
 

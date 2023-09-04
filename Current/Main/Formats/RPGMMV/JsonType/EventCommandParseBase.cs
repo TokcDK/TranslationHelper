@@ -146,12 +146,12 @@ namespace TranslationHelper.Formats.RPGMMV.JsonType
                                 {
                                     if (OpenFileMode)
                                     {
-                                        AddRowData(quotedString, isSave ? "" : info + $"\r\nCommand code: {command.Code}{RPGMUtils.GetCodeName(command.Code)}\r\n Parameter #: {i}{commentInfo}" + "\r\nOriginal line:" + s, isCheckInput: false);
+                                        AddRowData(quotedString, isSave ? "" : info + $"\r\nCommand code: {command.Code}{RPGMUtils.GetCodeName(command.Code)}\r\n Parameter #: {i}{commentInfo}" + "\r\nOriginal line:" + s, isCheckInput: true);
                                     }
                                     else
                                     {
                                         string translation = quotedString;
-                                        if (!SetTranslation(ref translation, isCheckInput: false)) continue;
+                                        if (!SetTranslation(ref translation, isCheckInput: true)) continue;
 
                                         isChangedCommandString = true;
 
