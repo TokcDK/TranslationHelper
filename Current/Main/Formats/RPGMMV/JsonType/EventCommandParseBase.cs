@@ -179,7 +179,7 @@ namespace TranslationHelper.Formats.RPGMMV.JsonType
                                             int index = match.Value.IndexOf(result); // get internal index of result
                                             s = s
                                                 .Remove(index = match.Index + index/*remove only original string*/, result.Length)
-                                                .Insert(index, translation); // paste translation on place of original
+                                                .Insert(index, translation.Replace(regexQuote, "")); // paste translation on place of original
 
                                             ParseData.Ret = true;
                                         }
