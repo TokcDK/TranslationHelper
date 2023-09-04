@@ -46,7 +46,7 @@ namespace TranslationHelper.Formats.RPGMMV.JS
                             int index = match.Value.IndexOf(result); // get internal index of result
                             ParseData.Line = ParseData.Line
                                 .Remove(index = match.Index + index/*remove only original string*/, result.Length)
-                                .Insert(index, translation); // paste translation on place of original
+                                .Insert(index, translation.Replace(regexQuote, "")); // paste translation on place of original
                             ParseData.Ret = true;
                         }
                     }
