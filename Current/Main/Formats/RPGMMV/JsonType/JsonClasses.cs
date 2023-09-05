@@ -16,10 +16,10 @@ namespace TranslationHelper.Formats.RPGMMV.JsonType
                 if (item == null) continue;
 
                 var s = item.Name;
-                if (AddRowData(ref s, SaveFileMode ? "" : $"\r\nID: {item.Id}") && SaveFileMode) item.Name = s;
+                if (!string.IsNullOrWhiteSpace(s) && AddRowData(ref s, SaveFileMode ? "" : $"\r\nID: {item.Id}") && SaveFileMode) item.Name = s;
 
                 s = item.Note;
-                if (AddRowData(ref s, SaveFileMode ? "" : $"\r\nID: {item.Id}") && SaveFileMode) item.Note = s;
+                if (!string.IsNullOrWhiteSpace(s) && AddRowData(ref s, SaveFileMode ? "" : $"\r\nID: {item.Id}", isCheckInput: false ) && SaveFileMode) item.Note = s;
             }
 
             return data;
