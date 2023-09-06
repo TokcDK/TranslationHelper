@@ -996,6 +996,7 @@ namespace TranslationHelper
             string searchPattern = SearchFormFindWhatTextBox.Text;
             var searchReplacementUnescaped = FixRegexReplacementFromTextbox(SearchFormReplaceWithTextBox.Text);
             var searchcolumnIndex = SearchColumnIndex;
+
             foreach (var foundRowData in EnumerateAndFillSearchResults())
             {
                 (_selectedTableIndex, _selectedRowIndex) = (foundRowData.TableIndex, foundRowData.RowIndex);
@@ -1018,22 +1019,24 @@ namespace TranslationHelper
                 {
                     if (SearchModeRegexRadioButton.Checked)
                     {
-                        if (Regex.IsMatch(searchCoulumnValue, searchPattern, RegexOptions.IgnoreCase))
+                        var ignoreCase = THSearchMatchCaseCheckBox.Checked ? RegexOptions.None : RegexOptions.IgnoreCase;
+                        if (Regex.IsMatch(searchCoulumnValue, searchPattern, ignoreCase))
                         {
                             isAnyChanged = true;
                             var v = GetDefaultIfEmpty(row.Field<string>(_translationColumnIndex), searchCoulumnValue);
                             row.SetField(_translationColumnIndex,
-                                Regex.Replace(v, searchPattern, searchReplacementUnescaped, RegexOptions.IgnoreCase));
+                                Regex.Replace(v, searchPattern, searchReplacementUnescaped, ignoreCase));
                         }
                     }
                     else
                     {
-                        if (searchCoulumnValue.ToUpperInvariant().Contains(searchPattern.ToUpperInvariant()))
+                        var ignoreCase = !THSearchMatchCaseCheckBox.Checked;
+                        if (ignoreCase ? searchCoulumnValue.ToUpperInvariant().Contains(searchPattern.ToUpperInvariant()) : searchCoulumnValue.Contains(searchPattern))
                         {
                             isAnyChanged = true;
                             var v = GetDefaultIfEmpty(row.Field<string>(_translationColumnIndex), searchCoulumnValue);
                             row.SetField(_translationColumnIndex,
-                                ReplaceEx.Replace(v, searchPattern, searchReplacementUnescaped, StringComparison.OrdinalIgnoreCase));
+                                ReplaceEx.Replace(v, searchPattern, searchReplacementUnescaped, ignoreCase ? StringComparison.OrdinalIgnoreCase : StringComparison.Ordinal));
                         }
                     }
                 }
