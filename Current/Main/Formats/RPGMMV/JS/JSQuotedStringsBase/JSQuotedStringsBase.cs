@@ -25,9 +25,11 @@ namespace TranslationHelper.Formats.RPGMMV.JS
                 bool isChanged = false;
                 foreach (var quotedString in quotesExtractor.Extract())
                 {
+                    if (string.IsNullOrWhiteSpace(quotedString)) continue;
+
                     if (OpenFileMode)
                     {
-                        AddRowData(quotedString, ParseData.Line, isCheckInput: true);
+                        AddRowData(quotedString, ParseData.Line, isCheckInput: false);
                     }
                     else
                     {

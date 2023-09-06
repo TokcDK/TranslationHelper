@@ -25,7 +25,7 @@ namespace TranslationHelper.Main.Functions
                         Percent = AppSettings.DontLoadStringIfRomajiPercentNumber;
                     }
 
-                    if (Percent >= 100 || Percent < 0)
+                    if (Percent >= 100 || Percent < 1)
                     {
                         return false;
                     }
