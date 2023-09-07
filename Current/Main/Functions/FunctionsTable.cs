@@ -103,13 +103,23 @@ namespace TranslationHelper.Main.Functions
             try
             {
                 RCount = AppData.CurrentProject.FilesContent.Tables[tableIndex].Rows.Count;
-                if (tableIndex == AppData.Main.THFilesList.GetSelectedIndex() && RCount > 0 && AppData.Main.THFileElementsDataGridView.DataSource != null)
-                {
-                }
-                else
+                if (tableIndex != AppData.Main.THFilesList.GetSelectedIndex() || RCount == 0 || AppData.Main.THFileElementsDataGridView.DataSource == null)
                 {
                     AppData.Main.THFilesList.SetSelectedIndex(tableIndex);
                     AppData.Main.THFileElementsDataGridView.DataSource = AppData.CurrentProject.FilesContent.Tables[tableIndex];
+                }
+
+                // reset filter
+                var table = AppData.CurrentProject.FilesContent.Tables[tableIndex];
+                if (!string.IsNullOrEmpty(table.DefaultView.RowFilter))
+                {
+                    foreach (DataGridViewCell filterCell in AppData.Main.THFiltersDataGridView.Rows[0].Cells)
+                    {
+                        filterCell.Value = DBNull.Value;
+                    }
+                    table.DefaultView.RowFilter = string.Empty;
+                    table.DefaultView.Sort = string.Empty;
+                    AppData.Main.THFileElementsDataGridView.Refresh();
                 }
 
                 AppData.Main.THFileElementsDataGridView.CurrentCell = AppData.Main.THFileElementsDataGridView[columnName, rowIndex];
@@ -311,7 +321,7 @@ namespace TranslationHelper.Main.Functions
                 string tname = table.TableName;
                 var retDStable = table.Clone();
                 retDStable.TableName = tname;
-                foreach(DataRow row in table.Rows)
+                foreach (DataRow row in table.Rows)
                 {
                     var cellTranslation = row.Field<string>(translationColumnIndex);
                     if (!string.IsNullOrEmpty(cellTranslation))

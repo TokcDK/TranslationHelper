@@ -138,7 +138,7 @@ namespace TranslationHelper.Formats.RPGMMV.JsonType
 
                             var commentInfo = isScriptCommand && string.IsNullOrWhiteSpace(quotesExtractor.Comment) ? "" : $"\r\nComment:{quotesExtractor.Comment}";
 
-                            if (isScriptCommand && quotesExtractor.QuotesList.Any(q=> quotesExtractor.InputString.Contains(q)))
+                            if (isScriptCommand && quotesExtractor.QuotesList.Count(q=> quotesExtractor.InputString.Contains(q)) > 1)
                             {
                                 bool isChangedCommandString = false;
 

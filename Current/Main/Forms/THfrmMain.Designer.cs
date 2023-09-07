@@ -667,7 +667,7 @@
         private System.Windows.Forms.SplitContainer THInfoEditSplitContainer;
         public System.Windows.Forms.DataGridView THFileElementsDataGridView;
         public System.Windows.Forms.ListBox THFilesList;
-        private System.Windows.Forms.DataGridView THFiltersDataGridView;
+        internal System.Windows.Forms.DataGridView THFiltersDataGridView;
         public System.Windows.Forms.ProgressBar THActionProgressBar;
         public System.Windows.Forms.Label THInfolabel;
         private System.Windows.Forms.Button THbtnMainResetTable;
