@@ -978,6 +978,10 @@ namespace TranslationHelper
 
         internal async void LoadDB(bool force = true)
         {
+            if (AppData.CurrentProject.IsLoadingDB) return;
+
+            AppData.CurrentProject.IsLoadingDB = true;
+
             if (force) await new ClearCells().AllT().ConfigureAwait(true);
 
             var lastautosavepath = Path.Combine(FunctionsDBFile.GetProjectDBFolder(), FunctionsDBFile.GetDBFileName() + FunctionsDBFile.GetDBCompressionExt());
@@ -994,6 +998,8 @@ namespace TranslationHelper
                     await Task.Run(() => AppData.Main.LoadTranslationFromDB(lastautosavepath, true)).ConfigureAwait(true);
                 }
             }
+
+            AppData.CurrentProject.IsLoadingDB = false;
         }
 
         bool LoadTranslationToolStripMenuItem_ClickIsBusy;

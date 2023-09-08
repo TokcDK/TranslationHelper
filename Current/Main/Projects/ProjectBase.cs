@@ -25,6 +25,11 @@ namespace TranslationHelper.Projects
         }
 
         /// <summary>
+        /// Can be set state if DB is loading for the project
+        /// </summary>
+        public bool IsLoadingDB = false;
+
+        /// <summary>
         /// true - when file open, false - when file writing
         /// </summary>
         public bool OpenFileMode = true;

@@ -27,6 +27,9 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
         protected virtual bool IsForce => false;
         protected override bool Apply(RowBaseRowData rowData)
         {
+            if (AppData.CurrentProject == null) return false;
+            if (AppData.CurrentProject.IsLoadingDB) return false;
+
             Set(rowData);
 
             return true;
