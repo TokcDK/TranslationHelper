@@ -284,7 +284,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
                         continue;
                     }
 
-                    row.SetField(AppData.CurrentProject.TranslationColumnIndex, inputTranslationValue);
+                    AppData.Main.Invoke((Action)(() => row.SetField(AppData.CurrentProject.TranslationColumnIndex, inputTranslationValue)));
                 }
             }
         }
