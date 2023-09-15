@@ -107,7 +107,7 @@ namespace TranslationHelper.Formats
         /// Save file strings actions executing here
         /// </summary>
         /// <returns></returns>
-        public bool Save() { OpenFileMode = false; return TrySave(); }
+        public bool Save() { OpenFileMode = false; return FileName.HasAnyTranslated() && TrySave(); }
 
         /// <summary>
         /// Open file strings actions executing here

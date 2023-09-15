@@ -132,9 +132,6 @@ namespace TranslationHelper.Projects
                 // check extension for case im mask was "*.*" or kind of
                 if (!string.IsNullOrWhiteSpace(format.Extension) && file.Extension != format.Extension) return;
 
-                // check if exist table has any translated
-                if (project.SaveFileMode && existsTables.Contains(format.FileName) && !format.FileName.HasAnyTranslated()) return;
-
                 AppData.Main.ProgressInfo(true, (project.OpenFileMode ? T._("Opening") : T._("Saving")) + " " + file.Name);
 
                 bool isOpenSuccess = false;
