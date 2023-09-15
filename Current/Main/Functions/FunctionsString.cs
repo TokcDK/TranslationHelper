@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Security.Cryptography.Pkcs;
 using System.Text.RegularExpressions;
 using System.Transactions;
@@ -60,11 +61,16 @@ namespace TranslationHelper.Functions
                 for (int m = mc.Count - 1; m >= 0; m--) // negative because lenght of string will be changing
                 {
                     _match = mc[m];
+                    _retValue = (_matchGroup = _match.Groups[1]).Value;
 
-                    yield return _retValue = (_matchGroup = _match.Groups[1]).Value;
+                    if (_checkers.Any(_checker => !_checker.IsValid(InputString, _retValue, _matchGroup.Index))) continue;
+
+                    yield return _retValue;
                 }
             }
         }
+
+        readonly QuotedStringChecker[] _checkers = new[] { new MetaKeyQuotedStringChecker() };
 
         /// <summary>
         /// will paste in input string <paramref name="valueToPaste"/> instead of last returned quoted string
@@ -80,6 +86,29 @@ namespace TranslationHelper.Functions
         }
 
         internal string ResultString { get => InputString + Comment; }
+
+        internal abstract class QuotedStringChecker
+        {
+            internal abstract bool IsValid(string inputString, string quotedString, int quotedStringIndex);
+        }
+
+        internal class MetaKeyQuotedStringChecker : QuotedStringChecker
+        {
+            readonly string metaMarker = ".meta[";
+
+            internal override bool IsValid(string parentString, string quotedString, int quotedStringIndex)
+            {
+                if (!parentString.Contains(metaMarker)) return true;
+
+                var indexToCheck = parentString.Length - 6;
+                if (indexToCheck <= 0) return true;
+
+                if(!string.Equals(parentString.Substring(indexToCheck, 6), metaMarker)) return true;
+
+                return false;
+            }
+        }
+
     }
 
     /// <summary>
