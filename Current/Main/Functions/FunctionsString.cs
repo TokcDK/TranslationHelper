@@ -94,16 +94,17 @@ namespace TranslationHelper.Functions
 
         internal class MetaKeyQuotedStringChecker : QuotedStringChecker
         {
-            readonly string metaMarker = ".meta[";
+            readonly string metaMarker = ".meta['";
 
             internal override bool IsValid(string parentString, string quotedString, int quotedStringIndex)
             {
                 if (!parentString.Contains(metaMarker)) return true;
 
-                var indexToCheck = parentString.Length - 6;
+                var indexToCheck = quotedStringIndex - 7;
                 if (indexToCheck <= 0) return true;
 
-                if(!string.Equals(parentString.Substring(indexToCheck, 6), metaMarker)) return true;
+                string str2check = parentString.Substring(indexToCheck, 7);
+                if (!string.Equals(str2check, metaMarker)) return true;
 
                 return false;
             }
