@@ -149,6 +149,7 @@
     <Compile Include="Functions\FileElementsFunctions\Row\SearchRowIssueCheckers\ProjectSpecificIssues.cs" />
     <Compile Include="Functions\FileElementsFunctions\Row\SearchRowIssueCheckers\ContainsNonRomaji.cs" />
     <Compile Include="Functions\FileElementsFunctions\Row\SearchRowIssueCheckers\ISearchIssueChecker.cs" />
+    <Compile Include="Functions\FileElementsFunctions\Row\ShowTranslationRegex.cs" />
     <Compile Include="Functions\FunctionRules.cs" />
     <Compile Include="Functions\FunctionsCleanup.cs" />
     <Compile Include="Data\FileInfo.cs" />
@@ -378,6 +379,7 @@
     <Compile Include="GlobalSuppressions.cs" />
     <Compile Include="Menus\DefaultMenu.cs" />
     <Compile Include="Menus\FileRowMenus\FileRowMenuItemBase.cs" />
+    <Compile Include="Menus\FileRowMenus\ShowTranslationRegexMenu.cs" />
     <Compile Include="Menus\FilesListMenus\FileListMenuItemBase.cs" />
     <Compile Include="Menus\FilesListMenus\FileListMenuItemCopyName.cs" />
     <Compile Include="Menus\AllTableRowsChildMenuBase.cs" />
