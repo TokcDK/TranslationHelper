@@ -44,7 +44,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
                     _found.Select(el =>
                     $"{lineString}:" + el.InputString +
                     $"\n{patternString}:" + el.Pattern +
-                    $"\n: {replacerString}:" + el.Replacer));
+                    $"\n{replacerString}:" + el.Replacer));
 
                 Clipboard.Clear();
                 Clipboard.SetText(resultMessage);
