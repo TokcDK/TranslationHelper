@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Windows.Shapes;
+using TranslationHelper.Extensions;
 
 namespace TranslationHelper.Functions.FileElementsFunctions.Row
 {
@@ -14,16 +15,19 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
         int addedCount = 0;
         protected override bool Apply(RowBaseRowData rowData)
         {
-            if (addedCount > 10) return false;
+            if (addedCount > 50) return false;
 
-            var extractData = new ExtractRegexInfo(rowData.Original);
-            if (extractData == null)
+            foreach (var line in rowData.Original.SplitToLines())
             {
-                return false;
-            }
+                var extractData = new ExtractRegexInfo(line);
+                if (extractData == null || string.IsNullOrWhiteSpace(extractData.Pattern) || extractData.ExtractedValuesList.Count == 0)
+                {
+                    continue;
+                }
+                _found.Add(extractData);
 
-            _found.Add(extractData);
-            addedCount++;
+                addedCount++;
+            }
 
             return true;
         }
