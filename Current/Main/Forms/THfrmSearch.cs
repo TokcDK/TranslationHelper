@@ -487,7 +487,7 @@ namespace TranslationHelper
                 // uncheck double search checkbox if marker is missing in search query
                 DoubleSearchOptionCheckBox.Checked = false;
             }
-            if (string.IsNullOrEmpty(searchQueryText[0])) yield break; // return if 1st query is empty
+            if (!isIssuesSearch && string.IsNullOrEmpty(searchQueryText[0])) yield break; // return if 1st query is empty
             _isDoubleSearch = !isSearchInInfo && !isIssuesSearch && searchQueryText.Length == 2;
 
             // check if regex pattern is valid

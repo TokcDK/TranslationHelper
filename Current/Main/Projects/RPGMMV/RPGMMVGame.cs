@@ -536,5 +536,22 @@ namespace TranslationHelper.Projects.RPGMMV
                 !inputString.StartsWith("<TE:") // Plugin TemplateEvent.js , mark of event name for use and must not be translated if name of event was not translated
                 ;
         }
+
+        internal override bool CheckForRowIssue(DataRow row)
+        {
+            var tableName = row.Table.TableName;
+            if (!tableName.EndsWith(".js")) return false;
+
+            var rowIndex = row.Table.Rows.IndexOf(row);
+            var info = AppData.CurrentProject.FilesContentInfo.Tables[tableName].Rows[rowIndex].Field<string>(0);
+
+            if (!info.Contains("Command code: 356")) return false;
+            var originalText = row.Field<string>(AppData.CurrentProject.OriginalColumnIndex);
+
+            if (originalText.StartsWith("D_TEXT")) return false;
+            if (originalText.StartsWith("GabText")) return false;
+
+            return true; // code 356 except of some commands must be equal original
+        }
     }
 }
