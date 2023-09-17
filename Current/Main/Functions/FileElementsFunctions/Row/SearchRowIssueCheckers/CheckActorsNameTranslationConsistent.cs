@@ -18,7 +18,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row.SearchIssueCheck
 
         public CheckActorsNameTranslationConsistent()
         {
-            if (Actors == null) GetActorsTable();
+            if (AppSettings.SearchRowIssueOptionsCheckActors && Actors == null) GetActorsTable();
         }
 
         public string Description => "Actor name is different or missing in translation";

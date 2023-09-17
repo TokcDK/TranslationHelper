@@ -18,8 +18,9 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row.SearchIssueCheck
 
         public bool IsHaveTheIssue(SearchIssueCheckerData data)
         {
-            return AppSettings.SearchRowIssueOptionsCheckNonRomaji 
-                && Regex.IsMatch(data.Translation, @"[^\x00-\x7F]+\ *(?:[^\x00-\x7F]|\ )*");
+            if (!AppSettings.SearchRowIssueOptionsCheckNonRomaji) return false;
+
+            return Regex.IsMatch(data.Translation, @"[^\x00-\x7F]+\ *(?:[^\x00-\x7F]|\ )*");
         }
     }
 }
