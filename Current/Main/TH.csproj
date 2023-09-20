@@ -141,7 +141,6 @@
     <Compile Include="Functions\FileElementsFunctions\Row\ExportFormats\ExcelTablesFormat.cs" />
     <Compile Include="Functions\FileElementsFunctions\Row\ExtractedByTranslationRulesParserRowBase.cs" />
     <Compile Include="Data\Interfaces\IOriginalTranslationUser.cs" />
-    <Compile Include="Functions\FileElementsFunctions\Row\HardFixes\RemoveIeroglifs1.cs" />
     <Compile Include="Functions\FileElementsFunctions\Row\RowFunctionSelectedRowNewWIP\RowFunctionSelectedRowNewWIP.cs" />
     <Compile Include="Functions\FileElementsFunctions\Row\SearchRowIssueCheckers\CheckActorsNameTranslationConsistent.cs" />
     <Compile Include="Functions\FileElementsFunctions\Row\SearchRowIssueCheckers\CheckAnyLineTranslatable.cs" />
