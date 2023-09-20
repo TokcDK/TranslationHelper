@@ -330,9 +330,7 @@
     <Compile Include="Functions\FileElementsFunctions\Row\HardFixes\HardFixesBase.cs" />
     <Compile Include="Functions\FileElementsFunctions\Row\HardFixes\AllHardFixes.cs" />
     <Compile Include="Functions\FileElementsFunctions\Row\HardFixes\ProjectSpecificFixes.cs" />
-    <Compile Include="Functions\FileElementsFunctions\Row\HardFixes\Temp\HardFixesTempBase.cs" />
     <Compile Include="Functions\FileElementsFunctions\Row\HardFixes\RemoveIeroglifs.cs" />
-    <Compile Include="Functions\FileElementsFunctions\Row\HardFixes\Temp\LuaLiaFix.cs" />
     <Compile Include="Functions\FileElementsFunctions\Row\LoadRowDataToCustomDB.cs" />
     <Compile Include="Functions\FileElementsFunctions\Row\OnlineTranslate.cs" />
     <Compile Include="Functions\FileElementsFunctions\Row\SetOriginalToTranslation.cs" />
