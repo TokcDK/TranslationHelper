@@ -1,42 +1,25 @@
 ﻿using System.Collections.Generic;
 using TranslationHelper.Data;
+using TranslationHelper.Functions.StringChangers;
+using TranslationHelper.Functions.StringChangers.HardFixes;
 
 namespace TranslationHelper.Functions.FileElementsFunctions.Row.HardFixes
 {
     class AllHardFixes : HardFixesBase
     {
-        public AllHardFixes()
-        {
-            HardFixesList = new List<HardFixesBase>(8)
-            {
-                new ProjectSpecificFixes(),
-                new FixEnjpQuoteOnStringStart2NdLine(),
-                new FixEnjpQuoteOnStringStart1StLine(),
-                new FixForRpgmAkerQuotationInSomeStrings(),
-                new FixForRpgmAkerQuotationInSomeStrings2(),
-                new FixForEndingQuoteInconsistence(),
-                new FixBrokenNameVar(),
-                new FixBrokenNameVar2(),
-                //new RemoveIeroglifs()
-                //new LuaLiaFix(),
-            };
-        }
-
-        protected List<HardFixesBase> HardFixesList;
+        readonly StringChangerBase _changer = new AllHardFixesChanger();
 
         protected override bool Apply(RowBaseRowData rowData)
         {
-            var ret = false;
+            var str = _changer.Change(rowData.Translation, rowData.Original);
 
-            foreach (var hardfix in HardFixesList)
+            if(!string.Equals(str, rowData.Translation))
             {
-                if (rowData.SelectedRow != null ? hardfix.Selected(rowData.SelectedRow) : hardfix.Rows())
-                {
-                    ret = true;
-                }
+                rowData.Translation = str;
+                return true;
             }
 
-            return ret;
+            return false;
         }
     }
 }
