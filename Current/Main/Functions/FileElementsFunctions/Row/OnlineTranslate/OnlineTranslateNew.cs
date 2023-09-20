@@ -11,6 +11,8 @@ using TranslationHelper.Data;
 using TranslationHelper.Data.Interfaces;
 using TranslationHelper.Extensions;
 using TranslationHelper.Functions.FileElementsFunctions.Row.HardFixes;
+using TranslationHelper.Functions.StringChangers;
+using TranslationHelper.Functions.StringChangers.HardFixes;
 using TranslationHelper.Main.Functions;
 
 namespace TranslationHelper.Functions.FileElementsFunctions.Row
@@ -557,8 +559,8 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
 
         private readonly int _originalColumnIndex = AppData.CurrentProject.OriginalColumnIndex;
         private readonly int _translationColumnIndex = AppData.CurrentProject.TranslationColumnIndex;
-        private readonly RowBase _hardFixes = new AllHardFixes();
-        private readonly RowBase _fixCells = new FixCells();
+        private readonly StringChangerBase _hardFixes = new AllHardFixesChanger();
+        private readonly StringChangerBase _fixCells = new FixCellsChanger();
         private bool WriteRowData(RowTranslationData rowData, int tableIndex)
         {
             if (!rowData.IsAllLinesAdded) return false; // skip if row is not fully translated
@@ -577,12 +579,9 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
             if (cellTranslationIsNotEmptyAndNotEqualOriginal && !originalText.HasAnyTranslationLineValidAndEqualSameOrigLine(translationText, false)) return false;
 
             // set new row value
-            row.SetValue(_translationColumnIndex, string.Join(Environment.NewLine, EnumerateNewLines(cellTranslationIsNotEmptyAndNotEqualOriginal ? translationText : originalText, rowData.Lines)));
-
-            // apply fixes for cell
-            // apply only for finished rows
-            _hardFixes.Selected(row, tableIndex, rowData.RowIndex);
-            _fixCells.Selected(row, tableIndex, rowData.RowIndex);
+            row.SetValue(_translationColumnIndex, 
+                string.Join(Environment.NewLine, 
+                EnumerateNewLines(cellTranslationIsNotEmptyAndNotEqualOriginal ? translationText : originalText, rowData.Lines)));
 
             return true;
         }
@@ -592,7 +591,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
             return rowData.Lines.Any(v => v.RegexExtractionData != null);
         }
 
-        private static IEnumerable<string> EnumerateNewLines(string rowValue, List<LineTranslationData> rowDataLines)
+        private IEnumerable<string> EnumerateNewLines(string rowValue, List<LineTranslationData> rowDataLines)
         {
             int lineNum = 0;
             foreach (var line in rowValue.SplitToLines())
@@ -608,14 +607,20 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
                     // when null,=original or issoundstext. jusst insert original line
                     yield return line;
                 }
-                else yield return lineData.Translation;
+                else 
+                {
+                    string text = _hardFixes.Change(lineData.Translation, lineData.Original);
+                    text = _fixCells.Change(text, lineData.Original);
+
+                    yield return text; 
+                }
             }
         }
 
         static readonly Regex _replacerListTypeRegex = new Regex(@"^\$[0-9]+(,\$[0-9]+)+$", RegexOptions.Compiled);
         static readonly Regex _oneMatchNeedInsertTextRegex = new Regex(@"^\$[0-9]+$", RegexOptions.Compiled);
         static readonly Regex _groupReplacerMarkerRegex = new Regex(@"\$[0-9]+", RegexOptions.Compiled);
-        private static string MergeExtracted(LineTranslationData lineData)
+        private string MergeExtracted(LineTranslationData lineData)
         {
             // replace all groups with translation of selected value
             bool isMarked = false;
@@ -652,10 +657,22 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
 
                         try
                         {
-                            // replace original value text with translation
-                            newLineText.Replace(group.Value
-                                , valueData.Translation ?? group.Value
-                                , group.Index, group.Length);
+                            if(!string.IsNullOrEmpty(valueData.Translation))
+                            {
+                                // replace original value text with translation
+                                var text = valueData.Translation;
+
+                                if (text != group.Value)
+                                {
+                                    text = _hardFixes.Change(text, group.Value);
+                                    text = _fixCells.Change(text, group.Value);
+                                }
+
+                                newLineText.Replace(group.Value
+                                    , text
+                                    , group.Index, group.Length);
+                            }
+
                         }
                         catch (IndexOutOfRangeException)
                         {
@@ -690,7 +707,21 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
                 // replace group mark with translation
                 foreach (var matchGroup in valueData.MatchGroups)
                 {
-                    newLineText.Replace($"%${matchGroup.Name}%", valueData.Translation ?? matchGroup.Value);
+                    var text = valueData.Translation;
+                    if (text != null)
+                    {
+                        if(text != matchGroup.Value)
+                        {
+                            text = _hardFixes.Change(text, matchGroup.Value);
+                            text = _fixCells.Change(text, matchGroup.Value);
+                        }
+                    }
+                    else
+                    {
+                        text = matchGroup.Value;
+                    }
+
+                    newLineText.Replace($"%${matchGroup.Name}%", text);
                 }
                 ////
             }

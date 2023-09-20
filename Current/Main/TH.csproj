@@ -373,9 +373,10 @@
     <Compile Include="Functions\OnlineTranslation\TranslationBigBlockMulti.cs" />
     <Compile Include="Functions\RowParsersParallel\ClearCellsParallel.cs" />
     <Compile Include="Functions\RowParsersParallel\RowParallelParserBase.cs" />
-    <Compile Include="Functions\StringChangers\HardFixes\AllHardFixes.cs" />
+    <Compile Include="Functions\StringChangers\HardFixes\AllHardFixesChanger.cs" />
     <Compile Include="Functions\StringChangers\HardFixes\FixBrokenNameVarChanger.cs" />
     <Compile Include="Functions\StringChangers\HardFixes\FixBrokenNameVar2Changer.cs" />
+    <Compile Include="Functions\StringChangers\FixCellsChanger.cs" />
     <Compile Include="Functions\StringChangers\HardFixes\FixEnjpQuoteOnStringStart1StLineChanger.cs" />
     <Compile Include="Functions\StringChangers\HardFixes\FixEnjpQuoteOnStringStart2NdLineChanger.cs" />
     <Compile Include="Functions\StringChangers\HardFixes\FixForEndingQuoteInconsistenceChanger.cs" />
