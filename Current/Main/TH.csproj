@@ -486,6 +486,7 @@
     <Compile Include="OnlineTranslators\Data\TranslatorsDataBase.cs" />
     <Compile Include="OnlineTranslators\Data\Yandex.cs" />
     <Compile Include="OnlineTranslators\GoogleTextractor.cs" />
+    <Compile Include="OnlineTranslators\GoogleTranslateMin.cs" />
     <Compile Include="OnlineTranslators\UserAgents.cs" />
     <Compile Include="OnlineTranslators\WebClientEx.cs">
       <SubType>Component</SubType>
