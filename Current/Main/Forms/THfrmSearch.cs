@@ -209,31 +209,69 @@ namespace TranslationHelper
         }
 
         private int SearchColumnIndex => SearchMethodTranslationRadioButton.Checked ? _translationColumnIndex : _originalColumnIndex;
+        private void WriteSearchQueriesReplacers()
+        {
+            SaveLoadSearchQueryData(false);
+        }
 
         private void LoadSearchQueriesReplacers()
         {
+            SaveLoadSearchQueryData();
+        }
+
+        private void SaveLoadSearchQueryData(bool load = true)
+        {
+            var items = new (ComboBox comboBox, string[] stringArray, string iniName)[]
+            {
+                    (SearchFormFindWhatComboBox, _searchQueries, "Search Queries"),
+                    (SearchFormReplaceWithComboBox, _searchReplacers, "Search Replacers"),
+            };
+            for (int i = 0; i < items.Length; i++)
+            {
+                var (comboBox, stringArray, iniName) = items[i];
+
+                if (load)
+                {
+                    LoadSearchQueryData(comboBox, ref stringArray, iniName);
+                }
+                else
+                {
+                    SaveSearchQueryData(comboBox, ref stringArray, iniName);
+                }
+            }
+        }
+
+        private void SaveSearchQueryData(ComboBox comboBox, ref string[] stringArray, string iniName)
+        {
             try
             {
-                _searchQueries = _config.GetSectionValues("Search Queries").ToArray();
-                if (_searchQueries != null && _searchQueries.Length > 0)
+                if (comboBox.Items.Count > 0 && IsSearchQueriesReplacersListChanged(stringArray, comboBox.Items))
                 {
-                    RemoveQuotesFromLoadedSearchValues(ref _searchQueries);
-                    UnEscapeSearchValues(ref _searchQueries);
-                    SearchFormFindWhatComboBox.Items.Clear();
-                    SearchFormFindWhatComboBox.Items.AddRange(_searchQueries);
-                }
-                _searchReplacers = _config.GetSectionValues("Search Replacers").ToArray();
-                if (_searchReplacers != null && _searchReplacers.Length > 0)
-                {
-                    RemoveQuotesFromLoadedSearchValues(ref _searchReplacers);
-                    UnEscapeSearchValues(ref _searchReplacers);
-                    SearchFormReplaceWithComboBox.Items.Clear();
-                    SearchFormReplaceWithComboBox.Items.AddRange(_searchReplacers);
+                    stringArray = new string[comboBox.Items.Count];
+                    comboBox.Items.CopyTo(stringArray, 0);
+                    AddQuotesToWritingSearchValues(ref stringArray);
+                    UnEscapeSearchValues(ref stringArray, false);
+                    _config.SetArrayToSectionValues(iniName, stringArray);
                 }
             }
-            catch
+            catch { }
+        }
+
+        private void LoadSearchQueryData(ComboBox comboBox, ref string[] stringArray, string iniName)
+        {
+            try
             {
+                stringArray = _config.GetSectionValues(iniName).ToArray();
+
+                if (stringArray != null && stringArray.Length > 0)
+                {
+                    RemoveQuotesFromLoadedSearchValues(ref stringArray);
+                    UnEscapeSearchValues(ref stringArray);
+                    comboBox.Items.Clear();
+                    comboBox.Items.AddRange(stringArray);
+                }
             }
+            catch { }
         }
 
         private static void UnEscapeSearchValues(ref string[] arr, bool unescape = true)
@@ -242,14 +280,7 @@ namespace TranslationHelper
             {
                 try
                 {
-                    if (unescape)
-                    {
-                        arr[i] = Regex.Unescape(arr[i]);
-                    }
-                    else
-                    {
-                        arr[i] = Regex.Escape(arr[i]);
-                    }
+                    arr[i] = unescape ? Regex.Unescape(arr[i]) : Regex.Escape(arr[i]);
                 }
                 catch (ArgumentException) { }
             }
@@ -271,32 +302,6 @@ namespace TranslationHelper
             for (int i = 0; i < searchQueriesReplacers.Length; i++)
             {
                 searchQueriesReplacers[i] = "\"" + searchQueriesReplacers[i] + "\"";
-            }
-        }
-
-        private void WriteSearchQueriesReplacers()
-        {
-            var items = new (ComboBox comboBox, string[] stringArray, string iniName)[]
-            {
-                    (SearchFormFindWhatComboBox, _searchQueries, "Search Queries"),
-                    (SearchFormReplaceWithComboBox, _searchReplacers, "Search Replacers"),
-            };
-            for (int i = 0; i < items.Length; i++)
-            {
-                var (comboBox, stringArray, iniName) = items[i];
-
-                try
-                {
-                    if (comboBox.Items.Count > 0 && IsSearchQueriesReplacersListChanged(stringArray, comboBox.Items))
-                    {
-                        stringArray = new string[comboBox.Items.Count];
-                        comboBox.Items.CopyTo(stringArray, 0);
-                        AddQuotesToWritingSearchValues(ref stringArray);
-                        UnEscapeSearchValues(ref stringArray, false);
-                        _config.SetArrayToSectionValues(iniName, stringArray);
-                    }
-                }
-                catch { }
             }
         }
 
