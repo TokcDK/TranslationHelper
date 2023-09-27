@@ -6,12 +6,10 @@ using System.Net;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading;
-using System.Threading.Tasks;
 using System.Web;
 using System.Windows.Forms;
 using TranslationHelper.Data;
 using TranslationHelper.Functions;
-using static System.Net.Mime.MediaTypeNames;
 
 namespace TranslationHelper.OnlineTranslators
 {
@@ -19,8 +17,6 @@ namespace TranslationHelper.OnlineTranslators
     {
         internal int ErrorsWebCnt = 0;
         internal int ErrorsWebCntOverall = 0;
-        private const string DNTT = "DNTT";
-        private static readonly string[] splitter = new string[] { "</br>" };
 
         protected WebClient webClient;
         protected WebBrowser WB;
