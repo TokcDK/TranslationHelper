@@ -7,43 +7,37 @@ namespace TranslationHelper.OnlineTranslators
     //https://stackoverflow.com/a/11523836
     public class WebClientEx : WebClient
     {
-        public WebClientEx(CookieContainer container)
+        public WebClientEx(CookieContainer cookieContainer)
         {
-            this.CookieContainer = container;
+            CookieContainer = cookieContainer ?? throw new ArgumentNullException(nameof(cookieContainer));
             CachePolicy = new RequestCachePolicy(RequestCacheLevel.CacheIfAvailable);
         }
 
         public CookieContainer CookieContainer { get; set; } = new CookieContainer();
 
-        protected override WebRequest GetWebRequest(Uri address)
+        protected override WebRequest GetWebRequest(Uri uri)
         {
-            WebRequest r = base.GetWebRequest(address);
-            if (r is HttpWebRequest request) request.CookieContainer = CookieContainer;
+            WebRequest webRequest = base.GetWebRequest(uri);
 
-            return r;
+            if (webRequest is HttpWebRequest httpWebRequest)
+                httpWebRequest.CookieContainer = CookieContainer;
+
+            return webRequest;
         }
 
-        protected override WebResponse GetWebResponse(WebRequest request, IAsyncResult result)
+        protected override WebResponse GetWebResponse(WebRequest webRequest)
         {
-            WebResponse response = base.GetWebResponse(request, result);
-            ReadCookies(response);
+            var webResponse = base.GetWebResponse(webRequest);
+            ReadCookies(webResponse);
 
-            return response;
+            return webResponse;
         }
 
-        protected override WebResponse GetWebResponse(WebRequest request)
+        private void ReadCookies(WebResponse webResponse)
         {
-            WebResponse response = base.GetWebResponse(request);
-            ReadCookies(response);
-
-            return response;
-        }
-
-        private void ReadCookies(WebResponse r)
-        {
-            if (r is HttpWebResponse response)
+            if (webResponse is HttpWebResponse httpWebResponse)
             {
-                CookieCollection cookies = response.Cookies;
+                CookieCollection cookies = httpWebResponse.Cookies;
                 CookieContainer.Add(cookies);
             }
         }
