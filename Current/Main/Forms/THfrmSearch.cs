@@ -276,27 +276,27 @@ namespace TranslationHelper
 
         private void WriteSearchQueriesReplacers()
         {
-            try
+            var items = new (ComboBox comboBox, string[] stringArray, string iniName)[]
             {
-                if (SearchFormFindWhatComboBox.Items.Count > 0 && IsSearchQueriesReplacersListChanged(_searchQueries, SearchFormFindWhatComboBox.Items))
-                {
-                    _searchQueries = new string[SearchFormFindWhatComboBox.Items.Count];
-                    SearchFormFindWhatComboBox.Items.CopyTo(_searchQueries, 0);
-                    AddQuotesToWritingSearchValues(ref _searchQueries);
-                    UnEscapeSearchValues(ref _searchQueries, false);
-                    _config.SetArrayToSectionValues("Search Queries", _searchQueries);
-                }
-                if (SearchFormReplaceWithComboBox.Items.Count > 0 && IsSearchQueriesReplacersListChanged(_searchReplacers, SearchFormReplaceWithComboBox.Items))
-                {
-                    _searchReplacers = new string[SearchFormReplaceWithComboBox.Items.Count];
-                    SearchFormReplaceWithComboBox.Items.CopyTo(_searchReplacers, 0);
-                    AddQuotesToWritingSearchValues(ref _searchReplacers);
-                    UnEscapeSearchValues(ref _searchReplacers, false);
-                    _config.SetArrayToSectionValues("Search Replacers", _searchReplacers);
-                }
-            }
-            catch
+                    (SearchFormFindWhatComboBox, _searchQueries, "Search Queries"),
+                    (SearchFormReplaceWithComboBox, _searchReplacers, "Search Replacers"),
+            };
+            for (int i = 0; i < items.Length; i++)
             {
+                var (comboBox, stringArray, iniName) = items[i];
+
+                try
+                {
+                    if (comboBox.Items.Count > 0 && IsSearchQueriesReplacersListChanged(stringArray, comboBox.Items))
+                    {
+                        stringArray = new string[comboBox.Items.Count];
+                        comboBox.Items.CopyTo(stringArray, 0);
+                        AddQuotesToWritingSearchValues(ref stringArray);
+                        UnEscapeSearchValues(ref stringArray, false);
+                        _config.SetArrayToSectionValues(iniName, stringArray);
+                    }
+                }
+                catch { }
             }
         }
 
