@@ -51,7 +51,7 @@
     <PlatformTarget>AnyCPU</PlatformTarget>
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
-    <OutputPath>bin\Release\</OutputPath>
+    <OutputPath>..\..\TH\bin\</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
@@ -636,8 +636,9 @@
     <None Include="..\..\.editorconfig">
       <Link>.editorconfig</Link>
     </None>
-    <None Include="Locale\ru-RU\LC_MESSAGES\th.mo" />
-    <None Include="Locale\ru-RU\LC_MESSAGES\th.po" />
+    <None Include="BUILD\RES\Locale\ru-RU\LC_MESSAGES\th.mo" />
+    <None Include="BUILD\RES\Locale\ru-RU\LC_MESSAGES\th.po" />
+    <None Include="postbuild.bat" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
@@ -652,8 +653,6 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Costura32\" />
-    <Folder Include="Costura64\" />
     <Folder Include="Formats\KiriKiri\DungeonAndBrideTest\" />
   </ItemGroup>
   <ItemGroup>
@@ -747,12 +746,24 @@
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>ROBOCOPY "$(ProjectDir)Locale " "$(TargetDir)res\locale " /MIR
-rd "$(TargetDir)res\lib "
-md "$(TargetDir)res\lib "
-move "$(TargetDir)\*.dll " "$(TargetDir)res\lib\ "
-move "$(TargetDir)\*.pdb " "$(TargetDir)res\lib\ "
-move "$(TargetDir)\*.xml " "$(TargetDir)res\lib\ "
-if %25errorlevel%25 leq 4 exit 0 else exit %25errorlevel%25</PostBuildEvent>
+    <PostBuildEvent>call "$(ProjectDir)postbuild.bat" "$(TargetDir)" "$(TargetName)" "$(ProjectDir)" "@(VersionNumber)" $(ConfigurationName)</PostBuildEvent>
   </PropertyGroup>
+  <PropertyGroup>
+    <PostBuildEventDependsOn>
+     $(PostBuildEventDependsOn);
+     PostBuildMacros;
+   </PostBuildEventDependsOn>
+  </PropertyGroup>
+  <PropertyGroup>
+    <PreBuildEvent>
+    </PreBuildEvent>
+  </PropertyGroup>
+  <Target Name="PostBuildMacros">
+    <GetAssemblyIdentity AssemblyFiles="$(TargetPath)">
+      <Output TaskParameter="Assemblies" ItemName="Targets" />
+    </GetAssemblyIdentity>
+    <ItemGroup>
+      <VersionNumber Include="@(Targets->'%(Version)')" />
+    </ItemGroup>
+  </Target>
 </Project>

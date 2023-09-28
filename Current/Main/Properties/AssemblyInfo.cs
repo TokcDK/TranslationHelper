@@ -6,11 +6,11 @@ using System.Runtime.InteropServices;
 // набора атрибутов. Измените значения этих атрибутов для изменения сведений,
 // связанных со сборкой.
 [assembly: AssemblyTitle("TranslationHelper")]
-[assembly: AssemblyDescription("")]
+[assembly: AssemblyDescription("Tool for games translations assist")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
 [assembly: AssemblyProduct("TranslationHelper")]
-[assembly: AssemblyCopyright("Copyright ©  2019-2020")]
+[assembly: AssemblyCopyright("Copyright ©  2019-2023")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
@@ -32,6 +32,6 @@ using System.Runtime.InteropServices;
 // Можно задать все значения или принять номера сборки и редакции по умолчанию
 // используя "*", как показано ниже:
 // [assembly: AssemblyVersion("1.0.*")]
-[assembly: AssemblyVersion("1.0.0.0")]
-[assembly: AssemblyFileVersion("1.0.0.0")]
+[assembly: AssemblyVersion("23.9.28.1")]
+[assembly: AssemblyFileVersion("23.9.28.1")]
 [assembly: NeutralResourcesLanguage("en")]
