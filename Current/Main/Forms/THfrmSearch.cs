@@ -9,6 +9,7 @@ using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using Microsoft.Scripting.Utils;
 using TranslationHelper.Data;
 using TranslationHelper.Extensions;
 using TranslationHelper.Functions;
@@ -37,8 +38,8 @@ namespace TranslationHelper
         int _selectedRowIndex;
         string _lastfoundvalue = string.Empty;
         string _lastfoundreplacedvalue = string.Empty;
-        string[] _searchQueries;
-        string[] _searchReplacers;
+        readonly List<string> _searchQueries = new List<string>();
+        readonly List<string> _searchReplacers = new List<string>();
         const string _replaceToEqualMarker = "=";
 
         public enum SearchResult
@@ -209,6 +210,9 @@ namespace TranslationHelper
         }
 
         private int SearchColumnIndex => SearchMethodTranslationRadioButton.Checked ? _translationColumnIndex : _originalColumnIndex;
+
+        public int MAX_SAVED_QUERIES { get; private set; } = 20;
+
         private void WriteSearchQueriesReplacers()
         {
             SaveLoadSearchQueryData(false);
@@ -221,7 +225,7 @@ namespace TranslationHelper
 
         private void SaveLoadSearchQueryData(bool load = true)
         {
-            var items = new (ComboBox comboBox, string[] stringArray, string iniName)[]
+            var items = new (ComboBox comboBox, List<string> stringArray, string iniName)[]
             {
                     (SearchFormFindWhatComboBox, _searchQueries, "Search Queries"),
                     (SearchFormReplaceWithComboBox, _searchReplacers, "Search Replacers"),
@@ -232,51 +236,63 @@ namespace TranslationHelper
 
                 if (load)
                 {
-                    LoadSearchQueryData(comboBox, ref stringArray, iniName);
+                    LoadSearchQueryData(comboBox, stringArray, iniName);
                 }
                 else
                 {
-                    SaveSearchQueryData(comboBox, ref stringArray, iniName);
+                    SaveSearchQueryData(comboBox, stringArray, iniName);
                 }
             }
         }
 
-        private void SaveSearchQueryData(ComboBox comboBox, ref string[] stringArray, string iniName)
+        private void SaveSearchQueryData(ComboBox comboBox, List<string> stringArray, string iniName)
         {
             try
             {
                 if (comboBox.Items.Count > 0 && IsSearchQueriesReplacersListChanged(stringArray, comboBox.Items))
                 {
-                    stringArray = new string[comboBox.Items.Count];
-                    comboBox.Items.CopyTo(stringArray, 0);
-                    AddQuotesToWritingSearchValues(ref stringArray);
-                    UnEscapeSearchValues(ref stringArray, false);
-                    _config.SetArrayToSectionValues(iniName, stringArray);
+                    stringArray.Clear();
+                    stringArray.AddRange(comboBox.Items.Select(s=>s as string));
+
+                    AddQuotesToWritingSearchValues(stringArray);
+                    UnEscapeSearchValues(stringArray, false);
+                    _config.SetArrayToSectionValues(iniName, stringArray.ToArray());
                 }
             }
             catch { }
         }
 
-        private void LoadSearchQueryData(ComboBox comboBox, ref string[] stringArray, string iniName)
+        private void LoadSearchQueryData(ComboBox comboBox, List<string> stringArray, string iniName)
         {
             try
             {
-                stringArray = _config.GetSectionValues(iniName).ToArray();
+                var savedQueries = _config.GetSectionValues(iniName).ToArray();
 
-                if (stringArray != null && stringArray.Length > 0)
+                if (savedQueries == null) return;
+
+                int savedQueriesCount = savedQueries.Length;
+                if (savedQueriesCount == 0) return;
+
+                stringArray.Clear();
+
+                for (int i = 0; i < MAX_SAVED_QUERIES; i++)
                 {
-                    RemoveQuotesFromLoadedSearchValues(ref stringArray);
-                    UnEscapeSearchValues(ref stringArray);
-                    comboBox.Items.Clear();
-                    comboBox.Items.AddRange(stringArray);
+                    if (i >= savedQueriesCount) break;
+
+                    stringArray.Add(savedQueries[i]);
                 }
+
+                RemoveQuotesFromLoadedSearchValues(stringArray);
+                UnEscapeSearchValues(stringArray);
+                comboBox.Items.Clear();
+                comboBox.Items.AddRange(stringArray.ToArray());
             }
             catch { }
         }
 
-        private static void UnEscapeSearchValues(ref string[] arr, bool unescape = true)
+        private static void UnEscapeSearchValues(List<string> arr, bool unescape = true)
         {
-            for (int i = 0; i < arr.Length; i++)
+            for (int i = 0; i < arr.Count; i++)
             {
                 try
                 {
@@ -286,9 +302,9 @@ namespace TranslationHelper
             }
         }
 
-        private static void RemoveQuotesFromLoadedSearchValues(ref string[] searchQueriesReplacers)
+        private static void RemoveQuotesFromLoadedSearchValues(List<string> searchQueriesReplacers)
         {
-            for (int i = 0; i < searchQueriesReplacers.Length; i++)
+            for (int i = 0; i < searchQueriesReplacers.Count; i++)
             {
                 if (searchQueriesReplacers[i].StartsWith("\"") && searchQueriesReplacers[i].EndsWith("\""))
                 {
@@ -297,23 +313,23 @@ namespace TranslationHelper
             }
         }
 
-        private static void AddQuotesToWritingSearchValues(ref string[] searchQueriesReplacers)
+        private static void AddQuotesToWritingSearchValues(List<string> searchQueriesReplacers)
         {
-            for (int i = 0; i < searchQueriesReplacers.Length; i++)
+            for (int i = 0; i < searchQueriesReplacers.Count; i++)
             {
                 searchQueriesReplacers[i] = "\"" + searchQueriesReplacers[i] + "\"";
             }
         }
 
-        private static bool IsSearchQueriesReplacersListChanged(string[] OldList, ComboBox.ObjectCollection items)
+        private static bool IsSearchQueriesReplacersListChanged(List<string> OldList, ComboBox.ObjectCollection items)
         {
-            if (OldList.Length != items.Count)
+            if (OldList.Count != items.Count)
             {
                 return true;
             }
             else
             {
-                for (int i = 0; i < OldList.Length; i++)
+                for (int i = 0; i < OldList.Count; i++)
                 {
                     if (OldList[i] != items[i].ToString())
                     {
