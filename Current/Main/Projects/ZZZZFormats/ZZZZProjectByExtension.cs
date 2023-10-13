@@ -80,7 +80,7 @@ namespace TranslationHelper.Projects.ZZZZFormats
             int extCnt = 0;
             foreach (var i in Directory.EnumerateFiles(dir, "*" + ext, SearchOption.AllDirectories)) if (++extCnt > 1) break;
 
-            if (extCnt > 1 && !SaveFileMode)
+            if (!SaveFileMode && extCnt > 1)
             {
                 var dialogForm = GetOpenAllDialogForm(out CheckBox isRecursiveCheckbox);
                 if (dialogForm.ShowDialog() == DialogResult.OK)
