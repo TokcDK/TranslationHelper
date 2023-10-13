@@ -16,6 +16,8 @@ namespace TranslationHelper.Projects.ZZZZFormats
         {
         }
 
+        internal override string ProjectName => T._("Open by extension");
+
         public override bool IsSaveToSourceFile => true; // we opened standalone file and will write in it
 
         internal override bool IsValid()
