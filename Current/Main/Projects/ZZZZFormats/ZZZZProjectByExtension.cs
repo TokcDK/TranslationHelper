@@ -95,79 +95,106 @@ namespace TranslationHelper.Projects.ZZZZFormats
 
         private Form GetOpenAllDialogForm(out CheckBox isRecursiveCheckbox)
         {
-            var form = new Form();
-            form.Height = 200;
-            form.Width = 400;
-            var sPanel = new TableLayoutPanel();
-            sPanel.AutoSize = true;
-            sPanel.RowCount= 3;
-            sPanel.ColumnCount = 1;
-            var r1 = new RowStyle();
-            r1.SizeType = SizeType.Percent;
-            r1.Height = 70;
-            var r2 = new RowStyle();
-            r2.SizeType = SizeType.Percent;
-            r2.Height = 30;
-            var r3 = new RowStyle();
-            r3.SizeType = SizeType.Percent;
-            r3.Height = 30;
+            // parent
+            var form = new Form
+            {
+                Height = 200,
+                Width = 400
+            };
+            var sPanel = new TableLayoutPanel
+            {
+                AutoSize = true,
+                RowCount = 3,
+                ColumnCount = 1
+            };
+            var r1 = new RowStyle
+            {
+                SizeType = SizeType.Percent,
+                Height = 70
+            };
+            var r2 = new RowStyle
+            {
+                SizeType = SizeType.Percent,
+                Height = 30
+            };
+            var r3 = new RowStyle
+            {
+                SizeType = SizeType.Percent,
+                Height = 30
+            };
             sPanel.RowStyles.Add(r1);
             sPanel.RowStyles.Add(r2);
             sPanel.RowStyles.Add(r3);
             sPanel.Dock = DockStyle.Fill;
             form.Controls.Add(sPanel);
 
-            var messageLabel = new Label();
-            messageLabel.Text = T._("Found similar files. Open them too?");
-            messageLabel.AutoSize = true;
-            messageLabel.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            messageLabel.Dock = DockStyle.Fill;
+            // message
+            var messageLabel = new Label
+            {
+                Text = T._("Found similar files. Open them too?"),
+                AutoSize = true,
+                TextAlign = System.Drawing.ContentAlignment.MiddleCenter,
+                Dock = DockStyle.Fill
+            };
             sPanel.Controls.Add(messageLabel);
             sPanel.SetColumn(messageLabel, 0);
 
-            var recursiveCheckbox = new CheckBox();
-            recursiveCheckbox.Checked = true;
-            recursiveCheckbox.Text = T._("Recursive");
+            // checkbox
+            var recursiveCheckbox = new CheckBox
+            {
+                Checked = true,
+                Text = T._("Recursive")
+            };
             sPanel.Controls.Add(recursiveCheckbox);
             sPanel.SetColumn(recursiveCheckbox, 1);
+            isRecursiveCheckbox = recursiveCheckbox;
 
-            var okButton = new Button();
-            okButton.Text = "V";
-            okButton.Dock = DockStyle.Fill;
+            // buttons yes/no
+            var okButton = new Button
+            {
+                Text = "V",
+                Dock = DockStyle.Fill
+            };
             okButton.Click += (o, ea) =>
             {
                 form.DialogResult = DialogResult.OK;
                 form.Close();
             };
-            var noButton = new Button();
-            noButton.Text = "X";
-            noButton.Dock = DockStyle.Fill;
+            var noButton = new Button
+            {
+                Text = "X",
+                Dock = DockStyle.Fill
+            };
             noButton.Click += (o, ea) =>
             {
                 form.DialogResult = DialogResult.No;
                 form.Close();
             };
-            var buttonsPanel = new TableLayoutPanel();
-            buttonsPanel.AutoSize = true;
-            buttonsPanel.RowCount= 1;
-            buttonsPanel.ColumnCount = 2;
-            buttonsPanel.Dock = DockStyle.Fill;
+            var buttonsPanel = new TableLayoutPanel
+            {
+                AutoSize = true,
+                RowCount = 1,
+                ColumnCount = 2,
+                Dock = DockStyle.Fill
+            };
             buttonsPanel.Controls.Add(okButton);
             buttonsPanel.Controls.Add(noButton);
             buttonsPanel.SetColumn(okButton, 0);
             buttonsPanel.SetColumn(noButton, 1);
-            var c1 = new ColumnStyle();
-            c1.SizeType = SizeType.Percent;
-            c1.Width= 50;
-            var c2 = new ColumnStyle();
-            c2.SizeType = SizeType.Percent;
-            c2.Width= 50;
+            var c1 = new ColumnStyle
+            {
+                SizeType = SizeType.Percent,
+                Width = 50
+            };
+            var c2 = new ColumnStyle
+            {
+                SizeType = SizeType.Percent,
+                Width = 50
+            };
             buttonsPanel.ColumnStyles.Add(c1);
             buttonsPanel.ColumnStyles.Add(c2);
             sPanel.Controls.Add(buttonsPanel);
             sPanel.SetColumn(buttonsPanel, 2);
-
-            isRecursiveCheckbox = recursiveCheckbox;
 
             return form;
         }
