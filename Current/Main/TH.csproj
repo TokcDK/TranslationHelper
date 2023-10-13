@@ -591,6 +591,12 @@
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Projects\zzzOtherProject\OtherProjectBase.cs" />
+    <Compile Include="Projects\ZZZZFormats\Form1.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Projects\ZZZZFormats\Form1.Designer.cs">
+      <DependentUpon>Form1.cs</DependentUpon>
+    </Compile>
     <Compile Include="Projects\ZZZZFormats\FoundTypesbyExtensionForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -619,6 +625,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Projects\WolfRPG\Menus\AddToStandaloneContextListForm.resx">
       <DependentUpon>AddToStandaloneContextListForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Projects\ZZZZFormats\Form1.resx">
+      <DependentUpon>Form1.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Projects\ZZZZFormats\FoundTypesbyExtensionForm.resx">
       <DependentUpon>FoundTypesbyExtensionForm.cs</DependentUpon>
