@@ -13,25 +13,23 @@ namespace TranslationHelper.Menus.MainMenus.Edit.TextCutCopyPaste
     {
         public override void OnClick(object sender, EventArgs e)
         {
-            if (ActionForTextBoxObject(AppData.Main.THInfoTextBox))
+            foreach (Control control in new[]
             {
-            }
-            else if (ActionForTextBoxObject(AppData.Main.THSourceRichTextBox))
+                AppData.Main.THInfoTextBox,
+                AppData.Main.THSourceRichTextBox,
+                AppData.Main.THFileElementsDataGridView.EditingControl,
+                AppData.Main.THFiltersDataGridView.EditingControl,
+            })
             {
-            }
-            else if (ActionForTextBoxObject(AppData.Main.THTargetRichTextBox))
-            {
-            }
-            else
-            {
-                if (AppData.Main.THFileElementsDataGridView.EditingControl is TextBox tb
+                if(control is TextBox tb 
+                    && tb.Focused 
                     && ActionForTextBoxObject(tb))
                 {
                     return;
                 }
-
-                ActionForSelectedRows();
             }
+
+            ActionForSelectedRows();
         }
 
         protected virtual bool ActionForTextBoxObject(TextBoxBase tb)
