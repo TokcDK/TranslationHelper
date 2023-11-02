@@ -50,7 +50,7 @@ namespace TranslationHelper.Menus.MainMenus.File
                 //SaveNEWDB(THFilesElementsDataset, THFSaveBDAs.FileName);
                 //WriteDBFile(THFilesElementsDataset, THFSaveBDAs.FileName);
 
-                await Task.Run(() => AppData.Main.WriteDBFileLite(AppData.CurrentProject.FilesContent, THFSaveBDAs.FileName)).ConfigureAwait(true);
+                await Task.Run(() => AppData.Main.WriteDBFileLite(AppData.CurrentProject.FilesContent, new[] { THFSaveBDAs.FileName })).ConfigureAwait(true);
                 //Task task = new Task(() => WriteDBFileLite(ProjectData.THFilesElementsDataset, THFSaveBDAs.FileName));
                 //task.Start();
                 //task.Wait();

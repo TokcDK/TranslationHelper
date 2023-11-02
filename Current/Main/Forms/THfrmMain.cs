@@ -955,7 +955,7 @@ namespace TranslationHelper
                 {
                     Thread.Sleep(AppSettings.DBAutoSaveTimeout * 1000);
                 }
-                WriteDBFileLite(Data, Path);
+                WriteDBFileLite(Data, new[] { Path });
             }
         }
 
@@ -1324,37 +1324,27 @@ namespace TranslationHelper
 
         }
 
-        bool WriteDBFileIsBusy;
-        string WriteDBFileLiteLastFileName = string.Empty;
-        internal async void WriteDBFileLite(DataSet ds, string fileName)
+        internal async void WriteDBFileLite(DataSet ds, string[] fileNames)
         {
-            if (fileName.Length == 0 || ds == null) return;
-
-            try
+            foreach(var fileName in fileNames)
             {
-                while (WriteDBFileIsBusy && WriteDBFileLiteLastFileName != fileName)
+                if (fileName.Length == 0 || ds == null) return;
+
+                try
                 {
-                    await Task.Run(() => FunctionsThreading.WaitThreaded(5000)).ConfigureAwait(true);
+                    new Thread(new ParameterizedThreadStart((obj) => IndicateSaveProcess(T._("Saving") + "..."))).Start();
+
+                    using (DataSet liteds = FunctionsTable.GetDataSetWithoutEmptyTableRows(ds))
+                    {
+                        await Task.Run(() => FunctionsDBFile.WriteDBFile(liteds, fileName)).ConfigureAwait(true);
+                    }
+
+                    //AppData.Settings.THConfigINI.SetKey("Paths", "LastAutoSavePath", lastautosavepath);
                 }
-
-                Thread IndicateSave = new Thread(new ParameterizedThreadStart((obj) => IndicateSaveProcess(T._("Saving") + "...")));
-                IndicateSave.Start();
-
-                WriteDBFileIsBusy = true;
-                WriteDBFileLiteLastFileName = fileName;
-                using (DataSet liteds = FunctionsTable.GetDataSetWithoutEmptyTableRows(ds))
+                catch
                 {
-                    await Task.Run(() => FunctionsDBFile.WriteDBFile(liteds, fileName)).ConfigureAwait(true);
                 }
-
-                AppData.Settings.THConfigINI.SetKey("Paths", "LastAutoSavePath", lastautosavepath);
             }
-            catch
-            {
-            }
-
-            WriteDBFileIsBusy = false;
-            WriteDBFileLiteLastFileName = string.Empty;
         }
 
         private void IndicateSaveProcess(string InfoText = "")
