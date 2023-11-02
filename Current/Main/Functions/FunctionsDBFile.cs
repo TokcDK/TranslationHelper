@@ -104,7 +104,7 @@ namespace TranslationHelper.Main.Functions
             ReadWriteDBFile(dataSet: dataSet, dbFilePath: dbFilePath, isRead: false, useOriginaldbFilePath: useOriginaldbFilePath);
         }
 
-        private static readonly ReaderWriterLockSlim _writeXmlLocker = new ReaderWriterLockSlim();
+        private static readonly ReaderWriterLockSlim _writeDBWriteLocker = new ReaderWriterLockSlim();
         /// <summary>
         /// read or write db file
         /// </summary>
@@ -116,13 +116,17 @@ namespace TranslationHelper.Main.Functions
             var dbFormat = FunctionsInterfaces.GetCurrentDBFormat(Path.GetExtension(dbFilePath));
             dbFilePath = useOriginaldbFilePath ? dbFilePath : Path.Combine(Path.GetDirectoryName(dbFilePath), Path.GetFileNameWithoutExtension(dbFilePath) + "." + dbFormat.Ext);
             Directory.CreateDirectory(Path.GetDirectoryName(dbFilePath));
+
             if (isRead)
             {
                 dbFormat.Read(dbFilePath, dataSet);
             }
             else
             {
-                dbFormat.Write(dbFilePath, dataSet);
+                lock (_writeDBWriteLocker)
+                {
+                    dbFormat.Write(dbFilePath, dataSet);
+                }
             }
         }
 
