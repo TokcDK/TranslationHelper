@@ -127,6 +127,19 @@ namespace TranslationHelper.Main.Functions
         }
 
         /// <summary>
+        /// read or write db file
+        /// </summary>
+        /// <param name="dataSet"></param>
+        /// <param name="dbFilePaths">list of paths to read save</param>
+        internal static void WriteDBFile(DataSet dataSet, string[] dbFilePaths, bool useOriginaldbFilePath = false)
+        {
+            foreach(var dbFilePath in dbFilePaths)
+            {
+                ReadWriteDBFile(dataSet, dbFilePath, false, useOriginaldbFilePath);
+            }
+        }
+
+        /// <summary>
         /// gets current selected format of database file
         /// </summary>
         /// <returns></returns>
