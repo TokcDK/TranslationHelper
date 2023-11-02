@@ -18,12 +18,16 @@ namespace TranslationHelper.Menus.MainMenus.File
         {
             if (AppData.CurrentProject == null) return;
 
-            var path = Path.Combine(FunctionsDBFile.GetProjectDBFolder(), FunctionsDBFile.GetDBFileName() + FunctionsDBFile.GetDBCompressionExt());
+            var fileName = FunctionsDBFile.GetDBFileName();
+            var fileExtension = FunctionsDBFile.GetDBCompressionExt();
+            var path = Path.Combine(FunctionsDBFile.GetProjectDBFolder(), fileName + fileExtension);
 
             if (System.IO.File.Exists(path))
             {
                 ShiftToBakups(path);
             }
+
+            var pathNextToSource = Path.Combine(AppData.CurrentProject.SelectedDir, fileName + Data.AppData.TranslationFileSourceDirSuffix + fileExtension);
 
             AppData.Main.lastautosavepath = path;
 
@@ -38,7 +42,7 @@ namespace TranslationHelper.Menus.MainMenus.File
             //}
 
             await Task.Run(() => AppData.CurrentProject.PreSaveDB()).ConfigureAwait(true);
-            await Task.Run(() => AppData.Main.WriteDBFileLite(AppData.CurrentProject.FilesContent, new[] { path })).ConfigureAwait(true);
+            await Task.Run(() => AppData.Main.WriteDBFileLite(AppData.CurrentProject.FilesContent, new[] { path, pathNextToSource })).ConfigureAwait(true);
 
             FunctionsSounds.SaveDBComplete();
             AppData.Main.ProgressInfo(false);

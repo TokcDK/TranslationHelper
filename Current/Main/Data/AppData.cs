@@ -168,5 +168,6 @@ namespace TranslationHelper.Data
         /// Files list
         /// </summary>
         internal static ListBox THFilesList { get => Main.THFilesList; }
+        public static string TranslationFileSourceDirSuffix { get => ".TranslationDB"; }
     }
 }
