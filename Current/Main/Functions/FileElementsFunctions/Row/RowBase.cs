@@ -631,7 +631,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
         /// check if row is valid for parse
         /// </summary>
         /// <returns></returns>
-        protected virtual bool IsValidRow(RowBaseRowData rowData) => AppSettings.IgnoreOrigEqualTransLines || !Equals(rowData.Original, rowData.Translation);
+        protected virtual bool IsValidRow(RowBaseRowData rowData) => !AppSettings.IgnoreOrigEqualTransLines || Equals(rowData.Original, rowData.Translation);
 
         protected abstract bool Apply(RowBaseRowData rowData);
     }
