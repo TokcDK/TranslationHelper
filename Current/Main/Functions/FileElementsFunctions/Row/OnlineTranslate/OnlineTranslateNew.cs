@@ -572,7 +572,8 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
             var originalText = row.Field<string>(_originalColumnIndex);
             var translationText = row.Field<string>(_translationColumnIndex);
             var cellTranslationEqualOriginal = Equals(translationText, originalText);
-            if (ignoreOrigEqualTransLines && cellTranslationEqualOriginal) return false;
+            // ignore original=translation when it enable and when translations equal originals in translation lines data
+            if (ignoreOrigEqualTransLines && cellTranslationEqualOriginal && !rowData.Lines.Any(l => l.Original != l.Translation)) return false;
 
             // skip when translation not equal to original and and have No any original line equal translation
             var cellTranslationIsNotEmptyAndNotEqualOriginal = !string.IsNullOrEmpty(translationText) && !cellTranslationEqualOriginal;
