@@ -33,7 +33,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
             {
                 IsLangChecked = true;
 
-                if (!IsNotJPLang && AppData.Settings.SourceLanguageComboBox.SelectedText == "\"Japanese ja\"")
+                if (!IsNotJPLang && !AppSettings.IsJapaneseSourceLanguage)
                 {
                     IsNotJPLang = true;
                     return false;
