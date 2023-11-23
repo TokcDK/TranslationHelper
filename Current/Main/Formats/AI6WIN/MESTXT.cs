@@ -1,4 +1,6 @@
-﻿namespace TranslationHelper.Formats.AI6WIN
+﻿using System;
+
+namespace TranslationHelper.Formats.AI6WIN
 {
     internal class MESTXT : FormatTxtFileBase
     {
@@ -10,12 +12,17 @@
                 s = s.Substring(2, s.Length - 4);
                 AddRowData(ref s, "");
 
-                if (SaveFileMode) ParseData.Line = "#1-STR_PRIMARY" + "\r\n" + "[\"" + s + "\"]";
+                if (SaveFileMode) ParseData.Line = "#1-STR_PRIMARY" + "\r\n" + "[\"" + CleanString(s) + "\"]";
             }
 
             SaveModeAddLine();
 
             return KeywordActionAfter.Continue;
+        }
+
+        private string CleanString(string s)
+        {
+            return s.Replace("'", "");
         }
     }
 }
