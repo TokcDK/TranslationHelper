@@ -501,7 +501,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
             {
                 foreach (var originalTranslation in EnumerateOriginalTranslation(lineData))
                 {
-                    if (!TryGetTranslation(translations, originalTranslation.Original, originalTranslation.Translation, out var v)) return;
+                    if (!TryGetTranslation(translations, originalTranslation.Original, originalTranslation.Translation, out var v)) continue;
 
                     originalTranslation.Translation = v;
                 }
