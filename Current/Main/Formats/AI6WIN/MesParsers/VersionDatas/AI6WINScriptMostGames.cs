@@ -1,0 +1,65 @@
+﻿namespace MesScriptDissAssTest
+{
+    internal class AI6WINScriptMostGames : IVersionData
+    {
+        public string Name => "Most games";
+
+        public (byte Opcode, string Struct, string Name)[] CommandLibrary
+            => new (byte, string, string)[]
+                {
+                        (0x00, "", "YIELD"),
+                        (0x01, "", "RETURN"),
+                        (0x02, "", "LGDLOB1_I8"),
+                        (0x03, "", "LGDLOB2_I16"),
+                        (0x04, "", "LGDLOB3_VAR"),
+                        (0x05, "", "LGDLOB4_VAR"),
+                        (0x06, "", "LDLOC_VAR"),
+                        (0x07, "", "LGDLOB5_I8"),
+                        (0x08, "", "LGDLOB5_I16"),
+                        (0x09, "", "LGDLOB5_I32"),
+                        (0x0A, "S", "STR_PRIMARY"),
+                        (0x0B, "S", "STR_SUPPLEMENT"),
+                        (0x0C, "", "STGLOB1_I8"),
+                        (0x0D, "", "STGLOB2_I16"),
+                        (0x0E, "", "STGLOB3_VAR"),
+                        (0x0F, "", "STGLOB4_VAR"),
+                        (0x10, "", "STLOC_VAR"),
+                        (0x11, "", "STGLOB5_I8"),
+                        (0x12, "", "STGLOB6_I16"),
+                        (0x13, "", "STGLOB7_I32"),
+                        (0x14, ">I", "JUMP_IF_ZERO"),
+                        (0x15, ">I", "JUMP"),
+                        (0x16, ">I", "LIBREG"),
+                        (0x17, "", "LIBCALL"),
+                        (0x18, "", "SYSCALL"),
+                        (0x19, ">I", "MESSAGE"),
+                        (0x1A, ">I", "CHOICE"),
+                        (0x1B, "B", "ESCAPE"),
+                        (0x1D, "", ""),
+                        (0x32, ">i", "PUSH_INT32"),
+                        (0x33, "S", "PUSH_STR"),
+                        (0x34, "", "ADD"),
+                        (0x35, "", "SUB"),
+                        (0x36, "", "MUL"),
+                        (0x37, "", "DIV"),
+                        (0x38, "", "MOD"),
+                        (0x39, "", "RAND"),
+                        (0x3A, "", "LOGICAL_AND"),
+                        (0x3B, "", "LOGICAL_OR"),
+                        (0x3C, "", "BINARY_AND"),
+                        (0x3D, "", "BINARY_OR"),
+                        (0x3E, "", "LT"),
+                        (0x3F, "", "GT"),
+                        (0x40, "", "LE"),
+                        (0x41, "", "GE"),
+                        (0x42, "", "EQ"),
+                        (0x43, "", "NEQ"),
+                        (0xFA, "", ""),
+                        (0xFB, "", ""),
+                        (0xFC, "", ""),
+                        (0xFD, "", ""),
+                        (0xFE, "", ""),
+                        (0xFF, "", ""),
+                };
+    }
+}
