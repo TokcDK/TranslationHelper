@@ -505,6 +505,7 @@
     <Compile Include="OnlineTranslators\WebClientEx.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="Projects\AI6Win\AI6WinGame.cs" />
     <Compile Include="Projects\AliceSoft\AliceSoftBase.cs" />
     <Compile Include="Projects\AliceSoft\AliceSoftGame.cs" />
     <Compile Include="Projects\EAGLS\EAGLSBase.cs" />
