@@ -113,7 +113,11 @@
     <Compile Include="appSettings\Sections\General\CheckBox\SFullComprasionDBload.cs" />
     <Compile Include="Data\AppSettings.cs" />
     <Compile Include="Data\AppMethods.cs" />
+    <Compile Include="Formats\AI6WIN\AI6Arc.cs" />
     <Compile Include="Formats\AI6WIN\AI6MostGamesMES.cs" />
+    <Compile Include="Formats\AI6WIN\ArcParsers\AI6WINArc.cs" />
+    <Compile Include="Formats\AI6WIN\ArcParsers\SilkyArc.cs" />
+    <Compile Include="Formats\AI6WIN\ArcParsers\Tools\SilkyLZSS.cs" />
     <Compile Include="Formats\AI6WIN\MesParsers\AI6WINScript.cs" />
     <Compile Include="Formats\AI6WIN\MesParsers\ArgsParsers\ArgsB.cs" />
     <Compile Include="Formats\AI6WIN\MesParsers\ArgsParsers\ArgsH.cs" />
