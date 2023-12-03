@@ -6,7 +6,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using MesArcLibCSharp;
-using MesScriptDissAss;
+using MesScriptDissAssLib;
 
 namespace TranslationHelper.Formats.AI6WIN
 {
@@ -16,7 +16,7 @@ namespace TranslationHelper.Formats.AI6WIN
 
         protected override void FileOpen()
         {
-            var arcParser = new AI6WINArc(FilePath, FilePath);
+            var arcParser = new AI6WINArc(FilePath, FilePath, outToMemory: true);
             arcParser.Unpack();
 
             foreach (var file in arcParser.ArcFiles)

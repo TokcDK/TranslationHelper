@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
-using MesScriptDissAss;
+using MesScriptDissAssLib;
 
 namespace TranslationHelper.Formats.AI6WIN
 {
@@ -37,6 +37,7 @@ namespace TranslationHelper.Formats.AI6WIN
 
             if (SaveFileMode)
             {
+                parser._inOutBytes = null;
                 parser.Assemble();
             }
         }

@@ -711,6 +711,10 @@
       <Project>{CD71A914-875F-4185-9C02-E2B606B9894C}</Project>
       <Name>MesArcLibCSharp</Name>
     </ProjectReference>
+    <ProjectReference Include="K:\0GIT\[TokcDK]\MesScriptDissAssTest\MesScriptDissAssLib\MesScriptDissAssLib.csproj">
+      <Project>{1F44C885-5CF5-4C13-9B0A-CC805AA3CF64}</Project>
+      <Name>MesScriptDissAssLib</Name>
+    </ProjectReference>
     <ProjectReference Include="K:\0GIT\[TokcDK]\RPGMakerVXRVData2Assistant\RPGMakerVXRVData2Assistant\RPGMakerVXRVData2Assistant.csproj">
       <Project>{f3817f93-1016-487a-8797-a4fbdfa4fb0d}</Project>
       <Name>RPGMakerVXRVData2Assistant</Name>
