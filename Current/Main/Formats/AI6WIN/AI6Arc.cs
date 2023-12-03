@@ -24,7 +24,7 @@ namespace TranslationHelper.Formats.AI6WIN
                 string ext = Path.GetExtension(file.FileName);
                 if (!string.Equals(ext, ".mes", StringComparison.InvariantCultureIgnoreCase)) continue;
 
-                var mesParser = new AI6WINScript(FilePath, FilePath);
+                var mesParser = new AI6WINScript(FilePath, FilePath, bytesFromMemory: true, stringsToMemory:true, bytesToMemory: true);
                 mesParser.Disassemble(file.FileBytes);
 
                 for (int i = 0; i < mesParser.DisassembledTxt.Count; i++)

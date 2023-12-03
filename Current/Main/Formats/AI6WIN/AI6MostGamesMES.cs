@@ -14,7 +14,7 @@ namespace TranslationHelper.Formats.AI6WIN
 
         protected override void FileOpen()
         {
-            var parser = new AI6WINScript(FilePath, FilePath);
+            var parser = new AI6WINScript(FilePath, FilePath, stringsToMemory: true);
             parser.Disassemble();
 
             for (int i=0; i < parser.DisassembledTxt.Count; i++)
@@ -37,7 +37,6 @@ namespace TranslationHelper.Formats.AI6WIN
 
             if (SaveFileMode)
             {
-                parser._inOutBytes = null;
                 parser.Assemble();
             }
         }
