@@ -48,7 +48,13 @@ namespace TranslationHelper.Formats.AI6WIN
                 if (SaveFileMode)
                 {
                     mesParser.Assemble();
+                    file.FileBytes = mesParser._inOutBytes;
                 }
+            }
+
+            if (SaveFileMode)
+            {
+                arcParser.Pack();
             }
         }
 
