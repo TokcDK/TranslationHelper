@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 
-namespace MesScriptDissAssTest
+namespace MesScriptDissAss
 {
     internal class ArgsH : IArgsParser
     {

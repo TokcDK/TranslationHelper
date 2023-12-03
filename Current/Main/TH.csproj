@@ -115,9 +115,6 @@
     <Compile Include="Data\AppMethods.cs" />
     <Compile Include="Formats\AI6WIN\AI6Arc.cs" />
     <Compile Include="Formats\AI6WIN\AI6MostGamesMES.cs" />
-    <Compile Include="Formats\AI6WIN\ArcParsers\AI6WINArc.cs" />
-    <Compile Include="Formats\AI6WIN\ArcParsers\SilkyArc.cs" />
-    <Compile Include="Formats\AI6WIN\ArcParsers\Tools\SilkyLZSS.cs" />
     <Compile Include="Formats\AI6WIN\MesParsers\AI6WINScript.cs" />
     <Compile Include="Formats\AI6WIN\MesParsers\ArgsParsers\ArgsB.cs" />
     <Compile Include="Formats\AI6WIN\MesParsers\ArgsParsers\ArgsH.cs" />
@@ -709,6 +706,10 @@
     <ProjectReference Include="K:\0GIT\[TokcDK]\LoadRPGMVJson\RPGMVJsonParser\RPGMVJsonParser.csproj">
       <Project>{449a8a59-1ba7-4e70-8f41-95527f4d39a6}</Project>
       <Name>RPGMVJsonParser</Name>
+    </ProjectReference>
+    <ProjectReference Include="K:\0GIT\[TokcDK]\MesArcToolCSharp\MesArcLibCSharp\MesArcLibCSharp.csproj">
+      <Project>{CD71A914-875F-4185-9C02-E2B606B9894C}</Project>
+      <Name>MesArcLibCSharp</Name>
     </ProjectReference>
     <ProjectReference Include="K:\0GIT\[TokcDK]\RPGMakerVXRVData2Assistant\RPGMakerVXRVData2Assistant\RPGMakerVXRVData2Assistant.csproj">
       <Project>{f3817f93-1016-487a-8797-a4fbdfa4fb0d}</Project>

@@ -2,7 +2,7 @@
 using System.IO;
 using System.Text;
 
-namespace MesScriptDissAssTest
+namespace MesScriptDissAss
 {
     internal class ArgsSAI6 : ArgsS
     {

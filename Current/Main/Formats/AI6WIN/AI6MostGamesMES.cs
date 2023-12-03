@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
-using MesScriptDissAssTest;
+using MesScriptDissAss;
 
 namespace TranslationHelper.Formats.AI6WIN
 {

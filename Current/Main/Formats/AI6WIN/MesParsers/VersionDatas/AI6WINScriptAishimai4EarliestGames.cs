@@ -1,4 +1,4 @@
-﻿namespace MesScriptDissAssTest
+﻿namespace MesScriptDissAss
 {
     internal class AI6WINScriptAishimai4EarliestGames : IVersionData
     {

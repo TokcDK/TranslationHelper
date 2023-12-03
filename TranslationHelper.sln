@@ -76,9 +76,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GetListOfSubClasses", "K:\0
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "INIFileMan", "K:\0GIT\[TokcDK]\LibsCollection\Net4\INIFileMan\INIFileMan.csproj", "{40AC8009-CECD-44D0-B564-96E07237FD1A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FormatTest1", "TH.WPF\Formats\FormatTest1\FormatTest1.csproj", "{1DC354C9-A5BF-46C0-BF4E-3B07FD3E1B2F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FormatTest1", "TH.WPF\Formats\FormatTest1\FormatTest1.csproj", "{1DC354C9-A5BF-46C0-BF4E-3B07FD3E1B2F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ProjectTest1", "TH.WPF\Projects\ProjectTest1\ProjectTest1.csproj", "{01EFBF29-54FD-4ADD-92B2-BA40F65BD2AD}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ProjectTest1", "TH.WPF\Projects\ProjectTest1\ProjectTest1.csproj", "{01EFBF29-54FD-4ADD-92B2-BA40F65BD2AD}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MesArcLibCSharp", "K:\0GIT\[TokcDK]\MesArcToolCSharp\MesArcLibCSharp\MesArcLibCSharp.csproj", "{CD71A914-875F-4185-9C02-E2B606B9894C}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -170,6 +172,10 @@ Global
 		{01EFBF29-54FD-4ADD-92B2-BA40F65BD2AD}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{01EFBF29-54FD-4ADD-92B2-BA40F65BD2AD}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{01EFBF29-54FD-4ADD-92B2-BA40F65BD2AD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CD71A914-875F-4185-9C02-E2B606B9894C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CD71A914-875F-4185-9C02-E2B606B9894C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CD71A914-875F-4185-9C02-E2B606B9894C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CD71A914-875F-4185-9C02-E2B606B9894C}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -210,6 +216,7 @@ Global
 		{40AC8009-CECD-44D0-B564-96E07237FD1A} = {82EBA20C-9643-4BDE-91E1-9F800109A39C}
 		{1DC354C9-A5BF-46C0-BF4E-3B07FD3E1B2F} = {23F66F17-AC76-425D-A870-23960A2AF4E2}
 		{01EFBF29-54FD-4ADD-92B2-BA40F65BD2AD} = {60957198-035F-4306-8C0A-63936B8AA170}
+		{CD71A914-875F-4185-9C02-E2B606B9894C} = {82EBA20C-9643-4BDE-91E1-9F800109A39C}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {69618983-1A21-49E5-BCF7-5C12FF8C2E7C}

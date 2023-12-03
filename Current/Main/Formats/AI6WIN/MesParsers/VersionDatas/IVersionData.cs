@@ -1,4 +1,4 @@
-﻿namespace MesScriptDissAssTest
+﻿namespace MesScriptDissAss
 {
     internal interface IVersionData
     {

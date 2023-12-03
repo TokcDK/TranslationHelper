@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace MesScriptDissAssTest
+namespace MesScriptDissAss
 {
     internal interface IArgsParser
     {

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
@@ -9,7 +10,7 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using TranslationHelper.Formats.Other;
 
-namespace MesScriptDissAssTest
+namespace MesScriptDissAss
 {
     // C# realisation of https://github.com/TesterTesterov/AI6WINScriptTool
 
@@ -79,9 +80,12 @@ namespace MesScriptDissAssTest
         (0x1b, 0)
         };
 
+        protected byte[] _inputBytes = default;
 
-        internal virtual void Disassemble()
+        internal virtual void Disassemble(byte[] inputBytes = default)
         {
+            _inputBytes = inputBytes;
+
             _offsetsD = new List<int>();
             (_prm, _firstOffsets, _secondOffsets) = DissHeader();
 
@@ -366,7 +370,7 @@ namespace MesScriptDissAssTest
 
             //using (StreamWriter outFile = new StreamWriter(_txtName, false, Encoding.GetEncoding(_encoding)))
             {
-                using (BinaryReader inFile = new BinaryReader(new FileStream(_mesName, FileMode.Open)))
+                using (BinaryReader inFile = new BinaryReader(GetInputStream()))
                 {
                     inFile.BaseStream.Seek(pointer, SeekOrigin.Begin);
 
@@ -544,7 +548,7 @@ namespace MesScriptDissAssTest
         internal void DissOtherOffsets()
         {
             int pointer = GetTrueOffset(0);
-            using (FileStream inFile = new FileStream(_mesName, FileMode.Open, FileAccess.Read))
+            using (Stream inFile = GetInputStream())
             {
                 inFile.Seek(pointer, SeekOrigin.Begin);
 
@@ -636,7 +640,7 @@ namespace MesScriptDissAssTest
             var secondOffsets = new List<int>();
 
             int[] prm;
-            using (var mesFile = new FileStream(_mesName, FileMode.Open, FileAccess.Read))
+            using (Stream mesFile = GetInputStream())
             {
                 using (var binaryReader = new BinaryReader(mesFile))
                 {
@@ -645,6 +649,18 @@ namespace MesScriptDissAssTest
             }
 
             return (prm, firstOffsets, secondOffsets);
+        }
+
+        private Stream GetInputStream()
+        {
+            if (_inputBytes != null && _inputBytes.Length > 0)
+            {
+                return new MemoryStream(_inputBytes);
+            }
+            else
+            {
+                return new FileStream(_mesName, FileMode.Open, FileAccess.Read);
+            }
         }
 
         protected virtual int[] ReadOffsets(BinaryReader binaryReader, List<int> firstOffsets, List<int> secondOffsets)
