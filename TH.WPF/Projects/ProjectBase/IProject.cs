@@ -7,28 +7,30 @@ namespace ProjectBase
     public interface IProject
     {
         /// <summary>
-        /// Title of the project
+        /// Title of the project to identify
         /// </summary>
         string Title { get; }
 
-        // need to check if the project can try to open the file
         /// <summary>
-        /// Conditions to determine if the project can open selected file or folder
+        /// Check if the project can try to open the <paramref name="selectedPath"/>
         /// </summary>
+        /// <param name="selectedPath"></param>
         /// <returns></returns>
-        bool IsValid(FileInfo selectedFilePath);
+        bool IsValid(string selectedPath);
 
         /// <summary>
-        /// Open actions for the project
+        /// Try open <paramref name="selectedPath"/> using the project
         /// </summary>
-        /// <returns></returns>
-        bool TryOpen(FileInfo selectedFilePath);
+        /// <param name="selectedPath">Path of file or directory</param>
+        /// <returns>True if the <paramref name="selectedPath"/> was succesfully opened by the project</returns>
+        bool TryOpen(string selectedPath);
 
         /// <summary>
-        /// Save actions for the project. Have no input selected file path because admit it was saved on open if need
+        /// Try save the project into <paramref name="selectedPath"/>
         /// </summary>
-        /// <returns></returns>
-        bool TrySave();
+        /// <param name="selectedPath">Path of file or directory. If null or empty the project can save it files into path which was remembered after succesfull <seealso cref="TryOpen(string)"/></param>
+        /// <returns>True if the project was succesfully saved</returns>
+        bool TrySave(string selectedPath);
 
         // extra check if any strtings was added here
         /// <summary>
