@@ -30,6 +30,6 @@
         /// <summary>
         /// List of strings
         /// </summary>
-        List<StringData> StringsList { get; }
+        public List<StringData> StringsList { get; }
     }
 }

@@ -41,34 +41,22 @@ namespace ProjectBase
 
     public class FileData
     {
-        public FileData(FileInfo fileInfo, DirectoryInfo baseDir)
+        public FileData(FileInfo fileInfo, IFormat format)
         {
             File = fileInfo;
-            BaseDir = baseDir;
-            RelativePath = (IsRelative = File.FullName.StartsWith(BaseDir.FullName))
-                ? File.FullName.Substring(BaseDir.FullName.Length + 1)
-                : File.FullName;
+            Format = format;
+            Strings = format.StringsList;
         }
 
-        /// <summary>
-        /// Base dir path where is first slected file was located
-        /// </summary>
-        public DirectoryInfo BaseDir { get; }
         /// <summary>
         /// File info
         /// </summary>
         public FileInfo File { get; }
-        /// <summary>
-        /// True if file is child of base dir.
-        /// </summary>
-        internal bool IsRelative { get; }
-        /// <summary>
-        /// Relative pathe in base dir. To display in files list. When <seealso cref="IsRelative"/> is false will be equal to full path.
-        /// </summary>
-        public string RelativePath { get; }
+
+        public IFormat Format { get; }
         /// <summary>
         /// list of extracted strings
         /// </summary>
-        List<StringData>? Strings { get; } = new List<StringData>();
+        public List<StringData>? Strings { get; }
     }
 }

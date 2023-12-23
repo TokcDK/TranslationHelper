@@ -8,7 +8,7 @@ namespace ProjectTest1
     {
         public string Title => "Test project 1";
 
-        public List<FileData>? FilesList => null;
+        public List<FileData>? FilesList => new();
 
         public bool IsValid(string selectedPath)
         {
@@ -19,7 +19,9 @@ namespace ProjectTest1
         public bool TryOpen(string selectedPath)
         {
             _f = new TXTTest1();
-            var b = _f.TryOpen(new FileInfo(selectedPath));
+            var fileInfo = new FileInfo(selectedPath);
+            var b = _f.TryOpen(fileInfo);
+            if (b) FilesList!.Add(new FileData(fileInfo, _f));
             return b && _f.StringsList != null && _f.StringsList.Count > 0;
         }
 
