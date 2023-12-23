@@ -90,21 +90,20 @@ namespace TranslationHelper
         {
             public FoundRowData(DataRow row)
             {
-                //_row = row;
-                Original = row.Field<string>(AppData.CurrentProject.OriginalColumnIndex);
-                Translation = row.Field<string>(AppData.CurrentProject.TranslationColumnIndex);
+                Row = row;
                 TableIndex = AppData.CurrentProject.FilesContent.Tables.IndexOf(row.Table);
                 RowIndex = row.Table.Rows.IndexOf(row);
             }
 
-            public string Original { get; }
-            public string Translation { get; }
+            [Browsable(false)]
+            public DataRow Row { get; }
+            public string Original { get => Row.Field<string>(AppData.CurrentProject.OriginalColumnIndex); }
+            public string Translation { get => Row.Field<string>(AppData.CurrentProject.TranslationColumnIndex); set => Row.SetField(AppData.CurrentProject.TranslationColumnIndex, value); }
 
             [Browsable(false)]
             public int TableIndex { get; }
             [Browsable(false)]
             public int RowIndex { get; }
-            //DataRow _row { get; set; }
         }
 
         internal THfrmSearch(ListBox filesList, DataGridView workFileDgv, RichTextBox translationTextBox)
