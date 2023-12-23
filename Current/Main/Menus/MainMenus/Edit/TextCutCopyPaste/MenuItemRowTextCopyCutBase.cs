@@ -21,12 +21,11 @@ namespace TranslationHelper.Menus.MainMenus.Edit.TextCutCopyPaste
                 AppData.Main.THFiltersDataGridView.EditingControl,
             })
             {
-                if(control is TextBox tb 
-                    && tb.Focused 
-                    && ActionForTextBoxObject(tb))
-                {
-                    return;
-                }
+                if (!(control is TextBoxBase tb)) continue;
+                if (!tb.Focused) continue;
+                if (!ActionForTextBoxObject(tb)) continue;
+
+                return;
             }
 
             ActionForSelectedRows();
