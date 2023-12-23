@@ -27,7 +27,7 @@ namespace ProjectTest1
 
         public bool TrySave(string selectedPath)
         {
-            return _f != null && _f.TrySave(null);
+            return _f != null && _f.TrySave(new FileInfo(selectedPath));
         }
     }
 }
