@@ -134,7 +134,6 @@
             this.SearchResultsDatagridview.ColumnHeadersVisible = false;
             this.SearchResultsDatagridview.Location = new System.Drawing.Point(0, 3);
             this.SearchResultsDatagridview.Name = "SearchResultsDatagridview";
-            this.SearchResultsDatagridview.ReadOnly = true;
             this.SearchResultsDatagridview.RowTemplate.Height = 23;
             this.SearchResultsDatagridview.Size = new System.Drawing.Size(565, 216);
             this.SearchResultsDatagridview.TabIndex = 19;
