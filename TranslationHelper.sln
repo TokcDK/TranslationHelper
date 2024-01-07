@@ -84,6 +84,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MesArcLibCSharp", "K:\0GIT\
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MesScriptDissAssLib", "K:\0GIT\[TokcDK]\MesScriptDissAssTest\MesScriptDissAssLib\MesScriptDissAssLib.csproj", "{1F44C885-5CF5-4C13-9B0A-CC805AA3CF64}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RGSS Extractor", "K:\0GIT\RGSS-Extractor\RGSS Extractor.csproj", "{E6343190-3A80-4C26-9591-F22F65645AB9}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -182,6 +184,10 @@ Global
 		{1F44C885-5CF5-4C13-9B0A-CC805AA3CF64}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1F44C885-5CF5-4C13-9B0A-CC805AA3CF64}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{1F44C885-5CF5-4C13-9B0A-CC805AA3CF64}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E6343190-3A80-4C26-9591-F22F65645AB9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E6343190-3A80-4C26-9591-F22F65645AB9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E6343190-3A80-4C26-9591-F22F65645AB9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E6343190-3A80-4C26-9591-F22F65645AB9}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -224,6 +230,7 @@ Global
 		{01EFBF29-54FD-4ADD-92B2-BA40F65BD2AD} = {60957198-035F-4306-8C0A-63936B8AA170}
 		{CD71A914-875F-4185-9C02-E2B606B9894C} = {82EBA20C-9643-4BDE-91E1-9F800109A39C}
 		{1F44C885-5CF5-4C13-9B0A-CC805AA3CF64} = {82EBA20C-9643-4BDE-91E1-9F800109A39C}
+		{E6343190-3A80-4C26-9591-F22F65645AB9} = {82EBA20C-9643-4BDE-91E1-9F800109A39C}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {69618983-1A21-49E5-BCF7-5C12FF8C2E7C}

@@ -127,6 +127,7 @@
     <Compile Include="Formats\IFormat.cs" />
     <Compile Include="Formats\KiriKiri\Games\CSV\CSVDisplayName.cs" />
     <Compile Include="Formats\RimWorld\RimWorldLanguageDataXML.cs" />
+    <Compile Include="Formats\RPGMakerVXAce\RGSS3A.cs" />
     <Compile Include="Formats\RPGMakerVXAce\RVData2\Actors.rvdata2.cs" />
     <Compile Include="Formats\RPGMakerVXAce\RVData2\RVDATA2.cs" />
     <Compile Include="Formats\RPGMMV\JsonType\JsonEventCommandsList.cs" />
@@ -680,6 +681,10 @@
     </BootstrapperPackage>
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="K:\0GIT\RGSS-Extractor\RGSS Extractor.csproj">
+      <Project>{e6343190-3a80-4c26-9591-f22f65645ab9}</Project>
+      <Name>RGSS Extractor</Name>
+    </ProjectReference>
     <ProjectReference Include="K:\0GIT\[TokcDK]\LC\LibsCollection\Net4\CheckForEmptyDir\CheckForEmptyDir.csproj">
       <Project>{636976fe-5ffe-4e17-bcb1-7b858a78a8a3}</Project>
       <Name>CheckForEmptyDir</Name>

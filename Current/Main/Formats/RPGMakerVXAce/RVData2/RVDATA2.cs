@@ -23,12 +23,19 @@ namespace TranslationHelper.Formats.RPGMakerVX.RVData2
 
         protected override void FileOpen()
         {
+            FileOpen(null);
+        }
+
+        public void FileOpen(byte[] fileBytes)
+        {
             var name = Path.GetFileNameWithoutExtension(FilePath);
             _isScripts = string.Equals(name, "scripts", StringComparison.InvariantCultureIgnoreCase);
 
+            bool isBytes = fileBytes != null && fileBytes.Length > 0;
+
             if (_isScripts)
             {
-                _parser = new ScriptsParser(FilePath);
+                _parser = new ScriptsParser(FilePath, fileBytes);
 
                 foreach (var script in (_parser as ScriptsParser).EnumerateRMScripts())
                 {
@@ -78,7 +85,6 @@ namespace TranslationHelper.Formats.RPGMakerVX.RVData2
                     if (AddRowData(ref s, info) && SaveFileMode) stringData.Text = s;
                 }
             }
-
         }
 
         const string _codeInfoText = "Command code: ";

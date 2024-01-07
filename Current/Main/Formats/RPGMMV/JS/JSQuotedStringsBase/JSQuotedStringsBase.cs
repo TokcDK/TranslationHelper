@@ -1,4 +1,4 @@
-﻿using System.Security.Cryptography.Pkcs;
+﻿//using System.Security.Cryptography.Pkcs;
 using System.Text.RegularExpressions;
 using TranslationHelper.Data;
 using TranslationHelper.Functions;
