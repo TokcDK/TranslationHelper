@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
 using Newtonsoft.Json.Linq;
@@ -250,7 +251,7 @@ namespace TranslationHelper.Formats.RPGMMV.JsonType
         /// <returns></returns>
         private int ParseMessage(List<Command> commands, List<Command> message, string info, int lastIndex)
         {
-            var s = string.Join("\r\n", message.Select(m => m.Parameters[0]));
+            var s = string.Join("\r\n", message.Where(m => m.Parameters.Length > 0).Select(m => m.Parameters[0]));
             int extraLinesCount = 0;
             var newMessage = new List<Command>();
             if (AddRowData(ref s, SaveFileMode ? "" : info + $"\r\nCommand code: {message[0].Code}{RPGMUtils.GetCodeName(message[0].Code)}\r\nParameter #: {0}") && SaveFileMode)
