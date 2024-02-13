@@ -22,6 +22,8 @@ namespace TranslationHelper.Formats.Raijin7
                 || FileName.StartsWith("pnet")
                 || FileName.StartsWith("pson")
                 || FileName.StartsWith("wapon")
+                || FileName.StartsWith("ub_base")
+                || FileName.StartsWith("bd_base")
                 )
             {
                 variant = 1;
@@ -33,6 +35,10 @@ namespace TranslationHelper.Formats.Raijin7
             else if (FileName.StartsWith("spec_rate"))
             {
                 variant = 3;
+            }
+            else if (FileName.StartsWith("sk_base"))
+            {
+                variant = 4;
             }
         }
 
@@ -69,6 +75,10 @@ namespace TranslationHelper.Formats.Raijin7
                     {
                         SetValue(999);
                     }
+                }
+                else if (variant == 4)
+                {
+                    SetValue(1, 5);
                 }
                 lineNumber++;
             }
