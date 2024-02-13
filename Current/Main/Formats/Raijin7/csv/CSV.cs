@@ -57,7 +57,7 @@ namespace TranslationHelper.Formats.Raijin7
                 }
                 else if (variant == 2)
                 {
-                    SetValue(0,1);
+                    SetValue(0,1,4);
                 }
                 else if (variant == 3)
                 {
