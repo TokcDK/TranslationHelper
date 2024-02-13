@@ -54,6 +54,8 @@ namespace TranslationHelper.Projects
                 ret = true;
             if (ProjectToolsOpenSave.OpenSaveFilesBase(this, Path.Combine(dirPath, "csv"), typeof(CSV), "*.csv"))
                 ret = true;
+            if (ProjectToolsOpenSave.OpenSaveFilesBase(this, Path.Combine(dirPath, "gsxy"), typeof(CSV), "*.csv"))
+                ret = true;
 
             return ret;
         }

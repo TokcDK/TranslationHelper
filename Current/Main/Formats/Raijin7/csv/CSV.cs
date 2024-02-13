@@ -32,13 +32,19 @@ namespace TranslationHelper.Formats.Raijin7
             {
                 variant = 2;
             }
-            else if (FileName.StartsWith("spec_rate"))
+            else if (FileName.StartsWith("spec_rate")
+                || FileName.StartsWith("bgv_")
+                )
             {
                 variant = 3;
             }
             else if (FileName.StartsWith("sk_base"))
             {
                 variant = 4;
+            }
+            else if (FileName.StartsWith("sk_base"))
+            {
+                variant = 999;
             }
         }
 
