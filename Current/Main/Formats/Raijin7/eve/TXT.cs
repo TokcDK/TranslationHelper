@@ -45,9 +45,18 @@ namespace TranslationHelper.Formats.Raijin7.eve
             {
                 SetValue(1,2);
             }
-            else if (ParseData.TrimmedLine.StartsWith("chg_pname"))
+            else if (ParseData.TrimmedLine.StartsWith("chg_pname")
+                || ParseData.TrimmedLine.StartsWith("z8_qnar")
+                || ParseData.TrimmedLine.StartsWith("z8_old_msg")
+                || ParseData.TrimmedLine.StartsWith("z8_old_nar")
+                )
             {
                 SetValue(2);
+            }
+            else if (ParseData.TrimmedLine.StartsWith("z8_msg")
+                )
+            {
+                SetValue(2,3);
             }
             else if (ParseData.TrimmedLine.StartsWith("get_item"))
             {
@@ -57,31 +66,35 @@ namespace TranslationHelper.Formats.Raijin7.eve
             {
                 SetValue(5);
             }
+            else if (ParseData.TrimmedLine.StartsWith("z8_event"))
+            {
+                SetValue(8);
+            }
             else if (FileName.StartsWith("sn"))
             {
-                var Values = ParseData.Line.Split(',');
-                var RestOfText = ParseData.Reader.ReadToEnd();
+                var values = ParseData.Line.Split(',');
+                var restOfText = ParseData.Reader.ReadToEnd();
                 if (OpenFileMode)
                 {
-                    AddRowData(Values[1], "", isCheckInput: true);
-                    AddRowData(RestOfText, "", isCheckInput: true);
+                    AddRowData(values[1], "", isCheckInput: true);
+                    AddRowData(restOfText, "", isCheckInput: true);
                 }
                 else
                 {
                     var trans = "";
-                    if (IsValid(Values[1], ref trans))
+                    if (IsValid(values[1], ref trans))
                     {
                         ParseData.Ret = true;
-                        Values[1] = FixInvalidSymbols(AppData.CurrentProject.TablesLinesDict[Values[1]]);
+                        values[1] = FixInvalidSymbols(AppData.CurrentProject.TablesLinesDict[values[1]]);
                     }
 
-                    if (IsValid(RestOfText, ref trans))
+                    if (IsValid(restOfText, ref trans))
                     {
                         ParseData.Ret = true;
-                        RestOfText = FixInvalidSymbols(AppData.CurrentProject.TablesLinesDict[RestOfText]);
+                        restOfText = FixInvalidSymbols(AppData.CurrentProject.TablesLinesDict[restOfText]);
                     }
 
-                    ParseData.Line = string.Join(",", Values) + Environment.NewLine + RestOfText;
+                    ParseData.Line = string.Join(",", values) + Environment.NewLine + restOfText;
 
                 }
 
