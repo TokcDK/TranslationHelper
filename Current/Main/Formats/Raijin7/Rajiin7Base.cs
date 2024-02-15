@@ -1,5 +1,6 @@
 ﻿using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using TranslationHelper.Data;
 
 namespace TranslationHelper.Formats.Raijin7
@@ -29,23 +30,26 @@ namespace TranslationHelper.Formats.Raijin7
             var numbers = nums[0] < 999 ? nums : Enumerable.Range(0, values.Length);
             foreach (var num in numbers)
             {
-                var trans="";
-                if (OpenFileMode)
+                string t = values[num];
+                string emotionMarker = "";
+                if (t.EndsWith("]"))
                 {
-                    AddRowData(values[num], "", isCheckInput: true);
+                    int ind = t.Length - 3;
+                    if (t[ind] == '[')
+                    {
+                        emotionMarker = t.Substring(ind);
+                        t = t.Remove(ind);
+                    }
                 }
-                else if (IsValid(values[num], ref trans))
+
+                if (AddRowData(ref t, "") && SaveFileMode)
                 {
-                    values[num] = FixInvalidSymbols(trans);
+                    values[num] = FixInvalidSymbols(t) + emotionMarker;
                     set = true;
-                    ParseData.Ret = true;
                 }
             }
 
-            if (set)
-            {
-                ParseData.Line = string.Join(",", values);
-            }
+            if (set) ParseData.Line = string.Join(",", values);
         }
     }
 }
