@@ -528,7 +528,7 @@
     <Compile Include="Projects\ProjectTools.cs" />
     <Compile Include="Projects\ProjectToolsBackup.cs" />
     <Compile Include="Projects\ProjectToolsOpenSave.cs" />
-    <Compile Include="Projects\Raijin7\Raijin7Game.cs" />
+    <Compile Include="Projects\Raijin7\Raijin78Game.cs" />
     <Compile Include="Projects\RimWorld\FileRowTryImportStringsFrom.cs" />
     <Compile Include="Projects\RimWorld\RimWorldLanguage.cs" />
     <Compile Include="Projects\RimWorld\MainMenuTryReadEnglishTranslations.cs" />

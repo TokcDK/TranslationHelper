@@ -6,9 +6,11 @@ using TranslationHelper.Formats.Raijin7.eve;
 
 namespace TranslationHelper.Projects
 {
-    class Raijin7Game : ProjectBase
+    class Raijin78Game : ProjectBase
     {
-        public Raijin7Game()
+        internal override string ProjectName => "Raijin 7 & 8";
+
+        public Raijin78Game()
         {
             HideVarsBase = new Dictionary<string, string>
             {
