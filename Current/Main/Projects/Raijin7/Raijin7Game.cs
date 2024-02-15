@@ -56,32 +56,16 @@ namespace TranslationHelper.Projects
                 ret = true;
             if (ProjectToolsOpenSave.OpenSaveFilesBase(this, Path.Combine(dirPath, "gsxy"), typeof(CSV), "*.csv"))
                 ret = true;
-            if (ProjectToolsOpenSave.OpenSaveFilesBase(this, Path.Combine(dirPath, "gsxy"), typeof(CSV), "*.txt"))
-                ret = true;
 
             return ret;
         }
 
-        public override bool BakCreate()
+        public override List<string> BakPaths { get; set; } = new List<string>()
         {
-            return ProjectToolsBackup.BackupRestorePaths(new[] { 
                 Path.Combine(Path.GetDirectoryName(AppData.SelectedProjectFilePath), "eve"),
-                Path.Combine(Path.GetDirectoryName(AppData.SelectedProjectFilePath), "csv")
-            });
-        }
-
-        /// <summary>
-        /// Will restore made buckup of project translating original files<br/>if any code exit here and buckup exists<br/>else will return false
-        /// </summary>
-        /// <returns></returns>
-        public override bool BakRestore()
-        {
-            return ProjectToolsBackup.BackupRestorePaths(new[] {
-                Path.Combine(Path.GetDirectoryName(AppData.SelectedProjectFilePath), "eve"),
-                Path.Combine(Path.GetDirectoryName(AppData.SelectedProjectFilePath), "csv")
-            }
-            ,false);
-        }
+                Path.Combine(Path.GetDirectoryName(AppData.SelectedProjectFilePath), "csv"),
+                Path.Combine(Path.GetDirectoryName(AppData.SelectedProjectFilePath), "gsxy")
+        };
 
     }
 }

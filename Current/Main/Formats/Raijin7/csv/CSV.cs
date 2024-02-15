@@ -32,15 +32,17 @@ namespace TranslationHelper.Formats.Raijin7
             {
                 variant = 2;
             }
-            else if (FileName.StartsWith("spec_rate")
-                || FileName.StartsWith("bgv_")
-                )
+            else if (FileName.StartsWith("spec_rate"))
             {
                 variant = 3;
             }
             else if (FileName.StartsWith("sk_base"))
             {
                 variant = 4;
+            }
+            else if (FileName.StartsWith("bgv_"))
+            {
+                variant = 5;
             }
             else if (FileName.StartsWith("sk_base"))
             {
@@ -85,6 +87,10 @@ namespace TranslationHelper.Formats.Raijin7
                 else if (variant == 4)
                 {
                     SetValue(1, 5);
+                }
+                else if (variant == 5)
+                {
+                    SetValue(3);
                 }
                 lineNumber++;
             }
