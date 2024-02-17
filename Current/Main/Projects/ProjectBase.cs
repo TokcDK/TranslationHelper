@@ -127,14 +127,14 @@ namespace TranslationHelper.Projects
 
             AppData.CurrentProject.SelectedGameDir = Path.GetDirectoryName(AppData.SelectedProjectFilePath);
             AppData.CurrentProject.SelectedDir = Path.GetDirectoryName(AppData.SelectedProjectFilePath);
-            AppData.CurrentProject.ProjectWorkDir = Path.Combine(THSettings.WorkDirPath, ProjectDBFolderName, ProjectName);
+            AppData.CurrentProject.ProjectWorkDir = Path.Combine(THSettings.WorkDirPath, ProjectDBFolderName, Name);
         }
 
         /// <summary>
-        /// Name of selected project
+        /// The project's name
         /// </summary>
         /// <returns></returns>
-        internal virtual string ProjectName => Path.GetFileName(Path.GetDirectoryName(AppData.SelectedProjectFilePath));
+        public abstract string Name { get; }
 
         /// <summary>
         /// Conditions to detect on open
@@ -158,12 +158,6 @@ namespace TranslationHelper.Projects
         /// </summary>
         /// <returns></returns>
         internal virtual string ProjectTitlePrefix => string.Empty;
-
-        /// <summary>
-        /// Project title
-        /// </summary>
-        /// <returns></returns>
-        public abstract string Name { get; }
 
         /// <summary>
         /// Project folder name to locate files in DB and Work folders

@@ -8,8 +8,6 @@ namespace TranslationHelper.Projects
 {
     class Raijin78Game : ProjectBase
     {
-        internal override string ProjectName => "Raijin 7 & 8";
-
         public Raijin78Game()
         {
             HideVarsBase = new Dictionary<string, string>
@@ -35,7 +33,7 @@ namespace TranslationHelper.Projects
 
         internal override string FileFilter => ProjectTools.GameExeFilter;
 
-        public override string Name => "Raijin 7";
+        public override string Name => "Raijin 7 & 8";
 
         public override bool Open()
         {
