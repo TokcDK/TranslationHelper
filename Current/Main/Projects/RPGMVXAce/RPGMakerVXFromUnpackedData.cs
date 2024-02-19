@@ -1,10 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
+﻿using System.IO;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using RGSS_Extractor;
 using TranslationHelper.Formats.RPGMakerVX.RVData2;
 
 namespace TranslationHelper.Projects.RPGMVXAce
@@ -21,12 +16,11 @@ namespace TranslationHelper.Projects.RPGMVXAce
 
         bool OpenSave()
         {
-            var parent = Path.GetDirectoryName(Data.AppData.SelectedProjectFilePath);
-            var gameRgss3aPath = Path.Combine(parent, "Game.rgss3a");
-            bool isRgss3a = File.Exists(gameRgss3aPath);
-            var dataDirPath = Path.Combine(parent, "Data");
+            var gameDir = Path.GetDirectoryName(Data.AppData.SelectedProjectFilePath);
+            var gameRgss3aPath = Path.Combine(gameDir, "Game.rgss3a");
+            var dataDirPath = Path.Combine(gameDir, "Data");
 
-            if (isRgss3a)
+            if (OpenFileMode && File.Exists(gameRgss3aPath) && !Directory.Exists(dataDirPath))
             {
                 var parser = new RGSS_Extractor.Main_Parser();
 
@@ -34,8 +28,9 @@ namespace TranslationHelper.Projects.RPGMVXAce
 
                 foreach (var entry in parser.parse_file(gameRgss3aPath))
                 {
-                    var p = Path.Combine(parent, entry.name);
-                    File.WriteAllBytes(p, parser.get_filedata(entry));
+                    var filePath = gameDir + "\\" + entry.name;
+                    Directory.GetParent(filePath).Create();
+                    File.WriteAllBytes(filePath, parser.get_filedata(entry));
                 }
 
                 parser.close_file();
@@ -45,8 +40,8 @@ namespace TranslationHelper.Projects.RPGMVXAce
 
             return ProjectToolsOpenSave
                 .OpenSaveFilesBase(this,
-                dataDirPath, 
-                typeof(RVDATA2), 
+                dataDirPath,
+                typeof(RVDATA2),
                 "*.rvdata2");
         }
 
