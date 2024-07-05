@@ -41,7 +41,7 @@ namespace TranslationHelper
                 }
                 else
                 {
-                    string str = Regex.Replace(OriginalText, "\\r\\n|\\r|\\n", " </br> ", RegexOptions.None);
+                    string str = Regex.Replace(OriginalText, "\\r\\n|\\r|\\n", $" {splitterString} ", RegexOptions.None);
 
                     string arg = HttpUtility.UrlEncode(str, Encoding.UTF8);
 
