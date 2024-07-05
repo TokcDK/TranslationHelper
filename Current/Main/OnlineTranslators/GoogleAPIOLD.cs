@@ -128,7 +128,7 @@ namespace TranslationHelper
                                 oneOrLast ? "" : (
                                 Environment.NewLine
                                 //<br> заменил на </br>, последний также воспринимается как новая строка, влияя на перевод и не клонировался в середину там, где была проблема с <br> <== upd: <br> Гугл один раз раздвоил, сунув копию в середину, из-за чего была ошибка при раборе строк перевода <== <br> вроде как Гугл воспринимает как конец строки и даже не коверкает переводом 
-                                + "</br>"
+                                + splitterString
                                 + Environment.NewLine
                                 )
                     }));
@@ -252,12 +252,12 @@ namespace TranslationHelper
             // возвращение знака новой строки и разделение на подстроки в массив
             string[] array = text2
                          //.Replace("<br> ", "<br>").Replace("<br>", string.Empty)
-                         .Replace(" </br> ", "</br>")
+                         .Replace(" </br> ", splitterString)
                          .Replace("DNTT", Environment.NewLine)
                          .Split(splitter, StringSplitOptions.None);
 
             //возвращение <br>, если такие были изначально
-            array = array.Select(x => x.Replace("NBRN", "</br>")).ToArray();
+            array = array.Select(x => x.Replace("NBRN", splitterString)).ToArray();
 
             //take берет все элементы кроме последнего пустого элемента массива, чтобы в основном коде не уменьшать его счет на один;
             return array;//.Take(array.Length - 1).ToArray(); // commented skip last element because there will not be empty line anymore
@@ -265,7 +265,8 @@ namespace TranslationHelper
 
         private const string DNTT = "DNTT";
 
-        private static readonly string[] splitter = new string[] { "</br>" };
+        private static readonly string splitterString = "</br></br>";
+        private static readonly string[] splitter = new string[] { splitterString };
 
         // Translation Aggregator r190. Credits to Sinflower.
         private long m = 427761;
