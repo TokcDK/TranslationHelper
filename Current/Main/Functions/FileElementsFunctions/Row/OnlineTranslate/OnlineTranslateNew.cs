@@ -44,15 +44,27 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
 
         internal class TranslationData
         {
-            internal int TableIndex;
+            internal int TableIndex { get => Row.SelectedTableIndex; }
             internal List<RowTranslationData> Rows = new List<RowTranslationData>();
+            internal RowBaseRowData Row { get; }
+
+            public TranslationData(RowBaseRowData rowData)
+            {
+                this.Row = rowData;
+            }
         }
 
         internal class RowTranslationData
         {
             internal bool IsAllLinesAdded = false;
-            internal int RowIndex;
+            internal int RowIndex { get => Row.SelectedRowIndex; }
             internal List<LineTranslationData> Lines = new List<LineTranslationData>();
+            internal RowBaseRowData Row { get; }
+
+            public RowTranslationData(RowBaseRowData rowData)
+            {
+                this.Row = rowData;
+            }
         }
 
         internal class LineTranslationData : IOriginalTranslationUser
@@ -159,10 +171,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
             var selectedTableData = _buffer.FirstOrDefault(tableData => tableData.TableIndex == rowData.SelectedTableIndex);
             if (selectedTableData == null)
             {
-                selectedTableData = new TranslationData
-                {
-                    TableIndex = rowData.SelectedTableIndex
-                };
+                selectedTableData = new TranslationData(rowData);
                 _buffer.Add(selectedTableData);
             }
 
@@ -170,8 +179,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
             var selectedRowData = selectedTableData.Rows.FirstOrDefault(rowTranslationData => rowTranslationData.RowIndex == rowData.SelectedRowIndex);
             if (selectedRowData == null)
             {
-                selectedRowData = new RowTranslationData();
-                selectedRowData.RowIndex = rowData.SelectedRowIndex;
+                selectedRowData = new RowTranslationData(rowData);
                 selectedTableData.Rows.Add(selectedRowData);
             }
 
@@ -580,9 +588,12 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
             if (cellTranslationIsNotEmptyAndNotEqualOriginal && !originalText.HasAnyTranslationLineValidAndEqualSameOrigLine(translationText, false)) return false;
 
             // set new row value
-            row.SetValue(_translationColumnIndex, 
-                string.Join(Environment.NewLine, 
-                EnumerateNewLines(cellTranslationIsNotEmptyAndNotEqualOriginal ? translationText : originalText, rowData.Lines)));
+
+            var newRowValue = string.Join(Environment.NewLine,
+                EnumerateNewLines(cellTranslationIsNotEmptyAndNotEqualOriginal ? translationText : originalText, rowData.Lines));
+            if (string.Equals(newRowValue, rowData.Row.Original)) return false;
+            
+            row.SetValue(_translationColumnIndex, newRowValue);
 
             return true;
         }
