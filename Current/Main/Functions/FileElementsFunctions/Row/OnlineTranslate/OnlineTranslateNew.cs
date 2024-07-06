@@ -467,7 +467,13 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
                 if (originalLinesArePreApplied.Length == 0) return translated;
 
                 translated = _translator.Translate(originalLinesArePreApplied);
-                if (translated == null || originals.Length != translated.Length) return Array.Empty<string>();
+                if (translated == null || originals.Length != translated.Length)
+                {
+                    var translatedByParts = TryToTranslateByParts(originalLinesArePreApplied);
+                    if (translatedByParts ==null || translatedByParts.Count==0) return Array.Empty<string>();
+
+                    translated = translatedByParts.ToArray();
+                }
 
                 translated = ApplyProjectPostTranslationAction(originals, translated);
             }
@@ -482,6 +488,57 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
             }
 
             return translated;
+        }
+
+        private List<string> TryToTranslateByParts(string[] originalLinesArePreApplied)
+        {
+            // translate by x lines
+            int i = 4;
+            var resultTranslatedByParts = new List<string>();
+            var listToTranslate = new List<string>();
+            foreach(var line in originalLinesArePreApplied)
+            {
+                listToTranslate.Add(line);
+                if (--i==0)
+                {
+                    i = 2;
+
+                    if (!TryToTranslateByParts1(listToTranslate, resultTranslatedByParts)) 
+                        return null;
+
+                    listToTranslate.Clear();
+                }
+            }
+
+            if (!TryToTranslateByParts1(listToTranslate, resultTranslatedByParts))
+                return null;
+
+            return resultTranslatedByParts;
+        }
+
+        private bool TryToTranslateByParts1(List<string> listToTranslate, List<string> resultTranslatedByParts)
+        {
+            if (listToTranslate.Count == 0) return true;
+
+            var translated = _translator.Translate(listToTranslate.ToArray());
+
+            if (translated.Length != listToTranslate.Count)
+            {
+                // translate line by line
+                foreach (var lineToTranslate in listToTranslate)
+                {
+                    string translatedLine = _translator.Translate(lineToTranslate);
+                    if (string.IsNullOrWhiteSpace(translatedLine)) return false;
+
+                    resultTranslatedByParts.Add(translatedLine);
+                }
+            }
+            else
+            {
+                resultTranslatedByParts.AddRange(translated);
+            }
+
+            return true;
         }
 
         /// <summary>
@@ -591,7 +648,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
 
             var newRowValue = string.Join(Environment.NewLine,
                 EnumerateNewLines(cellTranslationIsNotEmptyAndNotEqualOriginal ? translationText : originalText, rowData.Lines));
-            if (string.Equals(newRowValue, rowData.Row.Original)) return false;
+            //if (rowData.Row.Original.GetLinesCount() == 1 && string.Equals(newRowValue, rowData.Row.Original)) return false;
             
             row.SetValue(_translationColumnIndex, newRowValue);
 

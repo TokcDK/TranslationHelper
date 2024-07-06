@@ -265,7 +265,7 @@ namespace TranslationHelper
 
         private const string DNTT = "DNTT";
 
-        private static readonly string splitterString = "</br></br>";
+        private static readonly string splitterString = "{VAR}";
         private static readonly string[] splitter = new string[] { splitterString };
 
         // Translation Aggregator r190. Credits to Sinflower.
