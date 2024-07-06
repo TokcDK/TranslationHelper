@@ -252,7 +252,7 @@ namespace TranslationHelper
             // возвращение знака новой строки и разделение на подстроки в массив
             string[] array = text2
                          //.Replace("<br> ", "<br>").Replace("<br>", string.Empty)
-                         .Replace(" </br> ", splitterString)
+                         .Replace($" {splitterString} ", splitterString)
                          .Replace("DNTT", Environment.NewLine)
                          .Split(splitter, StringSplitOptions.None);
 
