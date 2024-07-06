@@ -35,9 +35,9 @@ namespace TranslationHelper
             }
             else
             {
-                if (sessionCache.ContainsKey(OriginalText))
+                if (sessionCache.TryGetValue(OriginalText, out string value))
                 {
-                    ResultOfTranslation = sessionCache[OriginalText];
+                    ResultOfTranslation = value;
                 }
                 else
                 {
