@@ -269,16 +269,16 @@ namespace TranslationHelper
         private static readonly string[] splitter = new string[] { splitterString };
 
         // Translation Aggregator r190. Credits to Sinflower.
-        private long m = 427761;
-        private long s = 1179739010;
+        private readonly long m = 427761;
+        private readonly long s = 1179739010;
         //private int _translationsPerRequest = 1;
         //private int _translationCount = 0;
         //private static readonly string HttpsServicePointTranslateTemplateUrl = "https://translate.googleapis.com/translate_a/single?client=webapp&sl={0}&tl={1}&dt=t&dt=at&tk={2}&q={3}";
-        private static readonly string HttpsServicePointTranslateTemplateUrl = "https://translate.googleapis.com/translate_a/single?client=webapp&sl={0}&tl={1}&dt=t&tk={2}&q={3}";
-        private static readonly string HttpsServicePointRomanizeTemplateUrl = "https://translate.googleapis.com/translate_a/single?client=webapp&sl={0}&tl=en&dt=rm&tk={1}&q={2}";
-        private static readonly string HttpsTranslateUserSite = "https://translate.google.com";
-        private static readonly Random RandomNumbers = new Random();
-        private int _resetAfter = RandomNumbers.Next(75, 125);
+        //private static readonly string HttpsServicePointTranslateTemplateUrl = "https://translate.googleapis.com/translate_a/single?client=webapp&sl={0}&tl={1}&dt=t&tk={2}&q={3}";
+        //private static readonly string HttpsServicePointRomanizeTemplateUrl = "https://translate.googleapis.com/translate_a/single?client=webapp&sl={0}&tl=en&dt=rm&tk={1}&q={2}";
+        //private static readonly string HttpsTranslateUserSite = "https://translate.google.com";
+        //private static readonly Random RandomNumbers = new Random();
+        //private readonly int _resetAfter = RandomNumbers.Next(75, 125);
 
         private static long Vi(long r, string o)
         {
