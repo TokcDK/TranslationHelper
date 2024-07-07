@@ -649,7 +649,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
             // set new row value
 
             var newRowValue = string.Join(Environment.NewLine,
-                EnumerateNewLines(cellTranslationIsNotEmptyAndNotEqualOriginal ? translationText : originalText, rowData.Lines));
+                EnumerateNewLines(rowData.Lines));
             //if (rowData.Row.Original.GetLinesCount() == 1 && string.Equals(newRowValue, rowData.Row.Original)) return false;
 
             rowData.Row.Translation = newRowValue;
@@ -678,10 +678,12 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
             }
         }
 
-        private string ApplyFixes(LineTranslationData lineData)
+        private string ApplyFixes(LineTranslationData lineData) => ApplyFixes(lineData.Original, lineData.Translation);
+
+        private string ApplyFixes(string original, string translation)
         {
-            string text = _hardFixes.Change(lineData.Translation, lineData.Original);
-            text = _fixCells.Change(text, lineData.Original);
+            string text = _hardFixes.Change(translation, original);
+            text = _fixCells.Change(text, original);
 
             return text;
         }
@@ -693,6 +695,8 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
         {
             // replace all groups with translation of selected value
             bool isMarked = false;
+
+            // get regex replacer type
             var replacerMatches = _groupReplacerMarkerRegex.Matches(lineData.RegexExtractionData.Replacer);
             var matchesCount = replacerMatches.Count;
             var replacerType = TranslationRegexExtractType.ReplaceOne;
@@ -704,8 +708,8 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
                     : TranslationRegexExtractType.Replacer;
             }
 
+            // merge extracted and translated values into translation of lineData
             var newLineText = new StringBuilder(lineData.Original);
-
             var list = lineData.RegexExtractionData.ExtractedValuesList;
             var maxValueDataIndex = list.Count - 1;
             for (int i = maxValueDataIndex; i >= 0; i--)
@@ -733,8 +737,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
 
                                 if (text != group.Value)
                                 {
-                                    text = _hardFixes.Change(text, group.Value);
-                                    text = _fixCells.Change(text, group.Value);
+                                    text = ApplyFixes(group.Value, text);
                                 }
 
                                 newLineText.Replace(group.Value
@@ -779,11 +782,12 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
                     var text = valueData.Translation;
                     if (text != null)
                     {
-                        if (text != matchGroup.Value)
+                        if (text == matchGroup.Value)
                         {
-                            text = _hardFixes.Change(text, matchGroup.Value);
-                            text = _fixCells.Change(text, matchGroup.Value);
+                            continue;
                         }
+
+                        text = ApplyFixes(matchGroup.Value, text);
                     }
                     else
                     {
