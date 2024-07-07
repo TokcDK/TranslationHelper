@@ -80,8 +80,21 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
                 RegexExtractionData = new ExtractRegexInfo(Original);
             }
 
+            /// <summary>
+            /// Determines if dont need to translate the string for some reason
+            /// </summary>
             internal bool IsExcluded = false;
-            internal bool IsTranslated { get => IsExcluded || (RegexExtractionData.ExtractedValuesList.Count == 0 && !string.IsNullOrEmpty(Translation) && string.Equals(Original, Translation)) || RegexExtractionData.ExtractedValuesList.All(l => l.IsTranslated); }
+            internal bool IsTranslated
+            { 
+                get
+                {
+                    bool haveExtracted = RegexExtractionData.ExtractedValuesList.Count == 0;
+                    bool isNotEqualOriginalTranslation = haveExtracted && !string.IsNullOrEmpty(Translation) && !string.Equals(Original, Translation);
+                    bool haveAllExtractedTranslated = !haveExtracted && !RegexExtractionData.ExtractedValuesList.Any(l => !l.IsTranslated);
+
+                    return IsExcluded || isNotEqualOriginalTranslation || haveAllExtractedTranslated;
+                } 
+            }
         }
 
         List<TranslationData> _buffer;
@@ -136,9 +149,8 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
         }
         protected override void ActionsFinalize()
         {
-            TranslateStrings();
-            TranslationTextLength = 0;
-            _buffer = null;
+            if(_buffer.Count > 0) TranslateStrings();
+
             FunctionsOnlineCache.Unload();
 
             AppData.Main.ProgressInfo(false);
@@ -273,7 +285,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
         private void ResetSizeAndBuffer()
         {
             TranslationTextLength = 0;
-            _buffer = new List<TranslationData>();
+            //_buffer = new List<TranslationData>();
         }
 
         private void TranslateIfNeed()
@@ -281,8 +293,6 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
             if (IsMax())
             {
                 TranslateStrings();
-
-                TranslationTextLength = 0;
 
                 // Write the translation cache periodically
                 AppData.OnlineTranslationCache.Write();
@@ -344,6 +354,8 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
             SetTranslationsToBuffer(originals, translated);
 
             SetBufferToRows();
+
+            ResetSizeAndBuffer();
         }
 
         /// <summary>
@@ -382,7 +394,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
             }
             else
             {
-                if(lineData.IsTranslated || !(lineData.IsExcluded = !lineData.Original.IsValidForTranslation()))
+                if(lineData.IsTranslated || (lineData.IsExcluded = !lineData.Original.IsValidForTranslation()))
                 {
                     yield break;
                 }
@@ -579,7 +591,8 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
         {
             outTranslation = default;
 
-            if (!string.Equals(stringData.Translation,  stringData.Original)) return false;
+            if (!string.IsNullOrEmpty(stringData.Translation) 
+                && !string.Equals(stringData.Translation,  stringData.Original)) return false;
             if (!stringData.Original.IsValidForTranslation()) return false;
             if (!translations.TryGetValue(stringData.Original, out var translation)) return false;
 
