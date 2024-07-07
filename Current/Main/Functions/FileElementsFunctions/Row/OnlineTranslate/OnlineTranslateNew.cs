@@ -652,7 +652,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
                 EnumerateNewLines(cellTranslationIsNotEmptyAndNotEqualOriginal ? translationText : originalText, rowData.Lines));
             //if (rowData.Row.Original.GetLinesCount() == 1 && string.Equals(newRowValue, rowData.Row.Original)) return false;
 
-            row.SetValue(_translationColumnIndex, newRowValue);
+            rowData.Row.Translation = newRowValue;
 
             return true;
         }
