@@ -266,7 +266,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
                 {
                     selectedRowData = null;
                     selectedTableData.Rows.Remove(selectedRowData);
-                    if (selectedTableData.Rows.Count > 0) selectedTableData = null;
+                    if (selectedTableData.Rows.Count == 0) _buffer.Remove(selectedTableData);
                     return;
                 }
             }
@@ -387,7 +387,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
         {
             if (lineData.RegexExtractionData.ExtractedValuesList.Count > 0)
             {
-                foreach (var value in lineData.RegexExtractionData.ExtractedValuesList.Where(v => !(v.IsExcluded = !v.Original.IsValidForTranslation())))
+                foreach (var value in lineData.RegexExtractionData.ExtractedValuesList.Where(v => !(v.IsExcluded = !v.Original.IsValidForTranslation()) && !v.IsTranslated))
                 {
                     yield return value;
                 }
@@ -795,12 +795,10 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
                     var text = valueData.Translation;
                     if (text != null)
                     {
-                        if (text == matchGroup.Value)
+                        if (text != matchGroup.Value)
                         {
-                            continue;
+                            text = ApplyFixes(matchGroup.Value, text);
                         }
-
-                        text = ApplyFixes(matchGroup.Value, text);
                     }
                     else
                     {
