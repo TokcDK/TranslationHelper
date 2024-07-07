@@ -10,7 +10,6 @@ using System.Windows.Forms;
 using TranslationHelper.Data;
 using TranslationHelper.Data.Interfaces;
 using TranslationHelper.Extensions;
-using TranslationHelper.Functions.FileElementsFunctions.Row.HardFixes;
 using TranslationHelper.Functions.StringChangers;
 using TranslationHelper.Functions.StringChangers.HardFixes;
 using TranslationHelper.Main.Functions;
@@ -80,6 +79,9 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
                 Original = originalText;
                 RegexExtractionData = new ExtractRegexInfo(Original);
             }
+
+            internal bool IsExcluded = false;
+            internal bool IsTranslated { get => IsExcluded || (RegexExtractionData.ExtractedValuesList.Count == 0 && !string.IsNullOrEmpty(Translation) && string.Equals(Original, Translation)) || RegexExtractionData.ExtractedValuesList.All(l => l.IsTranslated); }
         }
 
         List<TranslationData> _buffer;
@@ -164,9 +166,6 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
 
         private void SetRowLinesToBuffer(RowBaseRowData rowData)
         {
-            var originalText = rowData.Original;
-            var lineNumber = 0;
-
             // Find the table data for the selected table index, or create a new one if it doesn't exist
             var selectedTableData = _buffer.FirstOrDefault(tableData => tableData.TableIndex == rowData.SelectedTableIndex);
             if (selectedTableData == null)
@@ -185,24 +184,27 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
 
             var originalTextLength = TranslationTextLength;
 
+            int lineIndex = -1;
+            string originalText = rowData.Original;
             // Parse each line of the original text
             foreach (var line in originalText.SplitToLines())
             {
+                lineIndex++;
+
                 // Find the line data for the current line under the selected row, or create a new one if it doesn't exist
                 var lineCoordinates = rowData.SelectedTableIndex + "," + rowData.SelectedRowIndex;
-                var lineData = selectedRowData.Lines.FirstOrDefault(data => data.LineIndex == lineNumber);
+                var lineData = selectedRowData.Lines.FirstOrDefault(data => data.LineIndex == lineIndex);
 
                 // If the line data already exists and is not translatable, skip it and move to the next line
-                if (lineData != null && string.IsNullOrEmpty(lineData.Translation) && lineData.Translation != lineData.Original)
+                if (lineData != null && lineData.IsTranslated)
                 {
-                    lineNumber++;
                     continue;
                 }
 
                 // If the line data does not exist, create a new one
                 if (lineData == null)
                 {
-                    lineData = new LineTranslationData(lineNumber, line);
+                    lineData = new LineTranslationData(lineIndex, line);
                     selectedRowData.Lines.Add(lineData);
                 }
 
@@ -215,8 +217,8 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
                 // If the line is not valid for translation, add the original as the translation and move to the next line
                 if (!isExtracted && !line.IsValidForTranslation())
                 {
+                    lineData.IsExcluded = true;
                     lineData.Translation = line;
-                    lineNumber++;
                     continue;
                 }
 
@@ -226,14 +228,12 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
                 // If all extracted values were skipped, don't translate this line and move to the next one
                 if (extractedValuesCount > 0 && skippedValuesCount == extractedValuesCount)
                 {
-                    lineNumber++;
                     continue;
                 }
 
                 // If the line is not extracted and its translation is available in the cache, use the cached translation            
                 if (!isExtracted && CheckInCache(line, lineData))
                 {
-                    lineNumber++;
                     continue;
                 }
 
@@ -242,8 +242,6 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
 
                 // Stop translating after the last pack of text if translation is interrupted
                 if (AppSettings.InterruptTtanslation) return;
-
-                lineNumber++;
             }
 
             // Mark the row data as having all lines added
@@ -354,18 +352,17 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
         /// <returns></returns>
         private string[] GetOriginals()
         {
-            return EnumerateLineData(_buffer)
+            return EnumerateBufferedLinesData()
                 .AsParallel()
                 .Aggregate(
                     new ConcurrentBag<string>(),
                     (originalLines, lineData) =>
                     {
-                        foreach (var originalTranslationData in EnumerateOriginalTranslation(lineData))
+                        foreach (var stringData in EnumerateOriginalTranslation(lineData))
                         {
-                            if (!originalLines.Contains(originalTranslationData.Original) && string.IsNullOrEmpty(originalTranslationData.Translation) && originalTranslationData.Original.IsValidForTranslation())
-                            {
-                                originalLines.Add(originalTranslationData.Original);
-                            }
+                            if (originalLines.Contains(stringData.Original)) continue;
+
+                            originalLines.Add(stringData.Original);
                         }
 
                         return originalLines;
@@ -378,13 +375,18 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
         {
             if (lineData.RegexExtractionData.ExtractedValuesList.Count > 0)
             {
-                foreach (var value in lineData.RegexExtractionData.ExtractedValuesList)
+                foreach (var value in lineData.RegexExtractionData.ExtractedValuesList.Where(v => !(v.IsExcluded = !v.Original.IsValidForTranslation())))
                 {
                     yield return value;
                 }
             }
             else
             {
+                if(lineData.IsTranslated || !(lineData.IsExcluded = !lineData.Original.IsValidForTranslation()))
+                {
+                    yield break;
+                }
+
                 yield return lineData;
             }
         }
@@ -470,7 +472,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
                 if (translated == null || originals.Length != translated.Length)
                 {
                     var translatedByParts = TryToTranslateByParts(originalLinesArePreApplied);
-                    if (translatedByParts ==null || translatedByParts.Count==0) return Array.Empty<string>();
+                    if (translatedByParts == null || translatedByParts.Count == 0) return Array.Empty<string>();
 
                     translated = translatedByParts.ToArray();
                 }
@@ -496,14 +498,14 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
             int i = 4;
             var resultTranslatedByParts = new List<string>();
             var listToTranslate = new List<string>();
-            foreach(var line in originalLinesArePreApplied)
+            foreach (var line in originalLinesArePreApplied)
             {
                 listToTranslate.Add(line);
-                if (--i==0)
+                if (--i == 0)
                 {
                     i = 2;
 
-                    if (!TryToTranslateByParts1(listToTranslate, resultTranslatedByParts)) 
+                    if (!TryToTranslateByParts1(listToTranslate, resultTranslatedByParts))
                         return null;
 
                     listToTranslate.Clear();
@@ -562,35 +564,35 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
                 FunctionsOnlineCache.TryAdd(original, translation);
             }
 
-            Parallel.ForEach(EnumerateLineData(_buffer), lineData =>
+            Parallel.ForEach(EnumerateBufferedLinesData(), lineData =>
             {
                 foreach (var originalTranslation in EnumerateOriginalTranslation(lineData))
                 {
-                    if (!TryGetTranslation(translations, originalTranslation.Original, originalTranslation.Translation, out var v)) continue;
+                    if (!TryGetTranslation(translations, originalTranslation, out var v)) continue;
 
                     originalTranslation.Translation = v;
                 }
             });
         }
 
-        private static bool TryGetTranslation(Dictionary<string, string> translations, string original, string translation, out string outTranslation)
+        private static bool TryGetTranslation(Dictionary<string, string> translations, IOriginalTranslationUser stringData, out string outTranslation)
         {
             outTranslation = default;
 
-            if (translation != null && translation != original) return false;
-            if (!original.IsValidForTranslation()) return false;
-            if (!translations.TryGetValue(original, out var v)) return false;
+            if (!string.Equals(stringData.Translation,  stringData.Original)) return false;
+            if (!stringData.Original.IsValidForTranslation()) return false;
+            if (!translations.TryGetValue(stringData.Original, out var translation)) return false;
 
-            outTranslation = v;
+            outTranslation = translation;
 
             return true;
         }
 
-        private IEnumerable<LineTranslationData> EnumerateLineData(List<TranslationData> buffer)
+        private IEnumerable<LineTranslationData> EnumerateBufferedLinesData()
         {
-            foreach (var data in _buffer) // get data
+            foreach (var tableData in _buffer) // get data
             {
-                foreach (var rowData in data.Rows) // get rows data
+                foreach (var rowData in tableData.Rows) // get rows data
                 {
                     foreach (var lineData in rowData.Lines) // get line data
                     {
@@ -634,14 +636,14 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
             var ignoreOrigEqualTransLines = AppSettings.IgnoreOrigEqualTransLines;
 
             // skip equal
-            var originalText = row.Field<string>(_originalColumnIndex);
-            var translationText = row.Field<string>(_translationColumnIndex);
-            var cellTranslationEqualOriginal = Equals(translationText, originalText);
+            var originalText = rowData.Row.Original;
+            var translationText = rowData.Row.Translation;
+            var cellTranslationEqualOriginal = string.Equals(translationText, originalText);
             // ignore original=translation when it enable and when translations equal originals in translation lines data
             if (ignoreOrigEqualTransLines && cellTranslationEqualOriginal && !rowData.Lines.Any(l => l.Original != l.Translation)) return false;
 
             // skip when translation not equal to original and and have No any original line equal translation
-            var cellTranslationIsNotEmptyAndNotEqualOriginal = !string.IsNullOrEmpty(translationText) && !cellTranslationEqualOriginal;
+            var cellTranslationIsNotEmptyAndNotEqualOriginal = !cellTranslationEqualOriginal && !string.IsNullOrEmpty(translationText);
             if (cellTranslationIsNotEmptyAndNotEqualOriginal && !originalText.HasAnyTranslationLineValidAndEqualSameOrigLine(translationText, false)) return false;
 
             // set new row value
@@ -649,7 +651,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
             var newRowValue = string.Join(Environment.NewLine,
                 EnumerateNewLines(cellTranslationIsNotEmptyAndNotEqualOriginal ? translationText : originalText, rowData.Lines));
             //if (rowData.Row.Original.GetLinesCount() == 1 && string.Equals(newRowValue, rowData.Row.Original)) return false;
-            
+
             row.SetValue(_translationColumnIndex, newRowValue);
 
             return true;
@@ -676,12 +678,12 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
                     // when null,=original or issoundstext. jusst insert original line
                     yield return line;
                 }
-                else 
+                else
                 {
                     string text = _hardFixes.Change(lineData.Translation, lineData.Original);
                     text = _fixCells.Change(text, lineData.Original);
 
-                    yield return text; 
+                    yield return text;
                 }
             }
         }
@@ -726,7 +728,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
 
                         try
                         {
-                            if(!string.IsNullOrEmpty(valueData.Translation))
+                            if (!string.IsNullOrEmpty(valueData.Translation))
                             {
                                 // replace original value text with translation
                                 var text = valueData.Translation;
@@ -779,7 +781,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
                     var text = valueData.Translation;
                     if (text != null)
                     {
-                        if(text != matchGroup.Value)
+                        if (text != matchGroup.Value)
                         {
                             text = _hardFixes.Change(text, matchGroup.Value);
                             text = _fixCells.Change(text, matchGroup.Value);

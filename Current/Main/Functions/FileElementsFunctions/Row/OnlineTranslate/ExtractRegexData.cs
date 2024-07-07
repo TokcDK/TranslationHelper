@@ -149,5 +149,8 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
         /// Captured groups for the original text value
         /// </summary>
         public List<Group> MatchGroups = new List<Group>();
+
+        public bool IsExcluded = false;
+        public bool IsTranslated { get => IsExcluded || (!string.IsNullOrEmpty(Translation) && !string.Equals(Original, Translation)); }
     }
 }
