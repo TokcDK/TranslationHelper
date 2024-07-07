@@ -662,30 +662,28 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
             return rowData.Lines.Any(v => v.RegexExtractionData != null);
         }
 
-        private IEnumerable<string> EnumerateNewLines(string rowValue, List<LineTranslationData> rowDataLines)
+        private IEnumerable<string> EnumerateNewLines(List<LineTranslationData> rowDataLines)
         {
-            int lineNum = 0;
-            foreach (var line in rowValue.SplitToLines())
+            foreach (var lineData in rowDataLines)
             {
-                var lineData = rowDataLines[lineNum++];
-
                 if (lineData.RegexExtractionData.ExtractedValuesList.Count > 0) // when line has extracted values
                 {
                     yield return MergeExtracted(lineData);
                 }
-                else if (string.IsNullOrWhiteSpace(lineData.Translation) || lineData.Translation.Equals(line) || line.IsSoundsText())
+                else if (lineData.IsTranslated)
                 {
-                    // when null,=original or issoundstext. jusst insert original line
-                    yield return line;
-                }
-                else
-                {
-                    string text = _hardFixes.Change(lineData.Translation, lineData.Original);
-                    text = _fixCells.Change(text, lineData.Original);
-
-                    yield return text;
+                    // when was translated or excluded return translation or original line
+                    yield return string.IsNullOrEmpty(lineData.Translation) ? lineData.Original : ApplyFixes(lineData);
                 }
             }
+        }
+
+        private string ApplyFixes(LineTranslationData lineData)
+        {
+            string text = _hardFixes.Change(lineData.Translation, lineData.Original);
+            text = _fixCells.Change(text, lineData.Original);
+
+            return text;
         }
 
         static readonly Regex _replacerListTypeRegex = new Regex(@"^\$[0-9]+(,\$[0-9]+)+$", RegexOptions.Compiled);
