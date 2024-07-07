@@ -347,7 +347,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
         {
             var originals = GetOriginals();
 
-            if (originals.Length == 0 && _buffer.Count == 0) return;
+            if (originals.Length == 0 && _buffer.Count == 0) return; // for case if no originals but there is still lines to translate inside of buffer
 
             var translated = TranslateOriginals(originals);
 
