@@ -630,21 +630,58 @@ namespace TranslationHelper.Main.Functions
         }
 
         /// <summary>
-        /// search in <paramref name="dbDirPath"/> dir for any extension from exist DB formats
+        /// search in <paramref name="inputDbPath"/> dir for any extension from exist DB formats
         /// </summary>
-        /// <param name="dbDirPath"></param>
-        internal static void SearchByAllDBFormatExtensions(ref string dbDirPath)
+        /// <param name="inputDbPath"></param>
+        internal static string SearchByAllDBFormatExtensions(string inputDbPath)
         {
-            var dir = Path.GetDirectoryName(dbDirPath);
-            var name = Path.GetFileNameWithoutExtension(dbDirPath);
-            foreach (var format in FunctionsInterfaces.GetDBSaveFormats())
+            var dir = Path.GetDirectoryName(inputDbPath);
+            var name = Path.GetFileNameWithoutExtension(inputDbPath);
+
+            var foundDBFiles = new List<string>();
+
+            var pathNextToSource = Path.Combine(AppData.CurrentProject.SelectedDir, Data.AppData.TranslationFileSourceDirSuffix);
+            foreach (var format in FunctionsInterfaces.GetDBSaveFormats()) // search in game dir
+            {
+                var PathForFormat = pathNextToSource + "." + format.Ext;
+                if (!File.Exists(PathForFormat)) continue;
+
+                foundDBFiles.Add(PathForFormat);
+            }
+            foreach (var format in FunctionsInterfaces.GetDBSaveFormats()) // search in the app db dir
             {
                 var PathForFormat = Path.Combine(dir, name + "." + format.Ext);
                 if (!File.Exists(PathForFormat)) continue;
 
-                dbDirPath = PathForFormat;
-                return;
+                foundDBFiles.Add(PathForFormat);
             }
+
+            if(foundDBFiles.Count==0) return inputDbPath;
+            if (foundDBFiles.Count == 1)
+            {
+                return foundDBFiles[0];
+            }
+
+            string newestDbPath = GetNewestDbPath(foundDBFiles[0], foundDBFiles[1]);
+
+            if (foundDBFiles.Count == 2) return newestDbPath;
+
+            for (int i = 2; i < foundDBFiles.Count; i++) 
+            {
+                newestDbPath = GetNewestDbPath(newestDbPath, foundDBFiles[i]);
+            }
+
+            return newestDbPath;
+        }
+
+        public static string GetNewestDbPath(string lastautosavepath, string pathNextToSource)
+        {
+            var lastautosavepathTime = new FileInfo(lastautosavepath).LastWriteTime;
+            var pathNextToSourceTime = new FileInfo(pathNextToSource).LastWriteTime;
+
+            var dateTimeCompareResult = DateTime.Compare(lastautosavepathTime, pathNextToSourceTime);
+
+            return dateTimeCompareResult <= 0 ? pathNextToSource : lastautosavepath;
         }
     }
 }

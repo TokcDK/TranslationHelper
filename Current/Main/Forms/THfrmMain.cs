@@ -982,44 +982,9 @@ namespace TranslationHelper
 
             AppData.CurrentProject.IsLoadingDB = true;
 
-            if (force) await new ClearCells().AllT().ConfigureAwait(true);
-
-            var fileExtension = FunctionsDBFile.GetDBCompressionExt();
-
-            var lastautosavepath = Path.Combine(FunctionsDBFile.GetProjectDBFolder(), FunctionsDBFile.GetDBFileName() + fileExtension);
-            this.lastautosavepath = lastautosavepath;
-
-            var pathNextToSource = Path.Combine(AppData.CurrentProject.SelectedDir, Data.AppData.TranslationFileSourceDirSuffix + fileExtension);
-            
-            bool lastDbExists = File.Exists(lastautosavepath);
-            bool localDbExists = File.Exists(pathNextToSource);
-
-            if (lastDbExists || localDbExists)
-            {
-                var dbPath = lastDbExists && localDbExists ? GetNewestDbPath(lastautosavepath, pathNextToSource) : localDbExists ? pathNextToSource : lastautosavepath;
-
-                await Task.Run(() => LoadTranslationFromDB(dbPath, false, force)).ConfigureAwait(true);
-            }
-            else
-            {
-                var result = MessageBox.Show(T._("DB not found. Try to load from all exist?"), T._("DB not found"), MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
-                if (result == DialogResult.Yes)
-                {
-                    await Task.Run(() => AppData.Main.LoadTranslationFromDB(lastautosavepath, true)).ConfigureAwait(true);
-                }
-            }
+            await FunctionsLoadTranslationDB.LoadTranslationIfNeed(forceLoad: force, askIfLoadDB: false);
 
             AppData.CurrentProject.IsLoadingDB = false;
-        }
-
-        private string GetNewestDbPath(string lastautosavepath, string pathNextToSource)
-        {
-            var lastautosavepathTime = new FileInfo(lastautosavepath).LastWriteTime;
-            var pathNextToSourceTime = new FileInfo(pathNextToSource).LastWriteTime;
-
-            var dateTimeCompareResult = DateTime.Compare(lastautosavepathTime, pathNextToSourceTime);
-
-            return dateTimeCompareResult <= 0 ? pathNextToSource : lastautosavepath;
         }
 
         bool LoadTranslationToolStripMenuItem_ClickIsBusy;

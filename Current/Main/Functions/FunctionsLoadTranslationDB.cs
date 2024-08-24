@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using TranslationHelper.Data;
 using TranslationHelper.Extensions;
+using TranslationHelper.Functions.FileElementsFunctions.Row;
 using TranslationHelper.Main.Functions;
 
 namespace TranslationHelper.Functions
@@ -607,19 +608,18 @@ namespace TranslationHelper.Functions
         //    System.Media.SystemSounds.Beep.Play();
         //}
 
-        internal async static void LoadTranslationIfNeed()
+        internal async static Task LoadTranslationIfNeed(bool forceLoad = false, bool askIfLoadDB = true, bool askIfLoadAllDB = true)
         {
             var dbPath = Path.Combine(FunctionsDBFile.GetProjectDBFolder(), FunctionsDBFile.GetDBFileName() + FunctionsDBFile.GetDBCompressionExt());
-            if (!File.Exists(dbPath)) FunctionsDBFile.SearchByAllDBFormatExtensions(ref dbPath);
+            dbPath = FunctionsDBFile.SearchByAllDBFormatExtensions(dbPath);
 
-            if (!File.Exists(dbPath)) return;
-
-            var loadFoundDBQuestion = MessageBox.Show(T._("Found translation DB. Load it?"), T._("Load translation DB"), MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
-            if (loadFoundDBQuestion == DialogResult.Yes)
+            if (File.Exists(dbPath) && (!askIfLoadDB || (askIfLoadDB && MessageBox.Show(T._("Found translation DB. Load it?"), T._("Load translation DB"), MessageBoxButtons.YesNo, MessageBoxIcon.Warning) == DialogResult.Yes)))
             {
+                if (forceLoad) await new ClearCells().AllT().ConfigureAwait(true);
+
                 await Task.Run(() => AppData.Main.LoadTranslationFromDB(sPath: dbPath, UseAllDB: false, forced: true)).ConfigureAwait(false);
             }
-            else
+            else if (askIfLoadAllDB)
             {
                 var loadTranslationsFromAllDBQuestion = MessageBox.Show(T._("Try to find translations in all avalaible DB? (Can take some time)"), T._("Load all DB"), MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
                 if (loadTranslationsFromAllDBQuestion != DialogResult.Yes) return;
