@@ -984,11 +984,21 @@ namespace TranslationHelper
 
             if (force) await new ClearCells().AllT().ConfigureAwait(true);
 
-            var lastautosavepath = Path.Combine(FunctionsDBFile.GetProjectDBFolder(), FunctionsDBFile.GetDBFileName() + FunctionsDBFile.GetDBCompressionExt());
+            var fileExtension = FunctionsDBFile.GetDBCompressionExt();
+
+            var lastautosavepath = Path.Combine(FunctionsDBFile.GetProjectDBFolder(), FunctionsDBFile.GetDBFileName() + fileExtension);
             this.lastautosavepath = lastautosavepath;
-            if (File.Exists(lastautosavepath))
+
+            var pathNextToSource = Path.Combine(AppData.CurrentProject.SelectedDir, Data.AppData.TranslationFileSourceDirSuffix + fileExtension);
+            
+            bool lastDbExists = File.Exists(lastautosavepath);
+            bool localDbExists = File.Exists(pathNextToSource);
+
+            if (lastDbExists || localDbExists)
             {
-                await Task.Run(() => LoadTranslationFromDB(lastautosavepath, false, force)).ConfigureAwait(true);
+                var dbPath = lastDbExists && localDbExists ? GetNewestDbPath(lastautosavepath, pathNextToSource) : localDbExists ? pathNextToSource : lastautosavepath;
+
+                await Task.Run(() => LoadTranslationFromDB(dbPath, false, force)).ConfigureAwait(true);
             }
             else
             {
@@ -1000,6 +1010,16 @@ namespace TranslationHelper
             }
 
             AppData.CurrentProject.IsLoadingDB = false;
+        }
+
+        private string GetNewestDbPath(string lastautosavepath, string pathNextToSource)
+        {
+            var lastautosavepathTime = new FileInfo(lastautosavepath).LastWriteTime;
+            var pathNextToSourceTime = new FileInfo(pathNextToSource).LastWriteTime;
+
+            var dateTimeCompareResult = DateTime.Compare(lastautosavepathTime, pathNextToSourceTime);
+
+            return dateTimeCompareResult <= 0 ? pathNextToSourceTime : lastautosavepathTime;
         }
 
         bool LoadTranslationToolStripMenuItem_ClickIsBusy;

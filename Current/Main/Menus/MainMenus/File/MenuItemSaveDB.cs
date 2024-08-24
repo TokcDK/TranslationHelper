@@ -27,7 +27,7 @@ namespace TranslationHelper.Menus.MainMenus.File
                 ShiftToBakups(path);
             }
 
-            var pathNextToSource = Path.Combine(AppData.CurrentProject.SelectedDir, fileName + Data.AppData.TranslationFileSourceDirSuffix + fileExtension);
+            var pathNextToSource = Path.Combine(AppData.CurrentProject.SelectedDir, Data.AppData.TranslationFileSourceDirSuffix + fileExtension);
 
             AppData.Main.lastautosavepath = path;
 
