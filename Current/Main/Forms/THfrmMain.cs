@@ -1019,7 +1019,7 @@ namespace TranslationHelper
 
             var dateTimeCompareResult = DateTime.Compare(lastautosavepathTime, pathNextToSourceTime);
 
-            return dateTimeCompareResult <= 0 ? pathNextToSourceTime : lastautosavepathTime;
+            return dateTimeCompareResult <= 0 ? pathNextToSource : lastautosavepath;
         }
 
         bool LoadTranslationToolStripMenuItem_ClickIsBusy;
