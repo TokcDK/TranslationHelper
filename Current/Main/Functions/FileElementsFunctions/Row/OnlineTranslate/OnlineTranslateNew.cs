@@ -20,6 +20,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
     {
         protected override bool IsParallelTables => false;
         protected override bool IsParallelRows => false;
+        protected virtual bool IsTranslateAll => true;
 
         // full row string
         public Dictionary<string, RowTranslationInfo> TranslationDataList = new Dictionary<string, RowTranslationInfo>();
@@ -134,6 +135,12 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
             {
                 //cache disabled but all db loading enabled. ask for load then. maybe not need
                 var result = MessageBox.Show(T._("Translation cache disabled but load all DB enabled. While all DB loading cache can be enabled in settings. Load all DB?"), T._("Translation cache disabled"), MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
+                if (result != DialogResult.Yes) return;
+            }
+
+            if (!IsTranslateAll && AppSettings.EnableTranslationCache)
+            {
+                var result = MessageBox.Show(T._("Load all exist database files?"), T._("Load all DB"), MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
                 if (result != DialogResult.Yes) return;
             }
 

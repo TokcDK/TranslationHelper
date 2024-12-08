@@ -14,5 +14,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row.OnlineTranslate
         {
             return !AppSettings.InterruptTtanslation && string.IsNullOrEmpty(rowData.Translation) && base.IsValidRow(rowData);
         }
+
+        protected override bool IsTranslateAll => false;
     }
 }
