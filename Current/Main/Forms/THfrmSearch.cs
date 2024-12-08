@@ -26,6 +26,7 @@ namespace TranslationHelper
 
         readonly ListBox _filesList;
         readonly DataGridView _workFileDgv;
+        readonly DataGridView _filtersDgv;
         readonly DataTableCollection _tables;
         readonly RichTextBox _translationTextBox;
         readonly INIFileMan.INIFile _config;
@@ -106,14 +107,16 @@ namespace TranslationHelper
             public int RowIndex { get; }
         }
 
-        internal THfrmSearch(ListBox filesList, DataGridView workFileDgv, RichTextBox translationTextBox)
+        //internal THfrmSearch(ListBox filesList, DataGridView workFileDgv, RichTextBox translationTextBox, DataGridView filtersDgv)
+        internal THfrmSearch(object[] args)
         {
             InitializeComponent();
             //Main = MainForm;
-            _filesList = filesList;
-            _workFileDgv = workFileDgv;
+            _filesList = args[0] as ListBox;
+            _workFileDgv = args[1] as DataGridView;
             _tables = AppData.CurrentProject.FilesContent.Tables;
-            _translationTextBox = translationTextBox;
+            _translationTextBox = args[2] as RichTextBox;
+            _filtersDgv = args[3] as DataGridView;
             _config = AppData.Settings.THConfigINI;
 
             //translation
@@ -134,8 +137,9 @@ namespace TranslationHelper
             this.SearchFormReplaceAllButton.Text = T._("Replace All");
             this.THSearchFindWhatLabel.Text = T._("Find what:");
             this.label1.Text = T._("Replace with:");
-            this.Text = T._("Find and Replace");
-            this.Text = T._("Find and Replace");
+            string _findAndReplaceText = T._("Find and Replace");
+            this.Text = _findAndReplaceText;
+            this.Text = _findAndReplaceText;
 
             if (SearchAlwaysOnTopCheckBox.Checked)
             {
@@ -459,7 +463,7 @@ namespace TranslationHelper
             {
                 //PopulateGrid(null);
                 lblSearchMsg.Visible = true;
-                lblSearchMsg.Text = T._("Nothing Found");
+                lblSearchMsg.Text = _nothingFoundMessage;
                 SearchResultsDatagridview.DataSource = null;
                 SearchResultsDatagridview.Refresh();
                 this.Height = SEARCH_RESULTS_WINDOW_NORMAL_HEIGHT;
@@ -770,8 +774,15 @@ namespace TranslationHelper
                 var foundRowData = _foundRowsList[e.RowIndex];
                 (_selectedTableIndex, _selectedRowIndex) = (foundRowData.TableIndex, foundRowData.RowIndex);
 
-                _tables[_selectedTableIndex].DefaultView.RowFilter = string.Empty;
-                _tables[_selectedTableIndex].DefaultView.Sort = string.Empty;
+                int maxColumns = _filtersDgv.Columns.Count;
+                for (int c = 0; c < maxColumns; c++)
+                {
+                    _filtersDgv.Rows[0].Cells[c].Value = string.Empty;
+                }
+
+                var tableDefaultView = _tables[_selectedTableIndex].DefaultView;
+                tableDefaultView.RowFilter = string.Empty;
+                tableDefaultView.Sort = string.Empty;
                 _workFileDgv.Refresh();
 
                 FunctionsTable.ShowSelectedRow(_selectedTableIndex, searchcolumn, _selectedRowIndex);
@@ -799,6 +810,8 @@ namespace TranslationHelper
         /// control last string for search next
         /// </summary>
         string _lastSearchString = null;
+        private readonly string _nothingFoundMessage = T._("Nothing Found.");
+
         private void SearchFormFindNextButton_Click(object sender, EventArgs e)
         {
             if (SearchFormFindWhatTextBox.Text.Length == 0 || AppData.CurrentProject.FilesContent == null)
@@ -818,7 +831,7 @@ namespace TranslationHelper
             if (!isRowFound)
             {
                 lblSearchMsg.Visible = true;
-                lblSearchMsg.Text = "Nothing Found.";
+                lblSearchMsg.Text = _nothingFoundMessage;
                 _foundRowsEnum = null;
                 return;
             }
@@ -966,7 +979,7 @@ namespace TranslationHelper
                 {
                     //PopulateGrid(null);
                     lblSearchMsg.Visible = true;
-                    lblSearchMsg.Text = T._("Nothing Found.");
+                    lblSearchMsg.Text = _nothingFoundMessage;
                     this.Height = SEARCH_RESULTS_WINDOW_NORMAL_HEIGHT;
                     return;
                 }

@@ -1440,9 +1440,9 @@ namespace TranslationHelper
                         THFiltersDataGridView.Rows[0].Cells[c].Value = string.Empty;
                     }
 
-                    var table = AppData.CurrentProject.FilesContent.Tables[tableindex];
-                    table.DefaultView.RowFilter = string.Empty;
-                    table.DefaultView.Sort = string.Empty;
+                    var tableDefaultView = AppData.CurrentProject.FilesContent.Tables[tableindex].DefaultView;
+                    tableDefaultView.RowFilter = string.Empty;
+                    tableDefaultView.Sort = string.Empty;
                     THFileElementsDataGridView.Refresh();
 
                     if (realRowIndex > -1 && tableindex > -1 && columnName.Length > 0)
