@@ -13,7 +13,7 @@ using static TranslationHelper.Functions.FileElementsFunctions.Row.OnlineTransla
 namespace TranslationHelper.Functions.FileElementsFunctions.Row
 {
     [Obsolete]
-    class OnlineTranslate : RowBase
+    class OnlineTranslateOLD : RowBase
     {
         /// <summary>
         /// buffer for lines
@@ -40,7 +40,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
 
         bool IsMax() { return Size >= MaxSize; }
 
-        public OnlineTranslate()
+        public OnlineTranslateOLD()
         {
             if (_buffer == null) _buffer = new Dictionary<string, Dictionary<int, Dictionary<string, string>>>();
             if (_bufferExtracted == null) _bufferExtracted = new Dictionary<string, Dictionary<int, Dictionary<string, string>>>();

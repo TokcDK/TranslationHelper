@@ -144,6 +144,7 @@
     <Compile Include="Functions\FileElementsFunctions\Row\ExportFormats\ExcelTablesFormat.cs" />
     <Compile Include="Functions\FileElementsFunctions\Row\ExtractedByTranslationRulesParserRowBase.cs" />
     <Compile Include="Data\Interfaces\IOriginalTranslationUser.cs" />
+    <Compile Include="Functions\FileElementsFunctions\Row\OnlineTranslate\OnlineTranslateNewEmpty.cs" />
     <Compile Include="Functions\FileElementsFunctions\Row\RowFunctionSelectedRowNewWIP\RowFunctionSelectedRowNewWIP.cs" />
     <Compile Include="Functions\FileElementsFunctions\Row\SearchRowIssueCheckers\CheckActorsNameTranslationConsistent.cs" />
     <Compile Include="Functions\FileElementsFunctions\Row\SearchRowIssueCheckers\CheckAnyLineTranslatable.cs" />
@@ -411,6 +412,7 @@
     <Compile Include="Menus\MainMenus\Edit\MenuItemExtraFixesAll.cs" />
     <Compile Include="Menus\MainMenus\Edit\MenuItemAddToCustomDb.cs" />
     <Compile Include="Menus\MainMenus\Edit\MenuItemShowCharCategory.cs" />
+    <Compile Include="Menus\MainMenus\Edit\Online Translate\MenuItemOnlineTranslateEmpty.cs" />
     <Compile Include="Menus\MainMenus\Edit\TextCutCopyPaste\MenuItemRowTextClearAll.cs" />
     <Compile Include="Menus\MainMenus\Edit\TextCutCopyPaste\MenuItemRowTextClearTable.cs" />
     <Compile Include="Menus\MainMenus\Edit\TextCutCopyPaste\MenuItemRowTextCopyOriginal.cs" />
