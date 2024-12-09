@@ -10,6 +10,8 @@ using TranslationHelper.Menus.MainMenus.File;
 
 namespace TranslationHelper.Functions
 {
+    // ИЗМЕНИЛ списки меню в словари. в основных меню в Онлайн перевод присутствует только пункт Empty, остальные отсутствуют, ПОПРАВИТЬ!
+
     public class MenuData
     {
         public string Text;
@@ -27,13 +29,13 @@ namespace TranslationHelper.Functions
             foreach (var child in menu.Childs)
             {
                 var childData = new MenuData(child);
-                if (Childs.Contains(childData)) continue;
+                if (Childs.ContainsKey(childData.Text)) continue;
 
-                Childs.Add(childData);
+                Childs.Add(childData.Text, childData);
             }
         }
 
-        public List<MenuData> Childs = new List<MenuData>();
+        public Dictionary<string, MenuData> Childs = new Dictionary<string, MenuData>();
     }
 
     internal static class FunctionsMenus
@@ -105,7 +107,7 @@ namespace TranslationHelper.Functions
         {
             menuItems.Clear();
 
-            var menusList = new List<MenuData>();
+            var menusListDictionary = new Dictionary<string,MenuData>();
             foreach (var menuData in menusData)
             {
                 if (!IsValidMenuItem(menuData)) continue;
@@ -115,32 +117,36 @@ namespace TranslationHelper.Functions
                 // check category
                 if (!string.IsNullOrWhiteSpace(menuData.CategoryName))
                 {
-                    var catMenuItem = menusList.FirstOrDefault(m => m.Text == menuData.CategoryName);
-                    if (catMenuItem == default)
+                    MenuData catMenuItem;
+                    if (!menusListDictionary.ContainsKey(menuData.CategoryName))
                     {
                         var defMenu = new DefaultMainMenu();
                         defMenu.Order += 100;
 
                         catMenuItem = new MenuData(defMenu, menuData.CategoryName);
                     }
+                    else
+                    {
+                       catMenuItem = menusListDictionary[menuData.CategoryName];
+                    }
 
-                    catMenuItem.Childs.Add(item);
+                    catMenuItem.Childs.Add(item.Text, item);
 
                     item = catMenuItem; // relink to category
                 }
 
-                if (!menusList.Contains(item)) menusList.Add(item);
+                if (!menusListDictionary.ContainsKey(item.Text)) menusListDictionary.Add(item.Text, item);
             }
 
-            SortByPriority(ref menusList);
-            CreateMenusByList(menuItems, menusList);
+            var sortedMenusList = SortByPriority(menusListDictionary.Values);
+            CreateMenusByList(menuItems, sortedMenusList);
         }
 
         private static void AddMainMenus(ToolStripItemCollection menuItems, IEnumerable<IMainMenuItem> menusData)
         {
             menuItems.Clear();
 
-            var menusList = new List<MenuData>();
+            var menusListDictionary = new Dictionary<string, MenuData>();
             foreach (var menuData in menusData)
             {
                 if (!IsValidMenuItem(menuData)) continue;
@@ -150,60 +156,75 @@ namespace TranslationHelper.Functions
                 // when no parent, add as main menus and continue
                 if (string.IsNullOrWhiteSpace(menuData.ParentMenuName))
                 {
-                    var mainMenu = menusList.FirstOrDefault(m => m.Text == menuData.Text);
-
-                    if (mainMenu == default)
+                    if (!menusListDictionary.ContainsKey(menuData.ParentMenuName))
                     {
-                        menusList.Add(item);
+                        menusListDictionary.Add(item.Text, item);
                     }
-                    else if (mainMenu.Menu is DefaultMainMenu)
+                    else
                     {
-                        var mm = new MenuData(menuData)
+                        var mainMenu = menusListDictionary[menuData.ParentMenuName];
+                        if (mainMenu.Menu is DefaultMainMenu)
                         {
-                            Childs = mainMenu.Childs
-                        };
+                            var mm = new MenuData(menuData)
+                            {
+                                Childs = mainMenu.Childs
+                            };
 
-                        mainMenu = mm; // relink menu for cases when it is main menu with same name
+                            menusListDictionary[menuData.ParentMenuName] = mm; // relink menu for cases when it is main menu with same name
+                        }
                     }
 
                     continue;
                 }
 
                 // create parent
-                var parentMenuItem = menusList.FirstOrDefault(m => m.Text == menuData.ParentMenuName);
-                if (parentMenuItem == default)
+                MenuData parentMenuItem;
+                if (!menusListDictionary.ContainsKey(menuData.ParentMenuName))
                 {
                     var defMenu = new DefaultMainMenu();
                     defMenu.Order += 100;
 
                     parentMenuItem = new MenuData(defMenu, menuData.ParentMenuName);
                 }
+                else
+                {
+                    parentMenuItem = menusListDictionary[menuData.ParentMenuName];
+                }
 
                 // check category
                 if (!string.IsNullOrWhiteSpace(menuData.CategoryName))
                 {
-                    var catMenuItem = parentMenuItem.Childs.FirstOrDefault(m => m.Text == menuData.CategoryName);
-                    if (catMenuItem == default)
+                    MenuData catMenuItem;
+                    if (!menusListDictionary.ContainsKey(menuData.CategoryName))
                     {
                         var defMenu = new DefaultMainMenu();
                         defMenu.Order += 100;
 
                         catMenuItem = new MenuData(defMenu, menuData.CategoryName);
                     }
+                    else                    
+                    {
+                        catMenuItem = menusListDictionary[menuData.CategoryName];
+                    }
 
-                    catMenuItem.Childs.Add(item);
+                    catMenuItem.Childs.Add(item.Text, item);
 
                     item = catMenuItem; // relink to category
                 }
 
-                if (!parentMenuItem.Childs.Contains(item)) parentMenuItem.Childs.Add(item);
+                if (!parentMenuItem.Childs.ContainsKey(item.Text))
+                {
+                    parentMenuItem.Childs.Add(item.Text, item);
+                }
 
-                if (!menusList.Contains(parentMenuItem)) menusList.Add(parentMenuItem);
+                if (!menusListDictionary.ContainsKey(parentMenuItem.Text))
+                {
+                    menusListDictionary.Add(parentMenuItem.Text, parentMenuItem);
+                }
             }
 
-            SortByPriority(ref menusList);
-            CreateMenusByList(menuItems, menusList);
-
+            var sortedMenusList = SortByPriority(menusListDictionary.Values);
+            CreateMenusByList(menuItems, sortedMenusList);
 
             //foreach (var menuData in menusData)
             //{
@@ -296,16 +317,16 @@ namespace TranslationHelper.Functions
 
                 foreach (var child in menuData.Childs)
                 {
-                    menu.DropDownItems.Add(SetChilds(child));
+                    menu.DropDownItems.Add(SetChilds(child.Value));
                 }
 
                 menuItems.Add(menu);
             }
         }
 
-        private static void SortByPriority(ref List<MenuData> menusList)
+        private static List<MenuData> SortByPriority(IEnumerable<MenuData> menus)
         {
-            menusList = menusList.OrderBy(m => m.Menu.Order).ToList();
+            var menusList = menus.OrderBy(m => m.Menu.Order).ToList();
             int max = menusList.Count;
             for (int i = 0; i < max; i++)
             {
@@ -313,6 +334,8 @@ namespace TranslationHelper.Functions
 
                 SortChilds(menu);
             }
+
+            return menusList;
         }
 
         private static ToolStripMenuItem SetChilds(MenuData menuData)
@@ -330,7 +353,7 @@ namespace TranslationHelper.Functions
 
             foreach (var child in menuData.Childs)
             {
-                subMenu.DropDownItems.Add(SetChilds(child));
+                subMenu.DropDownItems.Add(SetChilds(child.Value));
             }
 
             return subMenu;
@@ -343,13 +366,11 @@ namespace TranslationHelper.Functions
             int max = menu.Childs.Count;
             if (max == 0) return;
 
-            menu.Childs = menu.Childs.OrderBy(m => m.Menu.Order).ToList();
+            menu.Childs = menu.Childs.Values.OrderBy(m => m.Menu.Order).ToDictionary(k=>k.Text,v =>v);
 
-            for (int i = 0; i < max; i++)
+            foreach (var child in menu.Childs)
             {
-                var child = menu.Childs[i];
-
-                SortChilds(child);
+                SortChilds(child.Value);
             }
         }
 
