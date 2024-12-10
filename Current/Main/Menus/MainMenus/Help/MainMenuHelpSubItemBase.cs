@@ -4,6 +4,6 @@
     {
         public override string ParentMenuName => T._("Help");
 
-        override public int Order => base.Order + 1000;
+        override public int Order => base.Order - 100000;
     }
 }

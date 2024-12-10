@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Forms;
 using TranslationHelper.Data;
@@ -125,7 +126,7 @@ namespace TranslationHelper.Functions
                     else
                     {
                         var defMenu = new DefaultMainMenu();
-                        defMenu.Order += 100;
+                        defMenu.Order += 5000;
 
                         catMenuItem = new MenuData(defMenu, menuData.CategoryName);
                     }
@@ -169,6 +170,7 @@ namespace TranslationHelper.Functions
                             {
                                 Childs = mainMenu.Childs
                             };
+                            mm.Menu.Order = mainMenu.Menu.Order + 500;
 
                             menusListDictionary[menuData.ParentMenuName] = mm; // relink menu for cases when it is main menu with same name
                         }
@@ -182,7 +184,7 @@ namespace TranslationHelper.Functions
                 if (!menusListDictionary.TryGetValue(menuData.ParentMenuName, out MenuData foundMenuItem1))
                 {
                     var defMenu = new DefaultMainMenu();
-                    defMenu.Order += 500;
+                    defMenu.Order += 500 + menuData.Order;
 
                     parentMenuItem = new MenuData(defMenu, menuData.ParentMenuName);
                 }
@@ -198,7 +200,7 @@ namespace TranslationHelper.Functions
                     if (!parentMenuItem.Childs.TryGetValue(menuData.CategoryName, out MenuData foundMenuItem2))
                     {
                         var defMenu = new DefaultMainMenu();
-                        defMenu.Order += 100;
+                        defMenu.Order += 5000;
 
                         catMenuItem = new MenuData(defMenu, menuData.CategoryName);
                     }
@@ -269,7 +271,7 @@ namespace TranslationHelper.Functions
 
         private static List<MenuData> SortByPriority(IEnumerable<MenuData> menus)
         {
-            var menusList = menus.OrderBy(m => m.Menu.Order).ToList();
+            var menusList = menus.OrderByDescending(m => GetOrder(m)).ToList();
             foreach (var menu in menusList)
             {
                 if (menu.Childs.Count == 0) continue;
@@ -280,6 +282,21 @@ namespace TranslationHelper.Functions
             }
 
             return menusList;
+        }
+
+        private static object GetOrder(MenuData m)
+        {
+            return m.Menu.Order + GetOrderByChildsCount(m);
+        }
+
+        private static int GetOrderByChildsCount(MenuData m)
+        {
+            if(m.Menu is DefaultMainMenu)
+            {
+                return 0;
+            }
+
+            return (m.Childs.Count * 1000);
         }
 
         private static ToolStripMenuItem SetChilds(MenuData menuData)

@@ -35,5 +35,7 @@ namespace TranslationHelper.Menus.MainMenus.Edit.TextCutCopyPaste
         { return false; }
 
         protected virtual void ActionForSelectedRows() { }
+
+        public override int Order => base.Order + 1000;
     }
 }

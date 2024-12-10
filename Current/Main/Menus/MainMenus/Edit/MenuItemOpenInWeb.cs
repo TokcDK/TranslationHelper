@@ -27,7 +27,7 @@ namespace TranslationHelper.Menus.MainMenus.Edit
             _ = new OpenInWeb().Rows();
         }
 
-        public override int Order => base.Order - 1000;
+        public override int Order => base.Order + 1000;
 
         public override Keys ShortcutKeys => Keys.F12;
     }
