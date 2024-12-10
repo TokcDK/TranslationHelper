@@ -167,10 +167,7 @@ namespace TranslationHelper.Functions
 
             var categoryMenuItem = TryGetFoundMenuItem(menusListToWhereSearch, menuData.CategoryName);
 
-            if (!categoryMenuItem.Childs.ContainsKey(item.Text))
-            {
-                categoryMenuItem.Childs.Add(item.Text, item);
-            }
+            categoryMenuItem.Childs.TryAdd(item.Text, item);
 
             return categoryMenuItem; // relink to category
         }
@@ -282,12 +279,12 @@ namespace TranslationHelper.Functions
         {
             return 0;
 
-            if(m.Menu is DefaultMainMenu)
-            {
-                return 0;
-            }
+            //if(m.Menu is DefaultMainMenu)
+            //{
+            //    return 0;
+            //}
 
-            return (m.Childs.Count * 1000);
+            //return (m.Childs.Count * 1000);
         }
 
         private static ToolStripMenuItem SetChilds(MenuData menuData)
