@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Forms;
 using TranslationHelper.Data;
+using TranslationHelper.Extensions;
 using TranslationHelper.Menus;
 using TranslationHelper.Menus.FileRowMenus;
 using TranslationHelper.Menus.FilesListMenus;
@@ -148,15 +149,9 @@ namespace TranslationHelper.Functions
                 // check category
                 item = TryGetCategoryMenu(item, menuData, parentMenuItem.Childs);
 
-                if (!parentMenuItem.Childs.ContainsKey(item.Text))
-                {
-                    parentMenuItem.Childs.Add(item.Text, item);
-                }
+                parentMenuItem.Childs.TryAdd(item.Text, item);
 
-                if (!menusListDictionary.ContainsKey(parentMenuItem.Text))
-                {
-                    menusListDictionary.Add(parentMenuItem.Text, parentMenuItem);
-                }
+                menusListDictionary.TryAdd(parentMenuItem.Text, parentMenuItem);
             }
 
             var sortedMenusList = SortByPriority(menusListDictionary.Values);
