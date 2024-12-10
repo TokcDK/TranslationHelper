@@ -118,16 +118,16 @@ namespace TranslationHelper.Functions
                 if (!string.IsNullOrWhiteSpace(menuData.CategoryName))
                 {
                     MenuData catMenuItem;
-                    if (!menusListDictionary.ContainsKey(menuData.CategoryName))
+                    if (menusListDictionary.TryGetValue(menuData.CategoryName, out MenuData foundMenuItem))
+                    {
+                        catMenuItem = foundMenuItem;
+                    }
+                    else
                     {
                         var defMenu = new DefaultMainMenu();
                         defMenu.Order += 100;
 
                         catMenuItem = new MenuData(defMenu, menuData.CategoryName);
-                    }
-                    else
-                    {
-                       catMenuItem = menusListDictionary[menuData.CategoryName];
                     }
 
                     catMenuItem.Childs.Add(item.Text, item);
