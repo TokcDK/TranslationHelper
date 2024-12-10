@@ -143,19 +143,8 @@ namespace TranslationHelper.Functions
                 }
 
                 // create parent
-                MenuData parentMenuItem;
-                if (!menusListDictionary.TryGetValue(menuData.ParentMenuName, out MenuData foundMenuItem1))
-                {
-                    var defMenu = new DefaultMainMenu();
-                    defMenu.Order += 500 + menuData.Order;
-
-                    parentMenuItem = new MenuData(defMenu, menuData.ParentMenuName);
-                }
-                else
-                {
-                    parentMenuItem = foundMenuItem1;
-                }
-
+                var parentMenuItem = TryGetFoundMenuItem(menusListDictionary, menuData.ParentMenuName, 500 + menuData.Order);
+                
                 // check category
                 item = TryGetCategoryMenu(item, menuData, parentMenuItem.Childs);
 
@@ -181,25 +170,29 @@ namespace TranslationHelper.Functions
                 return item;
             }
 
-            MenuData catMenuItem;
-            if (!menusListToWhereSearch.TryGetValue(menuData.CategoryName, out MenuData foundMenuItem2))
-            {
-                var defMenu = new DefaultMainMenu();
-                defMenu.Order += 5000;
+            var categoryMenuItem = TryGetFoundMenuItem(menusListToWhereSearch, menuData.CategoryName, 5000);
 
-                catMenuItem = new MenuData(defMenu, menuData.CategoryName);
+            if (!categoryMenuItem.Childs.ContainsKey(item.Text))
+            {
+                categoryMenuItem.Childs.Add(item.Text, item);
+            }
+
+            return categoryMenuItem; // relink to category
+        }
+
+        private static MenuData TryGetFoundMenuItem(Dictionary<string, MenuData> menusListToWhereSearch, string menuName, int order = 0)
+        {
+            if (!menusListToWhereSearch.TryGetValue(menuName, out MenuData foundMenuItem2))
+            {
+                var defaultMenu = new DefaultMainMenu();
+                defaultMenu.Order += order;
+
+                return new MenuData(defaultMenu, menuName);
             }
             else
             {
-                catMenuItem = foundMenuItem2;
+                return foundMenuItem2;
             }
-
-            if (!catMenuItem.Childs.ContainsKey(item.Text))
-            {
-                catMenuItem.Childs.Add(item.Text, item);
-            }
-
-            return catMenuItem; // relink to category
         }
 
         private static bool TryAddRootMainMenuItem(MenuData item, IMainMenuItem menuData, Dictionary<string, MenuData> menusListDictionary)
