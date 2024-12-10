@@ -182,7 +182,7 @@ namespace TranslationHelper.Functions
                 if (!menusListDictionary.TryGetValue(menuData.ParentMenuName, out MenuData foundMenuItem1))
                 {
                     var defMenu = new DefaultMainMenu();
-                    defMenu.Order += 100;
+                    defMenu.Order += 500;
 
                     parentMenuItem = new MenuData(defMenu, menuData.ParentMenuName);
                 }
@@ -195,7 +195,7 @@ namespace TranslationHelper.Functions
                 if (!string.IsNullOrWhiteSpace(menuData.CategoryName))
                 {
                     MenuData catMenuItem;
-                    if (!menusListDictionary.TryGetValue(menuData.CategoryName, out MenuData foundMenuItem2))
+                    if (!parentMenuItem.Childs.TryGetValue(menuData.CategoryName, out MenuData foundMenuItem2))
                     {
                         var defMenu = new DefaultMainMenu();
                         defMenu.Order += 100;
