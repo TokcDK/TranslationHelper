@@ -85,7 +85,7 @@ namespace TranslationHelper.Functions
                 CreateFilesListMenus();
             }
 
-            var rowMenus = isCached ? proj.RowMenusCache : 
+            var rowMenus = isCached ? proj.RowMenusCache :
                 (proj.RowMenusCache = GetListOfSubClasses.Inherited.GetInterfaceImplimentations<IFileRowMenuItem>()
                 .Where(m => !(m is IProjectSpecifiedMenuItem)).ToArray());
             if (proj.FileRowItemMenusList != null && proj.FileRowItemMenusList.Length > 0)
@@ -107,7 +107,7 @@ namespace TranslationHelper.Functions
         {
             menuItems.Clear();
 
-            var menusListDictionary = new Dictionary<string,MenuData>();
+            var menusListDictionary = new Dictionary<string, MenuData>();
             foreach (var menuData in menusData)
             {
                 if (!IsValidMenuItem(menuData)) continue;
@@ -202,7 +202,7 @@ namespace TranslationHelper.Functions
 
                         catMenuItem = new MenuData(defMenu, menuData.CategoryName);
                     }
-                    else                    
+                    else
                     {
                         catMenuItem = foundMenuItem2;
                     }
@@ -270,12 +270,13 @@ namespace TranslationHelper.Functions
         private static List<MenuData> SortByPriority(IEnumerable<MenuData> menus)
         {
             var menusList = menus.OrderBy(m => m.Menu.Order).ToList();
-            int max = menusList.Count;
-            for (int i = 0; i < max; i++)
+            foreach (var menu in menusList)
             {
-                var menu = menusList[i];
+                if (menu.Childs.Count == 0) continue;
 
-                SortChilds(menu);
+                var sortedChilds = SortByPriority(menu.Childs.Values);
+
+                menu.Childs = sortedChilds.ToDictionary(k => k.Text, v => v);
             }
 
             return menusList;
@@ -300,21 +301,6 @@ namespace TranslationHelper.Functions
             }
 
             return subMenu;
-        }
-
-        private static void SortChilds(MenuData menu)
-        {
-            if (menu.Childs == null) return;
-
-            int max = menu.Childs.Count;
-            if (max == 0) return;
-
-            menu.Childs = menu.Childs.Values.OrderBy(m => m.Menu.Order).ToDictionary(k=>k.Text,v =>v);
-
-            foreach (var child in menu.Childs)
-            {
-                SortChilds(child.Value);
-            }
         }
 
         public static ToolStripMenuItem GetToolStripMenuItem(this MenuStrip toolStripMenuItem, string itemWithText)
