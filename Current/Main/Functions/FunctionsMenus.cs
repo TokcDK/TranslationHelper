@@ -155,27 +155,8 @@ namespace TranslationHelper.Functions
                 var item = new MenuData(menuData);
 
                 // when no parent, add as main menus and continue
-                if (string.IsNullOrWhiteSpace(menuData.ParentMenuName))
+                if (TryAddRootMainMenuItem(item, menuData, menusListDictionary))
                 {
-                    if (!menusListDictionary.TryGetValue(menuData.ParentMenuName, out MenuData foundMenuItem))
-                    {
-                        menusListDictionary.Add(item.Text, item);
-                    }
-                    else
-                    {
-                        var mainMenu = foundMenuItem;
-                        if (mainMenu.Menu is DefaultMainMenu)
-                        {
-                            var mm = new MenuData(menuData)
-                            {
-                                Childs = mainMenu.Childs
-                            };
-                            mm.Menu.Order = mainMenu.Menu.Order + 500;
-
-                            menusListDictionary[menuData.ParentMenuName] = mm; // relink menu for cases when it is main menu with same name
-                        }
-                    }
-
                     continue;
                 }
 
@@ -227,6 +208,34 @@ namespace TranslationHelper.Functions
 
             var sortedMenusList = SortByPriority(menusListDictionary.Values);
             CreateMenusByList(menuItems, sortedMenusList);
+        }
+
+        private static bool TryAddRootMainMenuItem(MenuData item, IMainMenuItem menuData, Dictionary<string, MenuData> menusListDictionary)
+        {
+            if (!string.IsNullOrWhiteSpace(menuData.ParentMenuName))
+            {
+                return false;
+            }
+
+            if (!menusListDictionary.TryGetValue(menuData.ParentMenuName, out MenuData foundRootMainMenuItem))
+            {
+                menusListDictionary.Add(item.Text, item);
+            }
+            else
+            {
+                if (foundRootMainMenuItem.Menu is DefaultMainMenu)
+                {
+                    var mm = new MenuData(menuData)
+                    {
+                        Childs = foundRootMainMenuItem.Childs
+                    };
+                    mm.Menu.Order = foundRootMainMenuItem.Menu.Order + 500;
+
+                    menusListDictionary[menuData.ParentMenuName] = mm; // relink menu for cases when it is main menu with same name
+                }
+            }
+
+            return true;
         }
 
         private static bool IsValidMenuItem(IMenuItem menuData)
