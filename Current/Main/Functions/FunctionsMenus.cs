@@ -316,48 +316,48 @@ namespace TranslationHelper.Functions
             return subMenu;
         }
 
-        public static ToolStripMenuItem GetToolStripMenuItem(this MenuStrip toolStripMenuItem, string itemWithText)
-        {
-            if (string.IsNullOrWhiteSpace(itemWithText)) return null;
+        //public static ToolStripMenuItem GetToolStripMenuItem(this MenuStrip toolStripMenuItem, string itemWithText)
+        //{
+        //    if (string.IsNullOrWhiteSpace(itemWithText)) return null;
 
-            foreach (ToolStripMenuItem item in toolStripMenuItem.Items) if (item.Text == itemWithText) return item;
+        //    foreach (ToolStripMenuItem item in toolStripMenuItem.Items) if (item.Text == itemWithText) return item;
 
-            return null;
-        }
+        //    return null;
+        //}
 
-        /// <summary>
-        /// check if toolStripMenuItem contains item with itemWithText
-        /// </summary>
-        /// <param name="toolStripMenuItem">Source menu where to search item with text</param>
-        /// <param name="itemWithText">menu's text which to search</param>
-        /// <param name="foundFoolStripMenuItem">set found ToolStripMenuItem to this else null</param>
-        /// <returns>true if found and set out item, else false and null</returns>
-        public static bool Contains(this MenuStrip toolStripMenuItem, string itemWithText, out ToolStripMenuItem foundFoolStripMenuItem)
-        {
-            foreach (ToolStripMenuItem item in toolStripMenuItem.Items)
-            {
-                if (item.Text != itemWithText) continue;
+        ///// <summary>
+        ///// check if toolStripMenuItem contains item with itemWithText
+        ///// </summary>
+        ///// <param name="toolStripMenuItem">Source menu where to search item with text</param>
+        ///// <param name="itemWithText">menu's text which to search</param>
+        ///// <param name="foundFoolStripMenuItem">set found ToolStripMenuItem to this else null</param>
+        ///// <returns>true if found and set out item, else false and null</returns>
+        //public static bool Contains(this MenuStrip toolStripMenuItem, string itemWithText, out ToolStripMenuItem foundFoolStripMenuItem)
+        //{
+        //    foreach (ToolStripMenuItem item in toolStripMenuItem.Items)
+        //    {
+        //        if (item.Text != itemWithText) continue;
 
-                foundFoolStripMenuItem = item;
-                return true;
-            }
+        //        foundFoolStripMenuItem = item;
+        //        return true;
+        //    }
 
-            foundFoolStripMenuItem = null;
-            return false;
-        }
+        //    foundFoolStripMenuItem = null;
+        //    return false;
+        //}
 
-        public static bool Contains(this ToolStripMenuItem toolStripMenuItem, string itemWithText, out ToolStripMenuItem foundFoolStripMenuItem)
-        {
-            foreach (ToolStripMenuItem item in toolStripMenuItem.DropDownItems)
-            {
-                if (item.Text != itemWithText) continue;
+        //public static bool Contains(this ToolStripMenuItem toolStripMenuItem, string itemWithText, out ToolStripMenuItem foundFoolStripMenuItem)
+        //{
+        //    foreach (ToolStripMenuItem item in toolStripMenuItem.DropDownItems)
+        //    {
+        //        if (item.Text != itemWithText) continue;
 
-                foundFoolStripMenuItem = item;
-                return true;
-            }
+        //        foundFoolStripMenuItem = item;
+        //        return true;
+        //    }
 
-            foundFoolStripMenuItem = null;
-            return false;
-        }
+        //    foundFoolStripMenuItem = null;
+        //    return false;
+        //}
     }
 }
