@@ -399,6 +399,7 @@
     <Compile Include="Menus\FilesListMenus\FileListMenuItemCopyName.cs" />
     <Compile Include="Menus\AllTableRowsChildMenuBase.cs" />
     <Compile Include="Menus\ChildMenuBaseBase.cs" />
+    <Compile Include="Menus\MainMenus\Edit\MainMenuEditRootItem.cs" />
     <Compile Include="Menus\MainMenus\Edit\MainMenuFileSubItemOriginalToTranslation.cs" />
     <Compile Include="Menus\MainMenus\Edit\MainMenuFileSubItemSplitLongLines.cs" />
     <Compile Include="Menus\MainMenus\Edit\MainMenuFileSubItemFixJpMessagesTranslation.cs" />
@@ -436,6 +437,7 @@
     <Compile Include="Menus\MainMenus\File\Export\MenuItemExportToExcel.cs" />
     <Compile Include="Menus\MainMenus\File\Import\MainMenuFileSubItemImportBase.cs" />
     <Compile Include="Menus\MainMenus\File\Import\MenuItemImportFromPOfile.cs" />
+    <Compile Include="Menus\MainMenus\File\MainMenuFileRootItem.cs" />
     <Compile Include="Menus\MainMenus\File\MainMenuFileSubItemBase.cs" />
     <Compile Include="Menus\MainMenus\File\MenuItemRecent.cs" />
     <Compile Include="Menus\MainMenus\File\Other\MenuItemTestGetXUATranslation.cs" />
@@ -450,12 +452,13 @@
     <Compile Include="Menus\MainMenus\File\MenuItemWriteTranslation.cs" />
     <Compile Include="Menus\MainMenus\File\MenuItemOpen.cs" />
     <Compile Include="Menus\MainMenus\File\Other\MainMenuFileSubItemOtherBase.cs" />
-    <Compile Include="Menus\MainMenus\Help\MainMenuHelpCategoryItem.cs" />
+    <Compile Include="Menus\MainMenus\Help\MainMenuHelpRootItem.cs" />
     <Compile Include="Menus\MainMenus\Help\MainMenuHelpSubItemBase.cs" />
     <Compile Include="Menus\MainMenus\Help\MenuItemShowAboutWindow.cs" />
     <Compile Include="Menus\MainMenus\MainMenuItemBase.cs" />
     <Compile Include="Menus\MainMenus\MenusSortData\IMenusSortData.cs" />
     <Compile Include="Menus\MainMenus\MenusSortData\MainMenusSortData.cs" />
+    <Compile Include="Menus\MainMenus\View\MainMenuViewRootItem.cs" />
     <Compile Include="Menus\MainMenus\View\OpenPathByExplorerMainMenuViewSubItemBase.cs" />
     <Compile Include="Menus\MainMenus\View\MainMenuViewSubItemBase.cs" />
     <Compile Include="Menus\MainMenus\View\MenuItemReloadRules.cs" />
