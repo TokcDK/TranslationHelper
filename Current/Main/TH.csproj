@@ -431,7 +431,7 @@
     <Compile Include="Menus\MainMenus\Edit\Online Translate\MenuItemOnlineTranslateTable.cs" />
     <Compile Include="Menus\MainMenus\Edit\Online Translate\MenuItemOnlineTranslateAll.cs" />
     <Compile Include="Menus\MainMenus\Edit\TextCutCopyPaste\MenuItemRowTextCopyCutBase.cs" />
-    <Compile Include="Menus\MainMenus\File\DefaultMainMenu.cs" />
+    <Compile Include="Menus\MainMenus\DefaultMainMenu.cs" />
     <Compile Include="Menus\MainMenus\File\Export\MainMenuFileSubItemExportBase.cs" />
     <Compile Include="Menus\MainMenus\File\Export\MenuItemExportToExcel.cs" />
     <Compile Include="Menus\MainMenus\File\Import\MainMenuFileSubItemImportBase.cs" />
