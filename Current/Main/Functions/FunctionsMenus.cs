@@ -225,63 +225,6 @@ namespace TranslationHelper.Functions
 
             var sortedMenusList = SortByPriority(menusListDictionary.Values);
             CreateMenusByList(menuItems, sortedMenusList);
-
-            //foreach (var menuData in menusData)
-            //{
-            //    if (menuData is IFileRowMenuItem) continue;
-            //    if (menuData is IChildMenuItem) continue;
-
-            //    //Create new menu
-            //    var menu = new ToolStripMenuItem
-            //    {
-            //        Text = menuData.Text,
-            //        ToolTipText = menuData.Description
-            //    };
-
-            //    //Register click event
-            //    menu.Click += menuData.OnClick;
-
-            //    //check parent menu
-            //    ToolStripMenuItem parent = null;
-            //    bool HasParent;
-            //    if (HasParent = !string.IsNullOrWhiteSpace(menuData.ParentMenuName))
-            //        if (!container.Contains(menuData.ParentMenuName, out parent))
-            //        {
-            //            parent = new ToolStripMenuItem
-            //            {
-            //                Text = menuData.ParentMenuName
-            //            };
-            //        }
-
-            //    //check parent category
-            //    ToolStripMenuItem category = null;
-            //    bool HasCategory = !string.IsNullOrWhiteSpace(menuData.CategoryName);
-            //    if (!string.IsNullOrWhiteSpace(menuData.ParentMenuName) && HasCategory)
-            //        if (!parent.Contains(menuData.CategoryName, out category))
-            //        {
-            //            category = new ToolStripMenuItem
-            //            {
-            //                Text = menuData.CategoryName
-            //            };
-            //        }
-
-            //    //add category and make it current if exist
-            //    if (HasCategory)
-            //    {
-            //        category.DropDownItems.Add(menu);
-            //        menu = category;
-            //    }
-
-            //    //add parent and make it current if exist
-            //    if (HasParent)
-            //    {
-            //        parent.DropDownItems.Add(menu);
-            //        menu = parent;
-            //    }
-
-            //    //add result menu
-            //    if (!container.Items.Contains(menu)) container.Items.Add(menu);
-            //}
         }
 
         private static bool IsValidMenuItem(IMenuItem menuData)
