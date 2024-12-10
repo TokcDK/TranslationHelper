@@ -143,7 +143,7 @@ namespace TranslationHelper.Functions
                 }
 
                 // create parent
-                var parentMenuItem = TryGetFoundMenuItem(menusListDictionary, menuData.ParentMenuName, 500 + menuData.Order);
+                var parentMenuItem = TryGetFoundMenuItem(menusListDictionary, menuData.ParentMenuName);
                 
                 // check category
                 item = TryGetCategoryMenu(item, menuData, parentMenuItem.Childs);
@@ -170,7 +170,7 @@ namespace TranslationHelper.Functions
                 return item;
             }
 
-            var categoryMenuItem = TryGetFoundMenuItem(menusListToWhereSearch, menuData.CategoryName, 5000);
+            var categoryMenuItem = TryGetFoundMenuItem(menusListToWhereSearch, menuData.CategoryName);
 
             if (!categoryMenuItem.Childs.ContainsKey(item.Text))
             {
@@ -278,13 +278,15 @@ namespace TranslationHelper.Functions
             return menusList;
         }
 
-        private static object GetOrder(MenuData m)
+        private static int GetOrder(MenuData m)
         {
             return m.Menu.Order + GetOrderByChildsCount(m);
         }
 
         private static int GetOrderByChildsCount(MenuData m)
         {
+            return 0;
+
             if(m.Menu is DefaultMainMenu)
             {
                 return 0;
