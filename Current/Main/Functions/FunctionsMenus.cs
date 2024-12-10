@@ -156,13 +156,13 @@ namespace TranslationHelper.Functions
                 // when no parent, add as main menus and continue
                 if (string.IsNullOrWhiteSpace(menuData.ParentMenuName))
                 {
-                    if (!menusListDictionary.ContainsKey(menuData.ParentMenuName))
+                    if (!menusListDictionary.TryGetValue(menuData.ParentMenuName, out MenuData foundMenuItem))
                     {
                         menusListDictionary.Add(item.Text, item);
                     }
                     else
                     {
-                        var mainMenu = menusListDictionary[menuData.ParentMenuName];
+                        var mainMenu = foundMenuItem;
                         if (mainMenu.Menu is DefaultMainMenu)
                         {
                             var mm = new MenuData(menuData)
@@ -179,7 +179,7 @@ namespace TranslationHelper.Functions
 
                 // create parent
                 MenuData parentMenuItem;
-                if (!menusListDictionary.ContainsKey(menuData.ParentMenuName))
+                if (!menusListDictionary.TryGetValue(menuData.ParentMenuName, out MenuData foundMenuItem1))
                 {
                     var defMenu = new DefaultMainMenu();
                     defMenu.Order += 100;
@@ -188,14 +188,14 @@ namespace TranslationHelper.Functions
                 }
                 else
                 {
-                    parentMenuItem = menusListDictionary[menuData.ParentMenuName];
+                    parentMenuItem = foundMenuItem1;
                 }
 
                 // check category
                 if (!string.IsNullOrWhiteSpace(menuData.CategoryName))
                 {
                     MenuData catMenuItem;
-                    if (!menusListDictionary.ContainsKey(menuData.CategoryName))
+                    if (!menusListDictionary.TryGetValue(menuData.CategoryName, out MenuData foundMenuItem2))
                     {
                         var defMenu = new DefaultMainMenu();
                         defMenu.Order += 100;
@@ -204,7 +204,7 @@ namespace TranslationHelper.Functions
                     }
                     else                    
                     {
-                        catMenuItem = menusListDictionary[menuData.CategoryName];
+                        catMenuItem = foundMenuItem2;
                     }
 
                     catMenuItem.Childs.Add(item.Text, item);
