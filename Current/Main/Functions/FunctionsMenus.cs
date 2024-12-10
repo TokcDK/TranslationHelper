@@ -116,25 +116,7 @@ namespace TranslationHelper.Functions
                 var item = new MenuData(menuData);
 
                 // check category
-                if (!string.IsNullOrWhiteSpace(menuData.CategoryName))
-                {
-                    MenuData catMenuItem;
-                    if (menusListDictionary.TryGetValue(menuData.CategoryName, out MenuData foundMenuItem))
-                    {
-                        catMenuItem = foundMenuItem;
-                    }
-                    else
-                    {
-                        var defMenu = new DefaultMainMenu();
-                        defMenu.Order += 5000;
-
-                        catMenuItem = new MenuData(defMenu, menuData.CategoryName);
-                    }
-
-                    catMenuItem.Childs.Add(item.Text, item);
-
-                    item = catMenuItem; // relink to category
-                }
+                item = TryGetCategoryMenu(item, menuData, menusListDictionary);
 
                 if (!menusListDictionary.ContainsKey(item.Text)) menusListDictionary.Add(item.Text, item);
             }
@@ -175,25 +157,7 @@ namespace TranslationHelper.Functions
                 }
 
                 // check category
-                if (!string.IsNullOrWhiteSpace(menuData.CategoryName))
-                {
-                    MenuData catMenuItem;
-                    if (!parentMenuItem.Childs.TryGetValue(menuData.CategoryName, out MenuData foundMenuItem2))
-                    {
-                        var defMenu = new DefaultMainMenu();
-                        defMenu.Order += 5000;
-
-                        catMenuItem = new MenuData(defMenu, menuData.CategoryName);
-                    }
-                    else
-                    {
-                        catMenuItem = foundMenuItem2;
-                    }
-
-                    catMenuItem.Childs.Add(item.Text, item);
-
-                    item = catMenuItem; // relink to category
-                }
+                item = TryGetCategoryMenu(item, menuData, parentMenuItem.Childs);
 
                 if (!parentMenuItem.Childs.ContainsKey(item.Text))
                 {
@@ -208,6 +172,34 @@ namespace TranslationHelper.Functions
 
             var sortedMenusList = SortByPriority(menusListDictionary.Values);
             CreateMenusByList(menuItems, sortedMenusList);
+        }
+
+        private static MenuData TryGetCategoryMenu(MenuData item, IMenuItem menuData, Dictionary<string, MenuData> menusListToWhereSearch)
+        {
+            if (string.IsNullOrWhiteSpace(menuData.CategoryName))
+            {
+                return item;
+            }
+
+            MenuData catMenuItem;
+            if (!menusListToWhereSearch.TryGetValue(menuData.CategoryName, out MenuData foundMenuItem2))
+            {
+                var defMenu = new DefaultMainMenu();
+                defMenu.Order += 5000;
+
+                catMenuItem = new MenuData(defMenu, menuData.CategoryName);
+            }
+            else
+            {
+                catMenuItem = foundMenuItem2;
+            }
+
+            if (!catMenuItem.Childs.ContainsKey(item.Text))
+            {
+                catMenuItem.Childs.Add(item.Text, item);
+            }
+
+            return catMenuItem; // relink to category
         }
 
         private static bool TryAddRootMainMenuItem(MenuData item, IMainMenuItem menuData, Dictionary<string, MenuData> menusListDictionary)
