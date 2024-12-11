@@ -128,7 +128,6 @@
     <Compile Include="Formats\KiriKiri\Games\CSV\CSVDisplayName.cs" />
     <Compile Include="Formats\RimWorld\RimWorldLanguageDataXML.cs" />
     <Compile Include="Formats\RPGMakerVXAce\RGSS3A.cs" />
-    <Compile Include="Formats\RPGMakerVXAce\RVData2\Actors.rvdata2.cs" />
     <Compile Include="Formats\RPGMakerVXAce\RVData2\RVDATA2.cs" />
     <Compile Include="Formats\RPGMMV\JsonType\JsonEventCommandsList.cs" />
     <Compile Include="Formats\RPGMMV\JsonType\JsonSystemMZ.cs" />
