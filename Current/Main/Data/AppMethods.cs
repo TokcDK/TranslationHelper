@@ -15,7 +15,8 @@ namespace TranslationHelper.Data
         /// <returns></returns>
         public static string GetRegexQuotesCapturePattern(string regexQuote = @"\""")
         {
-            return regexQuote + @"([^" + regexQuote + @"\r\n\\]*(?:\\.[^" + regexQuote + @"\r\n\\]*)*)" + regexQuote;
+            return $@"(?<!\\){regexQuote}((?:[^{regexQuote}\\]|\\.)*?){regexQuote}";
+            //return $@"{regexQuote}([^{regexQuote}\r\n\\]*(?:\\.[^{regexQuote}\r\n\\]*)*){regexQuote}"; // old pattern
         }
     }
 }
