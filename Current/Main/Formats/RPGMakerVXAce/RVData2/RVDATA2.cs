@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -8,6 +9,7 @@ using TranslationHelper.Data;
 using TranslationHelper.Extensions;
 using TranslationHelper.Formats.RPGMMV;
 using TranslationHelper.Main.Functions;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace TranslationHelper.Formats.RPGMakerVX.RVData2
 {
@@ -19,6 +21,8 @@ namespace TranslationHelper.Formats.RPGMakerVX.RVData2
         object _parser;
         byte[] _bytes;
         readonly Regex _quoteCaptureRegex = new Regex(AppMethods.GetRegexQuotesCapturePattern(), RegexOptions.Compiled);
+        readonly Regex _commentaryCaptureRegex = new Regex("[ \t]*#[^{][^\r\n]+", RegexOptions.Compiled);
+        readonly Regex _variableCaptureRegex = new Regex("#{[^}]+}", RegexOptions.Compiled);
         readonly Regex _mapNameCheckRegex = new Regex("[Mm]ap[0-9]{3}", RegexOptions.Compiled);
 
         protected override void FileOpen()
@@ -43,22 +47,77 @@ namespace TranslationHelper.Formats.RPGMakerVX.RVData2
 
                     if (string.IsNullOrEmpty(script.Text)) continue;
 
-                    var mc = _quoteCaptureRegex.Matches(script.Text);
+                    //if(script.Title== "Game_Battler")
+                    //{
+                    //}
+                    if (script.Text.Contains("｜ 運（防御側）："))
+                    {
+                    }
+
+                    // remove false capture commented quoted text
+                    var mc = _commentaryCaptureRegex.Matches(script.Text);
+                    var scriptTextNoComments = new StringBuilder(script.Text);
+                    var commentsCoordinates = new Dictionary<int, Match>(mc.Count);
+                    for (int i = mc.Count - 1; i >= 0; i--)
+                    {
+                        var m = mc[i];
+
+                        // remember coordinates of comment an remove it
+                        commentsCoordinates.Add(m.Index, m);
+                        scriptTextNoComments.Remove(m.Index, m.Length);
+                    }
+
+                    string scriptText = scriptTextNoComments.ToString();
+
+                    // capture also intext variables like #{text}
+                    // remove false capture for quotes like #{Convert_Text.button_to_icon("マルチ")}
+                    mc = _variableCaptureRegex.Matches(scriptText);
+                    var inTextVariablesCoordinates = new Dictionary<string, Match>(mc.Count);
+                    int varIndex = 1;
+                    for (int i = mc.Count - 1; i >= 0; i--)
+                    {
+                        var m = mc[i];
+
+                        // remember key name and then replace var with key name
+                        string keyName = "#{VAR00" + $"{varIndex++}"+"}";
+                        inTextVariablesCoordinates.Add(keyName, m);
+                        scriptTextNoComments.Remove(m.Index, m.Length).Insert(m.Index, keyName);
+                    }
+
+                    scriptText = scriptTextNoComments.ToString();
+
+                    // capture quoted strings itself
+                    mc = _quoteCaptureRegex.Matches(scriptText);
 
                     var mcCount = mc.Count;
                     if (mcCount == 0) continue;
 
                     bool isChanged = false;
 
-                    var scriptContentToChange = new StringBuilder(script.Text);
+                    var scriptContentToChange = SaveFileMode ? new StringBuilder(scriptText) : null;
                     // negative order because length of content is changing
                     for (int i = mcCount - 1; i >= 0; i--)
                     {
                         var m = mc[i];
-                        var s = m.Groups[1].Value;
+                        string s = m.Groups[1].Value;
 
                         if (AddRowData(ref s, $"Script: {script.Title}") && SaveFileMode)
                         {
+                            // здесь вставляем обратно переменные?
+                            //StringBuilder s1 = new StringBuilder(s);
+                            //var mc1 = Regex.Matches(scriptText, @"#{VAR00[0-9]+}");
+                            //for (int i1 = mc1.Count - 1; i1 >= 0; i1--)
+                            //{
+                            //    var m1 = mc1[i];
+
+                            //    if (inTextVariablesCoordinates.TryGetValue(m1.Value, out var m2))
+                            //    {
+                            //        s1 = s1.Remove(m2.Index, m2.Length).Insert(m2.Index, m1.Value);
+                            //    }
+                            //}
+
+                            // здесь пересчитываем длину оригинальной строки на переведенную, потом пересчитываем начальные координаты для комментария и вставляем его обратно
+                            // рассчитываем как координаты для переменных, так и координаты для комментариев
                             isChanged = true;
                             scriptContentToChange
                                 .Remove(m.Index, m.Length)
