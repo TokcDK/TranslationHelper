@@ -60,7 +60,7 @@ namespace TranslationHelper.Formats.RPGMakerVX.RVData2
                         if (AddRowData(ref s, $"Script: {script.Title}") && SaveFileMode)
                         {
                             isChanged = true;
-                            scriptContentToChange = scriptContentToChange
+                            scriptContentToChange
                                 .Remove(m.Index, m.Length)
                                 .Insert(m.Index, "\"" + s.EscapeQuotes() + "\"");
                         }
