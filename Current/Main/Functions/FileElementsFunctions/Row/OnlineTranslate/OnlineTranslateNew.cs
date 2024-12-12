@@ -672,6 +672,8 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
                 EnumerateNewLines(rowData.Lines));
             //if (rowData.Row.Original.GetLinesCount() == 1 && string.Equals(newRowValue, rowData.Row.Original)) return false;
 
+            if (newRowValue.IsValidForTranslation()) return false; // was not fully translated o kind of
+
             rowData.Row.Translation = newRowValue;
 
             return true;
