@@ -167,13 +167,7 @@ namespace TranslationHelper.Formats.RPGMakerVX.RVData2
                     keyName = $"{keyPre}{keyIndex++}{keyAfter}";
                     keyStringPairs.Add(m.Value, keyName);
                 }
-                try
-                {
-                    stringBuilderWhereToHide.Remove(m.Index, m.Length).Insert(m.Index, keyName);
-                }
-                catch (Exception ex)
-                {
-                }
+                stringBuilderWhereToHide.Remove(m.Index, m.Length).Insert(m.Index, keyName);
             }
 
             keyStringPairs = keyStringPairs
