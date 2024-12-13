@@ -45,68 +45,7 @@ namespace TranslationHelper.Formats.RPGMakerVX.RVData2
 
                 foreach (var script in (_parser as ScriptsParser).EnumerateRMScripts())
                 {
-                    // parse all strings inside quotes in script content
-
-                    if (string.IsNullOrEmpty(script.Text)) continue;
-
-                    var scriptTextNoVarsNoComments = new StringBuilder(script.Text);
-
-                    // capture also variables like #{text}
-                    // need for fix false capture for quotes like #{Convert_Text.button_to_icon("マルチ")}
-
-                    var variablesCoordinates = HideVariables(script.Text, _variableCaptureRegex, scriptTextNoVarsNoComments, "%VAR", "%");
-
-                    // need for fix false capture commented quoted text
-                    var commentsCoordinates = HideVariables(scriptTextNoVarsNoComments.ToString(), _commentaryCaptureRegex, scriptTextNoVarsNoComments, "%COMMENT", "%");
-                    
-                    var scriptText = scriptTextNoVarsNoComments.ToString();
-
-                    // capture quoted strings itself
-                    var mc = _quoteCaptureRegex.Matches(scriptText);
-
-                    var mcCount = mc.Count;
-                    if (mcCount == 0) continue;
-
-                    bool isChanged = false;
-
-                    var scriptContentToChange = SaveFileMode ? new StringBuilder(scriptText) : null;
-                    // negative order because length of content is changing
-                    for (int i = mcCount - 1; i >= 0; i--)
-                    {
-                        var m = mc[i];
-                        string s = m.Groups[1].Value;
-
-                        s = RestoreStrings(s, variablesCoordinates, _variableKeyNameCaptureRegex);
-
-                        if (AddRowData(ref s, $"Script: {script.Title}") && SaveFileMode)
-                        {
-                            s = EscapeQuotes(s);
-
-                            // здесь пересчитываем длину оригинальной строки на переведенную, потом пересчитываем начальные координаты для комментария и вставляем его обратно
-                            // рассчитываем как координаты для переменных, так и координаты для комментариев
-                            isChanged = true;
-                            scriptContentToChange
-                                .Remove(m.Index, m.Length)
-                                .Insert(m.Index, "\"" + s + "\"");
-
-                        }
-                    }
-
-                    if (isChanged && SaveFileMode)
-                    {
-                        // replace all comment names back to comments
-                        foreach (var keyNameCommentPair in commentsCoordinates)
-                        {
-                            scriptContentToChange.Replace(keyNameCommentPair.Key, keyNameCommentPair.Value);
-                        }
-                        // restore variables in case of if some was not replaced earlier
-                        foreach (var keyNameCommentPair in variablesCoordinates)
-                        {
-                            scriptContentToChange.Replace(keyNameCommentPair.Key, keyNameCommentPair.Value);
-                        }
-
-                        script.Text = scriptContentToChange.ToString();
-                    }
+                    ParseScript(script);
                 }
             }
             else
@@ -124,6 +63,72 @@ namespace TranslationHelper.Formats.RPGMakerVX.RVData2
 
                     if (AddRowData(ref s, info) && SaveFileMode) stringData.Text = s;
                 }
+            }
+        }
+
+        private void ParseScript(ScriptsParser.Script script)
+        {
+            // parse all strings inside quotes in script content
+
+            if (string.IsNullOrEmpty(script.Text)) return;
+
+            var scriptTextNoVarsNoComments = new StringBuilder(script.Text);
+
+            // capture also variables like #{text}
+            // need for fix false capture for quotes like #{Convert_Text.button_to_icon("マルチ")}
+
+            var variablesCoordinates = HideVariables(script.Text, _variableCaptureRegex, scriptTextNoVarsNoComments, "%VAR", "%");
+
+            // need for fix false capture commented quoted text
+            var commentsCoordinates = HideVariables(scriptTextNoVarsNoComments.ToString(), _commentaryCaptureRegex, scriptTextNoVarsNoComments, "%COMMENT", "%");
+
+            var scriptText = scriptTextNoVarsNoComments.ToString();
+
+            // capture quoted strings itself
+            var mc = _quoteCaptureRegex.Matches(scriptText);
+
+            var mcCount = mc.Count;
+            if (mcCount == 0) return;
+
+            bool isChanged = false;
+
+            var scriptContentToChange = SaveFileMode ? new StringBuilder(scriptText) : null;
+            // negative order because length of content is changing
+            for (int i = mcCount - 1; i >= 0; i--)
+            {
+                var m = mc[i];
+                string s = m.Groups[1].Value;
+
+                s = RestoreStrings(s, variablesCoordinates, _variableKeyNameCaptureRegex);
+
+                if (AddRowData(ref s, $"Script: {script.Title}") && SaveFileMode)
+                {
+                    s = EscapeQuotes(s);
+
+                    // здесь пересчитываем длину оригинальной строки на переведенную, потом пересчитываем начальные координаты для комментария и вставляем его обратно
+                    // рассчитываем как координаты для переменных, так и координаты для комментариев
+                    isChanged = true;
+                    scriptContentToChange
+                        .Remove(m.Index, m.Length)
+                        .Insert(m.Index, "\"" + s + "\"");
+
+                }
+            }
+
+            if (isChanged && SaveFileMode)
+            {
+                // replace all comment names back to comments
+                foreach (var keyNameCommentPair in commentsCoordinates)
+                {
+                    scriptContentToChange.Replace(keyNameCommentPair.Key, keyNameCommentPair.Value);
+                }
+                // restore variables in case of if some was not replaced earlier
+                foreach (var keyNameCommentPair in variablesCoordinates)
+                {
+                    scriptContentToChange.Replace(keyNameCommentPair.Key, keyNameCommentPair.Value);
+                }
+
+                script.Text = scriptContentToChange.ToString();
             }
         }
 
