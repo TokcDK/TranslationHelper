@@ -83,7 +83,7 @@ namespace TranslationHelper.Formats.RPGMakerVX.RVData2
                             // здесь заменить переменные на ключи передтем, как эскейпить строку, потому, что могут встречаться переменные содержащие кавычки, которые нельзя эскейпить, вроде #{Convert_Text.button_to_icon(\"決定\",false)}
 
                             var sb = new StringBuilder(s);
-                            var stringHidenVars = HideVariables(script.Text, _variableCaptureRegex, new StringBuilder(s), "%VAR", "%");
+                            var stringHidenVars = HideVariables(s, _variableCaptureRegex, sb, "%VAR", "%");
 
                             string s1 = sb.ToString().EscapeQuotes(); // escape quotes in string
 
@@ -167,7 +167,13 @@ namespace TranslationHelper.Formats.RPGMakerVX.RVData2
                     keyName = $"{keyPre}{keyIndex++}{keyAfter}";
                     keyStringPairs.Add(m.Value, keyName);
                 }
-                stringBuilderWhereToHide.Remove(m.Index, m.Length).Insert(m.Index, keyName);
+                try
+                {
+                    stringBuilderWhereToHide.Remove(m.Index, m.Length).Insert(m.Index, keyName);
+                }
+                catch (Exception ex)
+                {
+                }
             }
 
             keyStringPairs = keyStringPairs
