@@ -50,7 +50,7 @@ namespace TranslationHelper.Formats.RPGMakerVX.RVData2
                     //if(script.Title== "Game_Battler")
                     //{
                     //}
-                    if (script.Text.Contains("お気に入りに登録したアイテムです\r\nアイテムを"))
+                    if (script.Text.Contains("ここまで（18.5文字）"))
                     {
                     }
 
@@ -58,31 +58,58 @@ namespace TranslationHelper.Formats.RPGMakerVX.RVData2
                     // remove false capture for quotes like #{Convert_Text.button_to_icon("マルチ")}
                     var mc = _variableCaptureRegex.Matches(script.Text);
                     var scriptTextNoVarsNoComments = new StringBuilder(script.Text);
-                    var inTextVariablesCoordinates = new Dictionary<string, Match>(mc.Count);
+                    var inTextVariablesCoordinates = new Dictionary<string, string>(mc.Count);
                     int varIndex = 1;
                     for (int i = mc.Count - 1; i >= 0; i--)
                     {
                         var m = mc[i];
 
                         // remember key name and then replace var with key name
-                        string keyName = "%VAR00" + $"{varIndex++}" + "%";
-                        inTextVariablesCoordinates.Add(keyName, m);
+                        string keyName;
+                        if (inTextVariablesCoordinates.TryGetValue(m.Value, out var foundKey))
+                        {
+                            keyName = foundKey;
+                        }
+                        else
+                        {
+                            keyName = $"%VAR{varIndex++}%";
+                            inTextVariablesCoordinates.Add(m.Value, keyName);
+                        }
                         scriptTextNoVarsNoComments.Remove(m.Index, m.Length).Insert(m.Index, keyName);
                     }
+                    inTextVariablesCoordinates = inTextVariablesCoordinates
+                        .ToDictionary(kv => kv.Value, kv => kv.Key);
 
                     // remove false capture commented quoted text
                     mc = _commentaryCaptureRegex.Matches(scriptTextNoVarsNoComments.ToString());
-                    var commentsCoordinates = new Dictionary<int, Match>(mc.Count);
+                    var commentsCoordinates = new Dictionary<string, string>(mc.Count);
+                    int commentIndex = 1;
                     for (int i = mc.Count - 1; i >= 0; i--)
                     {
                         var m = mc[i];
 
-                        // remember coordinates of comment an remove it
-                        commentsCoordinates.Add(m.Index, m);
-                        scriptTextNoVarsNoComments.Remove(m.Index, m.Length).Insert(m.Index, "__commenthere__");
-                    }
+                        if(m.Value=="#" || string.IsNullOrWhiteSpace(m.Value.TrimStart().TrimStart('#')))
+                        {
+                            continue;
+                        }
 
-                    string scriptText = scriptTextNoVarsNoComments.ToString();
+                        // remember coordinates of comment an remove it
+                        string keyName;
+                        if (commentsCoordinates.TryGetValue(m.Value, out var foundKey))
+                        {
+                            keyName = foundKey;
+                        }
+                        else
+                        {
+                            keyName = $"%COMMENT{commentIndex++}%";
+                            commentsCoordinates.Add(m.Value, keyName);
+                        }
+                        scriptTextNoVarsNoComments.Remove(m.Index, m.Length).Insert(m.Index, keyName);
+                    }
+                    commentsCoordinates = commentsCoordinates
+                        .ToDictionary(kv => kv.Value, kv => kv.Key);
+
+                    var scriptText = scriptTextNoVarsNoComments.ToString();
 
                     // capture quoted strings itself
                     mc = _quoteCaptureRegex.Matches(scriptText);
@@ -98,40 +125,48 @@ namespace TranslationHelper.Formats.RPGMakerVX.RVData2
                     {
                         var m = mc[i];
                         string s = m.Groups[1].Value;
-                        int origialLength = s.Length;
+                        //int origialLength = s.Length;
+
+                        foreach (Match match in _variableCaptureRegex.Matches(s))
+                        {
+                            if(inTextVariablesCoordinates.TryGetValue(match.Value, out var foundKey))
+                            {
+                                s = s.Replace(match.Value, foundKey);
+                            }
+                        }
 
                         if (AddRowData(ref s, $"Script: {script.Title}") && SaveFileMode)
                         {
-                            int translateLength = s.Length;
-                            int translateOriginalDifference = translateLength - origialLength; // increase result comment coordinates by this
+                            //int translateLength = s.Length;
+                            //int translateOriginalDifference = translateLength - origialLength; // increase result comment coordinates by this
 
                             // здесь вставляем обратно переменные?
-                            string stringWithRestoredVariables = s;
-                            var mc1 = Regex.Matches(scriptText, @"#{VAR00[0-9]+}");
-                            int varAfterToBeforeDifference = 0; // also increase result last message index by this
-                            for (int i1 = mc1.Count - 1; i1 >= 0; i1--)
-                            {
-                                var m1 = mc1[i]; // variable key
+                            //string stringWithRestoredVariables = s;
+                            //var mc1 = Regex.Matches(scriptText, @"#{VAR00[0-9]+}");
+                            //int varAfterToBeforeDifference = 0; // also increase result last message index by this
+                            //for (int i1 = mc1.Count - 1; i1 >= 0; i1--)
+                            //{
+                            //    var m1 = mc1[i]; // variable key
 
-                                if (inTextVariablesCoordinates.TryGetValue(m1.Value, out var m2))
-                                {
-                                    varAfterToBeforeDifference += (m2.Index - m1.Index); // m2 is original variable
-                                    stringWithRestoredVariables = stringWithRestoredVariables.Remove(m1.Index, m1.Length).Insert(m1.Index, m2.Value);
-                                }
-                            }
+                            //    if (inTextVariablesCoordinates.TryGetValue(m1.Value, out var m2))
+                            //    {
+                            //        //varAfterToBeforeDifference += (m2.Index - m1.Index); // m2 is original variable
+                            //        stringWithRestoredVariables = stringWithRestoredVariables.Remove(m1.Index, m1.Length).Insert(m1.Index, m2.Value);
+                            //    }
+                            //}
 
                             // здесь пересчитываем длину оригинальной строки на переведенную, потом пересчитываем начальные координаты для комментария и вставляем его обратно
                             // рассчитываем как координаты для переменных, так и координаты для комментариев
                             isChanged = true;
                             scriptContentToChange
                                 .Remove(m.Index, m.Length)
-                                .Insert(m.Index, "\"" + stringWithRestoredVariables.EscapeQuotes() + "\"");
+                                .Insert(m.Index, "\"" + s.EscapeQuotes() + "\"");
 
                             // нужно сначала рассчитать старый индекс комментария, который рассчитывается из отношения длина оригинала + длина всех восстановленных переменных с пересчеотм разницы
                             // потом рассчитать новый индекс комментария из рассчета старый индекс + длина перевода + длина всех восстановленных переменных с пересчетом разницы
                             // после ищем по начальному индексу если есть комментарий и вставляем его обратно
                             // также стоит учесть, что есть и комментарии вне строк с кавычками, до них и между ними, их всех нужно вставить от начала и до конца
-                            int resultCommentIndex = m.Index + translateLength + translateOriginalDifference + varAfterToBeforeDifference;
+                            //int resultCommentIndex = m.Index + translateLength + translateOriginalDifference + varAfterToBeforeDifference;
                         }
                     }
 
