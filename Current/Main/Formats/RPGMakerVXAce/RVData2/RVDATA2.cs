@@ -117,18 +117,23 @@ namespace TranslationHelper.Formats.RPGMakerVX.RVData2
 
             if (isChanged && SaveFileMode)
             {
-                // replace all comment names back to comments
-                foreach (var keyNameCommentPair in commentsCoordinates)
-                {
-                    scriptContentToChange.Replace(keyNameCommentPair.Key, keyNameCommentPair.Value);
-                }
-                // restore variables in case of if some was not replaced earlier
-                foreach (var keyNameCommentPair in variablesCoordinates)
-                {
-                    scriptContentToChange.Replace(keyNameCommentPair.Key, keyNameCommentPair.Value);
-                }
+                RestoreVarsComments(scriptContentToChange, new Dictionary<string, string>[2] { commentsCoordinates, variablesCoordinates });
 
                 script.Text = scriptContentToChange.ToString();
+            }
+        }
+
+        private void RestoreVarsComments(StringBuilder scriptContentToChange, Dictionary<string, string>[] keyStringPairsList)
+        {
+            // replace all comment names back to comments
+            // restore variables in case of if some was not replaced earlier
+
+            foreach (var keyStringPairs in keyStringPairsList)
+            {
+                foreach (var keyStringPair in keyStringPairs)
+                {
+                    scriptContentToChange.Replace(keyStringPair.Key, keyStringPair.Value);
+                }
             }
         }
 
