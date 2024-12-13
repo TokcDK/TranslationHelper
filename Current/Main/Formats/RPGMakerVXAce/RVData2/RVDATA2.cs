@@ -80,14 +80,21 @@ namespace TranslationHelper.Formats.RPGMakerVX.RVData2
 
                         if (AddRowData(ref s, $"Script: {script.Title}") && SaveFileMode)
                         {
-                            // здесь заменить переменные на ключи передтем, как эскейпить строку, потому, что могут встречаться переменные содержащие кавычки, которые нельзя эскейпить, вроде #{Convert_Text.button_to_icon(\"決定\",false)}
+                            if (s.Contains("\"") && _variableCaptureRegex.IsMatch(s))
+                            {
+                                // здесь заменить переменные на ключи передтем, как эскейпить строку, потому, что могут встречаться переменные содержащие кавычки, которые нельзя эскейпить, вроде #{Convert_Text.button_to_icon(\"決定\",false)}
 
-                            var sb = new StringBuilder(s);
-                            var stringHidenVars = HideVariables(s, _variableCaptureRegex, sb, "%VAR", "%");
+                                var sb = new StringBuilder(s);
+                                var stringHidenVars = HideVariables(s, _variableCaptureRegex, sb, "%VAR", "%");
 
-                            string s1 = sb.ToString().EscapeQuotes(); // escape quotes in string
+                                string s1 = sb.ToString().EscapeQuotes(); // escape quotes in string
 
-                            s = RestoreStrings(s1, stringHidenVars, _variableKeyNameCaptureRegex);
+                                s = RestoreStrings(s1, stringHidenVars, _variableKeyNameCaptureRegex);
+                            }
+                            else
+                            {
+                                s = s.EscapeQuotes();
+                            }
 
                             // здесь пересчитываем длину оригинальной строки на переведенную, потом пересчитываем начальные координаты для комментария и вставляем его обратно
                             // рассчитываем как координаты для переменных, так и координаты для комментариев
