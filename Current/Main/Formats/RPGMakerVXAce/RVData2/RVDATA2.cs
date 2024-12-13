@@ -76,13 +76,7 @@ namespace TranslationHelper.Formats.RPGMakerVX.RVData2
                         var m = mc[i];
                         string s = m.Groups[1].Value;
 
-                        foreach (Match match in _variableKeyNameCaptureRegex.Matches(s))
-                        {
-                            if(variablesCoordinates.TryGetValue(match.Value, out var foundVar))
-                            {
-                                s = s.Replace(match.Value, foundVar);
-                            }
-                        }
+                        s = RestoreStrings(s, variablesCoordinates, _variableKeyNameCaptureRegex);
 
                         if (AddRowData(ref s, $"Script: {script.Title}") && SaveFileMode)
                         {
@@ -91,13 +85,16 @@ namespace TranslationHelper.Formats.RPGMakerVX.RVData2
                             var sb = new StringBuilder(s);
                             var stringHidenVars = HideVariables(script.Text, _variableCaptureRegex, new StringBuilder(s), "%VAR", "%");
 
-                            string s1 = sb.ToString().EscapeQuotes();
+                            string s1 = sb.ToString().EscapeQuotes(); // escape quotes in string
+
+                            s = RestoreStrings(s1, stringHidenVars, _variableKeyNameCaptureRegex);
+
                             // здесь пересчитываем длину оригинальной строки на переведенную, потом пересчитываем начальные координаты для комментария и вставляем его обратно
                             // рассчитываем как координаты для переменных, так и координаты для комментариев
                             isChanged = true;
                             scriptContentToChange
                                 .Remove(m.Index, m.Length)
-                                .Insert(m.Index, "\"" + s.EscapeQuotes() + "\"");
+                                .Insert(m.Index, "\"" + s + "\"");
 
                         }
                     }
@@ -135,6 +132,19 @@ namespace TranslationHelper.Formats.RPGMakerVX.RVData2
                     if (AddRowData(ref s, info) && SaveFileMode) stringData.Text = s;
                 }
             }
+        }
+
+        private string RestoreStrings(string inputString, Dictionary<string, string> keyStringPairs, Regex regex)
+        {
+            foreach (Match match in regex.Matches(inputString))
+            {
+                if (keyStringPairs.TryGetValue(match.Value, out var foundVar))
+                {
+                    inputString = inputString.Replace(match.Value, foundVar);
+                }
+            }
+
+            return inputString;
         }
 
         private Dictionary<string, string> HideVariables(string textWhereHide, Regex regex, StringBuilder stringBuilderWhereToHide, string keyPre = "%VAR", string keyAfter = "%")
