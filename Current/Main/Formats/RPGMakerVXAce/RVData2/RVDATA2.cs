@@ -49,65 +49,20 @@ namespace TranslationHelper.Formats.RPGMakerVX.RVData2
 
                     if (string.IsNullOrEmpty(script.Text)) continue;
 
-                    // capture also intext variables like #{text}
-                    // remove false capture for quotes like #{Convert_Text.button_to_icon("マルチ")}
-                    var mc = _variableCaptureRegex.Matches(script.Text);
                     var scriptTextNoVarsNoComments = new StringBuilder(script.Text);
-                    var variablesCoordinates = new Dictionary<string, string>(mc.Count);
-                    int varIndex = 1;
-                    for (int i = mc.Count - 1; i >= 0; i--)
-                    {
-                        var m = mc[i];
 
-                        // remember key name and then replace var with key name
-                        string keyName;
-                        if (variablesCoordinates.TryGetValue(m.Value, out var foundKey))
-                        {
-                            keyName = foundKey;
-                        }
-                        else
-                        {
-                            keyName = $"%VAR{varIndex++}%";
-                            variablesCoordinates.Add(m.Value, keyName);
-                        }
-                        scriptTextNoVarsNoComments.Remove(m.Index, m.Length).Insert(m.Index, keyName);
-                    }
-                    variablesCoordinates = variablesCoordinates
-                        .ToDictionary(kv => kv.Value, kv => kv.Key);
+                    // capture also variables like #{text}
+                    // need for fix false capture for quotes like #{Convert_Text.button_to_icon("マルチ")}
 
-                    // remove false capture commented quoted text
-                    mc = _commentaryCaptureRegex.Matches(scriptTextNoVarsNoComments.ToString());
-                    var commentsCoordinates = new Dictionary<string, string>(mc.Count);
-                    int commentIndex = 1;
-                    for (int i = mc.Count - 1; i >= 0; i--)
-                    {
-                        var m = mc[i];
+                    var variablesCoordinates = HideVariables(script.Text, _variableCaptureRegex, scriptTextNoVarsNoComments, "%VAR", "%");
 
-                        if(m.Value=="#" || string.IsNullOrWhiteSpace(m.Value.TrimStart().TrimStart('#')))
-                        {
-                            continue;
-                        }
-
-                        // remember coordinates of comment an remove it
-                        string keyName;
-                        if (commentsCoordinates.TryGetValue(m.Value, out var foundKey))
-                        {
-                            keyName = foundKey;
-                        }
-                        else
-                        {
-                            keyName = $"%COMMENT{commentIndex++}%";
-                            commentsCoordinates.Add(m.Value, keyName);
-                        }
-                        scriptTextNoVarsNoComments.Remove(m.Index, m.Length).Insert(m.Index, keyName);
-                    }
-                    commentsCoordinates = commentsCoordinates
-                        .ToDictionary(kv => kv.Value, kv => kv.Key);
-
+                    // need for fix false capture commented quoted text
+                    var commentsCoordinates = HideVariables(scriptTextNoVarsNoComments.ToString(), _commentaryCaptureRegex, scriptTextNoVarsNoComments, "%COMMENT", "%");
+                    
                     var scriptText = scriptTextNoVarsNoComments.ToString();
 
                     // capture quoted strings itself
-                    mc = _quoteCaptureRegex.Matches(scriptText);
+                    var mc = _quoteCaptureRegex.Matches(scriptText);
 
                     var mcCount = mc.Count;
                     if (mcCount == 0) continue;
@@ -133,6 +88,10 @@ namespace TranslationHelper.Formats.RPGMakerVX.RVData2
                         {
                             // здесь заменить переменные на ключи передтем, как эскейпить строку, потому, что могут встречаться переменные содержащие кавычки, которые нельзя эскейпить, вроде #{Convert_Text.button_to_icon(\"決定\",false)}
 
+                            var sb = new StringBuilder(s);
+                            var stringHidenVars = HideVariables(script.Text, _variableCaptureRegex, new StringBuilder(s), "%VAR", "%");
+
+                            string s1 = sb.ToString().EscapeQuotes();
                             // здесь пересчитываем длину оригинальной строки на переведенную, потом пересчитываем начальные координаты для комментария и вставляем его обратно
                             // рассчитываем как координаты для переменных, так и координаты для комментариев
                             isChanged = true;
@@ -176,6 +135,35 @@ namespace TranslationHelper.Formats.RPGMakerVX.RVData2
                     if (AddRowData(ref s, info) && SaveFileMode) stringData.Text = s;
                 }
             }
+        }
+
+        private Dictionary<string, string> HideVariables(string textWhereHide, Regex regex, StringBuilder stringBuilderWhereToHide, string keyPre = "%VAR", string keyAfter = "%")
+        {
+            var matches = regex.Matches(textWhereHide);
+            var keyStringPairs = new Dictionary<string, string>(matches.Count);
+            int keyIndex = 1;
+            for (int i = matches.Count - 1; i >= 0; i--)
+            {
+                var m = matches[i];
+
+                // remember key name and then replace var with key name
+                string keyName;
+                if (keyStringPairs.TryGetValue(m.Value, out var foundKey))
+                {
+                    keyName = foundKey;
+                }
+                else
+                {
+                    keyName = $"{keyPre}{keyIndex++}{keyAfter}";
+                    keyStringPairs.Add(m.Value, keyName);
+                }
+                stringBuilderWhereToHide.Remove(m.Index, m.Length).Insert(m.Index, keyName);
+            }
+
+            keyStringPairs = keyStringPairs
+                .ToDictionary(kv => kv.Value, kv => kv.Key);
+
+            return keyStringPairs;
         }
 
         const string _codeInfoText = "Command code: ";
