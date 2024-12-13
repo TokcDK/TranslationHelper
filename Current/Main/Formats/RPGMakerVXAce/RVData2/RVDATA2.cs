@@ -53,7 +53,7 @@ namespace TranslationHelper.Formats.RPGMakerVX.RVData2
                     // remove false capture for quotes like #{Convert_Text.button_to_icon("マルチ")}
                     var mc = _variableCaptureRegex.Matches(script.Text);
                     var scriptTextNoVarsNoComments = new StringBuilder(script.Text);
-                    var inTextVariablesCoordinates = new Dictionary<string, string>(mc.Count);
+                    var variablesCoordinates = new Dictionary<string, string>(mc.Count);
                     int varIndex = 1;
                     for (int i = mc.Count - 1; i >= 0; i--)
                     {
@@ -61,18 +61,18 @@ namespace TranslationHelper.Formats.RPGMakerVX.RVData2
 
                         // remember key name and then replace var with key name
                         string keyName;
-                        if (inTextVariablesCoordinates.TryGetValue(m.Value, out var foundKey))
+                        if (variablesCoordinates.TryGetValue(m.Value, out var foundKey))
                         {
                             keyName = foundKey;
                         }
                         else
                         {
                             keyName = $"%VAR{varIndex++}%";
-                            inTextVariablesCoordinates.Add(m.Value, keyName);
+                            variablesCoordinates.Add(m.Value, keyName);
                         }
                         scriptTextNoVarsNoComments.Remove(m.Index, m.Length).Insert(m.Index, keyName);
                     }
-                    inTextVariablesCoordinates = inTextVariablesCoordinates
+                    variablesCoordinates = variablesCoordinates
                         .ToDictionary(kv => kv.Value, kv => kv.Key);
 
                     // remove false capture commented quoted text
@@ -123,7 +123,7 @@ namespace TranslationHelper.Formats.RPGMakerVX.RVData2
 
                         foreach (Match match in _variableKeyNameCaptureRegex.Matches(s))
                         {
-                            if(inTextVariablesCoordinates.TryGetValue(match.Value, out var foundVar))
+                            if(variablesCoordinates.TryGetValue(match.Value, out var foundVar))
                             {
                                 s = s.Replace(match.Value, foundVar);
                             }
@@ -145,6 +145,11 @@ namespace TranslationHelper.Formats.RPGMakerVX.RVData2
                     {
                         // replace all comment names back to comments
                         foreach (var keyNameCommentPair in commentsCoordinates)
+                        {
+                            scriptContentToChange.Replace(keyNameCommentPair.Key, keyNameCommentPair.Value);
+                        }
+                        // restore variables in case of if some was not replaced earlier
+                        foreach (var keyNameCommentPair in variablesCoordinates)
                         {
                             scriptContentToChange.Replace(keyNameCommentPair.Key, keyNameCommentPair.Value);
                         }
