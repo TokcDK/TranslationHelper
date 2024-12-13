@@ -23,6 +23,7 @@ namespace TranslationHelper.Formats.RPGMakerVX.RVData2
         readonly Regex _quoteCaptureRegex = new Regex(AppMethods.GetRegexQuotesCapturePattern(), RegexOptions.Compiled);
         readonly Regex _commentaryCaptureRegex = new Regex("[ \t]*#[^{][^\r\n]+", RegexOptions.Compiled);
         readonly Regex _variableCaptureRegex = new Regex("((#{[^}]+})|(#[a-zA-Z0-9]+))", RegexOptions.Compiled);
+        readonly Regex _variableKeyNameCaptureRegex = new Regex(@"%VAR[0-9]+%", RegexOptions.Compiled);
         readonly Regex _mapNameCheckRegex = new Regex("[Mm]ap[0-9]{3}", RegexOptions.Compiled);
 
         protected override void FileOpen()
@@ -127,11 +128,15 @@ namespace TranslationHelper.Formats.RPGMakerVX.RVData2
                         string s = m.Groups[1].Value;
                         //int origialLength = s.Length;
 
-                        foreach (Match match in _variableCaptureRegex.Matches(s))
+                        if (s.Contains("%VAR"))
                         {
-                            if(inTextVariablesCoordinates.TryGetValue(match.Value, out var foundKey))
+                        }
+
+                        foreach (Match match in _variableKeyNameCaptureRegex.Matches(s))
+                        {
+                            if(inTextVariablesCoordinates.TryGetValue(match.Value, out var foundVar))
                             {
-                                s = s.Replace(match.Value, foundKey);
+                                s = s.Replace(match.Value, foundVar);
                             }
                         }
 
