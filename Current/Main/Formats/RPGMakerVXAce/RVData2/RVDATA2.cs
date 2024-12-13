@@ -193,7 +193,7 @@ namespace TranslationHelper.Formats.RPGMakerVX.RVData2
             }
 
             keyStringPairs = keyStringPairs
-                .ToDictionary(kv => kv.Value, kv => kv.Key);
+                .ToDictionary(kv => kv.Value, kv => kv.Key); // make key name as key
 
             return keyStringPairs;
         }
