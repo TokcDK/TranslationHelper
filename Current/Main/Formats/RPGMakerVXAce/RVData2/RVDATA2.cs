@@ -86,6 +86,9 @@ namespace TranslationHelper.Formats.RPGMakerVX.RVData2
 
             // need for fix false capture commented quoted text
             var commentsCoordinates = HideVariables(scriptTextNoVarsNoComments.ToString(), _commentaryCaptureRegex, scriptTextNoVarsNoComments, "%COMMENT", "%");
+            
+            // need for fix false capture quotes inside of regex value of the variables
+            // like comments they are outside of required quoted strings
             var variablesRegexCoordinates = HideVariables(scriptTextNoVarsNoComments.ToString(), _variableRegexCaptureRegex, scriptTextNoVarsNoComments, "%COMMENT", "%");
 
             var scriptText = scriptTextNoVarsNoComments.ToString();
