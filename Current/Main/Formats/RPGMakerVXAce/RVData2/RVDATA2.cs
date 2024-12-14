@@ -25,6 +25,8 @@ namespace TranslationHelper.Formats.RPGMakerVX.RVData2
         readonly Regex _commentaryKeyNameCaptureRegex = new Regex(@"%COMMENT[0-9]+%", RegexOptions.Compiled);
         readonly Regex _variableCaptureRegex = new Regex("((#{[^}]+})|(#[a-zA-Z0-9]+))", RegexOptions.Compiled);
         readonly Regex _variableKeyNameCaptureRegex = new Regex(@"%VAR[0-9]+%", RegexOptions.Compiled);
+        readonly Regex _variableRegexCaptureRegex = new Regex(@"[A-Za-z0-9_]+\s*=\s*/(?:[^/]+)/i", RegexOptions.Compiled);
+        readonly Regex _variableRegexKeyNameCaptureRegex = new Regex(@"%REGVAR[0-9]+%", RegexOptions.Compiled);
         readonly Regex _mapNameCheckRegex = new Regex("[Mm]ap[0-9]{3}", RegexOptions.Compiled);
 
         protected override void FileOpen()
@@ -71,6 +73,9 @@ namespace TranslationHelper.Formats.RPGMakerVX.RVData2
             // parse all strings inside quotes in script content
 
             if (string.IsNullOrEmpty(script.Text)) return;
+            if (script.Text.Contains("def self.バトルステータス更新"))
+            {
+            }
 
             var scriptTextNoVarsNoComments = new StringBuilder(script.Text);
 
@@ -81,6 +86,7 @@ namespace TranslationHelper.Formats.RPGMakerVX.RVData2
 
             // need for fix false capture commented quoted text
             var commentsCoordinates = HideVariables(scriptTextNoVarsNoComments.ToString(), _commentaryCaptureRegex, scriptTextNoVarsNoComments, "%COMMENT", "%");
+            var variablesRegexCoordinates = HideVariables(scriptTextNoVarsNoComments.ToString(), _variableRegexCaptureRegex, scriptTextNoVarsNoComments, "%COMMENT", "%");
 
             var scriptText = scriptTextNoVarsNoComments.ToString();
 
@@ -117,7 +123,12 @@ namespace TranslationHelper.Formats.RPGMakerVX.RVData2
 
             if (isChanged && SaveFileMode)
             {
-                RestoreVarsComments(scriptContentToChange, new Dictionary<string, string>[2] { commentsCoordinates, variablesCoordinates });
+                RestoreVarsComments(scriptContentToChange, new Dictionary<string, string>[3] 
+                { 
+                    commentsCoordinates,
+                    variablesRegexCoordinates,
+                    variablesCoordinates, 
+                });
 
                 script.Text = scriptContentToChange.ToString();
             }
