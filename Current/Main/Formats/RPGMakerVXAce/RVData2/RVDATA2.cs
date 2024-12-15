@@ -71,14 +71,14 @@ namespace TranslationHelper.Formats.RPGMakerVX.RVData2
 
         private void ParseScript(ScriptsParser.Script script)
         {
-            if (script.Title.Contains("＊ ＴＥＳ本体 ＊"))
+            if (script.Title.Contains("カスタムメニューコマンド"))
             {
             }
 
             // parse all strings inside quotes in script content
 
             if (string.IsNullOrEmpty(script.Text)) return;
-            if (script.Text.Contains("KB_sanran3 きとるやんね！！！"))
+            if (script.Text.Contains("\"スキル習得\""))
             {
             }
 
@@ -141,9 +141,10 @@ namespace TranslationHelper.Formats.RPGMakerVX.RVData2
             }
 
             // quoted strings with comment markers
-            foreach(var quotedStringWithCommentMarker in quotedStringsWithCommentMarker)
+            foreach(var key in quotedStringsWithCommentMarker.Keys.ToArray())
             {
-                var quotedStringMatch = _quoteCaptureHaveCommentMarkerRegex.Match(quotedStringWithCommentMarker.Value);
+                string stringValue = quotedStringsWithCommentMarker[key];
+                var quotedStringMatch = _quoteCaptureHaveCommentMarkerRegex.Match(stringValue);
                 if(!quotedStringMatch.Success) continue ;
 
                 var group1 = quotedStringMatch.Groups[1];
@@ -154,7 +155,7 @@ namespace TranslationHelper.Formats.RPGMakerVX.RVData2
                     s = EscapeQuotes(s);
 
                     isChanged = true;
-                    quotedStringsWithCommentMarker[quotedStringWithCommentMarker.Key] = quotedStringWithCommentMarker.Value
+                    quotedStringsWithCommentMarker[key] = stringValue
                         .Remove(group1.Index, group1.Length).Insert(group1.Index, s);
                 }
             }
@@ -279,6 +280,10 @@ namespace TranslationHelper.Formats.RPGMakerVX.RVData2
 
         protected override bool DoWriteFile(string filePath = "")
         {
+            if (filePath.Contains("Scripts"))
+            {
+            }
+
             try
             {
                 if (_isScripts)
