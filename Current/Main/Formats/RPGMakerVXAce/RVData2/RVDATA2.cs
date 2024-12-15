@@ -39,7 +39,7 @@ namespace TranslationHelper.Formats.RPGMakerVX.RVData2
             var name = Path.GetFileNameWithoutExtension(FilePath);
             _isScripts = string.Equals(name, "scripts", StringComparison.InvariantCultureIgnoreCase);
 
-            bool isBytes = fileBytes != null && fileBytes.Length > 0;
+            //bool isBytes = fileBytes != null && fileBytes.Length > 0;
 
             if (_isScripts)
             {
