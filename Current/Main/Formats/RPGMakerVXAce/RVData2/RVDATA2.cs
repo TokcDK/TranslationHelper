@@ -71,16 +71,9 @@ namespace TranslationHelper.Formats.RPGMakerVX.RVData2
 
         private void ParseScript(ScriptsParser.Script script)
         {
-            if (script.Title.Contains("カスタムメニューコマンド"))
-            {
-            }
-
             // parse all strings inside quotes in script content
 
             if (string.IsNullOrEmpty(script.Text)) return;
-            if (script.Text.Contains("\"スキル習得\""))
-            {
-            }
 
             var scriptTextNoVarsNoComments = new StringBuilder(script.Text);
 
@@ -109,10 +102,6 @@ namespace TranslationHelper.Formats.RPGMakerVX.RVData2
 
             bool isChanged = false;
 
-            if (script.Title.Contains("カスタムメニューコマンド"))
-            {
-            }
-
             var scriptContentToChange = SaveFileMode ? new StringBuilder(scriptText) : null;
             // negative order because length of content is changing
             for (int i = mcCount - 1; i >= 0; i--)
@@ -122,10 +111,6 @@ namespace TranslationHelper.Formats.RPGMakerVX.RVData2
 
                 s = RestoreStrings(s, variablesCoordinates, _variableKeyNameCaptureRegex);
                 
-                if (s.Contains("スキル習得"))
-                {
-                }
-
                 if (AddRowData(ref s, $"Script: {script.Title}") && SaveFileMode)
                 {
                     s = EscapeQuotes(s);
@@ -169,10 +154,6 @@ namespace TranslationHelper.Formats.RPGMakerVX.RVData2
                     variablesCoordinates, 
                     quotedStringsWithCommentMarker, 
                 });
-
-                if (script.Title.Contains("カスタムメニューコマンド"))
-                {
-                }
 
                 script.Text = scriptContentToChange.ToString();
             }
