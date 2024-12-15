@@ -21,7 +21,8 @@ namespace TranslationHelper.Formats.RPGMakerVX.RVData2
         object _parser;
         byte[] _bytes;
         readonly Regex _quoteCaptureRegex = new Regex(AppMethods.GetRegexQuotesCapturePattern(), RegexOptions.Compiled);
-        readonly Regex _commentaryCaptureRegex = new Regex("[ \t]*#[^{][^\r\n]+", RegexOptions.Compiled);
+        readonly Regex _quoteCaptureHaveCommentMarkerRegex = new Regex(@"[p\=] \""(#+((?:[^\""\\\r\n]|\\.)*?)#+)\""", RegexOptions.Compiled); // equal quoted part containing comment marker #
+        readonly Regex _commentaryCaptureRegex = new Regex("[ \t]*#[^{#][^\r\n]+", RegexOptions.Compiled);
         readonly Regex _commentaryKeyNameCaptureRegex = new Regex(@"%COMMENT[0-9]+%", RegexOptions.Compiled);
         readonly Regex _variableCaptureRegex = new Regex("((#{[^}]+})|(#[a-zA-Z0-9]+))", RegexOptions.Compiled);
         readonly Regex _variableKeyNameCaptureRegex = new Regex(@"%VAR[0-9]+%", RegexOptions.Compiled);
@@ -73,7 +74,7 @@ namespace TranslationHelper.Formats.RPGMakerVX.RVData2
             // parse all strings inside quotes in script content
 
             if (string.IsNullOrEmpty(script.Text)) return;
-            if (script.Text.Contains("def self.バトルステータス更新"))
+            if (script.Text.Contains("    #70をはみでるときは70で"))
             {
             }
 
@@ -83,6 +84,9 @@ namespace TranslationHelper.Formats.RPGMakerVX.RVData2
             // need for fix false capture for quotes like #{Convert_Text.button_to_icon("マルチ")}
 
             var variablesCoordinates = HideVariables(script.Text, _variableCaptureRegex, scriptTextNoVarsNoComments, "%VAR", "%");
+            
+            // hide quoted strings with comment marker, before comments gide to prevent false comment capture
+            var quotedStringsWithCommentMarker = HideVariables(script.Text, _quoteCaptureHaveCommentMarkerRegex, scriptTextNoVarsNoComments, "%QUOTED", "%");
 
             // need for fix false capture commented quoted text
             var commentsCoordinates = HideVariables(scriptTextNoVarsNoComments.ToString(), _commentaryCaptureRegex, scriptTextNoVarsNoComments, "%COMMENT", "%");
@@ -124,13 +128,33 @@ namespace TranslationHelper.Formats.RPGMakerVX.RVData2
                 }
             }
 
+            // quoted strings with comment markers
+            foreach(var quotedStringWithCommentMarker in quotedStringsWithCommentMarker)
+            {
+                var quotedStringMatch = _quoteCaptureHaveCommentMarkerRegex.Match(quotedStringWithCommentMarker.Value);
+                if(!quotedStringMatch.Success) continue ;
+
+                var group1 = quotedStringMatch.Groups[1];
+                string s = group1.Value;
+
+                if (AddRowData(ref s, $"Script: {script.Title}") && SaveFileMode)
+                {
+                    s = EscapeQuotes(s);
+
+                    isChanged = true;
+                    quotedStringsWithCommentMarker[quotedStringWithCommentMarker.Key] = quotedStringWithCommentMarker.Value
+                        .Remove(group1.Index, group1.Length).Insert(group1.Index, s);
+                }
+            }
+
             if (isChanged && SaveFileMode)
             {
-                RestoreVarsComments(scriptContentToChange, new Dictionary<string, string>[3] 
+                RestoreVarsComments(scriptContentToChange, new Dictionary<string, string>[4] 
                 { 
                     commentsCoordinates,
                     variablesRegexCoordinates,
                     variablesCoordinates, 
+                    quotedStringsWithCommentMarker, 
                 });
 
                 script.Text = scriptContentToChange.ToString();
