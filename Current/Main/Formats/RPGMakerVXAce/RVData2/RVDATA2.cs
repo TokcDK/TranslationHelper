@@ -71,6 +71,10 @@ namespace TranslationHelper.Formats.RPGMakerVX.RVData2
 
         private void ParseScript(ScriptsParser.Script script)
         {
+            if (script.Title.Contains("＊ ＴＥＳ本体 ＊"))
+            {
+            }
+
             // parse all strings inside quotes in script content
 
             if (string.IsNullOrEmpty(script.Text)) return;
@@ -88,9 +92,9 @@ namespace TranslationHelper.Formats.RPGMakerVX.RVData2
             var variablesRegexCoordinates = HideVariables(scriptTextNoVarsNoComments.ToString(), _variableRegexCaptureRegex, scriptTextNoVarsNoComments, "%COMMENT", "%");
 
             // hide quoted strings with comment marker, before comments gide to prevent false comment capture
-            var quotedStringsWithCommentMarker = HideVariables(script.Text, _quoteCaptureHaveCommentMarkerRegex, scriptTextNoVarsNoComments, "%QUOTED", "%");
+            var quotedStringsWithCommentMarker = HideVariables(scriptTextNoVarsNoComments.ToString(), _quoteCaptureHaveCommentMarkerRegex, scriptTextNoVarsNoComments, "%QUOTED", "%");
 
-            var variablesCoordinates = HideVariables(script.Text, _variableCaptureRegex, scriptTextNoVarsNoComments, "%VAR", "%");
+            var variablesCoordinates = HideVariables(scriptTextNoVarsNoComments.ToString(), _variableCaptureRegex, scriptTextNoVarsNoComments, "%VAR", "%");
 
             // need for fix false capture commented quoted text
             var commentsCoordinates = HideVariables(scriptTextNoVarsNoComments.ToString(), _commentaryCaptureRegex, scriptTextNoVarsNoComments, "%COMMENT", "%");
@@ -105,6 +109,10 @@ namespace TranslationHelper.Formats.RPGMakerVX.RVData2
 
             bool isChanged = false;
 
+            if (script.Title.Contains("カスタムメニューコマンド"))
+            {
+            }
+
             var scriptContentToChange = SaveFileMode ? new StringBuilder(scriptText) : null;
             // negative order because length of content is changing
             for (int i = mcCount - 1; i >= 0; i--)
@@ -113,6 +121,10 @@ namespace TranslationHelper.Formats.RPGMakerVX.RVData2
                 string s = m.Groups[1].Value;
 
                 s = RestoreStrings(s, variablesCoordinates, _variableKeyNameCaptureRegex);
+                
+                if (s.Contains("スキル習得"))
+                {
+                }
 
                 if (AddRowData(ref s, $"Script: {script.Title}") && SaveFileMode)
                 {
@@ -156,6 +168,10 @@ namespace TranslationHelper.Formats.RPGMakerVX.RVData2
                     variablesCoordinates, 
                     quotedStringsWithCommentMarker, 
                 });
+
+                if (script.Title.Contains("カスタムメニューコマンド"))
+                {
+                }
 
                 script.Text = scriptContentToChange.ToString();
             }
