@@ -74,7 +74,7 @@ namespace TranslationHelper.Formats.RPGMakerVX.RVData2
             // parse all strings inside quotes in script content
 
             if (string.IsNullOrEmpty(script.Text)) return;
-            if (script.Text.Contains("    #70をはみでるときは70で"))
+            if (script.Text.Contains("KB_sanran3 きとるやんね！！！"))
             {
             }
 
@@ -83,17 +83,17 @@ namespace TranslationHelper.Formats.RPGMakerVX.RVData2
             // capture also variables like #{text}
             // need for fix false capture for quotes like #{Convert_Text.button_to_icon("マルチ")}
 
-            var variablesCoordinates = HideVariables(script.Text, _variableCaptureRegex, scriptTextNoVarsNoComments, "%VAR", "%");
-            
-            // hide quoted strings with comment marker, before comments gide to prevent false comment capture
-            var quotedStringsWithCommentMarker = HideVariables(script.Text, _quoteCaptureHaveCommentMarkerRegex, scriptTextNoVarsNoComments, "%QUOTED", "%");
-
-            // need for fix false capture commented quoted text
-            var commentsCoordinates = HideVariables(scriptTextNoVarsNoComments.ToString(), _commentaryCaptureRegex, scriptTextNoVarsNoComments, "%COMMENT", "%");
-            
             // need for fix false capture quotes inside of regex value of the variables
             // like comments they are outside of required quoted strings
             var variablesRegexCoordinates = HideVariables(scriptTextNoVarsNoComments.ToString(), _variableRegexCaptureRegex, scriptTextNoVarsNoComments, "%COMMENT", "%");
+
+            // hide quoted strings with comment marker, before comments gide to prevent false comment capture
+            var quotedStringsWithCommentMarker = HideVariables(script.Text, _quoteCaptureHaveCommentMarkerRegex, scriptTextNoVarsNoComments, "%QUOTED", "%");
+
+            var variablesCoordinates = HideVariables(script.Text, _variableCaptureRegex, scriptTextNoVarsNoComments, "%VAR", "%");
+
+            // need for fix false capture commented quoted text
+            var commentsCoordinates = HideVariables(scriptTextNoVarsNoComments.ToString(), _commentaryCaptureRegex, scriptTextNoVarsNoComments, "%COMMENT", "%");
 
             var scriptText = scriptTextNoVarsNoComments.ToString();
 
