@@ -439,7 +439,7 @@ namespace TranslationHelper
         private void SearchAllButton_Click(object sender, EventArgs e)
         {
             if (AppData.CurrentProject.FilesContent == null
-                || !SearchFindLinesWithPossibleIssuesCheckBox.Checked && SearchFormFindWhatTextBox.Text.Length == 0)
+                || !SearchFindLinesWithPossibleIssuesCheckBox.Checked && !SearchEmptyCheckBox.Checked && SearchFormFindWhatTextBox.Text.Length == 0)
             {
                 return;
             }
@@ -499,6 +499,7 @@ namespace TranslationHelper
             int searchColumnIndex = SearchColumnIndex;
             bool isSearchInInfo = SearchInInfoCheckBox.Checked;
             bool isIssuesSearch = SearchFindLinesWithPossibleIssuesCheckBox.Checked;
+            bool isEmptySearch = SearchEmptyCheckBox.Checked;
 
             var searchQueryText = SearchFormFindWhatTextBox.Text.Split(new[] { _doubleSearchMarker }, StringSplitOptions.None);
             if (searchQueryText.Length == 2 && string.IsNullOrEmpty(searchQueryText[1]))
@@ -511,11 +512,11 @@ namespace TranslationHelper
                 // uncheck double search checkbox if marker is missing in search query
                 DoubleSearchOptionCheckBox.Checked = false;
             }
-            if (!isIssuesSearch && string.IsNullOrEmpty(searchQueryText[0])) yield break; // return if 1st query is empty
+            if (!isIssuesSearch && !isEmptySearch && string.IsNullOrEmpty(searchQueryText[0])) yield break; // return if 1st query is empty
             _isDoubleSearch = !isSearchInInfo && !isIssuesSearch && searchQueryText.Length == 2;
 
             // check if regex pattern is valid
-            if (SearchModeRegexRadioButton.Checked && searchQueryText.Any(v => !v.IsValidRegexPattern()))
+            if (!isIssuesSearch && !isEmptySearch && SearchModeRegexRadioButton.Checked && searchQueryText.Any(v => !v.IsValidRegexPattern()))
             {
                 lblSearchMsg.Visible = true;
                 lblSearchMsg.Text = T._("Invalid regex!");
@@ -544,7 +545,7 @@ namespace TranslationHelper
 
                     var row2check = _tables[tableIndex].Rows[rowIndex];
 
-                    if (IsValid2Search(row2check, searchColumnIndex))
+                    if (!IsValid2Search(row2check, searchColumnIndex))
                     {
                         continue;
                     }
@@ -560,6 +561,10 @@ namespace TranslationHelper
                         }
                     }
                     else if (isIssuesSearch && IsTheRowHasPossibleIssues(row2check)) //search rows with possible issues
+                    {
+                        yield return GetFoundRowData(row2check);
+                    }
+                    else if (SearchEmptyCheckBox.Checked && IsEmptyTranslation(row2check)) //search rows with possible issues
                     {
                         yield return GetFoundRowData(row2check);
                     }
@@ -587,13 +592,33 @@ namespace TranslationHelper
             }
         }
 
+        private bool IsEmptyTranslation(DataRow row2check)
+        {
+            return string.IsNullOrEmpty(row2check.Field<string>(_translationColumnIndex));
+        }
+
         private bool IsValid2Search(DataRow row2check, int searchcolumn)
         {
-            //skip equal lines if need, skip empty search cells && not skip when row issue search
-            return (chkbxDoNotTouchEqualOT.Checked && row2check[_originalColumnIndex].Equals(row2check[_translationColumnIndex]))
-                        || (!chkbxDoNotTouchEqualOT.Checked
+            //skip equal lines if need, skip empty search cells && not skip when row issue search && when empty translation search
+            return !(
+                        (chkbxDoNotTouchEqualOT.Checked && OriginalEqualTranslation(row2check)) // if enabled, skip original and translation equal
+                        ||
+                        (
+                        // skip empty translation
+                        !chkbxDoNotTouchEqualOT.Checked
                         && !SearchFindLinesWithPossibleIssuesCheckBox.Checked
-                        && (row2check[searchcolumn] + string.Empty).Length == 0);
+                        && !SearchEmptyCheckBox.Checked
+                        && row2check.Field<string>(searchcolumn).Length == 0
+                        )
+                        ||
+                        // when skip empty there is not empty translation
+                        SearchEmptyCheckBox.Checked && !IsEmptyTranslation(row2check)
+                    );
+        }
+
+        private bool OriginalEqualTranslation(DataRow row2check)
+        {
+            return row2check.Field<string>(_originalColumnIndex).Equals(row2check.Field<string>(_translationColumnIndex));
         }
 
         private bool GetCheckResult(string[] textWhereToSearch, string[] strQuery)

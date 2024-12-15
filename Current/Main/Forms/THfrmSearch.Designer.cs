@@ -73,6 +73,7 @@
             this.SearchFormFindWhatComboBox = new System.Windows.Forms.ComboBox();
             this.SearchFormReplaceWithComboBox = new System.Windows.Forms.ComboBox();
             this.label1 = new System.Windows.Forms.Label();
+            this.SearchEmptyCheckBox = new System.Windows.Forms.CheckBox();
             this.THSearchTabs.SuspendLayout();
             this.THSearch1st.SuspendLayout();
             this.SearchResultsPanel.SuspendLayout();
@@ -210,28 +211,31 @@
             // 
             this.tableLayoutPanel1.ColumnCount = 1;
             this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tableLayoutPanel1.Controls.Add(this.DoubleSearchOptionCheckBox, 0, 4);
-            this.tableLayoutPanel1.Controls.Add(this.chkbxDoNotTouchEqualOT, 0, 3);
             this.tableLayoutPanel1.Controls.Add(this.THSearchMatchCaseCheckBox, 0, 0);
             this.tableLayoutPanel1.Controls.Add(this.SearchInInfoCheckBox, 0, 1);
             this.tableLayoutPanel1.Controls.Add(this.SearchFindLinesWithPossibleIssuesCheckBox, 0, 2);
+            this.tableLayoutPanel1.Controls.Add(this.SearchEmptyCheckBox, 0, 3);
+            this.tableLayoutPanel1.Controls.Add(this.chkbxDoNotTouchEqualOT, 0, 5);
+            this.tableLayoutPanel1.Controls.Add(this.DoubleSearchOptionCheckBox, 0, 4);
             this.tableLayoutPanel1.Location = new System.Drawing.Point(135, 73);
             this.tableLayoutPanel1.Name = "tableLayoutPanel1";
-            this.tableLayoutPanel1.RowCount = 5;
+            this.tableLayoutPanel1.RowCount = 7;
+            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 21F));
+            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 21F));
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 21F));
+            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 21F));
+            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 21F));
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
-            this.tableLayoutPanel1.Size = new System.Drawing.Size(283, 118);
+            this.tableLayoutPanel1.Size = new System.Drawing.Size(283, 129);
             this.tableLayoutPanel1.TabIndex = 27;
             // 
             // DoubleSearchOptionCheckBox
             // 
             this.DoubleSearchOptionCheckBox.AutoSize = true;
-            this.DoubleSearchOptionCheckBox.Location = new System.Drawing.Point(3, 95);
+            this.DoubleSearchOptionCheckBox.Location = new System.Drawing.Point(3, 89);
             this.DoubleSearchOptionCheckBox.Name = "DoubleSearchOptionCheckBox";
-            this.DoubleSearchOptionCheckBox.Size = new System.Drawing.Size(95, 17);
+            this.DoubleSearchOptionCheckBox.Size = new System.Drawing.Size(95, 15);
             this.DoubleSearchOptionCheckBox.TabIndex = 28;
             this.DoubleSearchOptionCheckBox.Text = "Double search";
             this.DoubleSearchOptionCheckBox.UseVisualStyleBackColor = true;
@@ -242,9 +246,9 @@
             this.chkbxDoNotTouchEqualOT.AutoSize = true;
             this.chkbxDoNotTouchEqualOT.Checked = true;
             this.chkbxDoNotTouchEqualOT.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.chkbxDoNotTouchEqualOT.Location = new System.Drawing.Point(3, 72);
+            this.chkbxDoNotTouchEqualOT.Location = new System.Drawing.Point(3, 110);
             this.chkbxDoNotTouchEqualOT.Name = "chkbxDoNotTouchEqualOT";
-            this.chkbxDoNotTouchEqualOT.Size = new System.Drawing.Size(176, 17);
+            this.chkbxDoNotTouchEqualOT.Size = new System.Drawing.Size(176, 15);
             this.chkbxDoNotTouchEqualOT.TabIndex = 27;
             this.chkbxDoNotTouchEqualOT.Text = "Ignore Original=Translation lines";
             this.chkbxDoNotTouchEqualOT.UseVisualStyleBackColor = true;
@@ -254,7 +258,7 @@
             this.THSearchMatchCaseCheckBox.AutoSize = true;
             this.THSearchMatchCaseCheckBox.Location = new System.Drawing.Point(3, 3);
             this.THSearchMatchCaseCheckBox.Name = "THSearchMatchCaseCheckBox";
-            this.THSearchMatchCaseCheckBox.Size = new System.Drawing.Size(83, 17);
+            this.THSearchMatchCaseCheckBox.Size = new System.Drawing.Size(83, 15);
             this.THSearchMatchCaseCheckBox.TabIndex = 19;
             this.THSearchMatchCaseCheckBox.Text = "Match Case";
             this.THSearchMatchCaseCheckBox.UseVisualStyleBackColor = true;
@@ -262,9 +266,9 @@
             // SearchInInfoCheckBox
             // 
             this.SearchInInfoCheckBox.AutoSize = true;
-            this.SearchInInfoCheckBox.Location = new System.Drawing.Point(3, 26);
+            this.SearchInInfoCheckBox.Location = new System.Drawing.Point(3, 24);
             this.SearchInInfoCheckBox.Name = "SearchInInfoCheckBox";
-            this.SearchInInfoCheckBox.Size = new System.Drawing.Size(56, 17);
+            this.SearchInInfoCheckBox.Size = new System.Drawing.Size(56, 15);
             this.SearchInInfoCheckBox.TabIndex = 26;
             this.SearchInInfoCheckBox.Text = "In Info";
             this.SearchInInfoCheckBox.UseVisualStyleBackColor = true;
@@ -272,7 +276,7 @@
             // SearchFindLinesWithPossibleIssuesCheckBox
             // 
             this.SearchFindLinesWithPossibleIssuesCheckBox.AutoSize = true;
-            this.SearchFindLinesWithPossibleIssuesCheckBox.Location = new System.Drawing.Point(3, 49);
+            this.SearchFindLinesWithPossibleIssuesCheckBox.Location = new System.Drawing.Point(3, 45);
             this.SearchFindLinesWithPossibleIssuesCheckBox.Name = "SearchFindLinesWithPossibleIssuesCheckBox";
             this.SearchFindLinesWithPossibleIssuesCheckBox.Size = new System.Drawing.Size(165, 17);
             this.SearchFindLinesWithPossibleIssuesCheckBox.TabIndex = 22;
@@ -591,6 +595,16 @@
             this.label1.TabIndex = 3;
             this.label1.Text = "Replace with:";
             // 
+            // SearchEmptyCheckBox
+            // 
+            this.SearchEmptyCheckBox.AutoSize = true;
+            this.SearchEmptyCheckBox.Location = new System.Drawing.Point(3, 68);
+            this.SearchEmptyCheckBox.Name = "SearchEmptyCheckBox";
+            this.SearchEmptyCheckBox.Size = new System.Drawing.Size(91, 15);
+            this.SearchEmptyCheckBox.TabIndex = 29;
+            this.SearchEmptyCheckBox.Text = "Search empty";
+            this.SearchEmptyCheckBox.UseVisualStyleBackColor = true;
+            // 
             // THfrmSearch
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -680,5 +694,6 @@
         private System.Windows.Forms.RadioButton SearchRangeSelectedRadioButton;
         private System.Windows.Forms.RadioButton SearchRangeVisibleRadioButton;
         private System.Windows.Forms.CheckBox DoubleSearchOptionCheckBox;
+        private System.Windows.Forms.CheckBox SearchEmptyCheckBox;
     }
 }
