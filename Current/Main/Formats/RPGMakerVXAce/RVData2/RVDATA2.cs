@@ -24,7 +24,7 @@ namespace TranslationHelper.Formats.RPGMakerVX.RVData2
         readonly Regex _quoteCaptureHaveCommentMarkerRegex = new Regex(@"[p\=] \""(#+((?:[^\""\\\r\n]|\\.)*?)#+)\""", RegexOptions.Compiled); // equal quoted part containing comment marker #
         readonly Regex _commentaryCaptureRegex = new Regex("[ \t]*#[^{#][^\r\n]+", RegexOptions.Compiled);
         readonly Regex _commentaryKeyNameCaptureRegex = new Regex(@"%COMMENT[0-9]+%", RegexOptions.Compiled);
-        readonly Regex _variableCaptureRegex = new Regex("((#{[^}]+})|(#[a-zA-Z0-9]+))", RegexOptions.Compiled);
+        readonly Regex _variableCaptureRegex = new Regex("#{[^}]+}", RegexOptions.Compiled);
         readonly Regex _variableKeyNameCaptureRegex = new Regex(@"%VAR[0-9]+%", RegexOptions.Compiled);
         readonly Regex _variableRegexCaptureRegex = new Regex(@"[A-Za-z0-9_]+\s*=\s*/(?:[^/]+)/i", RegexOptions.Compiled);
         readonly Regex _variableRegexKeyNameCaptureRegex = new Regex(@"%REGVAR[0-9]+%", RegexOptions.Compiled);
@@ -77,9 +77,6 @@ namespace TranslationHelper.Formats.RPGMakerVX.RVData2
 
             var scriptTextNoVarsNoComments = new StringBuilder(script.Text);
 
-            // capture also variables like #{text}
-            // need for fix false capture for quotes like #{Convert_Text.button_to_icon("マルチ")}
-
             // need for fix false capture quotes inside of regex value of the variables
             // like comments they are outside of required quoted strings
             var variablesRegexCoordinates = HideVariables(scriptTextNoVarsNoComments.ToString(), _variableRegexCaptureRegex, scriptTextNoVarsNoComments, "%COMMENT", "%");
@@ -87,6 +84,9 @@ namespace TranslationHelper.Formats.RPGMakerVX.RVData2
             // hide quoted strings with comment marker, before comments gide to prevent false comment capture
             var quotedStringsWithCommentMarker = HideVariables(scriptTextNoVarsNoComments.ToString(), _quoteCaptureHaveCommentMarkerRegex, scriptTextNoVarsNoComments, "%QUOTED", "%");
 
+            // capture also variables like #{text}
+            // need for fix false capture for quotes like #{Convert_Text.button_to_icon("マルチ")}
+            // also prevent false comment capture
             var variablesCoordinates = HideVariables(scriptTextNoVarsNoComments.ToString(), _variableCaptureRegex, scriptTextNoVarsNoComments, "%VAR", "%");
 
             // need for fix false capture commented quoted text
