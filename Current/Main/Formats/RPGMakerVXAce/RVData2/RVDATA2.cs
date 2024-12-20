@@ -261,10 +261,6 @@ namespace TranslationHelper.Formats.RPGMakerVX.RVData2
 
         protected override bool DoWriteFile(string filePath = "")
         {
-            if (filePath.Contains("Scripts"))
-            {
-            }
-
             try
             {
                 if (_isScripts)
