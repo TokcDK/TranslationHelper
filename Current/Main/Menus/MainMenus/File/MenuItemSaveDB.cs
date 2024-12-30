@@ -29,7 +29,7 @@ namespace TranslationHelper.Menus.MainMenus.File
 
             var pathNextToSource = Path.Combine(AppData.CurrentProject.SelectedDir, Data.AppData.TranslationFileSourceDirSuffix + fileExtension);
 
-            AppData.Main.lastautosavepath = path;
+            FunctionAutoSave.lastautosavepath = path;
 
             AppData.Main.ProgressInfo(true);
 

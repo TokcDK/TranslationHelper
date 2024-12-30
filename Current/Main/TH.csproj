@@ -153,6 +153,7 @@
     <Compile Include="Functions\FileElementsFunctions\Row\SearchRowIssueCheckers\ContainsNonRomaji.cs" />
     <Compile Include="Functions\FileElementsFunctions\Row\SearchRowIssueCheckers\ISearchIssueChecker.cs" />
     <Compile Include="Functions\FileElementsFunctions\Row\ShowTranslationRegex.cs" />
+    <Compile Include="Functions\FunctionAutoSave.cs" />
     <Compile Include="Functions\FunctionRules.cs" />
     <Compile Include="Functions\FunctionsCleanup.cs" />
     <Compile Include="Data\FileInfo.cs" />
