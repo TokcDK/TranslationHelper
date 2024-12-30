@@ -881,7 +881,7 @@ namespace TranslationHelper
             //}));
         }
 
-        internal async void LoadDB(bool force = true)
+        internal async Task LoadDB(bool force = true)
         {
             if (AppData.CurrentProject.IsLoadingDB) return;
 
@@ -893,7 +893,7 @@ namespace TranslationHelper
         }
 
         bool LoadTranslationToolStripMenuItem_ClickIsBusy;
-        internal async void LoadTranslationFromDB(string sPath = "", bool UseAllDB = false, bool forced = false)
+        internal async Task LoadTranslationFromDB(string sPath = "", bool UseAllDB = false, bool forced = false)
         {
             if (LoadTranslationToolStripMenuItem_ClickIsBusy || (!UseAllDB && sPath.Length == 0))
             {
@@ -940,7 +940,7 @@ namespace TranslationHelper
             _ = THFilesList.Invoke((Action)(() => THFilesList.Refresh()));
         }
 
-        private void ReadDBAndLoadDBCompare(DataSet dbDataSet, string sPath, bool forceOverwriteTranslations = false)
+        private Task ReadDBAndLoadDBCompare(DataSet dbDataSet, string sPath, bool forceOverwriteTranslations = false)
         {
             if (sPath.Length == 0)
             {
@@ -950,7 +950,7 @@ namespace TranslationHelper
             if (!File.Exists(sPath))
             {
                 ProgressInfo(false);
-                return;
+                return Task.CompletedTask;
             }
 
             ProgressInfo(true, T._("Reading DB File") + "...");
@@ -1012,6 +1012,8 @@ namespace TranslationHelper
             }
 
             ProgressInfo(false);
+
+            return Task.CompletedTask;
         }
 
         private void LoadTrasnlationAsToolStripMenuItem_Click(object sender, EventArgs e)
@@ -1022,7 +1024,7 @@ namespace TranslationHelper
         /// Load translation from selected DB
         /// </summary>
         /// <param name="forced">means load with current lines override even if they are not empty</param>
-        internal async void LoadDBAs(bool forced = false)
+        internal async Task LoadDBAs(bool forced = false)
         {
             //Do nothing if user will try to use Open menu before previous will be finished
             if (IsOpeningInProcess) return;
@@ -1214,7 +1216,7 @@ namespace TranslationHelper
 
         }
 
-        internal async void WriteDBFileLite(DataSet ds, string[] fileNames)
+        internal async Task WriteDBFileLite(DataSet ds, string[] fileNames)
         {
             foreach(var fileName in fileNames)
             {
