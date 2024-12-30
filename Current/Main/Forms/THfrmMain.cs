@@ -842,7 +842,7 @@ namespace TranslationHelper
             if (!AppSettings.ProjectIsOpened) return;
 
             await Task.Run(() => new AutoSameForSimular().Rows()).ConfigureAwait(true);
-            await Task.Run(() => FunctionAutoSave.Autosave()).ConfigureAwait(true);            
+            //await Task.Run(() => FunctionAutoSave.Autosave()).ConfigureAwait(true);// save on each change is killing system..       
 
             UpdateTranslationTextBoxValue(sender, e);
             CellChangedRegistration(e.ColumnIndex);
