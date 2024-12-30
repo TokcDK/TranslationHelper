@@ -493,5 +493,38 @@ namespace TranslationHelper.Main.Functions
             {
             }
         }
+
+        public static int SelectedRowRealIndex = -1;
+
+        internal static void ReselectCellSelectedBeforeSorting(ListBox thFilesList, DataGridView thFileElementsDataGridView)
+        {
+            if (SelectedRowRealIndex == -1) return;
+
+            int fileIndex = AppSettings.THFilesListSelectedIndex;
+            foreach (DataGridViewRow row in thFileElementsDataGridView.Rows)
+            {
+                int realrowindex = FunctionsTable.GetRealRowIndex(fileIndex, row.Index);
+                if (SelectedRowRealIndex != realrowindex) continue;
+
+                int rowindex;
+                AppSettings.DGVSelectedRowIndex = rowindex = row.Index;
+                AppSettings.DGVSelectedRowRealIndex = realrowindex;
+                FunctionsTable.ShowSelectedRow(thFilesList.GetSelectedIndex(), AppSettings.DGVSelectedColumnIndex, rowindex);
+                SelectedRowRealIndex = realrowindex;
+                break;
+            }
+        }
+
+        internal static void RememberLastCellSelection(ListBox thFilesList, DataGridView tHFileElementsDataGridView)
+        {
+            if (tHFileElementsDataGridView.SelectedCells.Count > 0)
+            {
+                SelectedRowRealIndex = FunctionsTable.GetRealRowIndex
+                    (
+                    thFilesList.GetSelectedIndex(),
+                    tHFileElementsDataGridView.SelectedCells[0].RowIndex
+                    );
+            }
+        }
     }
 }

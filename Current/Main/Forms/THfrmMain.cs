@@ -1166,7 +1166,6 @@ namespace TranslationHelper
             _ = new FixCells().Rows();
         }
 
-        int SelectedRowRealIndex = -1;
         private void THFileElementsDataGridView_CellMouseDown(object sender, DataGridViewCellMouseEventArgs e)
         {
             //использован код отсюда:https://stackoverflow.com/a/22912594
@@ -1201,14 +1200,7 @@ namespace TranslationHelper
         /// </summary>
         private void RememberLastCellSelection()
         {
-            if (THFileElementsDataGridView.SelectedCells.Count > 0)
-            {
-                SelectedRowRealIndex = FunctionsTable.GetRealRowIndex
-                    (
-                    THFilesList.GetSelectedIndex(),
-                    THFileElementsDataGridView.SelectedCells[0].RowIndex
-                    );
-            }
+            FunctionsTable.RememberLastCellSelection(THFilesList, THFileElementsDataGridView);
         }
 
         private void SetColumnSortingToolStripMenuItem_Click(object sender, EventArgs e)
@@ -1479,21 +1471,7 @@ namespace TranslationHelper
         /// </summary>
         private void ReselectCellSelectedBeforeSorting()
         {
-            if (SelectedRowRealIndex == -1) return;
-
-            int fileIndex = AppSettings.THFilesListSelectedIndex;
-            foreach (DataGridViewRow row in THFileElementsDataGridView.Rows)
-            {
-                int realrowindex = FunctionsTable.GetRealRowIndex(fileIndex, row.Index);
-                if (SelectedRowRealIndex != realrowindex) continue;
-
-                int rowindex;
-                AppSettings.DGVSelectedRowIndex = rowindex = row.Index;
-                AppSettings.DGVSelectedRowRealIndex = realrowindex;
-                FunctionsTable.ShowSelectedRow(THFilesList.GetSelectedIndex(), AppSettings.DGVSelectedColumnIndex, rowindex);
-                SelectedRowRealIndex = realrowindex;
-                break;
-            }
+            FunctionsTable.ReselectCellSelectedBeforeSorting(THFilesList, THFileElementsDataGridView);
         }
 
         private void THInfolabel_Click(object sender, EventArgs e)
