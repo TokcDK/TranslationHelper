@@ -1239,33 +1239,9 @@ namespace TranslationHelper
             }
         }
 
-        public void IndicateSaveProcess(string InfoText = "")
+        public void IndicateSaveProcess(string infoText = "")
         {
-            try
-            {
-                bool THInfolabelEnabled = false;
-                if (!AppSettings.IsTranslationHelperWasClosed && !THInfolabel.Enabled)
-                {
-                    THInfolabelEnabled = true;
-                    _ = THInfolabel.Invoke((Action)(() => THInfolabel.Enabled = true));
-                }
-
-                if (!AppSettings.IsTranslationHelperWasClosed)
-                {
-                    _ = THInfolabel.Invoke((Action)(() => THInfolabel.Text = InfoText));
-                }
-
-                FunctionsThreading.WaitThreaded(1000);
-
-                if (THInfolabelEnabled && !AppSettings.IsTranslationHelperWasClosed && THInfolabel.Enabled)
-                {
-                    _ = THInfolabel.Invoke((Action)(() => THInfolabel.Text = string.Empty));
-                    _ = THInfolabel.Invoke((Action)(() => THInfolabel.Enabled = false));
-                }
-            }
-            catch
-            {
-            }
+            FunctionsSave.IndicateSaveProcess(infoText, THInfolabel);
         }
 
         internal bool InteruptTranslation;

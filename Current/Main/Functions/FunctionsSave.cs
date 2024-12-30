@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -218,6 +219,35 @@ namespace TranslationHelper.Functions
                 }
 
                 AppData.Settings.THConfigINI.WriteFile();
+            }
+        }
+
+        internal static void IndicateSaveProcess(string infoText, Label THInfolabel)
+        {
+            try
+            {
+                bool THInfolabelEnabled = false;
+                if (!AppSettings.IsTranslationHelperWasClosed && !THInfolabel.Enabled)
+                {
+                    THInfolabelEnabled = true;
+                    _ = THInfolabel.Invoke((Action)(() => THInfolabel.Enabled = true));
+                }
+
+                if (!AppSettings.IsTranslationHelperWasClosed)
+                {
+                    _ = THInfolabel.Invoke((Action)(() => THInfolabel.Text = infoText));
+                }
+
+                FunctionsThreading.WaitThreaded(1000);
+
+                if (THInfolabelEnabled && !AppSettings.IsTranslationHelperWasClosed && THInfolabel.Enabled)
+                {
+                    _ = THInfolabel.Invoke((Action)(() => THInfolabel.Text = string.Empty));
+                    _ = THInfolabel.Invoke((Action)(() => THInfolabel.Enabled = false));
+                }
+            }
+            catch
+            {
             }
         }
     }
