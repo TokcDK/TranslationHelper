@@ -222,28 +222,28 @@ namespace TranslationHelper.Functions
             }
         }
 
-        internal static void IndicateSaveProcess(string infoText, Label THInfolabel)
+        internal static void IndicateSaveProcess(string infoText, Label thInfolabel)
         {
             try
             {
                 bool THInfolabelEnabled = false;
-                if (!AppSettings.IsTranslationHelperWasClosed && !THInfolabel.Enabled)
+                if (!AppSettings.IsTranslationHelperWasClosed && !thInfolabel.Enabled)
                 {
                     THInfolabelEnabled = true;
-                    _ = THInfolabel.Invoke((Action)(() => THInfolabel.Enabled = true));
+                    _ = thInfolabel.Invoke((Action)(() => thInfolabel.Enabled = true));
                 }
 
                 if (!AppSettings.IsTranslationHelperWasClosed)
                 {
-                    _ = THInfolabel.Invoke((Action)(() => THInfolabel.Text = infoText));
+                    _ = thInfolabel.Invoke((Action)(() => thInfolabel.Text = infoText));
                 }
 
                 FunctionsThreading.WaitThreaded(1000);
 
-                if (THInfolabelEnabled && !AppSettings.IsTranslationHelperWasClosed && THInfolabel.Enabled)
+                if (THInfolabelEnabled && !AppSettings.IsTranslationHelperWasClosed && thInfolabel.Enabled)
                 {
-                    _ = THInfolabel.Invoke((Action)(() => THInfolabel.Text = string.Empty));
-                    _ = THInfolabel.Invoke((Action)(() => THInfolabel.Enabled = false));
+                    _ = thInfolabel.Invoke((Action)(() => thInfolabel.Text = string.Empty));
+                    _ = thInfolabel.Invoke((Action)(() => thInfolabel.Enabled = false));
                 }
             }
             catch

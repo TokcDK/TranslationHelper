@@ -683,5 +683,28 @@ namespace TranslationHelper.Main.Functions
 
             return dateTimeCompareResult <= 0 ? pathNextToSource : lastautosavepath;
         }
+
+        public static async Task WriteDBFileLite(DataSet ds, string[] fileNames)
+        {
+            foreach (var fileName in fileNames)
+            {
+                if (fileName.Length == 0 || ds == null) return;
+
+                try
+                {
+                    new Thread(new ParameterizedThreadStart((obj) => AppData.Main.IndicateSaveProcess(T._("Saving") + "..."))).Start();
+
+                    using (DataSet liteds = FunctionsTable.GetDataSetWithoutEmptyTableRows(ds))
+                    {
+                        await Task.Run(() => FunctionsDBFile.WriteDBFile(liteds, fileName)).ConfigureAwait(true);
+                    }
+
+                    //AppData.Settings.THConfigINI.SetKey("Paths", "LastAutoSavePath", lastautosavepath);
+                }
+                catch
+                {
+                }
+            }
+        }
     }
 }
