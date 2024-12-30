@@ -447,5 +447,51 @@ namespace TranslationHelper.Main.Functions
                 //-QB[BQ- - для исбежания проблем с заменой в операторе .Replace("]", "[]]"), после этого
                 .Replace("-QB[BQ-", "[[]");
         }
+
+        internal static void ResetTable(DataGridView thFileElementsDataGridView, ListBox thFilesList, DataGridView thFiltersDataGridView)
+        {
+            if (thFiltersDataGridView.Columns.Count <= 0)
+            {
+                return;
+            }
+
+            try
+            {
+
+                int realRowIndex = -1;
+                string columnName = string.Empty;
+
+                if (thFilesList.GetSelectedIndex() == -1)
+                {
+                    return;
+                }
+                int tableindex = thFilesList.GetSelectedIndex();
+                var cell = thFileElementsDataGridView.CurrentCell;
+
+                if (tableindex > -1 && cell != null)
+                {
+                    columnName = thFileElementsDataGridView.Columns[cell.ColumnIndex].Name;
+                    realRowIndex = FunctionsTable.GetRealRowIndex(tableindex, cell.RowIndex);
+                }
+
+                for (int c = 0; c < thFiltersDataGridView.Columns.Count; c++)
+                {
+                    thFiltersDataGridView.Rows[0].Cells[c].Value = string.Empty;
+                }
+
+                var tableDefaultView = AppData.CurrentProject.FilesContent.Tables[tableindex].DefaultView;
+                tableDefaultView.RowFilter = string.Empty;
+                tableDefaultView.Sort = string.Empty;
+                thFileElementsDataGridView.Refresh();
+
+                if (realRowIndex > -1 && tableindex > -1 && columnName.Length > 0)
+                {
+                    FunctionsTable.ShowSelectedRow(tableindex, columnName, realRowIndex);
+                }
+            }
+            catch
+            {
+            }
+        }
     }
 }

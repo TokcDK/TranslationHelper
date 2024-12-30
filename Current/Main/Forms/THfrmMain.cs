@@ -1321,46 +1321,7 @@ namespace TranslationHelper
 
         private void THMainResetTableButton_Click(object sender, EventArgs e)
         {
-            if (THFiltersDataGridView.Columns.Count > 0)
-            {
-                try
-                {
-
-                    int realRowIndex = -1;
-                    string columnName = string.Empty;
-
-                    if (THFilesList.GetSelectedIndex() == -1)
-                    {
-                        return;
-                    }
-                    int tableindex = THFilesList.GetSelectedIndex();
-                    var cell = THFileElementsDataGridView.CurrentCell;
-
-                    if (tableindex > -1 && cell != null)
-                    {
-                        columnName = THFileElementsDataGridView.Columns[cell.ColumnIndex].Name;
-                        realRowIndex = FunctionsTable.GetRealRowIndex(tableindex, cell.RowIndex);
-                    }
-
-                    for (int c = 0; c < THFiltersDataGridView.Columns.Count; c++)
-                    {
-                        THFiltersDataGridView.Rows[0].Cells[c].Value = string.Empty;
-                    }
-
-                    var tableDefaultView = AppData.CurrentProject.FilesContent.Tables[tableindex].DefaultView;
-                    tableDefaultView.RowFilter = string.Empty;
-                    tableDefaultView.Sort = string.Empty;
-                    THFileElementsDataGridView.Refresh();
-
-                    if (realRowIndex > -1 && tableindex > -1 && columnName.Length > 0)
-                    {
-                        FunctionsTable.ShowSelectedRow(tableindex, columnName, realRowIndex);
-                    }
-                }
-                catch
-                {
-                }
-            }
+            FunctionsTable.ResetTable(THFileElementsDataGridView, THFilesList, THFiltersDataGridView);
         }
 
         private void TESTRegexToolStripMenuItem_Click(object sender, EventArgs e)
