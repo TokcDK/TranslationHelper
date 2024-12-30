@@ -42,7 +42,7 @@ namespace TranslationHelper.Menus.MainMenus.File
             //}
 
             await Task.Run(() => AppData.CurrentProject.PreSaveDB()).ConfigureAwait(true);
-            await Task.Run(() => AppData.Main.WriteDBFileLite(AppData.CurrentProject.FilesContent, new[] { path, pathNextToSource })).ConfigureAwait(true);
+            await Task.Run(() => FunctionsDBFile.WriteDBFileLite(AppData.CurrentProject.FilesContent, new[] { path, pathNextToSource })).ConfigureAwait(true);
 
             FunctionsSounds.SaveDBComplete();
             AppData.Main.ProgressInfo(false);

@@ -526,5 +526,33 @@ namespace TranslationHelper.Main.Functions
                     );
             }
         }
+
+        internal static void CellMouseDown(DataGridView thFileElementsDataGridView, DataGridViewCellMouseEventArgs e, ContextMenuStrip rowMenus)
+        {
+            //использован код отсюда:https://stackoverflow.com/a/22912594
+            //но модифицирован для ситуации когда выбрана только ячейка, а не строка полностью
+            if (e.RowIndex != -1 && e.ColumnIndex != -1)
+            {
+                if (e.Button == MouseButtons.Right)
+                {
+                    DataGridViewRow clickedRow = thFileElementsDataGridView.Rows[e.RowIndex];
+                    if (!clickedRow.Cells[e.ColumnIndex].Selected && !clickedRow.Selected)//вот это модифицировано
+                    {
+                        thFileElementsDataGridView.CurrentCell = clickedRow.Cells[e.ColumnIndex];
+                    }
+
+                    if (!clickedRow.Cells[e.ColumnIndex].IsInEditMode)//не вызывать меню, когда ячейка в режиме редактирования
+                    {
+                        var mousePosition = thFileElementsDataGridView.PointToClient(Cursor.Position);
+
+                        rowMenus.Show(thFileElementsDataGridView, mousePosition);
+                    }
+                }
+            }
+            if (e.RowIndex == -1)
+            {
+                RememberLastCellSelection();
+            }
+        }
     }
 }

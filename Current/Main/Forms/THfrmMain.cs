@@ -1168,30 +1168,7 @@ namespace TranslationHelper
 
         private void THFileElementsDataGridView_CellMouseDown(object sender, DataGridViewCellMouseEventArgs e)
         {
-            //использован код отсюда:https://stackoverflow.com/a/22912594
-            //но модифицирован для ситуации когда выбрана только ячейка, а не строка полностью
-            if (e.RowIndex != -1 && e.ColumnIndex != -1)
-            {
-                if (e.Button == MouseButtons.Right)
-                {
-                    DataGridViewRow clickedRow = (sender as DataGridView).Rows[e.RowIndex];
-                    if (!clickedRow.Cells[e.ColumnIndex].Selected && !clickedRow.Selected)//вот это модифицировано
-                    {
-                        THFileElementsDataGridView.CurrentCell = clickedRow.Cells[e.ColumnIndex];
-                    }
-
-                    if (!clickedRow.Cells[e.ColumnIndex].IsInEditMode)//не вызывать меню, когда ячейка в режиме редактирования
-                    {
-                        var mousePosition = THFileElementsDataGridView.PointToClient(Cursor.Position);
-
-                        RowMenus.Show(THFileElementsDataGridView, mousePosition);
-                    }
-                }
-            }
-            if (e.RowIndex == -1)
-            {
-                RememberLastCellSelection();
-            }
+            FunctionsTable.CellMouseDown(THFileElementsDataGridView, e, RowMenus);
         }
 
         /// <summary>

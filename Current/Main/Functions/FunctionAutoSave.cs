@@ -76,7 +76,7 @@ namespace TranslationHelper.Functions
         /// </summary>
         /// <param name="Data"></param>
         /// <param name="Path"></param>
-        internal static void SaveLoop(DataSet Data, string Path)
+        internal static async void SaveLoop(DataSet Data, string Path)
         {
             //asdf autosave
             while (AutosaveActivated && Data != null && Path.Length > 0)
@@ -105,7 +105,7 @@ namespace TranslationHelper.Functions
                 {
                     Thread.Sleep(AppSettings.DBAutoSaveTimeout * 1000);
                 }
-                AppData.Main.WriteDBFileLite(Data, new[] { Path });
+                await Task.Run(() =>FunctionsDBFile.WriteDBFileLite(Data, new[] { Path }) ).ConfigureAwait(true);
             }
         }
     }
