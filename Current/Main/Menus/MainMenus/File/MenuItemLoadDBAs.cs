@@ -19,9 +19,9 @@ namespace TranslationHelper.Menus.MainMenus.File
 
         public override string Description => T._("Load translated strings from database file of selected locatin");
 
-        public override void OnClick(object sender, EventArgs e)
+        public async override void OnClick(object sender, EventArgs e)
         {
-            AppData.Main.LoadDBAs();
+            await FunctionsDBFile.LoadDBAs();
         }
         public override int Order => base.Order + 11;
         public override Keys ShortcutKeys => Keys.Control | Keys.Shift | Keys.O;

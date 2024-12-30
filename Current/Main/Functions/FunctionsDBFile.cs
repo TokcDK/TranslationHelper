@@ -8,12 +8,14 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Windows.Forms;
 using System.Xml;
 using System.Xml.Linq;
 using TranslationHelper.Data;
 using TranslationHelper.Extensions;
 using TranslationHelper.Functions;
 using TranslationHelper.Functions.DBSaveFormats;
+using TranslationHelper.Functions.FileElementsFunctions.Row;
 using TranslationHelper.Projects.RPGMMV;
 
 namespace TranslationHelper.Main.Functions
@@ -705,6 +707,180 @@ namespace TranslationHelper.Main.Functions
                 {
                 }
             }
+        }
+
+
+        /// <summary>
+        /// Load translation from selected DB
+        /// </summary>
+        /// <param name="forced">means load with current lines override even if they are not empty</param>
+        internal static async Task LoadDBAs(bool forced = false)
+        {
+            //Do nothing if user will try to use Open menu before previous will be finished
+            if (AppData.Main.IsOpeningInProcess) return;
+
+            AppData.Main.IsOpeningInProcess = true;
+            using (OpenFileDialog openBD = new OpenFileDialog())
+            {
+                openBD.Filter = FunctionsDBFile.GetDBFormatsFilters();
+
+                openBD.InitialDirectory = FunctionsDBFile.GetProjectDBFolder();
+
+                if (openBD.ShowDialog() == DialogResult.OK)
+                {
+                    if (openBD.FileName.Length > 0)
+                    {
+                        if (forced) await new ClearCells().AllT().ConfigureAwait(true);
+                        await Task.Run(() => FunctionsDBFile.LoadTranslationFromDB(openBD.FileName, false, forced)).ConfigureAwait(true);
+                    }
+                }
+            }
+            AppData.Main.IsOpeningInProcess = false;
+        }
+
+        internal static void UnLockDBLoad(bool unlock = true)
+        {
+            //Invoke((Action)(() =>
+            //{
+            //    LoadTranslationToolStripMenuItem.Enabled = unlock;
+            //    LoadTrasnlationAsToolStripMenuItem.Enabled = unlock;
+            //    LoadTrasnlationAsForcedToolStripMenuItem.Enabled = unlock;
+            //}));
+        }
+
+        internal static async Task LoadDB(bool force = true)
+        {
+            if (AppData.CurrentProject.IsLoadingDB) return;
+
+            AppData.CurrentProject.IsLoadingDB = true;
+
+            await FunctionsLoadTranslationDB.LoadTranslationIfNeed(forceLoad: force, askIfLoadDB: false);
+
+            AppData.CurrentProject.IsLoadingDB = false;
+        }
+
+        static bool LoadTranslationToolStripMenuItem_ClickIsBusy;
+        internal static async Task LoadTranslationFromDB(string sPath = "", bool UseAllDB = false, bool forced = false)
+        {
+            if (LoadTranslationToolStripMenuItem_ClickIsBusy || (!UseAllDB && sPath.Length == 0))
+            {
+                return;
+            }
+            LoadTranslationToolStripMenuItem_ClickIsBusy = true;
+
+            //dbpath = Application.StartupPath + "\\DB";
+            //string dbfilename = DateTime.Now.ToString("dd.MM.yyyy HH-mm-ss");
+
+            AppData.Main.ProgressInfo(true);
+
+            //lastautosavepath = dbpath + "\\Auto\\Auto" + dbfilename + GetDBCompressionExt();
+
+            //WriteDBFile(THFilesElementsDataset, lastautosavepath);
+            //THFilesElementsDataset.WriteXml(lastautosavepath); // make buckup of previous data
+
+            //THFilesElementsDataset.Reset();
+            //THFilesListBox.Items.Clear();
+
+
+            if (UseAllDB)
+            {
+                AppData.Main.ProgressInfo(true, "Get all databases");
+                FunctionsDBFile.MergeAllDBtoOne();
+                FunctionsLoadTranslationDB.THLoadDBCompareFromDictionaryParallellTables(AppData.AllDBmerged);
+            }
+            else
+            {
+                using (DataSet DBDataSet = new DataSet())
+                {
+
+                    //https://ru.stackoverflow.com/questions/222414/%d0%9a%d0%b0%d0%ba-%d0%bf%d1%80%d0%b0%d0%b2%d0%b8%d0%bb%d1%8c%d0%bd%d0%be-%d0%b2%d1%8b%d0%bf%d0%be%d0%bb%d0%bd%d0%b8%d1%82%d1%8c-%d0%bc%d0%b5%d1%82%d0%be%d0%b4-%d0%b2-%d0%be%d1%82%d0%b4%d0%b5%d0%bb%d1%8c%d0%bd%d0%be%d0%bc-%d0%bf%d0%be%d1%82%d0%be%d0%ba%d0%b5 
+                    await Task.Run(() => ReadDBAndLoadDBCompare(DBDataSet, sPath, forced)).ConfigureAwait(true);
+                }
+            }
+
+
+            _ = AppData.Main.THFileElementsDataGridView.Invoke((Action)(() => AppData.Main.THFileElementsDataGridView.Refresh()));
+
+
+            LoadTranslationToolStripMenuItem_ClickIsBusy = false;
+            FunctionsSounds.LoadDBCompleted();
+            _ = AppData.Main.THFilesList.Invoke((Action)(() => AppData.Main.THFilesList.Refresh()));
+        }
+
+        public static Task ReadDBAndLoadDBCompare(DataSet dbDataSet, string sPath, bool forceOverwriteTranslations = false)
+        {
+            if (sPath.Length == 0)
+            {
+                sPath = AppData.Settings.THConfigINI.GetKey("Paths", "LastAutoSavePath");
+            }
+
+            if (!File.Exists(sPath))
+            {
+                AppData.Main.ProgressInfo(false);
+                return Task.CompletedTask;
+            }
+
+            AppData.Main.ProgressInfo(true, T._("Reading DB File") + "...");
+
+            try
+            {
+                //load new data
+                FunctionsDBFile.ReadDBFile(dbDataSet, sPath);
+
+
+                //отключение DataSource для избежания проблем от изменений DataGridView
+                //bool tableSourceWasCleaned = false;
+                //if (ProjectData.Main.THFileElementsDataGridView.DataSource != null)
+                //{
+                //    tableSourceWasCleaned = true;
+                //    ProjectData.Main.Invoke((Action)(() => ProjectData.Main.THFileElementsDataGridView.DataSource = null));
+                //    ProjectData.Main.Invoke((Action)(() => ProjectData.Main.THFileElementsDataGridView.Update()));
+                //    ProjectData.Main.Invoke((Action)(() => ProjectData.Main.THFileElementsDataGridView.Refresh()));
+                //}
+
+                //стандартное считывание. Самое медленное
+                //new FunctionsLoadTranslationDB().THLoadDBCompare(DBDataSet);
+
+                //считывание через словарь с предварительным чтением в dataset и конвертацией в словарь
+                //Своего рода среднее решение, которое быстрее решения с сравнением из БД в DataSet
+                //и не имеет проблем решения с чтением сразу в словарь, 
+                //тут не нужно переписывать запись в xml, хотя запись таблицы в xml пишет все колонки и одинаковые значения, т.е. xml будет больше
+                //чтение из xml в dataset может занимать по нескольку секунд для больших файлов
+                //основную часть времени отнимал вывод информации о файлах!!
+                //00.051
+                //new FunctionsLoadTranslationDB().THLoadDBCompareFromDictionary(DBDataSet.ToDictionary(), forced);
+                if (AppData.CurrentProject.DontLoadDuplicates)
+                {
+                    FunctionsLoadTranslationDB.THLoadDBCompareFromDictionaryParallellTables(dbDataSet.ToDictionary(), forceOverwriteTranslations);
+                }
+                else
+                {
+                    FunctionsLoadTranslationDB.THLoadDBCompareFromDictionaryParallellTables(dbDataSet.ToDictionary2(), forceOverwriteTranslations);
+                }
+
+                //многопоточный вариант предыдущего, но т.к. datatable is threadunsafe то возникают разные ошибки и повреждение внутреннего индекса таблицы, хоть это и быстрее, но после добавления lock разницы не видно
+                //new FunctionsLoadTranslationDB().THLoadDBCompareFromDictionaryParallel(DBDataSet.DBDataSetToDBDictionary());
+
+
+                //это медленнее первого варианта 
+                //00.151
+                //new FunctionsLoadTranslationDB().THLoadDBCompareFromDictionary2(DBDataSet.DBDataSetToDBDictionary());
+
+                //считывание через словарь Чтение xml в словарь на текущий момент имеет проблемы
+                //с невозможностью чтения закодированых в hex символов(решил как костыль через try catch) и пока не может читать сжатые xml
+                //нужно постепенно доработать код, исправить проблемы и перейти полностью на этот наибыстрейший вариант
+                //т.к. с ним и xml бд будет меньше размером
+                //new FunctionsLoadTranslationDB().THLoadDBCompareFromDictionary(FunctionsDBFile.ReadXMLDBToDictionary(sPath));
+
+            }
+            catch
+            {
+
+            }
+
+            AppData.Main.ProgressInfo(false);
+
+            return Task.CompletedTask;
         }
     }
 }

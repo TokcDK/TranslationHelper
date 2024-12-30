@@ -617,14 +617,14 @@ namespace TranslationHelper.Functions
             {
                 if (forceLoad) await new ClearCells().AllT().ConfigureAwait(true);
 
-                await Task.Run(() => AppData.Main.LoadTranslationFromDB(sPath: dbPath, UseAllDB: false, forced: true)).ConfigureAwait(false);
+                await Task.Run(() => FunctionsDBFile.LoadTranslationFromDB(sPath: dbPath, UseAllDB: false, forced: true)).ConfigureAwait(false);
             }
             else if (askIfLoadAllDB)
             {
                 var loadTranslationsFromAllDBQuestion = MessageBox.Show(T._("Try to find translations in all avalaible DB? (Can take some time)"), T._("Load all DB"), MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
                 if (loadTranslationsFromAllDBQuestion != DialogResult.Yes) return;
 
-                await Task.Run(() => AppData.Main.LoadTranslationFromDB(sPath: string.Empty, UseAllDB: true)).ConfigureAwait(false);
+                await Task.Run(() => FunctionsDBFile.LoadTranslationFromDB(sPath: string.Empty, UseAllDB: true)).ConfigureAwait(false);
             }
         }
     }

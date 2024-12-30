@@ -4,9 +4,12 @@ using System.Collections.Generic;
 using System.Data;
 using System.Drawing;
 using System.IO;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 using TranslationHelper.Data;
 using TranslationHelper.Extensions;
+using TranslationHelper.Functions;
+using TranslationHelper.Functions.FileElementsFunctions.Row;
 
 namespace TranslationHelper.Main.Functions
 {

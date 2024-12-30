@@ -22,7 +22,7 @@ namespace TranslationHelper.Menus.MainMenus.File
 
         public override void OnClick(object sender, EventArgs e)
         {
-            AppData.Main.LoadDBAs(true);
+            FunctionsDBFile.LoadDBAs(true);
         }
         public override int Order => base.Order + 12;
     }

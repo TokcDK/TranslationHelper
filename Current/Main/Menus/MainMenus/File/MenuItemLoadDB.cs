@@ -21,12 +21,12 @@ namespace TranslationHelper.Menus.MainMenus.File
 
         public override string Description => T._("Load translated strings from database file if exist");
 
-        public override void OnClick(object sender, EventArgs e)
+        public async override void OnClick(object sender, EventArgs e)
         {
             if (AppData.CurrentProject == null) return;
-                        
-            AppData.Main.UnLockDBLoad(false);
-            AppData.Main.LoadDB();
+
+            FunctionsDBFile.UnLockDBLoad(false);
+            await FunctionsDBFile.LoadDB();
             //AppData.Main.Invoke((Action)(() => AppData.Main.LoadTranslationToolStripMenuItem.Enabled = true));
         }
         public override int Order => base.Order + 10;
