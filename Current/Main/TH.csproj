@@ -369,6 +369,7 @@
     <Compile Include="appSettings\Sections\Tools\Tools.cs" />
     <Compile Include="appSettings\Sections\General\General.cs" />
     <Compile Include="appSettings\Sections\Optimizations\Optimizations.cs" />
+    <Compile Include="Functions\FunctionTest.cs" />
     <Compile Include="Functions\OnlineTranslation\TranslationBase.cs" />
     <Compile Include="Functions\OnlineTranslation\TranslationBigBlock.cs" />
     <Compile Include="Functions\OnlineTranslation\TranslationBigBlockMulti.cs" />
