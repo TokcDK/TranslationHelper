@@ -152,7 +152,7 @@ namespace TranslationHelper.Functions
                             }
                             else
                             {
-                                string ExtractedValue = AppData.Main.THExtractTextForTranslation(InputValue);
+                                string ExtractedValue = THExtractTextForTranslation(InputValue);
                                 //LogToFile("extractedvalue="+ extractedvalue,true);
                                 if (ExtractedValue.Length == 0 || ExtractedValue == InputValue)
                                 {
@@ -250,7 +250,7 @@ namespace TranslationHelper.Functions
                 }
                 else
                 {
-                    string ExtractedOriginal = AppData.Main.THExtractTextForTranslation(OriginalLine);
+                    string ExtractedOriginal = THExtractTextForTranslation(OriginalLine);
                     //LogToFile("2 extractedvalue=" + extractedvalue);
                     string Result;
                     if (ExtractedOriginal.Length == 0 || ExtractedOriginal == OriginalLine)
@@ -476,7 +476,7 @@ namespace TranslationHelper.Functions
                                                 }
                                                 else
                                                 {
-                                                    extractedvalue = AppData.Main.THExtractTextForTranslation(linevalue);//извлечение подстроки
+                                                    extractedvalue = THExtractTextForTranslation(linevalue);//извлечение подстроки
 
                                                     // только если извлеченное значение отличается от оригинальной строки
                                                     //cache = extractedvalue == linevalue ? string.Empty : FunctionsTable.TranslationCacheFind(THTranslationCache, extractedvalue);//поиск извлеченной подстроки в кеше
@@ -694,6 +694,46 @@ namespace TranslationHelper.Functions
                     + Environment.NewLine + "TranslatedLinesIndex=" + DebugTranslatedLinesIndex
                     + Environment.NewLine);
             }
+        }
+
+        bool THIsExtractingTextForTranslation;
+        internal string THExtractTextForTranslation(string input)
+        {
+            //возвращать, если занято, когда исправление в процессе
+            if (THIsExtractingTextForTranslation)
+            {
+                return string.Empty;
+            }
+            //установить занятость при старте
+            THIsExtractingTextForTranslation = true;
+
+            string ret = FunctionsAutoOperations.THExtractTextForTranslation(input);
+
+            //снять занятость по окончании
+            THIsExtractingTextForTranslation = false;
+            return ret;
+        }
+
+        /// <summary>
+        /// Work In Progress...
+        /// </summary>
+        /// <param name="input"></param>
+        /// <returns></returns>
+        internal string[] THExtractTextForTranslationSplit(string input)
+        {
+            //возвращать, если занято, когда исправление в процессе
+            if (THIsExtractingTextForTranslation)
+            {
+                return null;
+            }
+            //установить занятость при старте
+            THIsExtractingTextForTranslation = true;
+
+            var ret = FunctionsAutoOperations.THExtractTextForTranslationSplit(input);
+
+            //снять занятость по окончании
+            THIsExtractingTextForTranslation = false;
+            return ret;
         }
 
         private string[] ApplyProjectPretranslationAction(string[] originalLines)

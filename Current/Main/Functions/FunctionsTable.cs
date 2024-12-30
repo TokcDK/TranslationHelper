@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Drawing;
 using System.IO;
 using System.Windows.Forms;
 using TranslationHelper.Data;
@@ -515,19 +516,19 @@ namespace TranslationHelper.Main.Functions
             }
         }
 
-        internal static void RememberLastCellSelection(ListBox thFilesList, DataGridView tHFileElementsDataGridView)
+        internal static void RememberLastCellSelection(ListBox thFilesList, DataGridView thFileElementsDataGridView)
         {
-            if (tHFileElementsDataGridView.SelectedCells.Count > 0)
+            if (thFileElementsDataGridView.SelectedCells.Count > 0)
             {
                 SelectedRowRealIndex = FunctionsTable.GetRealRowIndex
                     (
                     thFilesList.GetSelectedIndex(),
-                    tHFileElementsDataGridView.SelectedCells[0].RowIndex
+                    thFileElementsDataGridView.SelectedCells[0].RowIndex
                     );
             }
         }
 
-        internal static void CellMouseDown(DataGridView thFileElementsDataGridView, DataGridViewCellMouseEventArgs e, ContextMenuStrip rowMenus)
+        internal static void CellMouseDown(DataGridView thFileElementsDataGridView, ListBox thFilesList, DataGridViewCellMouseEventArgs e, ContextMenuStrip rowMenus)
         {
             //использован код отсюда:https://stackoverflow.com/a/22912594
             //но модифицирован для ситуации когда выбрана только ячейка, а не строка полностью
@@ -551,7 +552,24 @@ namespace TranslationHelper.Main.Functions
             }
             if (e.RowIndex == -1)
             {
-                RememberLastCellSelection();
+                RememberLastCellSelection(thFilesList, thFileElementsDataGridView);
+            }
+        }
+
+        internal static void PaintDigitInFrontOfRow(object sender, DataGridViewRowPostPaintEventArgs e, Font font)
+        {
+            var grid = sender as DataGridView;
+            //var rowIdx = (e.RowIndex + 1).ToString();
+
+            using (var centerFormat = new StringFormat()
+            {
+                // right alignment might actually make more sense for numbers
+                Alignment = StringAlignment.Center,
+                LineAlignment = StringAlignment.Center
+            })
+            {
+                var headerBounds = new Rectangle(e.RowBounds.Left, e.RowBounds.Top, grid.RowHeadersWidth, e.RowBounds.Height);
+                e.Graphics.DrawString("F", font, SystemBrushes.ControlText, headerBounds, centerFormat);
             }
         }
     }

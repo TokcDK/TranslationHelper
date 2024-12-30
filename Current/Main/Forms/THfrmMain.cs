@@ -1073,20 +1073,7 @@ namespace TranslationHelper
 
         private void THFiltersDataGridView_RowPostPaint(object sender, DataGridViewRowPostPaintEventArgs e)
         {
-            var grid = sender as DataGridView;
-            //var rowIdx = (e.RowIndex + 1).ToString();
-
-            using (var centerFormat = new StringFormat()
-            {
-                // right alignment might actually make more sense for numbers
-                Alignment = StringAlignment.Center,
-                LineAlignment = StringAlignment.Center
-            })
-            {
-                var headerBounds = new Rectangle(e.RowBounds.Left, e.RowBounds.Top, grid.RowHeadersWidth, e.RowBounds.Height);
-                e.Graphics.DrawString("F", this.Font, SystemBrushes.ControlText, headerBounds, centerFormat);
-            }
-
+            FunctionsTable.PaintDigitInFrontOfRow(sender, e, this.Font);
         }
 
         //bool THIsFixingCells;
@@ -1121,46 +1108,6 @@ namespace TranslationHelper
         //    THIsFixingCells = false;
         //}
 
-        bool THIsExtractingTextForTranslation;
-        internal string THExtractTextForTranslation(string input)
-        {
-            //возвращать, если занято, когда исправление в процессе
-            if (THIsExtractingTextForTranslation)
-            {
-                return string.Empty;
-            }
-            //установить занятость при старте
-            THIsExtractingTextForTranslation = true;
-
-            string ret = FunctionsAutoOperations.THExtractTextForTranslation(input);
-
-            //снять занятость по окончании
-            THIsExtractingTextForTranslation = false;
-            return ret;
-        }
-
-        /// <summary>
-        /// Work In Progress...
-        /// </summary>
-        /// <param name="input"></param>
-        /// <returns></returns>
-        internal string[] THExtractTextForTranslationSplit(string input)
-        {
-            //возвращать, если занято, когда исправление в процессе
-            if (THIsExtractingTextForTranslation)
-            {
-                return null;
-            }
-            //установить занятость при старте
-            THIsExtractingTextForTranslation = true;
-
-            var ret = FunctionsAutoOperations.THExtractTextForTranslationSplit(input);
-
-            //снять занятость по окончании
-            THIsExtractingTextForTranslation = false;
-            return ret;
-        }
-
         private void CellFixesSelectedToolStripMenuItem_Click(object sender, EventArgs e)
         {
             _ = new FixCells().Rows();
@@ -1168,7 +1115,7 @@ namespace TranslationHelper
 
         private void THFileElementsDataGridView_CellMouseDown(object sender, DataGridViewCellMouseEventArgs e)
         {
-            FunctionsTable.CellMouseDown(THFileElementsDataGridView, e, RowMenus);
+            FunctionsTable.CellMouseDown(THFileElementsDataGridView, THFilesList, e, RowMenus);
         }
 
         /// <summary>
