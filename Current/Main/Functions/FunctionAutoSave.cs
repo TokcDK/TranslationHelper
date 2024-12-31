@@ -101,7 +101,7 @@ namespace TranslationHelper.Functions
                     }
                     i++;
                 }
-                while (AppData.Main.IsOpeningInProcess || FunctionsUI.SaveInAction)//не запускать автосохранение, пока утилита занята
+                while (FunctionsUI.IsOpeningInProcess || FunctionsUI.SaveInAction)//не запускать автосохранение, пока утилита занята
                 {
                     Thread.Sleep(AppSettings.DBAutoSaveTimeout * 1000);
                 }

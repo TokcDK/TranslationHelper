@@ -81,7 +81,7 @@
 //                                //Thread.CurrentThread.Abort();
 //                                return;
 //                            }
-//                            else if (AppData.Main.InteruptTranslation)
+//                            else if (FunctionsUI.InteruptTranslation)
 //                            {
 //                                //AppData.Main.Invoke((Action)(() => AppData.Main.translationInteruptToolStripMenuItem.Visible = false));
 //                                CacheUnloadWhenNeed();

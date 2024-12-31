@@ -670,7 +670,7 @@
         internal System.Windows.Forms.DataGridView THFiltersDataGridView;
         public System.Windows.Forms.ProgressBar THActionProgressBar;
         public System.Windows.Forms.Label THInfolabel;
-        private System.Windows.Forms.Button THbtnMainResetTable;
+        public System.Windows.Forms.Button THbtnMainResetTable;
         public System.Windows.Forms.RichTextBox THTargetRichTextBox;
         public System.Windows.Forms.RichTextBox THSourceRichTextBox;
         internal System.Windows.Forms.ToolStripMenuItem allToolStripMenuItem;

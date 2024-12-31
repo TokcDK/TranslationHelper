@@ -26,13 +26,6 @@ namespace TranslationHelper
 
         internal string FVariant = string.Empty;
 
-
-        internal static string THTranslationCachePath
-        {
-            get => AppSettings.THTranslationCachePath;
-            set => AppSettings.THTranslationCachePath = value;
-        }
-
         public FormMain()
         {
             InitializeComponent();
@@ -40,95 +33,12 @@ namespace TranslationHelper
 
             AppData.Init(this);
 
-            AppSettings.ApplicationStartupPath = Application.StartupPath;
-            AppSettings.ApplicationProductName = Application.ProductName;
-            AppSettings.NewLine = Environment.NewLine;
-
-            FunctionsHotkeys.BindShortCuts();
-
-            AppData.SetSettings();
-
-            FunctionsMenus.CreateMainMenus();
-
-            SetUIStrings();
-
-            //https://stackoverflow.com/questions/91747/background-color-of-a-listbox-item-winforms
-            THFilesList.SetDrawMode(DrawMode.OwnerDrawFixed);
-
-            THTranslationCachePath = THSettings.THTranslationCacheFilePath;
-
-            //THFileElementsDataGridView set doublebuffered to true
-            SetDoublebuffered(true);
-            if (File.Exists(THSettings.THLogPath) && new FileInfo(THSettings.THLogPath).Length > 1000000)
-            {
-                File.Delete(THSettings.THLogPath);
-            }
-
-            //Test Проверка ключа Git для планируемой функции использования Git
-            //string GitPath = Registry.GetValue("HKEY_LOCAL_MACHINE\\SOFTWARE\\GitForWindows", "InstallPath", null).ToString();
-        }
-
-        private void SetUIStrings()
-        {
-            //Menu File
-            //this.fileToolStripMenuItem.Text = T._("File");
-            ////Menu Edit
-            //this.EditToolStripMenuItem.Text = T._("Edit");
-            //this.tryToTranslateOnlineToolStripMenuItem.Text = T._("Translate Online");
-            //this.SelectedToolStripMenuItem1.Text = T._("Selected");
-            //this.TableToolStripMenuItem1.Text = T._("Table");
-            //this.allToolStripMenuItem1.Text = T._("All");
-            //this.translationInteruptToolStripMenuItem.Text = T._("Interupt");
-            //this.fixCellSpecialSymbolsToolStripMenuItem.Text = T._("Fix cell special symbols");
-            //this.FixCellsSelectedToolStripMenuItem.Text = T._("Selected");
-            //this.FixCellsTableToolStripMenuItem.Text = T._("Table");
-            //this.allToolStripMenuItem.Text = T._("All");
-            //this.SetOriginalValueToTranslationToolStripMenuItem.Text = T._("Translation=Original");
-            //this.CompleteRomajiotherLinesToolStripMenuItem.Text = T._("Complete Romaji/Other lines");
-            //this.CompleteRomajiotherLinesToolStripMenuItem1.Text = T._("Complete Romaji/Other lines");
-            //this.ForceSameForSimularToolStripMenuItem.Text = T._("Force same for simular");
-            //this.ForceSameForSimularToolStripMenuItem1.Text = T._("Force same for simular");
-            //this.CutToolStripMenuItem1.Text = T._("Cut");
-            //this.CopyCellValuesToolStripMenuItem.Text = T._("Copy");
-            //this.PasteCellValuesToolStripMenuItem.Text = T._("Paste");
-            //this.ClearSelectedCellsToolStripMenuItem.Text = T._("Clear selected cells");
-            //this.ToUPPERCASEToolStripMenuItem.Text = T._("UPPERCASE");
-            //this.FirstCharacterToUppercaseToolStripMenuItem.Text = T._("Uppercase");
-            //this.ToLowercaseToolStripMenuItem.Text = T._("lowercase");
-            //this.searchToolStripMenuItem.Text = T._("Search");
-            ////Menu View
-            //this.ViewToolStripMenuItem.Text = T._("View");
-            //this.SetColumnSortingToolStripMenuItem.Text = T._("Reset column sorting");
-            ////Menu Options
-            //this.optionsToolStripMenuItem.Text = T._("Options");
-            //this.settingsToolStripMenuItem.Text = T._("Settings");
-            ////Menu Help
-            //this.helpToolStripMenuItem.Text = T._("Help");
-            //this.aboutToolStripMenuItem.Text = T._("About");
-            ////Contex menu
-            //this.OpenInWebContextToolStripMenuItem.Text = T._("Open in web");
-            //this.toolStripMenuItem6.Text = T._("Translate Online");
-            //this.TranslateSelectedContextToolStripMenuItem.Text = T._("Selected");
-            //this.TranslateTableContextToolStripMenuItem.Text = T._("Table");
-            //this.toolStripMenuItem9.Text = T._("All");
-            //this.translationInteruptToolStripMenuItem1.Text = T._("Interupt");
-            //this.toolStripMenuItem2.Text = T._("Fix cell special symbols");
-            //this.FixSymbolsContextToolStripMenuItem.Text = T._("Selected");
-            //this.FixSymbolsTableContextToolStripMenuItem.Text = T._("Table");
-            //this.toolStripMenuItem5.Text = T._("All");
-            //this.OriginalToTransalationContextToolStripMenuItem.Text = T._("Translation=Original");
-            //this.CutToolStripMenuItem.Text = T._("Cut");
-            //this.CopyCMStripMenuItem.Text = T._("Copy");
-            //this.PasteToolStripMenuItem.Text = T._("Paste");
-            //this.CleanSelectedCellsToolStripMenuItem1.Text = T._("Clear selected cells");
-            //this.ToolStripMenuItem14.Text = T._("UPPERCASE");
-            //this.UppercaseToolStripMenuItem.Text = T._("Uppercase");
-            //this.LowercaseToolStripMenuItem.Text = T._("lowercase");
+            FunctionsUI.Init(this);
         }
 
         private void THMain_Load(object sender, EventArgs e)
         {
-            SetTooltips();
+            FunctionsUI.SetTooltips();
 
             //Disable links detection in edition textboxes
             THSourceRichTextBox.DetectUrls = false;
@@ -140,53 +50,6 @@ namespace TranslationHelper
 
 
             MenuItemRecent.UpdateRecentFiles();
-        }
-
-        ToolTip THToolTip;
-        private void SetTooltips()
-        {
-            //http://qaru.site/questions/47162/c-how-do-i-add-a-tooltip-to-a-control
-            //THMainResetTableButton
-            THToolTip = new ToolTip
-            {
-
-                // Set up the delays for the ToolTip.
-                AutoPopDelay = 32000,
-                InitialDelay = 1000,
-                ReshowDelay = 500,
-                UseAnimation = true,
-                UseFading = true,
-                // Force the ToolTip text to be displayed whether or not the form is active.
-                ShowAlways = true
-            };
-
-            //Main
-            THToolTip.SetToolTip(THbtnMainResetTable, T._("Resets filters and tab sorting"));
-            THToolTip.SetToolTip(THFiltersDataGridView, T._("Filters for columns of main table"));
-            THToolTip.SetToolTip(TableCompleteInfoLabel, T._("Shows overal number of completed lines.\nClick to show first untranslated."));
-            ////////////////////////////
-        }
-
-        internal volatile bool IsOpeningInProcess;
-
-        private void SetDoublebuffered(bool value)
-        {
-            // Double buffering can make DGV slow in remote desktop
-            if (!SystemInformation.TerminalServerSession)
-            {
-                //THFileElementsDataGridView
-                Type dgvType = THFileElementsDataGridView.GetType();
-                PropertyInfo pi = dgvType.GetProperty("DoubleBuffered",
-                  BindingFlags.Instance | BindingFlags.NonPublic);
-                pi.SetValue(THFileElementsDataGridView, value, null);
-
-                //THFilesList
-                //вроде не пашет для listbox
-                Type lbxType = THFilesList.GetType();
-                PropertyInfo pi1 = lbxType.GetProperty("DoubleBuffered",
-                  BindingFlags.Instance | BindingFlags.NonPublic);
-                pi1.SetValue(THFilesList, value, null);
-            }
         }
         private void THFilesListBox_MouseClick(object sender, MouseEventArgs e)
         {
@@ -248,56 +111,13 @@ namespace TranslationHelper
 
         private void THTargetTextBox_Leave(object sender, EventArgs e)
         {
-            //int sel = dataGridView1.CurrentRow.Index; //присвоить перевенной номер выбранной строки в таблице
-            //if (THSourceRichTextBox.Text.Length == 0)
-            //{
-            //}
-            //else//если текстовое поле 2 не пустое
-            //{
-            //    //не менять, если значение текстбокса не поменялось
-            //    if (THTargetRichTextBox.Text != ProjectData.TargetTextBoxPreValue)
-            //    {
-            //        THFileElementsDataGridView.CurrentRow.Cells[THSettings.TranslationColumnName].Value = THTargetRichTextBox.Text;// Присвоить ячейке в ds.Tables[0] значение из TextBox2                   
-            //    }
-            //}
+            FunctionsUI.THTargetTextBox_Leave(sender, e);
         }
 
         private void THFiltersDataGridView_RowPostPaint(object sender, DataGridViewRowPostPaintEventArgs e)
         {
             FunctionsTable.PaintDigitInFrontOfRow(sender, e, this.Font);
         }
-
-        //bool THIsFixingCells;
-        ///// <summary>
-        ///// Исправления формата спецсимволов в заданной ячейке перевода
-        ///// <br/>Для выбранных ячеек, таблицы или для всех значений задать:
-        ///// <br/>method:
-        ///// <br/>"a" - All
-        ///// <br/>"t" - Table
-        ///// <br/>"s" - Selected
-        ///// <br/>..а также cind - индекс колонки, где ячейки перевода и tind - индекс таблицы, для вариантов Table и Selected
-        ///// <br/>Для одной выбранной ячейки, когда, например, определенная обрабатывается в коде, <br/>задать tind, cind и rind, а также true для onselectedonly
-        ///// </summary>
-        ///// <param name="method"></param>
-        ///// <param name="cind"></param>
-        ///// <param name="tind"></param>
-        ///// <param name="rind"></param>
-        ///// <param name="selectedonly"></param>
-        //private void THFixCells(string method, int cind, int tind, int rind = 0, bool forceApply = false)//cind - индекс столбца перевода, задан до старта потока
-        //{
-        //    //возвращать, если занято, когда исправление в процессе
-        //    if (THIsFixingCells)
-        //    {
-        //        return;
-        //    }
-        //    //установить занятость при старте
-        //    THIsFixingCells = true;
-
-        //    FunctionsAutoOperations.THFixCells(method, cind, tind, rind, forceApply);
-
-        //    //снять занятость по окончании
-        //    THIsFixingCells = false;
-        //}
 
         private void CellFixesSelectedToolStripMenuItem_Click(object sender, EventArgs e)
         {
@@ -328,29 +148,9 @@ namespace TranslationHelper
             FunctionsSave.IndicateSaveProcess(infoText, THInfolabel);
         }
 
-        internal bool InteruptTranslation;
-
         private void THMain_FormClosing(object sender, FormClosingEventArgs e)
         {
-            AppSettings.IsTranslationHelperWasClosed = true;
-            AppSettings.InterruptTtanslation = true;
-            InteruptTranslation = true;
-            //THToolTip.Dispose();
-            //ProjectData.THFilesElementsDataset.Dispose();
-            //ProjectData.THFilesElementsDatasetInfo.Dispose();
-            //ProjectData.THFilesElementsALLDataTable.Dispose();
-            //Settings.Dispose();
-
-            //global brushes with ordinary/selected colors
-            //ListBoxItemForegroundBrushSelected.Dispose();
-            //ListBoxItemForegroundBrush.Dispose();
-            //ListBoxItemBackgroundBrushSelected.Dispose();
-            //ListBoxItemBackgroundBrush1.Dispose();
-            //ListBoxItemBackgroundBrush1Complete.Dispose();
-            //ListBoxItemBackgroundBrush2.Dispose();
-            //ListBoxItemBackgroundBrush2Complete.Dispose();
-
-            FunctionsSave.WriteRPGMakerMVStats();
+            FunctionsUI.THMain_FormClosing(sender, e);
         }
 
         private void SetAsDatasourceAllToolStripMenuItem_Click(object sender, EventArgs e)

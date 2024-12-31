@@ -90,13 +90,13 @@ namespace TranslationHelper.Functions
                         Thread.CurrentThread.Abort();
                         return;
                     }
-                    else if (AppData.Main.InteruptTranslation)
+                    else if (FunctionsUI.InteruptTranslation)
                     {
                         //translationInteruptToolStripMenuItem.Visible = false;
                         //translationInteruptToolStripMenuItem1.Visible = false;
                         //AppData.Main.Invoke((Action)(() => AppData.Main.translationInteruptToolStripMenuItem.Visible = false));
                         //AppData.Main.Invoke((Action)(() => AppData.Main.translationInteruptToolStripMenuItem1.Visible = false));
-                        AppData.Main.InteruptTranslation = false;
+                        FunctionsUI.InteruptTranslation = false;
                         Thread.CurrentThread.Abort();
                         return;
                     }
@@ -390,7 +390,7 @@ namespace TranslationHelper.Functions
                                 //Thread.CurrentThread.Abort();
                                 return;
                             }
-                            else if (AppData.Main.InteruptTranslation)
+                            else if (FunctionsUI.InteruptTranslation)
                             {
                                 //AppData.Main.Invoke((Action)(() => AppData.Main.translationInteruptToolStripMenuItem.Visible = false));
                                 FunctionsOnlineCache.Unload();

@@ -35,7 +35,7 @@ namespace TranslationHelper.Functions
                     //AppData.CurrentProject.OpenFileMode = tempMode;
                     if (THFOpen.ShowDialog() != DialogResult.OK || THFOpen.FileName == null)
                     {
-                        AppData.Main.IsOpeningInProcess = false;
+                        FunctionsUI.IsOpeningInProcess = false;
                         return;
                     }
 
@@ -45,7 +45,7 @@ namespace TranslationHelper.Functions
 
             if (string.IsNullOrWhiteSpace(filePath) || !File.Exists(filePath))
             {
-                AppData.Main.IsOpeningInProcess = false;
+                FunctionsUI.IsOpeningInProcess = false;
                 return;
             }
 
@@ -89,7 +89,7 @@ namespace TranslationHelper.Functions
                 AfterOpenActions();
             }
 
-            AppData.Main.IsOpeningInProcess = false;
+            FunctionsUI.IsOpeningInProcess = false;
         }
 
         public class FormatFilterData

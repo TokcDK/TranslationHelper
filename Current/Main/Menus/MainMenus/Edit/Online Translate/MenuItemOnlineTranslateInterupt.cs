@@ -19,7 +19,7 @@ namespace TranslationHelper.Menus.MainMenus.Edit.OnlineTranslate
         public override void OnClick(object sender, EventArgs e)
         {
             AppSettings.InterruptTtanslation = true;
-            AppData.Main.InteruptTranslation = true;
+            FunctionsUI.InteruptTranslation = true;
         }
     }
 }

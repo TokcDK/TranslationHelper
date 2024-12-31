@@ -717,9 +717,9 @@ namespace TranslationHelper.Main.Functions
         internal static async Task LoadDBAs(bool forced = false)
         {
             //Do nothing if user will try to use Open menu before previous will be finished
-            if (AppData.Main.IsOpeningInProcess) return;
+            if (FunctionsUI.IsOpeningInProcess) return;
 
-            AppData.Main.IsOpeningInProcess = true;
+            FunctionsUI.IsOpeningInProcess = true;
             using (OpenFileDialog openBD = new OpenFileDialog())
             {
                 openBD.Filter = FunctionsDBFile.GetDBFormatsFilters();
@@ -735,7 +735,7 @@ namespace TranslationHelper.Main.Functions
                     }
                 }
             }
-            AppData.Main.IsOpeningInProcess = false;
+            FunctionsUI.IsOpeningInProcess = false;
         }
 
         internal static void UnLockDBLoad(bool unlock = true)
