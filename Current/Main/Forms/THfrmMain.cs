@@ -275,25 +275,7 @@ namespace TranslationHelper
         //int SelectedRowIndexWhenFilteredDGW = 0;
         private void THFileElementsDataGridView_CellMouseClick(object sender, DataGridViewCellMouseEventArgs e)
         {
-            //здесь добавить запоминание индекса выбранной  строки в отфильтрованном DGW
-            //bool IsOneOfFiltersHasValue = false;
-            //for (int s = 0; s < THFiltersDataGridView.Columns.Count; s++)
-            //{
-            //    if ((THFiltersDataGridView.Rows[0].Cells[s].Value + string.Empty).Length > 0)
-            //    {
-            //        IsOneOfFiltersHasValue = true;
-            //        break;
-            //    }
-            //}
-
-            //if (IsOneOfFiltersHasValue)
-            //{
-            //    //по нахождению верного индекса строки
-            //    //https://stackoverflow.com/questions/50999121/displaying-original-rowindex-after-filter-in-datagridview
-            //    //https://stackoverflow.com/questions/27125494/get-index-of-selected-row-in-filtered-datagrid
-            //    var r = ((DataRowView)BindingContext[THFileElementsDataGridView.DataSource].Current).Row;
-            //    SelectedRowIndexWhenFilteredDGW = r.Table.Rows.IndexOf(r); //находит верный но только для выбранной ячейки
-            //}
+            FunctionsUI.THFileElementsDataGridView_CellMouseClick(sender, e);
         }
 
         private void TableCompleteInfoLabel_Click(object sender, EventArgs e)
