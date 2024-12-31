@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using TranslationHelper.Data;
+using TranslationHelper.Functions;
 using TranslationHelper.Functions.FileElementsFunctions.Row;
 using TranslationHelper.Menus.FileRowMenus;
 
