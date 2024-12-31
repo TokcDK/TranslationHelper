@@ -294,7 +294,7 @@ namespace TranslationHelper
                     BindToDataTableGridView(AppData.CurrentProject.FilesContent.Tables[AppSettings.THFilesListSelectedIndex]);
                 }
 
-                ShowNonEmptyRowsCount();//Show how many rows have translation
+                FunctionsUI.ShowNonEmptyRowsCount(TableCompleteInfoLabel);//Show how many rows have translation
 
                 HideAllColumnsExceptOriginalAndTranslation();
 
@@ -380,7 +380,7 @@ namespace TranslationHelper
 
         private void SetOnTHFileElementsDataGridViewWasLoaded()
         {
-            ControlsSwitchActivated = true;
+            FunctionsUI.ControlsSwitchActivated = true;
             //ControlsSwitchIsOn = (CutToolStripMenuItem1.ShortcutKeys != Keys.None);
 
             if (THFileElementsDataGridView != null && THFileElementsDataGridView.Columns.Count > 1)
@@ -633,20 +633,6 @@ namespace TranslationHelper
 
                 // Change the colour
                 THTargetRichTextBox.SelectionColor = Color.DarkRed;
-            }
-        }
-
-        private void ShowNonEmptyRowsCount()
-        {
-            int RowsCount = FunctionsTable.GetDatasetRowsCount(AppData.CurrentProject.FilesContent);
-            if (RowsCount == 0)
-            {
-                TableCompleteInfoLabel.Visible = false;
-            }
-            else
-            {
-                TableCompleteInfoLabel.Visible = true;
-                TableCompleteInfoLabel.Text = FunctionsTable.GetDatasetNonEmptyRowsCount(AppData.CurrentProject.FilesContent) + "/" + RowsCount;
             }
         }
 
@@ -1050,7 +1036,7 @@ namespace TranslationHelper
             if (DGVCellInEditMode) return;
 
             //отключение действий для ячеек при входе
-            ControlsSwitch();
+            FunctionsUI.ControlsSwitch();
             //https://stackoverflow.com/questions/12780961/disable-copy-and-paste-in-datagridview
             THFileElementsDataGridView.ClipboardCopyMode = DataGridViewClipboardCopyMode.Disable;
 
@@ -1068,7 +1054,7 @@ namespace TranslationHelper
         private void THTargetRichTextBox_MouseEnter(object sender, EventArgs e)
         {
             //отключение действий для ячеек при входе в текстбокс
-            ControlsSwitch();
+            FunctionsUI.ControlsSwitch();
 
         }
 
@@ -1078,59 +1064,34 @@ namespace TranslationHelper
             //ControlsSwitch(true);
         }
 
-        internal bool ControlsSwitchIsOn = true;
-        internal bool ControlsSwitchActivated;
-        internal void ControlsSwitch(bool switchon = false)
-        {
-            if (ControlsSwitchActivated)
-            {
-                if (switchon && !ControlsSwitchIsOn)
-                {
-                    ControlsSwitchIsOn = switchon;
-                    //System.Media.SystemSounds.Asterisk.Play();
-                    //CutToolStripMenuItem1.ShortcutKeys = Keys.Control | Keys.X;
-                    //CopyCellValuesToolStripMenuItem.ShortcutKeys = Keys.Control | Keys.C;
-                    //PasteCellValuesToolStripMenuItem.ShortcutKeys = Keys.Control | Keys.V;
-                }
-                else if (ControlsSwitchIsOn)
-                {
-                    ControlsSwitchIsOn = switchon;
-                    //System.Media.SystemSounds.Hand.Play();
-                    //CutToolStripMenuItem1.ShortcutKeys = Keys.None;
-                    //CopyCellValuesToolStripMenuItem.ShortcutKeys = Keys.None;
-                    //PasteCellValuesToolStripMenuItem.ShortcutKeys = Keys.None;
-                }
-            }
-        }
-
         private void THFiltersDataGridView_MouseEnter(object sender, EventArgs e)
         {
-            ControlsSwitch();
+            FunctionsUI.ControlsSwitch();
         }
 
         private void THFiltersDataGridView_MouseLeave(object sender, EventArgs e)
         {
-            ControlsSwitch(true);
+            FunctionsUI.ControlsSwitch(true);
         }
 
         private void THSourceRichTextBox_MouseClick(object sender, MouseEventArgs e)
         {
-            ControlsSwitch();
+            FunctionsUI.ControlsSwitch();
         }
 
         private void THFiltersDataGridView_CellClick(object sender, DataGridViewCellEventArgs e)
         {
-            ControlsSwitch();
+            FunctionsUI.ControlsSwitch();
         }
 
         private void THFileElementsDataGridView_CellClick(object sender, DataGridViewCellEventArgs e)
         {
             if (!AppSettings.ProjectIsOpened) return;
-            if (ControlsSwitchActivated) return;
+            if (FunctionsUI.ControlsSwitchActivated) return;
 
-            ControlsSwitch(true);//не включалось копирование в ячейку, при копировании с гугла назад
+            FunctionsUI.ControlsSwitch(true);//не включалось копирование в ячейку, при копировании с гугла назад
 
-            ShowNonEmptyRowsCount();//Show how many rows have translation
+            FunctionsUI.ShowNonEmptyRowsCount(TableCompleteInfoLabel);//Show how many rows have translation
         }
 
         //int SelectedRowIndexWhenFilteredDGW = 0;

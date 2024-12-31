@@ -137,6 +137,7 @@
     <Compile Include="Formats\RPGMMV\StopCVPluginTXT.cs" />
     <Compile Include="Formats\RPGMMV\ValueLocationPresetTxt.cs" />
     <Compile Include="Formats\WolfRPG\TextEPH.cs" />
+    <Compile Include="Functions\FunctionsUI.cs" />
     <Compile Include="Functions\DBSaveFormats\Xlsx.cs" />
     <Compile Include="Functions\DBSaveFormats\Bin.cs" />
     <Compile Include="Functions\FileElementsFunctions\Row\EnQuotesToJp2.cs" />
