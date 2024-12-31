@@ -3,9 +3,11 @@ using System.Data;
 using System.Drawing;
 using System.Globalization;
 using System.Text;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 using TranslationHelper.Data;
 using TranslationHelper.Extensions;
+using TranslationHelper.Functions.FileElementsFunctions.Row.AutoSameForSimular;
 using TranslationHelper.Main.Functions;
 
 namespace TranslationHelper.Functions
@@ -605,6 +607,81 @@ namespace TranslationHelper.Functions
             catch
             {
             }
+        }
+
+        internal static void PaintDigitInFrontOfRow(object sender, DataGridViewRowPostPaintEventArgs e)
+        {
+            if (!AppSettings.ProjectIsOpened || AppData.Main.THFilesList.GetSelectedIndex() == -1)
+                return;
+
+            var grid = sender as DataGridView;
+
+            int rowIdx = FunctionsTable.GetRealRowIndex(AppData.Main.THFilesList.GetSelectedIndex(), e.RowIndex);//здесь получаю реальный индекс из Datatable
+            //string rowIdx = (e.RowIndex + 1) + string.Empty;
+
+            using (StringFormat centerFormat = new StringFormat()
+            {
+                // right alignment might actually make more sense for numbers
+                Alignment = StringAlignment.Center,
+                LineAlignment = StringAlignment.Center
+            })
+            {
+
+                Rectangle headerBounds = new Rectangle(e.RowBounds.Left, e.RowBounds.Top, grid.RowHeadersWidth, e.RowBounds.Height);
+                e.Graphics.DrawString((rowIdx + 1) + string.Empty, AppData.Main.Font, SystemBrushes.ControlText, headerBounds, centerFormat);
+            }
+        }
+
+        internal static async Task THFileElementsDataGridView_CellValueChangedAsync(object sender, DataGridViewCellEventArgs e)
+        {
+            if (AppData.CurrentProject == null) return;
+            if (e.ColumnIndex != AppData.CurrentProject.TranslationColumnIndex) return;
+
+            // Get the new value of the cell
+            DataGridViewCell cell = (sender as DataGridView).Rows[e.RowIndex].Cells[e.ColumnIndex];
+            object newValue = cell.Value;
+
+            // Get the old value of the cell
+            object oldValue = cell.Tag;
+
+            // Compare the new value with the old value and return if new value is same
+            if (!newValue.Equals(oldValue))
+            {
+                cell.Tag = newValue;
+            }
+            else return;
+
+            if (!AppSettings.ProjectIsOpened) return;
+
+            await Task.Run(() => new AutoSameForSimular().Rows()).ConfigureAwait(true);
+            //await Task.Run(() => FunctionAutoSave.Autosave()).ConfigureAwait(true);// save on each change is killing system..       
+
+            FunctionsUI.UpdateTranslationTextBoxValue(sender, e);
+            FunctionsUI.CellChangedRegistration(e.ColumnIndex);
+        }
+
+        internal static void THTargetTextBox_KeyDown(object sender, KeyEventArgs e)
+        {
+            //Ctrl+Del function
+            //https://stackoverflow.com/questions/18543198/why-cant-i-press-ctrla-or-ctrlbackspace-in-my-textbox
+            if (!e.Control || e.KeyCode != Keys.Back)
+            {
+                return;
+            }
+
+            e.SuppressKeyPress = true;
+            int selStart = AppData.Main.THTargetRichTextBox.SelectionStart;
+            while (selStart > 0 && AppData.Main.THTargetRichTextBox.Text.Substring(selStart - 1, 1) == " ")
+            {
+                selStart--;
+            }
+            int prevSpacePos = -1;
+            if (selStart != 0)
+            {
+                prevSpacePos = AppData.Main.THTargetRichTextBox.Text.LastIndexOf(' ', selStart - 1);
+            }
+            AppData.Main.THTargetRichTextBox.Select(prevSpacePos + 1, AppData.Main.THTargetRichTextBox.SelectionStart - prevSpacePos - 1);
+            AppData.Main.THTargetRichTextBox.SelectedText = string.Empty;
         }
     }
 }
