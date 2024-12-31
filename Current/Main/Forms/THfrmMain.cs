@@ -61,8 +61,6 @@ namespace TranslationHelper
 
         private void THFiltersDataGridView_CellValueChanged(object sender, DataGridViewCellEventArgs e)
         {
-            if (!AppSettings.ProjectIsOpened) return;
-
             FunctionsUI.CheckFilterDGV();
         }
 

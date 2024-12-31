@@ -572,6 +572,8 @@ namespace TranslationHelper.Functions
 
         internal static void CheckFilterDGV()
         {
+            if (!AppSettings.ProjectIsOpened) return;
+
             try
             {
                 //private void DGVFilter()
