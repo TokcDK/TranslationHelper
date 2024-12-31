@@ -206,25 +206,24 @@ namespace TranslationHelper
         {
             //Ctrl+Del function
             //https://stackoverflow.com/questions/18543198/why-cant-i-press-ctrla-or-ctrlbackspace-in-my-textbox
-            if (e.Control)
+            if (!e.Control || e.KeyCode != Keys.Back)
             {
-                if (e.KeyCode == Keys.Back)
-                {
-                    e.SuppressKeyPress = true;
-                    int selStart = THTargetRichTextBox.SelectionStart;
-                    while (selStart > 0 && THTargetRichTextBox.Text.Substring(selStart - 1, 1) == " ")
-                    {
-                        selStart--;
-                    }
-                    int prevSpacePos = -1;
-                    if (selStart != 0)
-                    {
-                        prevSpacePos = THTargetRichTextBox.Text.LastIndexOf(' ', selStart - 1);
-                    }
-                    THTargetRichTextBox.Select(prevSpacePos + 1, THTargetRichTextBox.SelectionStart - prevSpacePos - 1);
-                    THTargetRichTextBox.SelectedText = string.Empty;
-                }
+                return;
             }
+
+            e.SuppressKeyPress = true;
+            int selStart = THTargetRichTextBox.SelectionStart;
+            while (selStart > 0 && THTargetRichTextBox.Text.Substring(selStart - 1, 1) == " ")
+            {
+                selStart--;
+            }
+            int prevSpacePos = -1;
+            if (selStart != 0)
+            {
+                prevSpacePos = THTargetRichTextBox.Text.LastIndexOf(' ', selStart - 1);
+            }
+            THTargetRichTextBox.Select(prevSpacePos + 1, THTargetRichTextBox.SelectionStart - prevSpacePos - 1);
+            THTargetRichTextBox.SelectedText = string.Empty;
         }
 
         private void THFiltersDataGridView_CellValueChanged(object sender, DataGridViewCellEventArgs e)
