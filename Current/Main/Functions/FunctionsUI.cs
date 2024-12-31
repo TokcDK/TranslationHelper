@@ -11,6 +11,7 @@ using TranslationHelper.Data;
 using TranslationHelper.Extensions;
 using TranslationHelper.Functions.FileElementsFunctions.Row.AutoSameForSimular;
 using TranslationHelper.Main.Functions;
+using TranslationHelper.Menus.MainMenus.File;
 
 namespace TranslationHelper.Functions
 {
@@ -888,6 +889,22 @@ namespace TranslationHelper.Functions
             //    var r = ((DataRowView)BindingContext[THFileElementsDataGridView.DataSource].Current).Row;
             //    SelectedRowIndexWhenFilteredDGW = r.Table.Rows.IndexOf(r); //находит верный но только для выбранной ячейки
             //}
+        }
+
+        internal static void THMain_Load()
+        {
+            FunctionsUI.SetTooltips();
+
+            //Disable links detection in edition textboxes
+            AppData.Main.THSourceRichTextBox.DetectUrls = false;
+            //DetectUrls = false;
+
+            //Hide some items 
+            AppData.Main.tlpTextLenPosInfo.Visible = false;
+            AppData.Main.frmMainPanel.Visible = false;
+
+
+            MenuItemRecent.UpdateRecentFiles();
         }
 
         internal static bool InteruptTranslation;

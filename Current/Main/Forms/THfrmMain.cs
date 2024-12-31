@@ -38,18 +38,7 @@ namespace TranslationHelper
 
         private void THMain_Load(object sender, EventArgs e)
         {
-            FunctionsUI.SetTooltips();
-
-            //Disable links detection in edition textboxes
-            THSourceRichTextBox.DetectUrls = false;
-            THTargetRichTextBox.DetectUrls = false;
-
-            //Hide some items 
-            AppData.Main.tlpTextLenPosInfo.Visible = false;
-            AppData.Main.frmMainPanel.Visible = false;
-
-
-            MenuItemRecent.UpdateRecentFiles();
+            FunctionsUI.THMain_Load();
         }
         private void THFilesListBox_MouseClick(object sender, MouseEventArgs e)
         {
