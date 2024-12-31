@@ -4,6 +4,7 @@ using System.Text;
 using TranslationHelper.Data;
 using TranslationHelper.Extensions;
 using TranslationHelper.Formats.NScriptGame.nscript.dat;
+using TranslationHelper.Functions;
 
 namespace TranslationHelper.Projects.NScript
 {
@@ -29,7 +30,7 @@ namespace TranslationHelper.Projects.NScript
 
         private bool OpenSaveNScript()
         {
-            AppData.Main.ProgressInfo(true, (OpenFileMode ? T._("Opening") : T._("Saving")) + ": nscript.dat");
+            FunctionsUI.ProgressInfo(true, (OpenFileMode ? T._("Opening") : T._("Saving")) + ": nscript.dat");
             var filePath = Path.Combine(AppData.CurrentProject.SelectedGameDir, "nscript.dat");
             bool ret;
             var format = new NSCRIPT
@@ -51,7 +52,7 @@ namespace TranslationHelper.Projects.NScript
                 ret = format.Save();
             }
 
-            AppData.Main.ProgressInfo(false);
+            FunctionsUI.ProgressInfo(false);
             return ret;
         }
 

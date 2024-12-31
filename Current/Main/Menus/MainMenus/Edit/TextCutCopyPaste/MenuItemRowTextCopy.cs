@@ -44,7 +44,7 @@ namespace TranslationHelper.Menus.MainMenus.Edit.TextCutCopyPaste
 
         protected static bool IsValidToCopy()
         {
-            if (AppSettings.DGVCellInEditMode) AppData.Main.ControlsSwitch(); // если ячейка в режиме редактирования вылючение действий для ячеек при выходе из режима редактирования
+            if (AppSettings.DGVCellInEditMode) FunctionsUI.ControlsSwitch(); // если ячейка в режиме редактирования вылючение действий для ячеек при выходе из режима редактирования
 
             return AppData.Main.THFileElementsDataGridView != null && AppData.Main.THFileElementsDataGridView.SelectedCells.Count > 0;
         }

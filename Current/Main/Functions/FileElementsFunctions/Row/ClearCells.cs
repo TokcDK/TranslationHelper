@@ -33,7 +33,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
             if ((IsAll || IsTables || IsTable) && _dataSourceClear)
             {
                 _dataSourceClear = false;
-                AppData.Main.Invoke((Action)(() => AppData.Main.ActionsOnTHFIlesListElementSelected()));
+                AppData.Main.Invoke((Action)(() => FunctionsUI.ActionsOnTHFIlesListElementSelected()));
             }
         }
 

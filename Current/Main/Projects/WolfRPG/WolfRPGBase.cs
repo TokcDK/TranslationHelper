@@ -6,6 +6,7 @@ using System.Text.RegularExpressions;
 using System.Windows.Forms;
 using TranslationHelper.Data;
 using TranslationHelper.Extensions;
+using TranslationHelper.Functions;
 using TranslationHelper.Main.Functions;
 using TranslationHelper.Menus.FileRowMenus;
 using TranslationHelper.Projects.WolfRPG.Menus;
@@ -70,7 +71,7 @@ namespace TranslationHelper.Projects.WolfRPG
                         if (extractedDirPath.Exists && !extractedDirPath.IsEmpty()) continue;
 
                         //.mps, .dat, .project
-                        AppData.Main.ProgressInfo(true, progressMessageTitle + T._("Extract") + " " + Path.GetFileName(wolfFile));
+                        FunctionsUI.ProgressInfo(true, progressMessageTitle + T._("Extract") + " " + Path.GetFileName(wolfFile));
                         if (FunctionsProcess.RunProcess(wolfextractor, "\"" + wolfFile + "\""))
                         {
                             ret = true;

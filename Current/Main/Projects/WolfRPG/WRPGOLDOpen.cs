@@ -5,6 +5,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using TranslationHelper.Data;
 using TranslationHelper.Extensions;
+using TranslationHelper.Functions;
 using TranslationHelper.Main.Functions;
 
 namespace TranslationHelper.Projects.WolfRPG
@@ -84,7 +85,7 @@ namespace TranslationHelper.Projects.WolfRPG
                 try
                 {
                     string fname = Path.GetFileName(txtFile);
-                    AppData.Main.ProgressInfo(true, T._("opening file: ") + fname + ".txt");
+                    FunctionsUI.ProgressInfo(true, T._("opening file: ") + fname + ".txt");
                     using (StreamReader _file = new StreamReader(txtFile))
                     {
                         AppData.CurrentProject.FilesContent.Tables.Add(fname);
@@ -362,7 +363,7 @@ namespace TranslationHelper.Projects.WolfRPG
                     int translationcolumnindex = AppData.CurrentProject.FilesContent.Tables[fileName].Columns[THSettings.TranslationColumnName].Ordinal;
                     //int contextcolumnindex = THFilesElementsDatasetInfo.Tables[fileName].Columns["Context"].Ordinal;
 
-                    AppData.Main.ProgressInfo(true, T._("saving file: ") + fileName);
+                    FunctionsUI.ProgressInfo(true, T._("saving file: ") + fileName);
 
                     buffer.AppendLine("> WOLF TRANS PATCH FILE VERSION 1.0");// + Environment.NewLine);
                                                                              //for (int y = 0; y < THRPGMTransPatchFiles[i].blocks.Count; y++)
@@ -415,18 +416,18 @@ namespace TranslationHelper.Projects.WolfRPG
                 }
                 catch
                 {
-                    AppData.Main.ProgressInfo(false, string.Empty);
-                    AppData.Main.SaveInAction = false;
+                    FunctionsUI.ProgressInfo(false, string.Empty);
+                    FunctionsUI.SaveInAction = false;
                 }
                 finally
                 {
-                    AppData.Main.ProgressInfo(false, string.Empty);
+                    FunctionsUI.ProgressInfo(false, string.Empty);
                 }
 
             }
 
 
-            AppData.Main.SaveInAction = false;
+            FunctionsUI.SaveInAction = false;
         }
     }
 }

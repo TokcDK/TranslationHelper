@@ -121,7 +121,7 @@ namespace TranslationHelper.Functions
                         CurrentRowIndex = r;
                     }
 
-                    AppData.Main.ProgressInfo(true, progressinfo);
+                    FunctionsUI.ProgressInfo(true, progressinfo);
                     //LogToFile("111=" + 111, true);
                     //проверка пустого значения поля для перевода
                     //if (THFileElementsDataGridView[cind + 1, rind].Value == null || string.IsNullOrEmpty(THFileElementsDataGridView[cind + 1, rind].Value.ToString()))
@@ -229,7 +229,7 @@ namespace TranslationHelper.Functions
 
             AppData.Main.IsTranslating = false;
             FunctionsOnlineCache.Unload();
-            AppData.Main.ProgressInfo(false);
+            FunctionsUI.ProgressInfo(false);
         }
 
         private string TranslateMultilineValue(string[] InputLines/*, DataSet cacheDS*/)
@@ -341,7 +341,7 @@ namespace TranslationHelper.Functions
             {
                 if (AppSettings.UseAllDBFilesForOnlineTranslationForAll && Method == "a")
                 {
-                    AppData.Main.ProgressInfo(true, "Get all databases");
+                    FunctionsUI.ProgressInfo(true, "Get all databases");
                     FunctionsDBFile.MergeAllDBtoOne();
                 }
 
@@ -377,7 +377,7 @@ namespace TranslationHelper.Functions
                             continue;
                         }
 
-                        Task.Run(() => AppData.Main.ProgressInfo(true, T._("getting translation") + t + "/" + TableMaxIndex + ": " + Table.TableName + " ")).ConfigureAwait(false);
+                        Task.Run(() => FunctionsUI.ProgressInfo(true, T._("getting translation") + t + "/" + TableMaxIndex + ": " + Table.TableName + " ")).ConfigureAwait(false);
 
                         RowsCountInTable = (Method == "a" || Method == "t") ? Table.Rows.Count : SelectedIndexes.Length;
 
@@ -394,7 +394,7 @@ namespace TranslationHelper.Functions
                             {
                                 //AppData.Main.Invoke((Action)(() => AppData.Main.translationInteruptToolStripMenuItem.Visible = false));
                                 FunctionsOnlineCache.Unload();
-                                AppData.Main.ProgressInfo(false);
+                                FunctionsUI.ProgressInfo(false);
                                 //Thread.CurrentThread.Abort();
                                 return;
                             }
@@ -538,7 +538,7 @@ namespace TranslationHelper.Functions
 
             FunctionsOnlineCache.Unload();
 
-            AppData.Main.ProgressInfo(false);
+            FunctionsUI.ProgressInfo(false);
         }
 
         private void TranslateItNow(List<string> InputLines, List<InputLinesInfoData> InputLinesInfo)

@@ -132,7 +132,7 @@ namespace TranslationHelper.Projects
                 // check extension for case im mask was "*.*" or kind of
                 if (!string.IsNullOrWhiteSpace(format.Extension) && file.Extension != format.Extension) return;
 
-                AppData.Main.ProgressInfo(true, (project.OpenFileMode ? T._("Opening") : T._("Saving")) + " " + file.Name);
+                FunctionsUI.ProgressInfo(true, (project.OpenFileMode ? T._("Opening") : T._("Saving")) + " " + file.Name);
 
                 bool isOpenSuccess = false;
                 try
@@ -148,7 +148,7 @@ namespace TranslationHelper.Projects
                     project.BakPaths.Add(file.FullName);
             });
 
-            AppData.Main.ProgressInfo(false);
+            FunctionsUI.ProgressInfo(false);
 
             return ret;
         }

@@ -71,7 +71,7 @@
 //                if (result != DialogResult.Yes) return;
 //            }
 
-//            AppData.Main.ProgressInfo(true, "Get all DB");
+//            FunctionsUI.ProgressInfo(true, "Get all DB");
 
 //            var mergingAllDb = new Task(() => FunctionsDBFile.MergeAllDBtoOne());
 //            mergingAllDb.ConfigureAwait(true);
@@ -79,7 +79,7 @@
 //            mergingAllDb.Wait();
 //            _allDbLoaded4All = true;
 
-//            AppData.Main.ProgressInfo(false);
+//            FunctionsUI.ProgressInfo(false);
 //        }
 //        protected override void ActionsFinalize()
 //        {
@@ -89,7 +89,7 @@
 //            AppData.OnlineTranslationCache.Write();
 //            FunctionsOnlineCache.Unload();
 
-//            AppData.Main.ProgressInfo(false);
+//            FunctionsUI.ProgressInfo(false);
 
 //            if (AppSettings.InterruptTtanslation) AppSettings.InterruptTtanslation = false;
 //        }
@@ -98,11 +98,11 @@
 //        {
 //            try
 //            {
-//                AppData.Main.ProgressInfo(true, "Translate" + " " + rowData.SelectedTable.TableName + "/" + rowData.SelectedRowIndex);
+//                FunctionsUI.ProgressInfo(true, "Translate" + " " + rowData.SelectedTable.TableName + "/" + rowData.SelectedRowIndex);
 
 //                SetRowLinesToBuffer(rowData);
 
-//                AppData.Main.ProgressInfo(false);
+//                FunctionsUI.ProgressInfo(false);
 //                return true;
 //            }
 //            catch

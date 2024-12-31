@@ -31,7 +31,7 @@ namespace TranslationHelper.Menus.MainMenus.File
 
             FunctionAutoSave.lastautosavepath = path;
 
-            AppData.Main.ProgressInfo(true);
+            FunctionsUI.ProgressInfo(true);
 
             //switch (AppData.CurrentProject.Name)
             //{
@@ -45,7 +45,7 @@ namespace TranslationHelper.Menus.MainMenus.File
             await Task.Run(() => FunctionsDBFile.WriteDBFileLite(AppData.CurrentProject.FilesContent, new[] { path, pathNextToSource })).ConfigureAwait(true);
 
             FunctionsSounds.SaveDBComplete();
-            AppData.Main.ProgressInfo(false);
+            FunctionsUI.ProgressInfo(false);
         }
 
         private void ShiftToBakups(string path)

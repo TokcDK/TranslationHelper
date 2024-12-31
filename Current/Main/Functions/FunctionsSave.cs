@@ -26,13 +26,13 @@ namespace TranslationHelper.Functions
 
         internal async Task PrepareToWrite()
         {
-            if (AppData.Main.SaveInAction /*|| !ProjectData.Main.FIleDataWasChanged*/)
+            if (FunctionsUI.SaveInAction /*|| !ProjectData.Main.FIleDataWasChanged*/)
             {
                 //MessageBox.Show("Saving still in progress. Please wait a little.");
                 return;
             }
-            AppData.Main.SaveInAction = true;
-            AppData.Main.FileDataWasChanged = false;
+            FunctionsUI.SaveInAction = true;
+            FunctionsUI.FileDataWasChanged = false;
             AppData.CurrentProject.SaveFileMode = true;
 
             //MessageBox.Show("THSelectedSourceType=" + THSelectedSourceType);
@@ -174,7 +174,7 @@ namespace TranslationHelper.Functions
             }
 
 
-            AppData.Main.SaveInAction = false;
+            FunctionsUI.SaveInAction = false;
             FunctionsSounds.PlayAsterisk();
         }
 

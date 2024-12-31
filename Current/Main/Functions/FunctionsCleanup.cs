@@ -46,7 +46,7 @@ namespace TranslationHelper.Data
                 AppData.Main.THTargetRichTextBox.Text = string.Empty;
                 AppData.Main.TableCompleteInfoLabel.Text = string.Empty;
                 AppData.Main.TranslationLongestLineLenghtLabel.Text = string.Empty;
-                AppData.Main.ControlsSwitchActivated = false;
+                FunctionsUI.ControlsSwitchActivated = false;
 
                 //Clean data
                 AppData.Main.THFilesList.Items.Clear();

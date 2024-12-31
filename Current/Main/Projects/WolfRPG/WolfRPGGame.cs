@@ -6,6 +6,7 @@ using System.Text.RegularExpressions;
 using System.Windows;
 using TranslationHelper.Data;
 using TranslationHelper.Extensions;
+using TranslationHelper.Functions;
 using TranslationHelper.Main.Functions;
 
 namespace TranslationHelper.Projects.WolfRPG
@@ -99,7 +100,7 @@ namespace TranslationHelper.Projects.WolfRPG
                         //+ " > \"" + log + "\""
                         ;
 
-                    AppData.Main.ProgressInfo(true, progressMessageTitle);
+                    FunctionsUI.ProgressInfo(true, progressMessageTitle);
                     var patch = Path.Combine(WorkFolder, "Patch.cmd");
                     File.WriteAllText(patch, "\r\n\"" + ruby + "\" " + args + "\r\npause");
 
@@ -118,7 +119,7 @@ namespace TranslationHelper.Projects.WolfRPG
                         try
                         {
                             if (OpenFileMode) BakRestore();//restore original files before patch creation
-                            AppData.Main.ProgressInfo(true, "Patching..");
+                            FunctionsUI.ProgressInfo(true, "Patching..");
                             ret = RubyWolfTrans.Start();
                             RubyWolfTrans.WaitForExit();
                         }
@@ -130,7 +131,7 @@ namespace TranslationHelper.Projects.WolfRPG
 
                         if (!ret || RubyWolfTrans.ExitCode > 0)
                         {
-                            AppData.Main.ProgressInfo(true, progressMessageTitle + " " + T._("Somethig wrong") + ".. " + T._("Trying again"));
+                            FunctionsUI.ProgressInfo(true, progressMessageTitle + " " + T._("Somethig wrong") + ".. " + T._("Trying again"));
                             //2nd try because was error sometime after 1st patch creation execution
                             if (OpenFileMode) BakRestore();
                             ret = RubyWolfTrans.Start();
@@ -165,10 +166,10 @@ namespace TranslationHelper.Projects.WolfRPG
 
                 if (ret && SaveFileMode)
                 {
-                    AppData.Main.ProgressInfo(true, T._("Create buckup of original files"));
+                    FunctionsUI.ProgressInfo(true, T._("Create buckup of original files"));
                     BakCreate();
 
-                    AppData.Main.ProgressInfo(true, T._("Replace translated files"));
+                    FunctionsUI.ProgressInfo(true, T._("Replace translated files"));
                     ReplaceFilesWithTranslated();
                 }
             }
@@ -177,7 +178,7 @@ namespace TranslationHelper.Projects.WolfRPG
 
             }
 
-            AppData.Main.ProgressInfo(false);
+            FunctionsUI.ProgressInfo(false);
             return ret;
         }
 

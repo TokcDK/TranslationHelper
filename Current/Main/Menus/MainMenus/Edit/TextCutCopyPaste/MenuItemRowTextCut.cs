@@ -24,7 +24,7 @@ namespace TranslationHelper.Menus.MainMenus.Edit.TextCutCopyPaste
 
         protected override void ActionForSelectedRows()
         {
-            if (AppSettings.DGVCellInEditMode) AppData.Main.ControlsSwitch(); // если ячейка в режиме редактирования вылючение действий для ячеек при выходе из режима редактирования
+            if (AppSettings.DGVCellInEditMode) FunctionsUI.ControlsSwitch(); // если ячейка в режиме редактирования вылючение действий для ячеек при выходе из режима редактирования
 
             if (AppData.Main.THFileElementsDataGridView == null) return;
 

@@ -70,7 +70,7 @@ namespace TranslationHelper.Functions
         //                continue;
 
         //            string tableprogressinfo = infomessage + table.TableName + ">" + t + "/" + tcount;
-        //            AppData.Main.ProgressInfo(true, tableprogressinfo);
+        //            FunctionsUI.ProgressInfo(true, tableprogressinfo);
 
         //            int rcount = table.Rows.Count;
         //            //проход по всем строкам таблицы рабочего dataset
@@ -135,7 +135,7 @@ namespace TranslationHelper.Functions
         //        }
         //    }
 
-        //    AppData.Main.ProgressInfo(false);
+        //    FunctionsUI.ProgressInfo(false);
         //}
 
         //private static void CompareLiteIfIdentical(DataSet tHTempDS)
@@ -155,7 +155,7 @@ namespace TranslationHelper.Functions
         //                continue;
 
         //            string tableprogressinfo = infomessage + table.TableName + ">" + t + "/" + tcount;
-        //            AppData.Main.ProgressInfo(true, tableprogressinfo);
+        //            FunctionsUI.ProgressInfo(true, tableprogressinfo);
 
         //            int rcount = table.Rows.Count;
         //            //проход по всем строкам таблицы рабочего dataset
@@ -178,7 +178,7 @@ namespace TranslationHelper.Functions
         //            if(b) ResetDGVDataSource(-1, false, table);
         //        }
         //    }
-        //    AppData.Main.ProgressInfo(false);
+        //    FunctionsUI.ProgressInfo(false);
         //}
 
         ///// <summary>
@@ -214,7 +214,7 @@ namespace TranslationHelper.Functions
         //                continue;
 
         //            string tableprogressinfo = infomessage + table.TableName + ">" + t + "/" + tcount;
-        //            AppData.Main.ProgressInfo(true, tableprogressinfo);
+        //            FunctionsUI.ProgressInfo(true, tableprogressinfo);
 
         //            int rcount = table.Rows.Count;
         //            //проход по всем строкам таблицы рабочего dataset
@@ -272,7 +272,7 @@ namespace TranslationHelper.Functions
         //    //timer.Stop();
         //    //TimeSpan difference = new TimeSpan(timer.ElapsedTicks);
         //    //MessageBox.Show(difference.ToString());
-        //    AppData.Main.ProgressInfo(false);
+        //    FunctionsUI.ProgressInfo(false);
         //    System.Media.SystemSounds.Beep.Play();
         //}
 
@@ -303,7 +303,7 @@ namespace TranslationHelper.Functions
                 bool resetDGV = ResetDGVDataSource(tableIndex, filesList, workTableDatagridview);
 
                 string tableProgressInfo = string.Format("{0} {1}: {2}>{3}/{4}", T._("Load"), T._(THSettings.TranslationColumnName), table.TableName, tableIndex, AppData.CurrentProject.FilesContent.Tables.Count);
-                AppData.Main.ProgressInfo(true, tableProgressInfo);
+                FunctionsUI.ProgressInfo(true, tableProgressInfo);
 
                 bool dbTryToCheckLinesOfEachMultilineValue = AppSettings.DBTryToCheckLinesOfEachMultilineValue;
 
@@ -365,7 +365,7 @@ namespace TranslationHelper.Functions
 
             });
 
-            AppData.Main.ProgressInfo(false);
+            FunctionsUI.ProgressInfo(false);
             System.Media.SystemSounds.Beep.Play();
         }
 
@@ -396,7 +396,7 @@ namespace TranslationHelper.Functions
                 }
 
                 var tableProgressMessage = $"{progressMessage} {table.TableName}>{tableIndex + 1}/{tables.Count}";
-                AppData.Main.ProgressInfo(true, tableProgressMessage);
+                FunctionsUI.ProgressInfo(true, tableProgressMessage);
 
                 var rows = table.Rows;
                 var rowCount = rows.Count;
@@ -478,10 +478,10 @@ namespace TranslationHelper.Functions
                     ResetDGVDataSource(-1, filesList, workTableDatagridview, false, table);
                 }
 
-                AppData.Main.ProgressInfo(true, tableProgressMessage);
+                FunctionsUI.ProgressInfo(true, tableProgressMessage);
             });
 
-            AppData.Main.ProgressInfo(false);
+            FunctionsUI.ProgressInfo(false);
             System.Media.SystemSounds.Beep.Play();
         }
 
@@ -509,7 +509,7 @@ namespace TranslationHelper.Functions
         //        if (!FunctionsTable.IsTableColumnCellsAll(AppData.CurrentProject.FilesContent.Tables[t]))
         //        {
         //            string tableprogressinfo = infomessage + AppData.CurrentProject.FilesContent.Tables[t].TableName + ">" + t + "/" + tcount;
-        //            AppData.Main.ProgressInfo(true, tableprogressinfo);
+        //            FunctionsUI.ProgressInfo(true, tableprogressinfo);
 
         //            int rcount = AppData.CurrentProject.FilesContent.Tables[t].Rows.Count;
         //            //проход по всем строкам таблицы рабочего dataset
@@ -541,7 +541,7 @@ namespace TranslationHelper.Functions
         //    //timer.Stop();
         //    //TimeSpan difference = new TimeSpan(timer.ElapsedTicks);
         //    //MessageBox.Show(difference.ToString());
-        //    AppData.Main.ProgressInfo(false);
+        //    FunctionsUI.ProgressInfo(false);
         //    System.Media.SystemSounds.Beep.Play();
         //}
         private static bool ResetDGVDataSource(long tableIndex, ListBox filesList, DataGridView dgv, bool isReset = true, DataTable table = null)
@@ -584,7 +584,7 @@ namespace TranslationHelper.Functions
         //    string infomessage = T._("Load") + " " + T._(THSettings.TranslationColumnName) + ":";
         //    //int tableDataKeysCount = tableData.Keys.Count;
         //    //int cur/* = 0*/;
-        //    AppData.Main.ProgressInfo(true, infomessage);
+        //    FunctionsUI.ProgressInfo(true, infomessage);
         //    foreach (var original in tableData.Keys)
         //    {
         //        //ProjectData.Main.ProgressInfo(true, infomessage + cur +"/"+ tableDataKeysCount);
@@ -604,7 +604,7 @@ namespace TranslationHelper.Functions
         //    //timer.Stop();
         //    //TimeSpan difference = new TimeSpan(timer.ElapsedTicks);
         //    //MessageBox.Show(difference.ToString());
-        //    AppData.Main.ProgressInfo(false);
+        //    FunctionsUI.ProgressInfo(false);
         //    System.Media.SystemSounds.Beep.Play();
         //}
 

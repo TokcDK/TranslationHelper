@@ -574,7 +574,7 @@ namespace TranslationHelper.Main.Functions
                 {
                     using (var dbDataSet = new DataSet())
                     {
-                        AppData.Main.ProgressInfo(true, T._("Loading") + " " + Path.GetFileName(dbFile.Value.Name));
+                        FunctionsUI.ProgressInfo(true, T._("Loading") + " " + Path.GetFileName(dbFile.Value.Name));
 
                         ReadDBFile(dataSet: dbDataSet, dbFilePath: dbFile.Value.FullName, useOriginaldbFilePath: true);
                         dbDataSet.ToDictionary(inputDB: AppData.AllDBmerged, dontAddEmptyTranslation: true, dontAddEqualTranslation: true, _dbDataSetToDictionaryAddLocker);
@@ -771,7 +771,7 @@ namespace TranslationHelper.Main.Functions
             //dbpath = Application.StartupPath + "\\DB";
             //string dbfilename = DateTime.Now.ToString("dd.MM.yyyy HH-mm-ss");
 
-            AppData.Main.ProgressInfo(true);
+            FunctionsUI.ProgressInfo(true);
 
             //lastautosavepath = dbpath + "\\Auto\\Auto" + dbfilename + GetDBCompressionExt();
 
@@ -784,7 +784,7 @@ namespace TranslationHelper.Main.Functions
 
             if (UseAllDB)
             {
-                AppData.Main.ProgressInfo(true, "Get all databases");
+                FunctionsUI.ProgressInfo(true, "Get all databases");
                 FunctionsDBFile.MergeAllDBtoOne();
                 FunctionsLoadTranslationDB.THLoadDBCompareFromDictionaryParallellTables(AppData.AllDBmerged);
             }
@@ -816,11 +816,11 @@ namespace TranslationHelper.Main.Functions
 
             if (!File.Exists(sPath))
             {
-                AppData.Main.ProgressInfo(false);
+                FunctionsUI.ProgressInfo(false);
                 return Task.CompletedTask;
             }
 
-            AppData.Main.ProgressInfo(true, T._("Reading DB File") + "...");
+            FunctionsUI.ProgressInfo(true, T._("Reading DB File") + "...");
 
             try
             {
@@ -878,7 +878,7 @@ namespace TranslationHelper.Main.Functions
 
             }
 
-            AppData.Main.ProgressInfo(false);
+            FunctionsUI.ProgressInfo(false);
 
             return Task.CompletedTask;
         }

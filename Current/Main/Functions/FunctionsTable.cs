@@ -132,7 +132,7 @@ namespace TranslationHelper.Main.Functions
                 //https://stackoverflow.com/a/51399750
                 AppData.Main.THFileElementsDataGridView.FirstDisplayedScrollingRowIndex = rowIndex;
 
-                AppData.Main.UpdateTextboxes();
+                FunctionsUI.UpdateTextboxes();
             }
             catch (Exception ex)
             {

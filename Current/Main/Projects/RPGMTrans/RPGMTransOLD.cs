@@ -5,6 +5,7 @@ using System.Text;
 using TranslationHelper.Data;
 using TranslationHelper.Extensions;
 using TranslationHelper.Formats.RPGMaker.Functions;
+using TranslationHelper.Functions;
 
 namespace TranslationHelper.Projects.RPGMTrans
 {
@@ -126,7 +127,7 @@ namespace TranslationHelper.Projects.RPGMTrans
             for (int i = 0; i < ListFiles.Count; i++)   //Обрабатываем всю строку
             {
                 string fname = Path.GetFileNameWithoutExtension(ListFiles[i]);
-                AppData.Main.ProgressInfo(true, T._("opening file: ") + fname + ".txt");
+                FunctionsUI.ProgressInfo(true, T._("opening file: ") + fname + ".txt");
                 _file = new StreamReader(ListFiles[i]); //Задаем файл
                 //THRPGMTransPatchFiles.Add(new THRPGMTransPatchFile(Path.GetFileNameWithoutExtension(ListFiles[i]), ListFiles[i].ToString(), string.Empty));    //Добaвляем файл
                 _ = AppData.CurrentProject.FilesContent.Tables.Add(fname);
@@ -395,7 +396,7 @@ namespace TranslationHelper.Projects.RPGMTrans
                     //for (int i = 0; i < THRPGMTransPatchFiles.Count; i++)
                     for (int i = 0; i < AppData.CurrentProject.FilesContent.Tables.Count; i++)
                     {
-                        AppData.Main.ProgressInfo(true, T._("saving file: ") + AppData.CurrentProject.FilesContent.Tables[i].TableName);
+                        FunctionsUI.ProgressInfo(true, T._("saving file: ") + AppData.CurrentProject.FilesContent.Tables[i].TableName);
 
                         buffer.AppendLine("> RPGMAKER TRANS PATCH FILE VERSION 3.2");// + Environment.NewLine);
                         //for (int y = 0; y < THRPGMTransPatchFiles[i].blocks.Count; y++)
@@ -473,7 +474,7 @@ namespace TranslationHelper.Projects.RPGMTrans
                     //for (int i = 0; i < THRPGMTransPatchFiles.Count; i++)
                     for (int i = 0; i < AppData.CurrentProject.FilesContent.Tables.Count; i++)
                     {
-                        AppData.Main.ProgressInfo(true, T._("saving file: ") + AppData.CurrentProject.FilesContent.Tables[i].TableName);
+                        FunctionsUI.ProgressInfo(true, T._("saving file: ") + AppData.CurrentProject.FilesContent.Tables[i].TableName);
 
                         bool unusednotfound = true;//для проверки начала неиспользуемых строк, в целях оптимизации
 
@@ -547,8 +548,8 @@ namespace TranslationHelper.Projects.RPGMTrans
                 //THActionProgressBar.Visible = false;
                 //THInfolabel.Invoke((Action)(() => THInfolabel.Visible = false));
                 //THInfolabel.Invoke((Action)(() => THInfolabel.Text = string.Empty));
-                AppData.Main.ProgressInfo(false, string.Empty);
-                AppData.Main.SaveInAction = false;
+                FunctionsUI.ProgressInfo(false, string.Empty);
+                FunctionsUI.SaveInAction = false;
                 return false;
             }
             finally
@@ -557,10 +558,10 @@ namespace TranslationHelper.Projects.RPGMTrans
                 //THActionProgressBar.Invoke((Action)(() => THActionProgressBar.Visible = false));
                 //THInfolabel.Invoke((Action)(() => THInfolabel.Visible = false));
                 //THInfolabel.Invoke((Action)(() => THInfolabel.Text = string.Empty));
-                AppData.Main.ProgressInfo(false, string.Empty);
+                FunctionsUI.ProgressInfo(false, string.Empty);
             }
 
-            AppData.Main.SaveInAction = false;
+            FunctionsUI.SaveInAction = false;
 
 
             //остановка таймера и запись времени

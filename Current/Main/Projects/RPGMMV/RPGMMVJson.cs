@@ -1,6 +1,7 @@
 ﻿using System.IO;
 using TranslationHelper.Data;
 using TranslationHelper.Formats.RPGMMV;
+using TranslationHelper.Functions;
 
 namespace TranslationHelper.Projects.RPGMMV
 {
@@ -57,7 +58,7 @@ namespace TranslationHelper.Projects.RPGMMV
             {
             }
 
-            AppData.Main.ProgressInfo(false);
+            FunctionsUI.ProgressInfo(false);
             return false;
         }
 
@@ -67,7 +68,7 @@ namespace TranslationHelper.Projects.RPGMMV
             {
                 string Jsonname = Path.GetFileNameWithoutExtension(filePath); // get json file name
 
-                AppData.Main.ProgressInfo(true, ParseFileMessage + Jsonname + ".json");
+                FunctionsUI.ProgressInfo(true, ParseFileMessage + Jsonname + ".json");
 
                 //string jsondata = File.ReadAllText(FilePath); // get json data
 

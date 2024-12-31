@@ -102,7 +102,7 @@ namespace TranslationHelper.Projects.RPGMMV
             }
             catch { }
 
-            AppData.Main.ProgressInfo(false);
+            FunctionsUI.ProgressInfo(false);
             return isAnyFileCompleted;
         }
 
@@ -164,7 +164,7 @@ namespace TranslationHelper.Projects.RPGMMV
                     var format = (FormatBase)Activator.CreateInstance(jsType); // create format instance for open or save
                     format.FilePath = filePath;
 
-                    AppData.Main.ProgressInfo(true, ParseFileMessage + js.JSName);
+                    FunctionsUI.ProgressInfo(true, ParseFileMessage + js.JSName);
 
                     try
                     {
@@ -198,7 +198,7 @@ namespace TranslationHelper.Projects.RPGMMV
 
                 if (hardcodedJS.Contains(jsName) || skipJSList.Contains(jsName)) continue;
 
-                AppData.Main.ProgressInfo(true, ParseFileMessage + jsName);
+                FunctionsUI.ProgressInfo(true, ParseFileMessage + jsName);
 
                 if (!File.Exists(jsFileInfo)) continue;
 
@@ -229,7 +229,7 @@ namespace TranslationHelper.Projects.RPGMMV
         /// <returns></returns>
         private bool ParseFontsCS()
         {
-            AppData.Main.ProgressInfo(true, ParseFileMessage + "gamefont.css");
+            FunctionsUI.ProgressInfo(true, ParseFileMessage + "gamefont.css");
             var filePath = Path.Combine(WWWDir, "fonts", "gamefont.css");
 
             if (!File.Exists(filePath)) return false;
@@ -294,7 +294,7 @@ namespace TranslationHelper.Projects.RPGMMV
 
                 string Jsonname = Path.GetFileNameWithoutExtension(filePath); // get json file name
 
-                AppData.Main.ProgressInfo(true, ParseFileMessage + Jsonname + ".json");
+                FunctionsUI.ProgressInfo(true, ParseFileMessage + Jsonname + ".json");
 
                 //string jsondata = File.ReadAllText(FilePath); // get json data
 

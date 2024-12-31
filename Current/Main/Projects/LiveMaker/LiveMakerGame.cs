@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using TranslationHelper.Data;
 using TranslationHelper.Formats.LiveMaker;
+using TranslationHelper.Functions;
 using TranslationHelper.Main.Functions;
 
 namespace TranslationHelper.Projects.LiveMaker
@@ -61,11 +62,11 @@ namespace TranslationHelper.Projects.LiveMaker
                 //Directory.CreateDirectory(gameresoutput);
                 if (!File.Exists(Path.Combine(gameresoutput, "INSTALL.DAT")))
                 {
-                    AppData.Main.ProgressInfo(T._("Resource extraction") + "..");
+                    FunctionsUI.ProgressInfo(T._("Resource extraction") + "..");
                     FunctionsProcess.RunProcess(THSettings.PyLiveMakerLMARExtractionToolsPath, gameextractcommand, "", true, false);
                 }
 
-                AppData.Main.ProgressInfo();
+                FunctionsUI.ProgressInfo();
 
                 //MessageBox.Show("game extracted!");
 
@@ -84,7 +85,7 @@ namespace TranslationHelper.Projects.LiveMaker
                     {
                         var name = Path.GetFileNameWithoutExtension(lsb);
 
-                        AppData.Main.ProgressInfo(T._("Proceed") + " " + name + ".lsb" + "..");
+                        FunctionsUI.ProgressInfo(T._("Proceed") + " " + name + ".lsb" + "..");
 
                         if (File.Exists(lsb + ".bak"))
                         {
@@ -98,7 +99,7 @@ namespace TranslationHelper.Projects.LiveMaker
                         var textcsv = Path.Combine(csvdir, textcsvname);
                         if (!File.Exists(textcsv) && !File.Exists(textcsv + ".skip"))
                         {
-                            AppData.Main.ProgressInfo(name + ".lsb: " + T._("text extraction in csv") + "..");
+                            FunctionsUI.ProgressInfo(name + ".lsb: " + T._("text extraction in csv") + "..");
 
                             var textcommand = "extractcsv -e utf-8-sig --overwrite \"" + ".\\" + name + ".lsb\" \"" + "..\\Extracted\\" + textcsvname + "\"";
                             FunctionsProcess.RunProcess(THSettings.PyLiveMakerLMLSBExtractionToolPath, textcommand, gameresoutput, true, false);
@@ -114,7 +115,7 @@ namespace TranslationHelper.Projects.LiveMaker
                         var menucsv = Path.Combine(csvdir, name + ".menu.csv");
                         if (!File.Exists(menucsv) && !File.Exists(menucsv + ".skip"))
                         {
-                            AppData.Main.ProgressInfo(name + ".lsb: " + T._("menu text extraction in csv") + "..");
+                            FunctionsUI.ProgressInfo(name + ".lsb: " + T._("menu text extraction in csv") + "..");
 
                             var menucommand = "extractmenu -e utf-8-sig --overwrite \"" + ".\\" + name + ".lsb\" \"" + "..\\Extracted\\" + menucsvname + "\"";
                             FunctionsProcess.RunProcess(THSettings.PyLiveMakerLMLSBExtractionToolPath, menucommand, gameresoutput, true, false);
@@ -129,7 +130,7 @@ namespace TranslationHelper.Projects.LiveMaker
                         var lns = Path.Combine(csvdir, "LNS", name);
                         if (!Directory.Exists(lns) && !Directory.Exists(lns + ".skip"))
                         {
-                            AppData.Main.ProgressInfo(name + ".lsb: " + T._("scripts extraction in lns") + "..");
+                            FunctionsUI.ProgressInfo(name + ".lsb: " + T._("scripts extraction in lns") + "..");
 
                             var lnscommand = "extract \"" + ".\\" + name + ".lsb\" -o \"" + "..\\Extracted\\LNS\\" + lnsname + "\"";
                             FunctionsProcess.RunProcess(THSettings.PyLiveMakerLMLSBExtractionToolPath, lnscommand, gameresoutput, true, false);
@@ -143,7 +144,7 @@ namespace TranslationHelper.Projects.LiveMaker
                         //var lnscommand = "extract \"" + lsb + "\" -o \"" + lns + "\"";
                         //FunctionsProcess.RunProcess(THSettingsData.PyLiveMakerLMLSBExtractionToolPath(), menucommand);
 
-                        AppData.Main.ProgressInfo();
+                        FunctionsUI.ProgressInfo();
                     }
                 }
 
@@ -182,15 +183,15 @@ namespace TranslationHelper.Projects.LiveMaker
 
                         var progress = i + "/" + lsblistmax + ":";
 
-                        AppData.Main.ProgressInfo(progress + T._("Proceed") + " " + name + ".lsb" + "..");
-                        AppData.Main.ProgressInfo(i, lsblistmax);
+                        FunctionsUI.ProgressInfo(progress + T._("Proceed") + " " + name + ".lsb" + "..");
+                        FunctionsUI.ProgressInfo(i, lsblistmax);
 
                         //insert text translations
                         var textcsvname = name + ".text.csv";
                         var textcsv = Path.Combine(csvdir, textcsvname);
                         if (File.Exists(textcsv))
                         {
-                            AppData.Main.ProgressInfo(progress + name + ".lsb: " + T._("write text"));
+                            FunctionsUI.ProgressInfo(progress + name + ".lsb: " + T._("write text"));
 
                             var textcommand = "insertcsv -e utf-8-sig \"" + ".\\" + name + ".lsb\" \"" + "..\\Extracted\\" + textcsvname + "\"";
                             FunctionsProcess.RunProcess(THSettings.PyLiveMakerLMLSBExtractionToolPath, textcommand, gameresoutput, true, false);
@@ -201,7 +202,7 @@ namespace TranslationHelper.Projects.LiveMaker
                         var menucsv = Path.Combine(csvdir, name + ".menu.csv");
                         if (File.Exists(menucsv))
                         {
-                            AppData.Main.ProgressInfo(progress + name + ".lsb: " + T._("write menus"));
+                            FunctionsUI.ProgressInfo(progress + name + ".lsb: " + T._("write menus"));
 
                             var menucommand = "insertmenu -e utf-8-sig \"" + ".\\" + name + ".lsb\" \"" + "..\\Extracted\\" + menucsvname + "\"";
                             FunctionsProcess.RunProcess(THSettings.PyLiveMakerLMLSBExtractionToolPath, menucommand, gameresoutput, true, false);
@@ -212,7 +213,7 @@ namespace TranslationHelper.Projects.LiveMaker
                         var lns = Path.Combine(csvdir, "LNS", name);
                         if (Directory.Exists(lns))
                         {
-                            AppData.Main.ProgressInfo(progress + name + ".lsb: " + T._("write scripts"));
+                            FunctionsUI.ProgressInfo(progress + name + ".lsb: " + T._("write scripts"));
 
                             var lnscommand = "batchinsert \"" + ".\\" + name + ".lsb\" \"" + "..\\Extracted\\LNS\\" + lnsname + "\"";
                             FunctionsProcess.RunProcess(THSettings.PyLiveMakerLMLSBExtractionToolPath, lnscommand, gameresoutput, true, false);
@@ -220,10 +221,10 @@ namespace TranslationHelper.Projects.LiveMaker
                     }
                 }
 
-                AppData.Main.ProgressInfo();
+                FunctionsUI.ProgressInfo();
 
                 //copy lsb for insert
-                AppData.Main.ProgressInfo(T._("Copy lsb for insertion"));
+                FunctionsUI.ProgressInfo(T._("Copy lsb for insertion"));
                 var insertDir = Path.Combine(AppData.CurrentProject.ProjectWorkDir, "insert");
                 Directory.CreateDirectory(insertDir);
                 foreach (var lsb in Directory.EnumerateFiles(gameresoutput, "00*.lsb"))
@@ -264,7 +265,7 @@ namespace TranslationHelper.Projects.LiveMaker
                 }
 
                 //insert lsb to exe from insert dir
-                AppData.Main.ProgressInfo(T._("Inserting lsb in game") + "...");
+                FunctionsUI.ProgressInfo(T._("Inserting lsb in game") + "...");
                 var command = "-r \"" + AppData.SelectedProjectFilePath + "\" \"" + "..\\insert\"";
                 FunctionsProcess.RunProcess(THSettings.PyLiveMakerLMPATCHExtractionToolPath, command, gameresoutput, true, false);
 
@@ -274,7 +275,7 @@ namespace TranslationHelper.Projects.LiveMaker
                     File.Delete(AppData.SelectedProjectFilePath + ".bak1");
                 }
 
-                AppData.Main.ProgressInfo();
+                FunctionsUI.ProgressInfo();
 
                 return true;
             }

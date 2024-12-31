@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.IO;
 using TranslationHelper.Data;
+using TranslationHelper.Functions;
 
 namespace TranslationHelper.Projects
 {
@@ -49,7 +50,7 @@ namespace TranslationHelper.Projects
         /// <returns></returns>
         internal static bool BackupFile(string file)
         {
-            AppData.Main.ProgressInfo(true, T._("backup") + ":" + Path.GetFileName(file));
+            FunctionsUI.ProgressInfo(true, T._("backup") + ":" + Path.GetFileName(file));
 
             try
             {
@@ -60,7 +61,7 @@ namespace TranslationHelper.Projects
             catch
             {
             }
-            AppData.Main.ProgressInfo(false);
+            FunctionsUI.ProgressInfo(false);
             return File.Exists(file + ".bak");
         }
 
@@ -154,7 +155,7 @@ namespace TranslationHelper.Projects
         /// <returns></returns>
         internal static bool RestoreFile(string file)
         {
-            AppData.Main.ProgressInfo(true, T._("restore") + ":" + Path.GetFileName(file));
+            FunctionsUI.ProgressInfo(true, T._("restore") + ":" + Path.GetFileName(file));
 
             try
             {
@@ -178,12 +179,12 @@ namespace TranslationHelper.Projects
                     {
                         new FileInfo(file + ".tmp").Attributes = FileAttributes.Normal;
                         File.Delete(file + ".tmp");
-                        AppData.Main.ProgressInfo(false);
+                        FunctionsUI.ProgressInfo(false);
                         return true;
                     }
                     else if (!tmp && File.Exists(file))
                     {
-                        AppData.Main.ProgressInfo(false);
+                        FunctionsUI.ProgressInfo(false);
                         return true;
                     }
                 }
@@ -192,7 +193,7 @@ namespace TranslationHelper.Projects
             {
             }
 
-            AppData.Main.ProgressInfo(false);
+            FunctionsUI.ProgressInfo(false);
             return false;
         }
     }

@@ -32,7 +32,7 @@
 //            {
 //                if (AppSettings.UseAllDBFilesForOnlineTranslationForAll && Method == "a")
 //                {
-//                    AppData.Main.ProgressInfo(true, "Get all databases");
+//                    FunctionsUI.ProgressInfo(true, "Get all databases");
 //                    FunctionsDBFile.MergeAllDBtoOne();
 //                }
 
@@ -68,7 +68,7 @@
 //                            continue;
 //                        }
 
-//                        Task.Run(() => AppData.Main.ProgressInfo(true, T._("getting translation") + t + "/" + TableMaxIndex + ": " + Table.TableName + " ")).ConfigureAwait(false);
+//                        Task.Run(() => FunctionsUI.ProgressInfo(true, T._("getting translation") + t + "/" + TableMaxIndex + ": " + Table.TableName + " ")).ConfigureAwait(false);
 
 //                        RowsCountInTable = (Method == "a" || Method == "t") ? Table.Rows.Count : SelectedIndexes.Length;
 
@@ -85,7 +85,7 @@
 //                            {
 //                                //AppData.Main.Invoke((Action)(() => AppData.Main.translationInteruptToolStripMenuItem.Visible = false));
 //                                CacheUnloadWhenNeed();
-//                                AppData.Main.ProgressInfo(false);
+//                                FunctionsUI.ProgressInfo(false);
 //                                //Thread.CurrentThread.Abort();
 //                                return;
 //                            }
@@ -229,7 +229,7 @@
 
 //            CacheUnloadWhenNeed();
 
-//            AppData.Main.ProgressInfo(false);
+//            FunctionsUI.ProgressInfo(false);
 //        }
 
 //        private static void CacheInitWhenNeed()

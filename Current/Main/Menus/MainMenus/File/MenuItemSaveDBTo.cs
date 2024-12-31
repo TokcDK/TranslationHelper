@@ -37,7 +37,7 @@ namespace TranslationHelper.Menus.MainMenus.File
                 //MessageBox.Show(THFOpenBD.FileName);
                 //LoadTranslationFromDB();
 
-                AppData.Main.ProgressInfo(true);
+                FunctionsUI.ProgressInfo(true);
 
                 switch (AppData.CurrentProject.Name)
                 {
@@ -56,7 +56,7 @@ namespace TranslationHelper.Menus.MainMenus.File
                 //task.Wait();
 
                 FunctionsSounds.SaveDBComplete();
-                AppData.Main.ProgressInfo(false);
+                FunctionsUI.ProgressInfo(false);
             }
         }
 

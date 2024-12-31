@@ -58,7 +58,7 @@ namespace TranslationHelper.Projects.RPGMMV
                     //MessageBox.Show("true!");
                     return true;
                 }
-                AppData.Main.ProgressInfo(true, T._("opening file: ") + Jsonname + ".json");
+                FunctionsUI.ProgressInfo(true, T._("opening file: ") + Jsonname + ".json");
                 string jsondata = File.ReadAllText(sPath); // get json data
 
                 AppData.CurrentProject.FilesContent.Tables.Add(Jsonname); // create table with json name
@@ -435,7 +435,7 @@ namespace TranslationHelper.Projects.RPGMMV
 
         internal bool WriteJson(string Jsonname, string sPath)
         {
-            AppData.Main.ProgressInfo(true, T._("Writing: ") + Jsonname + ".json");
+            FunctionsUI.ProgressInfo(true, T._("Writing: ") + Jsonname + ".json");
 
             //skip file if table with same name has translation cells in all lines empty
             if (FunctionsTable.IsTableColumnCellsAll(AppData.CurrentProject.FilesContent.Tables[Jsonname], complete: false))
@@ -472,14 +472,14 @@ namespace TranslationHelper.Projects.RPGMMV
             catch
             {
                 //LogToFile(string.Empty, true);
-                AppData.Main.ProgressInfo(false);
+                FunctionsUI.ProgressInfo(false);
                 return false;
             }
             finally
             {
             }
             //LogToFile(string.Empty, true);
-            AppData.Main.ProgressInfo(false);
+            FunctionsUI.ProgressInfo(false);
             return true;
 
         }

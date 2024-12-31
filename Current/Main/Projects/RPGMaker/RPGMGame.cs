@@ -98,7 +98,7 @@ namespace TranslationHelper.Projects
             }
 
             var ret = CreateUpdatePatch(GameDirPath.FullName, workdir);
-            AppData.Main.ProgressInfo(false);
+            FunctionsUI.ProgressInfo(false);
             return ret;
         }
 
@@ -160,14 +160,14 @@ namespace TranslationHelper.Projects
                 }
             })
             {
-                AppData.Main.ProgressInfo(true, T._("Writing ") + "Patch.cmd");
+                FunctionsUI.ProgressInfo(true, T._("Writing ") + "Patch.cmd");
                 var patch = Path.Combine(AppData.CurrentProject.ProjectWorkDir, "Patch.cmd");
                 File.WriteAllText(patch, "\r\n\"" + rpgmakertranscli + "\" " + args + "\r\npause");
                 try
                 {
-                    AppData.Main.ProgressInfo(true, T._("Restore baks"));
+                    FunctionsUI.ProgressInfo(true, T._("Restore baks"));
                     BakRestore();//restore original files before patch creation
-                    AppData.Main.ProgressInfo(true, T._("Patching"));
+                    FunctionsUI.ProgressInfo(true, T._("Patching"));
                     ret = program.Start();
                     program.WaitForExit();
                 }
@@ -180,18 +180,18 @@ namespace TranslationHelper.Projects
                 if (!ret || program.ExitCode > 0 || !IsPatchFilesExist(patchdir))
                 {
                     new FunctionsLogs().LogToFile("RPGMaker Trans Patch failed: ret=" + ret + " Exitcode=" + program.ExitCode);
-                    AppData.Main.ProgressInfo(true, T._("Patching failed"));
+                    FunctionsUI.ProgressInfo(true, T._("Patching failed"));
                     CleanDirs(workdir);
 
-                    AppData.Main.ProgressInfo(true, " " + T._("Somethig wrong") + ".. " + T._("Trying 2nd variant"));
+                    FunctionsUI.ProgressInfo(true, " " + T._("Somethig wrong") + ".. " + T._("Trying 2nd variant"));
                     //2nd try because was error sometime after 1st patch creation execution
                     BakRestore();
                     program.StartInfo.Arguments = args + " -b";
 
-                    AppData.Main.ProgressInfo(true, T._("Writing ") + "Patch.cmd");
+                    FunctionsUI.ProgressInfo(true, T._("Writing ") + "Patch.cmd");
                     File.WriteAllText(patch, "\r\n\"" + rpgmakertranscli + "\" " + args + " -b" + "\r\npause");
 
-                    AppData.Main.ProgressInfo(true, T._("Patching") + "-b");
+                    FunctionsUI.ProgressInfo(true, T._("Patching") + "-b");
                     ret = program.Start();
                     program.WaitForExit();
                 }
@@ -200,7 +200,7 @@ namespace TranslationHelper.Projects
                 if (OpenFileMode && !ret || program.ExitCode > 0 || !IsPatchFilesExist(patchdir))
                 {
                     new FunctionsLogs().LogToFile("RPGMaker Trans Patch failed: ret=" + ret + " Exitcode=" + program.ExitCode);
-                    AppData.Main.ProgressInfo(true, T._("Last try"));
+                    FunctionsUI.ProgressInfo(true, T._("Last try"));
                     //Maybe rgss3 file was not extracted and need to extract it manually
                     string GameRgss3Path = RPGMFunctions.GetRPGMakerArc(gamedirPath);
                     if (GameRgss3Path.Length == 0)
@@ -216,7 +216,7 @@ namespace TranslationHelper.Projects
 
                     var rgssdecrypterargs = "\"--output=" + tempExtractDir + "\" \"" + GameRgss3Path + "\"";
 
-                    AppData.Main.ProgressInfo(true, T._("Extracting") + " " + "Game.rgss3");
+                    FunctionsUI.ProgressInfo(true, T._("Extracting") + " " + "Game.rgss3");
                     FunctionsProcess.RunProgram(rgssdecrypter, rgssdecrypterargs);
 
                     if (!tempExtractDir.HasAnyDirs())
@@ -268,7 +268,7 @@ namespace TranslationHelper.Projects
                         {
                             CleanDirs(workdir);
 
-                            AppData.Main.ProgressInfo(true, T._("Patching") + " 3");
+                            FunctionsUI.ProgressInfo(true, T._("Patching") + " 3");
                             //попытка с параметром -b - Use UTF-8 BOM in Patch files
                             program.StartInfo.FileName = rpgmakertranscli;
                             program.StartInfo.Arguments = args + " -b";
@@ -279,7 +279,7 @@ namespace TranslationHelper.Projects
                             if (!ret)
                             {
                                 new FunctionsLogs().LogToFile("RPGMaker Trans Patch failed: ret=" + ret + " Exitcode=" + program.ExitCode);
-                                AppData.Main.ProgressInfo(true, T._("Patching failed"));
+                                FunctionsUI.ProgressInfo(true, T._("Patching failed"));
                                 MessageBox.Show(T._("Error occured while patch execution."));
                                 CleanDirs(workdir);
                                 return false;
@@ -288,7 +288,7 @@ namespace TranslationHelper.Projects
                             if (program.ExitCode > 0)
                             {
                                 new FunctionsLogs().LogToFile("RPGMaker Trans Patch failed: ret=" + ret + " Exitcode=" + program.ExitCode);
-                                AppData.Main.ProgressInfo(true, T._("Patching failed"));
+                                FunctionsUI.ProgressInfo(true, T._("Patching failed"));
                                 MessageBox.Show(T._("Patch creation finished unsuccesfully.")
                                     + "Exit code="
                                     + program.ExitCode
