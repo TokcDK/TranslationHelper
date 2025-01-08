@@ -132,10 +132,7 @@ namespace TranslationHelper.Formats.RPGMMV.JsonType
                     {
                         if (command.Parameters[i] is string s)
                         {
-                            var isScriptCommand = command.Code == 355 
-                                || command.Code == 655 
-                                || command.Code == 356
-                                || command.Code == 656;
+                            var isScriptCommand = IsCommandScriptCode(command.Code);
 
                             var quotesExtractor = new QuotedStringsExtractor(s, removeComment:true);
 
@@ -193,6 +190,11 @@ namespace TranslationHelper.Formats.RPGMMV.JsonType
             }
 
             if (message.Count > 0) ParseMessage(commands, message, info, commandsCount);
+        }
+
+        private bool IsCommandScriptCode(int code)
+        {
+            return code == 355 || code == 655 || code == 356 || code == 656;
         }
 
         private bool TryParseByParametersParsers(ParametersData parametersParserData)
