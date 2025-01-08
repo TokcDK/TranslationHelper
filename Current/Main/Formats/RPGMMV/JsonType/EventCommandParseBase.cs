@@ -130,50 +130,7 @@ namespace TranslationHelper.Formats.RPGMMV.JsonType
                     int parametersCount = command.Parameters.Length;
                     for (int i = 0; i < parametersCount; i++)
                     {
-                        if (command.Parameters[i] is string s)
-                        {
-                            var isScriptCommand = IsCommandScriptCode(command.Code);
-
-                            var quotesExtractor = new QuotedStringsExtractor(s, removeComment:true);
-
-                            var commentInfo = isScriptCommand && string.IsNullOrWhiteSpace(quotesExtractor.Comment) ? "" : $"\r\nComment:{quotesExtractor.Comment}";
-
-                            if (isScriptCommand && quotesExtractor.QuotesList.Count(q=> quotesExtractor.InputString.Contains(q)) > 1)
-                            {
-                                bool isChangedCommandString = false;
-
-                                foreach (var quotedString in quotesExtractor.Extract())
-                                {
-                                    if (OpenFileMode)
-                                    {
-                                        AddRowData(quotedString, isSave ? "" : info + $"\r\nCommand code: {command.Code}{RPGMUtils.GetCodeName(command.Code)}\r\n Parameter #: {i}{commentInfo}" + "\r\nOriginal line:" + s, isCheckInput: true);
-                                    }
-                                    else
-                                    {
-                                        string translation = quotedString;
-                                        if (!SetTranslation(ref translation, isCheckInput: true)) continue;
-
-                                        isChangedCommandString = true;
-
-                                        quotesExtractor.ReplaceLastExtractedString(translation);
-                                    }
-                                }
-
-                                if (isChangedCommandString)
-                                {
-                                    command.Parameters[i] = quotesExtractor.ResultString;
-                                }
-                            }
-                            else
-                            {
-                                var str = quotesExtractor.InputString;
-                                if (AddRowData(ref str, isSave ? "" : info + $"\r\nCommand code: {command.Code}{RPGMUtils.GetCodeName(command.Code)}\r\n Parameter #: {i}{commentInfo}") && SaveFileMode)
-                                {
-                                    command.Parameters[i] = GetFinalString(str, command) + quotesExtractor.Comment;
-                                }
-                            }
-                        }
-                        else if (command.Parameters[i] is JToken t)
+                        if (!ParseCommandParameterString(command, info, i) && command.Parameters[i] is JToken t)
                         {
                             var parameterdata = new JParameterData
                             {
@@ -190,6 +147,59 @@ namespace TranslationHelper.Formats.RPGMMV.JsonType
             }
 
             if (message.Count > 0) ParseMessage(commands, message, info, commandsCount);
+        }
+
+        private bool ParseCommandParameterString(Command command, string info, int i)
+        {
+            if(!(command.Parameters[i] is string s)) return false;
+
+            var isScriptCommand = IsCommandScriptCode(command.Code);
+
+            var quotesExtractor = new QuotedStringsExtractor(s, removeComment: true);
+
+            var commentInfo = isScriptCommand && string.IsNullOrWhiteSpace(quotesExtractor.Comment) ? "" : $"\r\nComment:{quotesExtractor.Comment}";
+
+            if (isScriptCommand && quotesExtractor.QuotesList.Count(q => quotesExtractor.InputString.Contains(q)) > 1)
+            {
+                bool isChangedCommandString = false;
+
+                foreach (var quotedString in quotesExtractor.Extract())
+                {
+                    if (OpenFileMode)
+                    {
+                        AddRowData(quotedString, GetInfo(command, info, commentInfo, i) + "\r\nOriginal line:" + s, isCheckInput: true);
+                    }
+                    else
+                    {
+                        string translation = quotedString;
+                        if (!SetTranslation(ref translation, isCheckInput: true)) continue;
+
+                        isChangedCommandString = true;
+
+                        quotesExtractor.ReplaceLastExtractedString(translation);
+                    }
+                }
+
+                if (isChangedCommandString)
+                {
+                    command.Parameters[i] = quotesExtractor.ResultString;
+                }
+            }
+            else
+            {
+                var str = quotesExtractor.InputString;
+                if (AddRowData(ref str, GetInfo(command, info, commentInfo, i)) && SaveFileMode)
+                {
+                    command.Parameters[i] = GetFinalString(str, command) + quotesExtractor.Comment;
+                }
+            }
+
+            return true;
+        }
+
+        private string GetInfo(Command command, string info, string commentInfo, int i)
+        {
+            return SaveFileMode ? "" : info + $"\r\nCommand code: {command.Code}{RPGMUtils.GetCodeName(command.Code)}\r\n Parameter #: {i}{commentInfo}";
         }
 
         private bool IsCommandScriptCode(int code)
