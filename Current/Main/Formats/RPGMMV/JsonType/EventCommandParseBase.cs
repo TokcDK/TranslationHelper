@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Transactions;
+using IronRuby.Compiler.Ast;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using TranslationHelper.Data;
@@ -103,28 +104,27 @@ namespace TranslationHelper.Formats.RPGMMV.JsonType
                 else
                 {
                     int extra;
-                    if (message.Count > 0) { extra = ParseMessage(commands, message, info, c); c += extra; commandsCount += extra; };
+                    if (message.Count > 0) 
+                    { 
+                        extra = ParseMessage(commands, message, info, c); 
+                        c += extra; 
+                        commandsCount += extra; 
+                    };
 
                     if (SkipCodes.ContainsKey(command.Code)) continue;
                     if (command.Parameters == null) continue;
                     if (command.Parameters.Length == 0) continue;
 
                     // try parse by parameters parsers
-                    bool isParsedByParametersParser = false;
-                    var data = new ParametersData
+                    if (TryParseByParametersParsers(new ParametersData
                     {
                         ParameterIndex = -1,
                         ParentCommand = command,
                         Parser = this
-                    };
-                    foreach (var parser in ParametersParsers)
+                    }))
                     {
-                        if (!parser.Parse(data)) continue;
-
-                        isParsedByParametersParser = true;
-                        break;
+                        continue;
                     }
-                    if (isParsedByParametersParser) continue;
 
                     // general parse
                     int parametersCount = command.Parameters.Length;
@@ -193,6 +193,18 @@ namespace TranslationHelper.Formats.RPGMMV.JsonType
             }
 
             if (message.Count > 0) ParseMessage(commands, message, info, commandsCount);
+        }
+
+        private bool TryParseByParametersParsers(ParametersData parametersParserData)
+        {
+            foreach (var parser in ParametersParsers)
+            {
+                if (!parser.Parse(parametersParserData)) continue;
+
+                return true;
+            }
+
+            return false;
         }
 
         private string EscapeInternalQuotes(string stringWhereToEscape, char quoteToEscape)
