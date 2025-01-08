@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
+using System.Transactions;
+using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using TranslationHelper.Data;
 using TranslationHelper.Extensions;
@@ -170,7 +172,7 @@ namespace TranslationHelper.Formats.RPGMMV.JsonType
                                 var str = quotesExtractor.InputString;
                                 if (AddRowData(ref str, isSave ? "" : info + $"\r\nCommand code: {command.Code}{RPGMUtils.GetCodeName(command.Code)}\r\n Parameter #: {i}{commentInfo}") && SaveFileMode)
                                 {
-                                    command.Parameters[i] = str + quotesExtractor.Comment;
+                                    command.Parameters[i] = GetFinalString(str, command) + quotesExtractor.Comment;
                                 }
                             }
                         }
@@ -193,6 +195,38 @@ namespace TranslationHelper.Formats.RPGMMV.JsonType
             if (message.Count > 0) ParseMessage(commands, message, info, commandsCount);
         }
 
+        private string EscapeInternalQuotes(string stringWhereToEscape, char quoteToEscape)
+        {
+            // Check if the string is null or empty
+            if (string.IsNullOrEmpty(stringWhereToEscape) 
+                || stringWhereToEscape.Length < 4 // must be 2 qote chars and  other chars because there most likely 99,9999999999% will not be another quote inside qotes
+                || stringWhereToEscape.IndexOf(quoteToEscape, 1, stringWhereToEscape.Length - 2) == -1 // must contain quote char
+                )
+            {
+                return stringWhereToEscape;
+            }
+
+            // Convert the string to a character array
+            List<char> charArray = stringWhereToEscape.ToList();
+
+            // Iterate through the characters in the array, excluding the first and last characters
+            for (int i = 1; i < charArray.Count - 1; i++)
+            {
+                // Check if the character is the quoteToEscape character
+                if (charArray[i] != quoteToEscape 
+                    || (i > 1 && charArray[i-1] == '\\') // if previous char is escape char
+                    )
+                {
+                    continue;
+                }
+
+                // Escape the quoteToEscape character by adding a backslash before it
+                charArray.Insert(i++, '\\');
+            }
+
+            return string.Join("", charArray);
+        }
+
         internal void ParseJToken(JParameterData data)
         {
             var jsonToken = data.Token;
@@ -209,7 +243,7 @@ namespace TranslationHelper.Formats.RPGMMV.JsonType
                         if (!AddRowData(ref s, SaveFileMode ? "" : data.ParentInfo + $"\r\nCommand code: {data.ParentCommand.Code}{RPGMUtils.GetCodeName(data.ParentCommand.Code)}\r\n Parameter #: {data.ParameterIndex}") || !SaveFileMode) break;
 
                         // set translation in save mode
-                        value.Value = s;
+                        value.Value = GetFinalString(s, data.ParentCommand);
 
                         break;
                     }
@@ -239,6 +273,20 @@ namespace TranslationHelper.Formats.RPGMMV.JsonType
                 default:
                     break;
             }
+        }
+
+        private string GetFinalString(string s, Command command)
+        {
+            // Escape internal quotes for Control variable value, else it will cause game error
+            if (command.Code == 122
+                && s.StartsWith("'")
+                && s.EndsWith("'")
+                )
+            {
+                return EscapeInternalQuotes(s, '\'');
+            }
+
+            return s;
         }
 
         /// <summary>
