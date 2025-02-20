@@ -7,14 +7,14 @@ using System.Threading.Tasks;
 
 namespace TranslationHelper.OnlineTranslators
 {
-    public class GoogleTranslateScraper
+    public class GoogleTranslateScraperStandalone
     {
         private readonly HttpClient _httpClient;
         private readonly Dictionary<string, string> _cache;
         private const string TranslateUrl = "https://translate.google.com/translate_a/single";
         private const string ClientValue = "gtx";
 
-        public GoogleTranslateScraper()
+        public GoogleTranslateScraperStandalone()
         {
             _httpClient = new HttpClient();
             _cache = new Dictionary<string, string>();

@@ -112,7 +112,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
         public OnlineTranslateNew()
         {
             if (_buffer == null) _buffer = new List<TranslationData>();
-            if (_translator == null) _translator = new GoogleTranslateScraper();
+            if (_translator == null) _translator = new GoogleTranslateScraperStandalone();
         }
 
         protected override bool IsValidRow(Row.RowBaseRowData rowData)
@@ -347,7 +347,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
             }
         }
 
-        readonly GoogleTranslateScraper _translator;
+        readonly GoogleTranslateScraperStandalone _translator;
         /// <summary>
         /// get originals and translate them
         /// </summary>

@@ -214,7 +214,7 @@ namespace TranslationHelper.Translators
         #region Available Languages
 
         // Source languages available for translation.
-        private static readonly List<string> _sourceLanguages = new List<string>
+        protected static readonly List<string> _sourceLanguages = new List<string>
     {
         "Afrikaans af",
         "Albanian sq",
@@ -324,7 +324,7 @@ namespace TranslationHelper.Translators
         /// <summary>
         /// Gets the list of available source languages.
         /// </summary>
-        public static List<string> SourceLanguages => _sourceLanguages;
+        public virtual List<string> SourceLanguages => _sourceLanguages;
 
         // Target languages available for translation.
         private static readonly List<string> _targetLanguages = new List<string>
@@ -437,7 +437,7 @@ namespace TranslationHelper.Translators
         /// <summary>
         /// Gets the list of available target languages.
         /// </summary>
-        public static List<string> TargetLanguages => _targetLanguages;
+        public virtual List<string> TargetLanguages => _targetLanguages;
 
         #endregion
     }

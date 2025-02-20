@@ -492,7 +492,7 @@
     <Compile Include="Functions\FunctionsThreading.cs" />
     <Compile Include="ExternalAdditions\NativeMethods.cs" />
     <Compile Include="Old elements\OLDTHMainCommented.cs" />
-    <Compile Include="OnlineTranslators\GoogleTranslateScraper.cs" />
+    <Compile Include="OnlineTranslators\GoogleTranslateScraperStandalone.cs" />
     <Compile Include="OnlineTranslators\Data\DeepL.cs" />
     <Compile Include="OnlineTranslators\Data\Google.cs" />
     <Compile Include="OnlineTranslators\Data\TranslatorsDataBase.cs" />
