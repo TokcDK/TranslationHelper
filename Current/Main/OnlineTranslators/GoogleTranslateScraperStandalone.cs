@@ -6,6 +6,7 @@ using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
 using System.Web;
+using TranslationHelper.Translators;
 
 namespace TranslationHelper.OnlineTranslators
 {
@@ -15,6 +16,7 @@ namespace TranslationHelper.OnlineTranslators
         private readonly Dictionary<string, string> _cache;
         private const string TranslateUrl = "https://translate.google.com/translate_a/single";
         private const string ClientValue = "gtx";
+        private readonly string TargetLanguageId;
 
         public GoogleTranslateScraperStandalone()
         {
@@ -24,6 +26,7 @@ namespace TranslationHelper.OnlineTranslators
             };
             _httpClient = new HttpClient(handler);
             _cache = new Dictionary<string, string>();
+            TargetLanguageId = TranslatorsTools.GetTargetLanguageID();
         }
 
         private async Task<string> TranslateWithoutCacheAsync(string text, string sourceLang, string targetLang)
@@ -66,6 +69,11 @@ namespace TranslationHelper.OnlineTranslators
         {
             if (string.IsNullOrEmpty(text))
                 throw new ArgumentException("Text cannot be null or empty.", nameof(text));
+
+            if (!string.IsNullOrWhiteSpace(TargetLanguageId))
+            {
+                targetLang = TargetLanguageId;
+            }
 
             string cacheKey = CreateCacheKey(text, sourceLang, targetLang);
             if (_cache.TryGetValue(cacheKey, out string value))
