@@ -16,15 +16,19 @@ namespace TranslationHelper.Translators
 {
     internal static class TranslatorsTools
     {
-        internal static string GetSourceLanguageID()
-        {
-            return AppSettings.OnlineTranslationSourceLanguage.Split(' ')[1];
-        }
-        internal static string GetTargetLanguageID()
-        {
-            return AppSettings.OnlineTranslationTargetLanguage.Split(' ')[1];
-        }
+        /// <summary>
+        /// Extracts the source language ID from the application settings.
+        /// </summary>
+        internal static string GetSourceLanguageID() =>
+            AppSettings.OnlineTranslationSourceLanguage.Split(' ')[1];
+
+        /// <summary>
+        /// Extracts the target language ID from the application settings.
+        /// </summary>
+        internal static string GetTargetLanguageID() =>
+            AppSettings.OnlineTranslationTargetLanguage.Split(' ')[1];
     }
+
 
     /// <summary>
     /// Base class for translators. Provides helper methods for language resolution,
