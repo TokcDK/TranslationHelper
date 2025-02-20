@@ -324,7 +324,7 @@ namespace TranslationHelper.Translators
         /// <summary>
         /// Gets the list of available source languages.
         /// </summary>
-        public virtual List<string> SourceLanguages => _sourceLanguages;
+        public static List<string> SourceLanguages => _sourceLanguages;
 
         // Target languages available for translation.
         private static readonly List<string> _targetLanguages = new List<string>
@@ -437,7 +437,7 @@ namespace TranslationHelper.Translators
         /// <summary>
         /// Gets the list of available target languages.
         /// </summary>
-        public virtual List<string> TargetLanguages => _targetLanguages;
+        public static List<string> TargetLanguages => _targetLanguages;
 
         #endregion
     }
