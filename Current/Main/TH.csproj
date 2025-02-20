@@ -73,6 +73,7 @@
     <Reference Include="System.ComponentModel.Composition" />
     <Reference Include="System.Core" />
     <Reference Include="System.IO.Compression.FileSystem" />
+    <Reference Include="System.Net.Http" />
     <Reference Include="System.Numerics" />
     <Reference Include="System.Runtime.Caching" />
     <Reference Include="System.Threading.Thread" />
@@ -491,6 +492,7 @@
     <Compile Include="Functions\FunctionsThreading.cs" />
     <Compile Include="ExternalAdditions\NativeMethods.cs" />
     <Compile Include="Old elements\OLDTHMainCommented.cs" />
+    <Compile Include="OnlineTranslators\GoogleTranslateScraper.cs" />
     <Compile Include="OnlineTranslators\Data\DeepL.cs" />
     <Compile Include="OnlineTranslators\Data\Google.cs" />
     <Compile Include="OnlineTranslators\Data\TranslatorsDataBase.cs" />

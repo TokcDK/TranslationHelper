@@ -221,11 +221,11 @@ namespace TranslationHelper
         /// </summary>
         private HtmlDocument CreateHtmlDocument()
         {
-            if (WB == null)
+            if (webBrowser == null)
             {
-                WB = new WebBrowser { ScriptErrorsSuppressed = true, DocumentText = string.Empty };
+                webBrowser = new WebBrowser { ScriptErrorsSuppressed = true, DocumentText = string.Empty };
             }
-            return WB.Document.OpenNew(true);
+            return webBrowser.Document.OpenNew(true);
         }
 
         /// <summary>
