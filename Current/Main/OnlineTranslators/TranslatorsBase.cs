@@ -448,58 +448,40 @@ namespace TranslationHelper.Translators
         //}
     }
 
+    /// <summary>
+    /// Provides extension methods for fixing common HTML formatting issues in translated text.
+    /// </summary>
     static class TranslatorsExtensions
     {
-        internal static string FixHTMLTags(this string input)
-        {
-            return input
-                //.Replace("<code> 0 </ code>", "<code>0</code>")
-                //.Replace("<code> 0 < / code>", "<code>0</code>")
-                //.Replace("<code> 0 </ code >", "<code>0</code>")
-                //.Replace("< code> 0 </ code>", "<code>0</code>")
-                //.Replace("<Code> 0 </ code>", "<code>0</code>")
-                //.Replace("<code > 0 </ code>", "<code>0</code>")
-                //.Replace("<c ode> 0 </ code>", "<code>0</code>")
-                //.Replace(" <code>0</code> ", "<code>0</code>")
-                //.Replace(" <code>0</code>", "<code>0</code>")
-                //.Replace("<code>0</code> ", "<code>0</code>")
-                //.Replace("<code>0</code>", Environment.NewLine)
-                //.Replace(DNTT, "\r\n")
-                .Replace("</ p> </ font>", " </p></font>")
-                .Replace("</ p>", "</p>")
-                .Replace("</ font>", "</font>")
-                .Replace("<p align = ", "<p align=")
-                .Replace("<img src = ", "<img src=")
-                .Replace("<font size = ", "<font size=")
-                .Replace("<font face = ", "<font face=")
-                ;
-        }
+        /// <summary>
+        /// Fixes common HTML tag formatting issues.
+        /// </summary>
+        /// <param name="input">The input string containing HTML.</param>
+        /// <returns>The string with fixed HTML tags.</returns>
+        internal static string FixHTMLTags(this string input) =>
+            input.Replace("</ p> </ font>", " </p></font>")
+                 .Replace("</ p>", "</p>")
+                 .Replace("</ font>", "</font>")
+                 .Replace("<p align = ", "<p align=")
+                 .Replace("<img src = ", "<img src=")
+                 .Replace("<font size = ", "<font size=")
+                 .Replace("<font face = ", "<font face=");
 
-        internal static string FixFormat(this string input)
-        {
-            return input
-                .FixHTMLTags()
-                .Replace(" </br> ", Environment.NewLine)
-                ;
-        }
+        /// <summary>
+        /// Applies HTML tag fixes and replaces a specific splitter with a newline.
+        /// </summary>
+        /// <param name="input">The input string to fix.</param>
+        /// <returns>The fixed string.</returns>
+        internal static string FixFormat(this string input) =>
+            input.FixHTMLTags().Replace(" </br> ", Environment.NewLine);
 
-        internal static string FixFormatMulti(this string input)
-        {
-            //Заменил разделитель на <br>
-            //input = Regex.Replace(input, @"## (\d{1,5}) # > #", "## $1 #>#");
-            //input = Regex.Replace(input, @"## (\d{1,5}) #> #", "## $1 #>#");
-            //input = Regex.Replace(input, @"## (\d{1,5}) # >#", "## $1 #>#");
-            //input = Regex.Replace(input, @"# < # (\d{1,5}) ##", "#<# $1 ##");
-            //input = Regex.Replace(input, @"# <# (\d{1,5}) ##", "#<# $1 ##");
-            //input = Regex.Replace(input, @"#< # (\d{1,5}) ##", "#<# $1 ##");
-            //input = Regex.Replace(input, @" <# (\d{1,5}) ##", " #<# $1 ##");
-            //input = Regex.Replace(input, @"## (\d{1,5}) #># ([^(#># )]*) ######", "## $1 #># $2 #<# $1 ##");
-            //input = Regex.Replace(input, @"## (\d{1,5}) #># ([^(#># )]*) #####", "## $1 #># $2 #<# $1 ##");
-            //input = Regex.Replace(input, @"## (\d{1,5}) #># ([^(#># )]*) ####", "## $1 #># $2 #<# $1 ##");
-            //input = Regex.Replace(input, @"## (\d{1,5}) #># ([^(#># )]*) ###", "## $1 #># $2 #<# $1 ##");
-
-            //\#\# (\d{1,5}) \#\>\# ([^(\#\>\# )]*) \#\#\#\#\#
-            return input.FixHTMLTags();
-        }
+        /// <summary>
+        /// Applies only the HTML tag fixes (used for multi-line translations).
+        /// </summary>
+        /// <param name="input">The input string to fix.</param>
+        /// <returns>The fixed string.</returns>
+        internal static string FixFormatMulti(this string input) =>
+            input.FixHTMLTags();
     }
+
 }
