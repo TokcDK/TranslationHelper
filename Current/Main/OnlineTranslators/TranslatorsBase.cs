@@ -26,426 +26,416 @@ namespace TranslationHelper.Translators
         }
     }
 
+    /// <summary>
+    /// Base class for translators. Provides helper methods for language resolution,
+    /// caching of translation results, and proper resource disposal.
+    /// </summary>
     abstract class TranslatorsBase : IDisposable
     {
+        // Web error counters.
         internal int ErrorsWebCnt = 0;
         internal int ErrorsWebCntOverall = 0;
-        
+
+        // Shared session cache for translations.
+        internal static readonly Dictionary<string, string> sessionCache = new Dictionary<string, string>(1);
+
+        // Web client and browser objects for translation HTTP requests and HTML parsing.
+        protected WebClientEx webClient;
+        protected WebBrowser webBrowser;
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="TranslatorsBase"/> class.
+        /// Ensures that online translator cookies are set and a web client is available.
+        /// </summary>
         protected TranslatorsBase()
         {
-            
+            EnsureCookiesInitialized();
             if (webClient == null)
             {
-                if (AppData.OnlineTranslatorCookies == null)
-                {
-                    AppData.OnlineTranslatorCookies = new System.Net.CookieContainer();
-                }
                 webClient = new WebClientEx(AppData.OnlineTranslatorCookies);
-                //webClient = new ScrapingBrowser
             }
-            //webClient.UseDefaultCredentials = false;            
         }
 
         /// <summary>
-        /// resets translator's session translation cache
+        /// Resets the translator's session translation cache.
         /// </summary>
-        internal void ResetCache()
-        {
-            sessionCache.Clear();
-        }
+        internal void ResetCache() => sessionCache.Clear();
 
-        //protected CookieContainer cookies = new CookieContainer();
+        /// <summary>
+        /// Invoked when the translator is closed.
+        /// </summary>
+        internal void OnTranslatorClosed() { }
 
-        internal void OnTranslatorClosed()
+        /// <summary>
+        /// Translates a single string using source and target languages defined in the settings.
+        /// </summary>
+        /// <param name="originalText">The text to translate.</param>
+        /// <returns>The translated text or an empty string if an error occurs.</returns>
+        public virtual string Translate(string originalText)
         {
-            //webClient.Dispose();
-            //webClient = null;
-        }
-
-        //protected ScrapingBrowser webClient;
-        protected WebClientEx webClient;
-        protected WebBrowser WB;
-        public virtual string Translate(string OriginalText)
-        {
-            string ResultOfTranslation;
             try
             {
-                string languageFrom = "ja";
-                string languageTo = "en";
-                if (AppSettings.OnlineTranslationSourceLanguage.Length > 0)
-                {
-                    languageFrom = AppSettings.OnlineTranslationSourceLanguage.Split(new char[]
-                    {
-                        ' '
-                    }).Last();
-                }
-                if (AppSettings.OnlineTranslationTargetLanguage.Length > 0)
-                {
-                    languageTo = AppSettings.OnlineTranslationTargetLanguage.Split(new char[]
-                    {
-                        ' '
-                    }).Last();
-                }
+                string sourceLanguage = GetLanguageFromSetting(AppSettings.OnlineTranslationSourceLanguage, "ja");
+                string targetLanguage = GetLanguageFromSetting(AppSettings.OnlineTranslationTargetLanguage, "en");
 
-                if (OriginalText.IsSourceLangJapaneseAndTheStringMostlyRomajiOrOther())
+                // If the original text is Japanese but mostly in romaji or another language, return it unchanged.
+                if (originalText.IsSourceLangJapaneseAndTheStringMostlyRomajiOrOther())
                 {
-                    return OriginalText;
+                    return originalText;
                 }
-                else
-                {
-                    ResultOfTranslation = Translate(OriginalText, languageFrom, languageTo);
-                }
+                return Translate(originalText, sourceLanguage, targetLanguage);
             }
             catch (Exception)
             {
                 return string.Empty;
             }
-            return ResultOfTranslation;
         }
 
-        public virtual string[] Translate(string[] OriginalText)
+        /// <summary>
+        /// Translates an array of strings using source and target languages defined in the settings.
+        /// </summary>
+        /// <param name="originalTexts">An array of texts to translate.</param>
+        /// <returns>The array of translated texts or null if an error occurs.</returns>
+        public virtual string[] Translate(string[] originalTexts)
         {
-            string[] Result;
             try
             {
-                string languageFrom = "ja";
-                string languageTo = "en";
-                if (AppSettings.OnlineTranslationSourceLanguage.Length > 0)
-                {
-                    languageFrom = AppSettings.OnlineTranslationSourceLanguage.Split(new char[]
-                    {
-                        ' '
-                    }).Last();
-                }
-                if (AppSettings.OnlineTranslationTargetLanguage.Length > 0)
-                {
-                    languageTo = AppSettings.OnlineTranslationTargetLanguage.Split(new char[]
-                    {
-                        ' '
-                    }).Last();
-                }
-
-                //if (languageFrom == "ja" && FunctionsRomajiKana.SelectedRomajiAndOtherLocalePercentFromStringIsNotValid(OriginalText))
-                //{
-                //    return OriginalText;
-                //}
-                //else
-                //{
-                //    ResultOfTranslation = Translate(OriginalText, languageFrom, languageTo);
-                //}
-                Result = Translate(OriginalText, languageFrom, languageTo);
+                string sourceLanguage = GetLanguageFromSetting(AppSettings.OnlineTranslationSourceLanguage, "ja");
+                string targetLanguage = GetLanguageFromSetting(AppSettings.OnlineTranslationTargetLanguage, "en");
+                return Translate(originalTexts, sourceLanguage, targetLanguage);
             }
             catch (Exception)
             {
                 return null;
             }
-            return Result;
         }
 
-        public abstract string Translate(string OriginalText, string LanguageFrom = "auto", string LanguageTo = "en");
+        /// <summary>
+        /// Translates a single string from a specified source to target language.
+        /// </summary>
+        /// <param name="originalText">The text to translate.</param>
+        /// <param name="languageFrom">The source language code.</param>
+        /// <param name="languageTo">The target language code.</param>
+        /// <returns>The translated text.</returns>
+        public abstract string Translate(string originalText, string languageFrom = "auto", string languageTo = "en");
 
-        public abstract string[] Translate(string[] OriginalText, string LanguageFrom = "auto", string LanguageTo = "en");
+        /// <summary>
+        /// Translates an array of strings from a specified source to target language.
+        /// </summary>
+        /// <param name="originalTexts">An array of texts to translate.</param>
+        /// <param name="languageFrom">The source language code.</param>
+        /// <param name="languageTo">The target language code.</param>
+        /// <returns>An array of translated texts.</returns>
+        public abstract string[] Translate(string[] originalTexts, string languageFrom = "auto", string languageTo = "en");
 
-        internal static readonly Dictionary<string, string> sessionCache = new Dictionary<string, string>(1);
-
-        private static readonly List<string> _sourceLanguages = new List<string>();
-
-        public static List<string> SourceLanguages
+        /// <summary>
+        /// Extracts the language code from a settings string by returning its last token.
+        /// </summary>
+        /// <param name="setting">The settings string containing the language.</param>
+        /// <param name="defaultLanguage">The default language if none is found.</param>
+        /// <returns>The extracted language code.</returns>
+        private string GetLanguageFromSetting(string setting, string defaultLanguage)
         {
-            get
+            if (!string.IsNullOrWhiteSpace(setting))
             {
-                if (_sourceLanguages.Count == 0)
+                var tokens = setting.Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
+                if (tokens.Length > 0)
                 {
-                    _sourceLanguages.Add("Afrikaans af");
-                    _sourceLanguages.Add("Albanian sq");
-                    _sourceLanguages.Add("Amharic am");
-                    _sourceLanguages.Add("Arabic ar");
-                    _sourceLanguages.Add("Armenian hy");
-                    _sourceLanguages.Add("Azeerbaijani az");
-                    _sourceLanguages.Add("Basque eu");
-                    _sourceLanguages.Add("Belarusian be");
-                    _sourceLanguages.Add("Bengali bn");
-                    _sourceLanguages.Add("Bosnian bs");
-                    _sourceLanguages.Add("Bulgarian bg");
-                    _sourceLanguages.Add("Catalan ca");
-                    _sourceLanguages.Add("Cebuano ceb");
-                    _sourceLanguages.Add("Chinese (Simplified) zh-CN");
-                    _sourceLanguages.Add("Chinese (Traditional) zh-TW");
-                    _sourceLanguages.Add("Corsican co");
-                    _sourceLanguages.Add("Croatian hr");
-                    _sourceLanguages.Add("Czech cs");
-                    _sourceLanguages.Add("Danish da");
-                    _sourceLanguages.Add("Dutch nl");
-                    _sourceLanguages.Add("English en");
-                    _sourceLanguages.Add("Esperanto eo");
-                    _sourceLanguages.Add("Estonian et");
-                    _sourceLanguages.Add("Finnish fi");
-                    _sourceLanguages.Add("French fr");
-                    _sourceLanguages.Add("Frisian fy");
-                    _sourceLanguages.Add("Galician gl");
-                    _sourceLanguages.Add("Georgian ka");
-                    _sourceLanguages.Add("German de");
-                    _sourceLanguages.Add("Greek el");
-                    _sourceLanguages.Add("Gujarati gu");
-                    _sourceLanguages.Add("Haitian Creole ht");
-                    _sourceLanguages.Add("Hausa ha");
-                    _sourceLanguages.Add("Hawaiian haw");
-                    _sourceLanguages.Add("Hebrew iw");
-                    _sourceLanguages.Add("Hindi hi");
-                    _sourceLanguages.Add("Hmong hmn");
-                    _sourceLanguages.Add("Hungarian hu");
-                    _sourceLanguages.Add("Icelandic is");
-                    _sourceLanguages.Add("Igbo ig");
-                    _sourceLanguages.Add("Indonesian id");
-                    _sourceLanguages.Add("Irish ga");
-                    _sourceLanguages.Add("Italian it");
-                    _sourceLanguages.Add("Japanese ja");
-                    _sourceLanguages.Add("Javanese jw");
-                    _sourceLanguages.Add("Kannada kn");
-                    _sourceLanguages.Add("Kazakh kk");
-                    _sourceLanguages.Add("Khmer km");
-                    _sourceLanguages.Add("Korean ko");
-                    _sourceLanguages.Add("Kurdish ku");
-                    _sourceLanguages.Add("Kyrgyz ky");
-                    _sourceLanguages.Add("Lao lo");
-                    _sourceLanguages.Add("Latin la");
-                    _sourceLanguages.Add("Latvian lv");
-                    _sourceLanguages.Add("Lithuanian lt");
-                    _sourceLanguages.Add("Luxembourgish lb");
-                    _sourceLanguages.Add("Macedonian mk");
-                    _sourceLanguages.Add("Malagasy mg");
-                    _sourceLanguages.Add("Malay ms");
-                    _sourceLanguages.Add("Malayalam ml");
-                    _sourceLanguages.Add("Maori mi");
-                    _sourceLanguages.Add("Marathi mr");
-                    _sourceLanguages.Add("Mongolian mn");
-                    _sourceLanguages.Add("Myanmar (Burmese) my");
-                    _sourceLanguages.Add("Nepali ne");
-                    _sourceLanguages.Add("Norwegian no");
-                    _sourceLanguages.Add("Nyanja (Chichewa) ny");
-                    _sourceLanguages.Add("Pashto ps");
-                    _sourceLanguages.Add("Persian fa");
-                    _sourceLanguages.Add("Polish pl");
-                    _sourceLanguages.Add("Portuguese pt");
-                    _sourceLanguages.Add("Punjabi ma");
-                    _sourceLanguages.Add("Romanian ro");
-                    _sourceLanguages.Add("Russian ru");
-                    _sourceLanguages.Add("Samoan sm");
-                    _sourceLanguages.Add("Scots Gaelic gd");
-                    _sourceLanguages.Add("Serbian sr");
-                    _sourceLanguages.Add("Sesotho st");
-                    _sourceLanguages.Add("Shona sn");
-                    _sourceLanguages.Add("Sindhi sd");
-                    _sourceLanguages.Add("Sinhala (Sinhalese) si");
-                    _sourceLanguages.Add("Slovak sk");
-                    _sourceLanguages.Add("Slovenian sl");
-                    _sourceLanguages.Add("Somali so");
-                    _sourceLanguages.Add("Spanish es");
-                    _sourceLanguages.Add("Sundanese su");
-                    _sourceLanguages.Add("Swahili sw");
-                    _sourceLanguages.Add("Swedish sv");
-                    _sourceLanguages.Add("Tagalog (Filipino) tl");
-                    _sourceLanguages.Add("Tajik tg");
-                    _sourceLanguages.Add("Tamil ta");
-                    _sourceLanguages.Add("Telugu te");
-                    _sourceLanguages.Add("Thai th");
-                    _sourceLanguages.Add("Turkish tr");
-                    _sourceLanguages.Add("Ukrainian uk");
-                    _sourceLanguages.Add("Urdu ur");
-                    _sourceLanguages.Add("Uzbek uz");
-                    _sourceLanguages.Add("Vietnamese vi");
-                    _sourceLanguages.Add("Welsh cy");
-                    _sourceLanguages.Add("Xhosa xh");
-                    _sourceLanguages.Add("Yiddish yi");
-                    _sourceLanguages.Add("Yoruba yo");
-                    _sourceLanguages.Add("Zulu zu");
+                    return tokens.Last();
                 }
-                return _sourceLanguages;
+            }
+            return defaultLanguage;
+        }
+
+        /// <summary>
+        /// Ensures that the online translator cookies are initialized.
+        /// </summary>
+        private void EnsureCookiesInitialized()
+        {
+            if (AppData.OnlineTranslatorCookies == null)
+            {
+                AppData.OnlineTranslatorCookies = new System.Net.CookieContainer();
             }
         }
 
-        private static readonly List<string> _targetLanguages = new List<string>();
-        public static List<string> TargetLanguages
-        {
-            get
-            {
-                if (_targetLanguages.Count == 0)
-                {
-                    _targetLanguages.Add("Afrikaans af");
-                    _targetLanguages.Add("Albanian sq");
-                    _targetLanguages.Add("Amharic am");
-                    _targetLanguages.Add("Arabic ar");
-                    _targetLanguages.Add("Armenian hy");
-                    _targetLanguages.Add("Azeerbaijani az");
-                    _targetLanguages.Add("Basque eu");
-                    _targetLanguages.Add("Belarusian be");
-                    _targetLanguages.Add("Bengali bn");
-                    _targetLanguages.Add("Bosnian bs");
-                    _targetLanguages.Add("Bulgarian bg");
-                    _targetLanguages.Add("Catalan ca");
-                    _targetLanguages.Add("Cebuano ceb");
-                    _targetLanguages.Add("Chinese (Simplified) zh-CN");
-                    _targetLanguages.Add("Chinese (Traditional) zh-TW");
-                    _targetLanguages.Add("Corsican co");
-                    _targetLanguages.Add("Croatian hr");
-                    _targetLanguages.Add("Czech cs");
-                    _targetLanguages.Add("Danish da");
-                    _targetLanguages.Add("Dutch nl");
-                    _targetLanguages.Add("English en");
-                    _targetLanguages.Add("Esperanto eo");
-                    _targetLanguages.Add("Estonian et");
-                    _targetLanguages.Add("Finnish fi");
-                    _targetLanguages.Add("French fr");
-                    _targetLanguages.Add("Frisian fy");
-                    _targetLanguages.Add("Galician gl");
-                    _targetLanguages.Add("Georgian ka");
-                    _targetLanguages.Add("German de");
-                    _targetLanguages.Add("Greek el");
-                    _targetLanguages.Add("Gujarati gu");
-                    _targetLanguages.Add("Haitian Creole ht");
-                    _targetLanguages.Add("Hausa ha");
-                    _targetLanguages.Add("Hawaiian haw");
-                    _targetLanguages.Add("Hebrew iw");
-                    _targetLanguages.Add("Hindi hi");
-                    _targetLanguages.Add("Hmong hmn");
-                    _targetLanguages.Add("Hungarian hu");
-                    _targetLanguages.Add("Icelandic is");
-                    _targetLanguages.Add("Igbo ig");
-                    _targetLanguages.Add("Indonesian id");
-                    _targetLanguages.Add("Irish ga");
-                    _targetLanguages.Add("Italian it");
-                    _targetLanguages.Add("Japanese ja");
-                    _targetLanguages.Add("Javanese jw");
-                    _targetLanguages.Add("Kannada kn");
-                    _targetLanguages.Add("Kazakh kk");
-                    _targetLanguages.Add("Khmer km");
-                    _targetLanguages.Add("Korean ko");
-                    _targetLanguages.Add("Kurdish ku");
-                    _targetLanguages.Add("Kyrgyz ky");
-                    _targetLanguages.Add("Lao lo");
-                    _targetLanguages.Add("Latin la");
-                    _targetLanguages.Add("Latvian lv");
-                    _targetLanguages.Add("Lithuanian lt");
-                    _targetLanguages.Add("Luxembourgish lb");
-                    _targetLanguages.Add("Macedonian mk");
-                    _targetLanguages.Add("Malagasy mg");
-                    _targetLanguages.Add("Malay ms");
-                    _targetLanguages.Add("Malayalam ml");
-                    _targetLanguages.Add("Maori mi");
-                    _targetLanguages.Add("Marathi mr");
-                    _targetLanguages.Add("Mongolian mn");
-                    _targetLanguages.Add("Myanmar (Burmese) my");
-                    _targetLanguages.Add("Nepali ne");
-                    _targetLanguages.Add("Norwegian no");
-                    _targetLanguages.Add("Nyanja (Chichewa) ny");
-                    _targetLanguages.Add("Pashto ps");
-                    _targetLanguages.Add("Persian fa");
-                    _targetLanguages.Add("Polish pl");
-                    _targetLanguages.Add("Portuguese pt");
-                    _targetLanguages.Add("Punjabi ma");
-                    _targetLanguages.Add("Romanian ro");
-                    _targetLanguages.Add("Russian ru");
-                    _targetLanguages.Add("Samoan sm");
-                    _targetLanguages.Add("Scots Gaelic gd");
-                    _targetLanguages.Add("Serbian sr");
-                    _targetLanguages.Add("Sesotho st");
-                    _targetLanguages.Add("Shona sn");
-                    _targetLanguages.Add("Sindhi sd");
-                    _targetLanguages.Add("Sinhala (Sinhalese) si");
-                    _targetLanguages.Add("Slovak sk");
-                    _targetLanguages.Add("Slovenian sl");
-                    _targetLanguages.Add("Somali so");
-                    _targetLanguages.Add("Spanish es");
-                    _targetLanguages.Add("Sundanese su");
-                    _targetLanguages.Add("Swahili sw");
-                    _targetLanguages.Add("Swedish sv");
-                    _targetLanguages.Add("Tagalog (Filipino) tl");
-                    _targetLanguages.Add("Tajik tg");
-                    _targetLanguages.Add("Tamil ta");
-                    _targetLanguages.Add("Telugu te");
-                    _targetLanguages.Add("Thai th");
-                    _targetLanguages.Add("Turkish tr");
-                    _targetLanguages.Add("Ukrainian uk");
-                    _targetLanguages.Add("Urdu ur");
-                    _targetLanguages.Add("Uzbek uz");
-                    _targetLanguages.Add("Vietnamese vi");
-                    _targetLanguages.Add("Welsh cy");
-                    _targetLanguages.Add("Xhosa xh");
-                    _targetLanguages.Add("Yiddish yi");
-                    _targetLanguages.Add("Yoruba yo");
-                    _targetLanguages.Add("Zulu zu");
-                }
-                return _targetLanguages;
-            }
-        }
-
+        /// <summary>
+        /// Searches the given HTML document for the translation text.
+        /// </summary>
+        /// <param name="htmlDocument">The HTML document returned from the translation service.</param>
+        /// <returns>The inner text of the element that contains the translation; otherwise, an empty string.</returns>
         protected static string GetTranslationHtmlElement(HtmlDocument htmlDocument)
         {
-            //new Functions.FunctionsLogs().LogToFile(htmlDocument.Body.InnerHtml);
-
-            foreach (HtmlElement htmlElement in htmlDocument.GetElementsByTagName("div"))
+            // First, try to find a div with a known translation container class.
+            foreach (HtmlElement element in htmlDocument.GetElementsByTagName("div"))
             {
-                if (htmlElement.GetAttribute("className") == "result-container" || htmlElement.GetAttribute("className") == "t0")
+                string className = element.GetAttribute("className");
+                if (className == "result-container" || className == "t0")
                 {
-                    return htmlElement.InnerText;
+                    return element.InnerText;
                 }
             }
 
-            ////FileWriter.WriteData("c:\\THLog.log", "\r\nhtmlDocument.Body.Children:\r\n" + htmlDocument.Body.Children);
-            foreach (HtmlElement htmlElement in htmlDocument.Body.Children)
+            // Fallback: iterate through body children and return the first element whose inner HTML does not start with '<'.
+            foreach (HtmlElement element in htmlDocument.Body.Children)
             {
-                if (htmlElement.InnerText == null)
+                if (!string.IsNullOrEmpty(element.InnerText) && !element.InnerHtml.StartsWith("<"))
                 {
-                }
-                else
-                {
-                    //FileWriter.WriteData("c:\\THLog.log", "\r\nhtmlElement.InnerHtml:\r\n" + htmlElement.InnerHtml);
-                    if (htmlElement.InnerHtml.StartsWith("<"))
-                    {
-                    }
-                    else
-                    {
-                        //text2 = htmlElement.InnerText.Replace(DNTT, "\r\n").Replace("</ p> </ font>", " </p></font>").Replace("</ p>", "</p>").Replace("</ font>", "</font>").Replace("<p align = ", "<p align=").Replace("<img src = ", "<img src=").Replace("<font size = ", "<font size=").Replace("<font face = ", "<font face=");
-                        return htmlElement.InnerText;
-                    }
+                    return element.InnerText;
                 }
             }
+
             return string.Empty;
         }
 
+        /// <summary>
+        /// Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
+        /// </summary>
         public void Dispose()
         {
             try
             {
-                webClient.Dispose();
+                webClient?.Dispose();
                 webClient = null;
             }
             catch { }
+
             try
             {
-                WB.Dispose();
-                WB = null;
+                webBrowser?.Dispose();
+                webBrowser = null;
             }
             catch { }
         }
 
-        //public static string ReturnTranslatedOrCache(DataSet cacheDS, string InputLine, TranslatorsBase Translator=null)
-        //{
-        //    string valuefromcache = FunctionsTable.TranslationCacheFind(cacheDS, InputLine);
+        #region Available Languages
 
-        //    if (valuefromcache.Length != 0)
-        //    {
-        //        return valuefromcache;
-        //    }
-        //    else
-        //    {
-        //        if (Translator != null)
-        //        {
-        //            return Translator.Translate(InputLine);
-        //        }
-        //        return new GoogleAPI().Translate(InputLine);
-        //    }
-        //}
+        // Source languages available for translation.
+        private static readonly List<string> _sourceLanguages = new List<string>
+    {
+        "Afrikaans af",
+        "Albanian sq",
+        "Amharic am",
+        "Arabic ar",
+        "Armenian hy",
+        "Azeerbaijani az",
+        "Basque eu",
+        "Belarusian be",
+        "Bengali bn",
+        "Bosnian bs",
+        "Bulgarian bg",
+        "Catalan ca",
+        "Cebuano ceb",
+        "Chinese (Simplified) zh-CN",
+        "Chinese (Traditional) zh-TW",
+        "Corsican co",
+        "Croatian hr",
+        "Czech cs",
+        "Danish da",
+        "Dutch nl",
+        "English en",
+        "Esperanto eo",
+        "Estonian et",
+        "Finnish fi",
+        "French fr",
+        "Frisian fy",
+        "Galician gl",
+        "Georgian ka",
+        "German de",
+        "Greek el",
+        "Gujarati gu",
+        "Haitian Creole ht",
+        "Hausa ha",
+        "Hawaiian haw",
+        "Hebrew iw",
+        "Hindi hi",
+        "Hmong hmn",
+        "Hungarian hu",
+        "Icelandic is",
+        "Igbo ig",
+        "Indonesian id",
+        "Irish ga",
+        "Italian it",
+        "Japanese ja",
+        "Javanese jw",
+        "Kannada kn",
+        "Kazakh kk",
+        "Khmer km",
+        "Korean ko",
+        "Kurdish ku",
+        "Kyrgyz ky",
+        "Lao lo",
+        "Latin la",
+        "Latvian lv",
+        "Lithuanian lt",
+        "Luxembourgish lb",
+        "Macedonian mk",
+        "Malagasy mg",
+        "Malay ms",
+        "Malayalam ml",
+        "Maori mi",
+        "Marathi mr",
+        "Mongolian mn",
+        "Myanmar (Burmese) my",
+        "Nepali ne",
+        "Norwegian no",
+        "Nyanja (Chichewa) ny",
+        "Pashto ps",
+        "Persian fa",
+        "Polish pl",
+        "Portuguese pt",
+        "Punjabi ma",
+        "Romanian ro",
+        "Russian ru",
+        "Samoan sm",
+        "Scots Gaelic gd",
+        "Serbian sr",
+        "Sesotho st",
+        "Shona sn",
+        "Sindhi sd",
+        "Sinhala (Sinhalese) si",
+        "Slovak sk",
+        "Slovenian sl",
+        "Somali so",
+        "Spanish es",
+        "Sundanese su",
+        "Swahili sw",
+        "Swedish sv",
+        "Tagalog (Filipino) tl",
+        "Tajik tg",
+        "Tamil ta",
+        "Telugu te",
+        "Thai th",
+        "Turkish tr",
+        "Ukrainian uk",
+        "Urdu ur",
+        "Uzbek uz",
+        "Vietnamese vi",
+        "Welsh cy",
+        "Xhosa xh",
+        "Yiddish yi",
+        "Yoruba yo",
+        "Zulu zu"
+    };
+
+        /// <summary>
+        /// Gets the list of available source languages.
+        /// </summary>
+        public static List<string> SourceLanguages => _sourceLanguages;
+
+        // Target languages available for translation.
+        private static readonly List<string> _targetLanguages = new List<string>
+    {
+        "Afrikaans af",
+        "Albanian sq",
+        "Amharic am",
+        "Arabic ar",
+        "Armenian hy",
+        "Azeerbaijani az",
+        "Basque eu",
+        "Belarusian be",
+        "Bengali bn",
+        "Bosnian bs",
+        "Bulgarian bg",
+        "Catalan ca",
+        "Cebuano ceb",
+        "Chinese (Simplified) zh-CN",
+        "Chinese (Traditional) zh-TW",
+        "Corsican co",
+        "Croatian hr",
+        "Czech cs",
+        "Danish da",
+        "Dutch nl",
+        "English en",
+        "Esperanto eo",
+        "Estonian et",
+        "Finnish fi",
+        "French fr",
+        "Frisian fy",
+        "Galician gl",
+        "Georgian ka",
+        "German de",
+        "Greek el",
+        "Gujarati gu",
+        "Haitian Creole ht",
+        "Hausa ha",
+        "Hawaiian haw",
+        "Hebrew iw",
+        "Hindi hi",
+        "Hmong hmn",
+        "Hungarian hu",
+        "Icelandic is",
+        "Igbo ig",
+        "Indonesian id",
+        "Irish ga",
+        "Italian it",
+        "Japanese ja",
+        "Javanese jw",
+        "Kannada kn",
+        "Kazakh kk",
+        "Khmer km",
+        "Korean ko",
+        "Kurdish ku",
+        "Kyrgyz ky",
+        "Lao lo",
+        "Latin la",
+        "Latvian lv",
+        "Lithuanian lt",
+        "Luxembourgish lb",
+        "Macedonian mk",
+        "Malagasy mg",
+        "Malay ms",
+        "Malayalam ml",
+        "Maori mi",
+        "Marathi mr",
+        "Mongolian mn",
+        "Myanmar (Burmese) my",
+        "Nepali ne",
+        "Norwegian no",
+        "Nyanja (Chichewa) ny",
+        "Pashto ps",
+        "Persian fa",
+        "Polish pl",
+        "Portuguese pt",
+        "Punjabi ma",
+        "Romanian ro",
+        "Russian ru",
+        "Samoan sm",
+        "Scots Gaelic gd",
+        "Serbian sr",
+        "Sesotho st",
+        "Shona sn",
+        "Sindhi sd",
+        "Sinhala (Sinhalese) si",
+        "Slovak sk",
+        "Slovenian sl",
+        "Somali so",
+        "Spanish es",
+        "Sundanese su",
+        "Swahili sw",
+        "Swedish sv",
+        "Tagalog (Filipino) tl",
+        "Tajik tg",
+        "Tamil ta",
+        "Telugu te",
+        "Thai th",
+        "Turkish tr",
+        "Ukrainian uk",
+        "Urdu ur",
+        "Uzbek uz",
+        "Vietnamese vi",
+        "Welsh cy",
+        "Xhosa xh",
+        "Yiddish yi",
+        "Yoruba yo",
+        "Zulu zu"
+    };
+
+        /// <summary>
+        /// Gets the list of available target languages.
+        /// </summary>
+        public static List<string> TargetLanguages => _targetLanguages;
+
+        #endregion
     }
 
     /// <summary>
