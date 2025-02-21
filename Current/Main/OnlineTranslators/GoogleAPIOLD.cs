@@ -16,23 +16,17 @@ using TranslationHelper.Translators;
 namespace TranslationHelper
 {
     /// <summary>
-    /// A legacy Google Translate API integration that translates text using a web service.
-    /// Refactored for improved readability and maintainability without altering its functionality.
+    /// Legacy Google Translate API integration for translating text via web requests.
     /// </summary>
     class GoogleAPIOLD : TranslatorsBase
     {
         // Constants for special symbols used in formatting.
         private const string DNTT = "DNTT";
         private static readonly string splitterString = "</br>";
-        private static readonly string[] splitter = new string[] { splitterString };
-
+        private static readonly string[] splitter = new[] { splitterString };
         // Translation Aggregator constants (credits to Sinflower).
         private readonly long m = 427761;
         private readonly long s = 1179739010;
-
-        public GoogleAPIOLD()
-        {
-        }
 
         /// <summary>
         /// Translates a single string from one language to another.
@@ -43,24 +37,12 @@ namespace TranslationHelper
         /// <returns>The translated text, or an empty string on failure, or null if error count is exceeded.</returns>
         public override string Translate(string originalText, string languageFrom = "auto", string languageTo = "en")
         {
-            // Abort if overall error count is too high.
-            if (ErrorsWebCntOverall > 5)
-                return null;
+            if (ErrorsWebCntOverall > 5) return null;
+            if (string.IsNullOrEmpty(originalText)) return string.Empty;
+            if (sessionCache.TryGetValue(originalText, out string cachedTranslation)) return cachedTranslation;
 
-            // Return early for empty input.
-            if (string.IsNullOrEmpty(originalText))
-                return string.Empty;
-
-            // Use cache if translation was previously obtained.
-            if (sessionCache.TryGetValue(originalText, out string cachedTranslation))
-                return cachedTranslation;
-
-            // Normalize newlines in the input text.
-            string normalizedText = Regex.Replace(originalText, "\\r\\n|\\r|\\n", $" {splitterString} ", RegexOptions.None);
-            string encodedText = HttpUtility.UrlEncode(normalizedText, Encoding.UTF8);
+            string encodedText = PrepareTextForTranslation(originalText);
             string address = GetUrlAddress(languageFrom, languageTo, encodedText);
-
-            // Initialize web client if not already done.
             InitializeWebClient();
 
             try
@@ -68,11 +50,7 @@ namespace TranslationHelper
                 string responseText = webClient.DownloadString(new Uri(address));
                 HtmlDocument htmlDoc = CreateHtmlDocument();
                 htmlDoc.Write(responseText);
-
-                // Process the HTML to extract and fix the translated text.
                 string translation = GetTranslationHtmlElement(htmlDoc).FixFormat();
-
-                // Cache the result and return.
                 sessionCache[originalText] = translation;
                 return translation;
             }
@@ -85,7 +63,6 @@ namespace TranslationHelper
             {
                 new Functions.FunctionsLogs().LogToFile($"google translation error:{Environment.NewLine}{ex}");
             }
-
             return string.Empty;
         }
 
@@ -98,107 +75,102 @@ namespace TranslationHelper
         /// <returns>An array of translated strings or null if too many errors occur.</returns>
         public override string[] Translate(string[] originalTexts, string languageFrom = "auto", string languageTo = "en")
         {
-            if (ErrorsWebCntOverall > 9 || originalTexts == null)
-                return null;
+            if (ErrorsWebCntOverall > 9 || originalTexts == null) return null;
 
-            // Introduce a random delay (up to 2000ms) to help avoid throttling.
-            Thread.Sleep(new Random().Next(0, 2000));
+            Thread.Sleep(new Random().Next(0, 2000)); // Random delay to avoid throttling.
 
-            int count = originalTexts.Length;
-            var translations = new string[count];
-            var textBuilder = new StringBuilder();
-
-            for (int i = 0; i < count; i++)
-            {
-                if (string.IsNullOrEmpty(originalTexts[i]))
-                {
-                    translations[i] = string.Empty;
-                }
-                else
-                {
-                    // Use cached translation if available.
-                    if (sessionCache.TryGetValue(originalTexts[i], out string cached))
-                    {
-                        translations[i] = cached;
-                    }
-
-                    // Process text: replace newline sequences and <br> tags.
-                    bool isLast = i == count - 1;
-                    string processedText = Regex.Replace(originalTexts[i], "\\r\\n|\\r|\\n", DNTT, RegexOptions.None);
-                    processedText = Regex.Replace(processedText, @"<br>", "QBRQ", RegexOptions.None);
-
-                    textBuilder.Append(processedText);
-                    if (!isLast)
-                    {
-                        textBuilder.Append(Environment.NewLine)
-                                   .Append(splitterString)
-                                   .Append(Environment.NewLine);
-                    }
-                }
-            }
-
-            string encodedText = HttpUtility.UrlEncode(textBuilder.ToString(), Encoding.UTF8);
+            string joinedText = JoinTextsForTranslation(originalTexts);
+            string encodedText = HttpUtility.UrlEncode(joinedText, Encoding.UTF8);
             string address = GetUrlAddress(languageFrom, languageTo, encodedText);
             InitializeWebClient();
 
             Uri uri = new Uri(address);
-            string responseText = string.Empty;
+            string responseText = DownloadWithRetry(uri);
 
-            try
-            {
-                responseText = webClient.DownloadString(uri);
-            }
-            catch (WebException)
-            {
-                // Reset cookies and attempt to retry translation.
-                AppData.OnlineTranslatorCookies = new CookieContainer();
-                while (ErrorsWebCnt > 0 && ErrorsWebCntOverall < 10)
-                {
-                    Thread.Sleep(ErrorsWebCntOverall * 10000);
-                    try
-                    {
-                        responseText = webClient.DownloadString(uri);
-                        ErrorsWebCntOverall = 0;
-                        ErrorsWebCnt = 0;
-                        break;
-                    }
-                    catch
-                    {
-                        ErrorsWebCntOverall++;
-                        if (ErrorsWebCntOverall > 9)
-                            return null;
-                    }
-                }
-            }
+            if (string.IsNullOrEmpty(responseText)) return null;
 
             try
             {
                 HtmlDocument htmlDoc = CreateHtmlDocument();
                 htmlDoc.Write(responseText);
                 string translatedText = GetTranslationHtmlElement(htmlDoc).FixFormatMulti();
-
                 return string.IsNullOrEmpty(translatedText)
-                    ? RetWithNullToEmpty(translations)
-                    : SplitTextToLinesAndRestoreSomeSpecsymbols(translatedText);
-            }
-            catch (WebException ex)
-            {
-                new Functions.FunctionsLogs().LogToFile($"google array translation web error:{Environment.NewLine}{ex}{Environment.NewLine}uri={uri}");
-                AppData.OnlineTranslatorCookies = null;
+                    ? RetWithNullToEmpty(new string[originalTexts.Length])
+                    : SplitTextToLinesAndRestoreSomeSpecsymbols(translatedText, originalTexts.Length);
             }
             catch (Exception ex)
             {
                 new Functions.FunctionsLogs().LogToFile($"google array translation error:{Environment.NewLine}{ex}{Environment.NewLine}uri={uri}");
+                return null;
             }
+        }
 
-            return null;
+        /// <summary>
+        /// Prepares text by normalizing newlines for translation.
+        /// </summary>
+        private string PrepareTextForTranslation(string text)
+        {
+            string normalized = Regex.Replace(text, "\\r\\n|\\r|\\n", $" {splitterString} ", RegexOptions.None);
+            return HttpUtility.UrlEncode(normalized, Encoding.UTF8);
+        }
+
+        /// <summary>
+        /// Joins multiple texts into a single string with separators.
+        /// </summary>
+        private string JoinTextsForTranslation(string[] texts)
+        {
+            var sb = new StringBuilder();
+            for (int i = 0; i < texts.Length; i++)
+            {
+                if (!string.IsNullOrEmpty(texts[i]))
+                {
+                    string processed = Regex.Replace(texts[i], "\\r\\n|\\r|\\n", DNTT, RegexOptions.None);
+                    processed = Regex.Replace(processed, @"<br>", "QBRQ", RegexOptions.None);
+                    sb.Append(processed);
+                    if (i < texts.Length - 1)
+                    {
+                        sb.Append(Environment.NewLine).Append(splitterString).Append(Environment.NewLine);
+                    }
+                }
+            }
+            return sb.ToString();
+        }
+
+        /// <summary>
+        /// Downloads content with retry logic for web exceptions.
+        /// </summary>
+        private string DownloadWithRetry(Uri uri)
+        {
+            try
+            {
+                return webClient.DownloadString(uri);
+            }
+            catch (WebException)
+            {
+                AppData.OnlineTranslatorCookies = new CookieContainer();
+                while (ErrorsWebCntOverall < 10)
+                {
+                    Thread.Sleep(ErrorsWebCntOverall * 10000);
+                    try
+                    {
+                        string result = webClient.DownloadString(uri);
+                        ErrorsWebCntOverall = 0;
+                        ErrorsWebCnt = 0;
+                        return result;
+                    }
+                    catch
+                    {
+                        ErrorsWebCntOverall++;
+                    }
+                }
+                return string.Empty;
+            }
         }
 
         /// <summary>
         /// Constructs the URL for the Google Translate request.
         /// </summary>
         private string GetUrlAddress(string languageFrom, string languageTo, string arg) =>
-            // Uses invariant culture to format URL parameters correctly.
             string.Format(CultureInfo.InvariantCulture,
                 "https://translate.google.com/m?hl={1}&sl={0}&tl={1}&ie=UTF-8&tk={3}&q={2}",
                 languageFrom, languageTo, arg, Tk(arg));
@@ -211,7 +183,9 @@ namespace TranslationHelper
             for (int i = 0; i < array.Length; i++)
             {
                 if (array[i] == null)
+                {
                     array[i] = string.Empty;
+                }
             }
             return array;
         }
@@ -231,14 +205,12 @@ namespace TranslationHelper
         /// <summary>
         /// Splits the translated text into lines and restores certain special symbols.
         /// </summary>
-        private static string[] SplitTextToLinesAndRestoreSomeSpecsymbols(string text)
+        private static string[] SplitTextToLinesAndRestoreSomeSpecsymbols(string text, int expectedCount)
         {
             // Restore newlines and split based on the defined splitter.
-            string[] parts = text
-                .Replace($" {splitterString} ", splitterString)
-                .Replace("DNTT", Environment.NewLine)
-                .Split(splitter, StringSplitOptions.None);
-
+            string[] parts = text.Replace($" {splitterString} ", splitterString)
+                                .Replace("DNTT", Environment.NewLine)
+                                .Split(splitter, StringSplitOptions.None);
             // Revert any temporary replacements.
             return parts.Select(x => x.Replace("NBRN", splitterString)).ToArray();
         }
@@ -250,8 +222,7 @@ namespace TranslationHelper
         {
             for (int t = 0; t < opStr.Length; t += 3)
             {
-                long a = opStr[t + 2];
-                a = a >= 'a' ? a - 87 : a - '0';
+                long a = opStr[t + 2] >= 'a' ? opStr[t + 2] - 87 : opStr[t + 2] - '0';
                 a = opStr[t + 1] == '+' ? r >> (int)a : r << (int)a;
                 r = opStr[t] == '+' ? (r + a) & 4294967295 : r ^ a;
             }
@@ -259,7 +230,8 @@ namespace TranslationHelper
         }
 
         /// <summary>
-        /// Generates a token based on the input text, used as part of the URL query.
+        /// Generates a token for Google Translate requests. This is reverse-engineered
+        /// and may break if Google updates their API.
         /// </summary>
         private string Tk(string text)
         {
@@ -271,24 +243,24 @@ namespace TranslationHelper
                 {
                     byteList.Add(code);
                 }
+                else if (code < 2048)
+                {
+                    byteList.Add((code >> 6) | 192);
+                    byteList.Add((code & 63) | 128);
+                }
+                else if ((code & 64512) == 55296 && i + 1 < text.Length && ((long)text[i + 1] & 64512) == 56320)
+                {
+                    // Handle surrogate pair.
+                    code = 65536 + ((code & 1023) << 10) + (text[++i] & 1023);
+                    byteList.Add((code >> 18) | 240);
+                    byteList.Add(((code >> 12) & 63) | 128);
+                    byteList.Add(((code >> 6) & 63) | 128);
+                    byteList.Add((code & 63) | 128);
+                }
                 else
                 {
-                    if (code < 2048)
-                    {
-                        byteList.Add((code >> 6) | 192);
-                    }
-                    else if ((code & 64512) == 55296 && i + 1 < text.Length && ((long)text[i + 1] & 64512) == 56320)
-                    {
-                        // Handle surrogate pair.
-                        code = 65536 + ((code & 1023) << 10) + (text[++i] & 1023);
-                        byteList.Add((code >> 18) | 240);
-                        byteList.Add(((code >> 12) & 63) | 128);
-                    }
-                    else
-                    {
-                        byteList.Add((code >> 12) | 224);
-                        byteList.Add(((code >> 6) & 63) | 128);
-                    }
+                    byteList.Add((code >> 12) | 224);
+                    byteList.Add(((code >> 6) & 63) | 128);
                     byteList.Add((code & 63) | 128);
                 }
             }
@@ -305,7 +277,7 @@ namespace TranslationHelper
             }
             token = Vi(token, key2);
             token ^= s;
-            if (token < 0)
+            if (token < 0) 
                 token = (2147483647 & token) + 2147483648;
 
             token %= 1000000;
