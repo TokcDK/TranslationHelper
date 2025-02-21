@@ -112,7 +112,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
         public OnlineTranslateNew()
         {
             if (_buffer == null) _buffer = new List<TranslationData>();
-            if (_translator == null) _translator = new GoogleTranslateScraperStandalone();
+            if (_translator == null) _translator = new GoogleAPIOLD();
         }
 
         protected override bool IsValidRow(Row.RowBaseRowData rowData)
@@ -347,7 +347,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
             }
         }
 
-        readonly GoogleTranslateScraperStandalone _translator;
+        readonly GoogleAPIOLD _translator;
         /// <summary>
         /// get originals and translate them
         /// </summary>
@@ -488,7 +488,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
                 var originalLinesArePreApplied = ApplyProjectPretranslationAction(originals);
                 if (originalLinesArePreApplied.Length == 0) return translated;
 
-                translated = _translator.TranslateBatchAsync(originalLinesArePreApplied).Result;
+                translated = _translator.Translate(originalLinesArePreApplied);
                 if (translated == null || originals.Length != translated.Length)
                 {
                     var translatedByParts = TryToTranslateByParts(originalLinesArePreApplied);
@@ -542,14 +542,14 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
         {
             if (listToTranslate.Count == 0) return true;
 
-            var translated = _translator.TranslateBatchAsync(listToTranslate.ToArray()).Result;
+            var translated = _translator.Translate(listToTranslate.ToArray());
 
             if (translated.Length != listToTranslate.Count)
             {
                 // translate line by line
                 foreach (var lineToTranslate in listToTranslate)
                 {
-                    string translatedLine = _translator.TranslateAsync(lineToTranslate).Result;
+                    string translatedLine = _translator.Translate(lineToTranslate);
                     if (string.IsNullOrWhiteSpace(translatedLine)) return false;
 
                     resultTranslatedByParts.Add(translatedLine);
