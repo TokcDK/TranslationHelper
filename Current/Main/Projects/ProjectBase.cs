@@ -301,13 +301,13 @@ namespace TranslationHelper.Projects
 
         internal string RestoreVARS(string str)
         {
-            if (HideVARSMatchCollectionsList == null || HideVARSMatchCollectionsList.Count == 0 || !str.Contains("VAR") || HideVARSMatchCollectionsList[mcArrNum].Count == 0)
+            if (HideVARSMatchCollectionsList == null || HideVARSMatchCollectionsList.Count == 0 || !Regex.IsMatch(str, @"\{ ?VAR ?([0-9]{3}) ?\}", RegexOptions.IgnoreCase) || HideVARSMatchCollectionsList[mcArrNum].Count == 0)
             {
                 return str;
             }
 
             //restore broken vars
-            str = Regex.Replace(str, @"\{ ?VAR ?([0-9]{3}) ?\}", "{VAR$1}");
+            str = Regex.Replace(str, @"\{ ?VAR ?([0-9]{3}) ?\}", "{VAR$1}", RegexOptions.IgnoreCase);
 
             int mi = 0;
             foreach (Match m in HideVARSMatchCollectionsList[mcArrNum])
