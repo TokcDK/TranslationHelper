@@ -87,7 +87,6 @@ namespace TranslationHelper.Projects
         internal void Clear()
         {
             _hideVARSMatchCollectionsList.Clear();
-            _hideVARSPatterns.Clear();
         }
 
         public void Dispose()
