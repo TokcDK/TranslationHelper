@@ -138,6 +138,7 @@
     <Compile Include="Formats\RPGMMV\StopCVPluginTXT.cs" />
     <Compile Include="Formats\RPGMMV\ValueLocationPresetTxt.cs" />
     <Compile Include="Formats\WolfRPG\TextEPH.cs" />
+    <Compile Include="Functions\FileElementsFunctions\Row\OnlineTranslate\StringsTranslatorGoogle.cs" />
     <Compile Include="Functions\FunctionsUI.cs" />
     <Compile Include="Functions\DBSaveFormats\Xlsx.cs" />
     <Compile Include="Functions\DBSaveFormats\Bin.cs" />
@@ -360,7 +361,7 @@
     <Compile Include="Functions\FunctionsMenus.cs" />
     <Compile Include="Functions\FunctionsMessage.cs" />
     <Compile Include="Functions\FunctionsStringExtensions.cs" />
-    <Compile Include="Functions\FunctionsOnlineTranslation.cs" />
+    <Compile Include="Functions\FileElementsFunctions\Row\OnlineTranslate\FunctionsOnlineTranslationObsolete.cs" />
     <Compile Include="Functions\FunctionsOpen.cs" />
     <Compile Include="Functions\FunctionsSave.cs" />
     <Compile Include="Functions\FunctionsOnlineCache.cs" />
@@ -372,9 +373,9 @@
     <Compile Include="appSettings\Sections\General\General.cs" />
     <Compile Include="appSettings\Sections\Optimizations\Optimizations.cs" />
     <Compile Include="Functions\FunctionTest.cs" />
-    <Compile Include="Functions\OnlineTranslation\TranslationBase.cs" />
-    <Compile Include="Functions\OnlineTranslation\TranslationBigBlock.cs" />
-    <Compile Include="Functions\OnlineTranslation\TranslationBigBlockMulti.cs" />
+    <Compile Include="Functions\FileElementsFunctions\Row\OnlineTranslate\OnlineTranslation.old\TranslationBase.cs" />
+    <Compile Include="Functions\FileElementsFunctions\Row\OnlineTranslate\OnlineTranslation.old\TranslationBigBlock.cs" />
+    <Compile Include="Functions\FileElementsFunctions\Row\OnlineTranslate\OnlineTranslation.old\TranslationBigBlockMulti.cs" />
     <Compile Include="Functions\RowParsersParallel\ClearCellsParallel.cs" />
     <Compile Include="Functions\RowParsersParallel\RowParallelParserBase.cs" />
     <Compile Include="Functions\StringChangers\HardFixes\AllHardFixesChanger.cs" />
@@ -492,15 +493,15 @@
     <Compile Include="Functions\FunctionsThreading.cs" />
     <Compile Include="ExternalAdditions\NativeMethods.cs" />
     <Compile Include="Old elements\OLDTHMainCommented.cs" />
-    <Compile Include="OnlineTranslators\GoogleTranslateScraperStandalone.cs" />
-    <Compile Include="OnlineTranslators\Data\DeepL.cs" />
-    <Compile Include="OnlineTranslators\Data\Google.cs" />
-    <Compile Include="OnlineTranslators\Data\TranslatorsDataBase.cs" />
-    <Compile Include="OnlineTranslators\Data\Yandex.cs" />
-    <Compile Include="OnlineTranslators\GoogleTextractor.cs" />
-    <Compile Include="OnlineTranslators\GoogleTranslateMin.cs" />
-    <Compile Include="OnlineTranslators\UserAgents.cs" />
-    <Compile Include="OnlineTranslators\WebClientEx.cs">
+    <Compile Include="Functions\FileElementsFunctions\Row\OnlineTranslate\OnlineTranslators\GoogleTranslateScraperStandalone.cs" />
+    <Compile Include="Functions\FileElementsFunctions\Row\OnlineTranslate\OnlineTranslators\Data\DeepL.cs" />
+    <Compile Include="Functions\FileElementsFunctions\Row\OnlineTranslate\OnlineTranslators\Data\Google.cs" />
+    <Compile Include="Functions\FileElementsFunctions\Row\OnlineTranslate\OnlineTranslators\Data\TranslatorsDataBase.cs" />
+    <Compile Include="Functions\FileElementsFunctions\Row\OnlineTranslate\OnlineTranslators\Data\Yandex.cs" />
+    <Compile Include="Functions\FileElementsFunctions\Row\OnlineTranslate\OnlineTranslators\GoogleTextractor.cs" />
+    <Compile Include="Functions\FileElementsFunctions\Row\OnlineTranslate\OnlineTranslators\GoogleTranslateMin.cs" />
+    <Compile Include="Functions\FileElementsFunctions\Row\OnlineTranslate\OnlineTranslators\UserAgents.cs" />
+    <Compile Include="Functions\FileElementsFunctions\Row\OnlineTranslate\OnlineTranslators\WebClientEx.cs">
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="Projects\AI6Win\AI6WinGame.cs" />
@@ -567,9 +568,9 @@
     <Compile Include="Projects\WolfRPG\WolfRPGBase.cs" />
     <Compile Include="Projects\WolfRPG\WolfTransTest.cs" />
     <Compile Include="Projects\WolfRPG\WRPGOLDOpen.cs" />
-    <Compile Include="OnlineTranslators\DeepL.cs" />
-    <Compile Include="OnlineTranslators\TranslatorsBase.cs" />
-    <Compile Include="OnlineTranslators\GoogleAPIOLD.cs" />
+    <Compile Include="Functions\FileElementsFunctions\Row\OnlineTranslate\OnlineTranslators\DeepL.cs" />
+    <Compile Include="Functions\FileElementsFunctions\Row\OnlineTranslate\OnlineTranslators\TranslatorsBase.cs" />
+    <Compile Include="Functions\FileElementsFunctions\Row\OnlineTranslate\OnlineTranslators\GoogleAPIOLD.cs" />
     <Compile Include="ExternalAdditions\ControlHelper.cs" />
     <Compile Include="ExternalAdditions\SimpleJSON.cs" />
     <Compile Include="Old elements\RPGMakerMVjsonActors.cs" />

@@ -14,12 +14,12 @@ using TranslationHelper.Main.Functions;
 namespace TranslationHelper.Functions
 {
     [Obsolete]
-    class FunctionsOnlineTranslation : IDisposable
+    class FunctionsOnlineTranslationObsolete : IDisposable
     {
         
         readonly GoogleAPIOLD Translator;
 
-        public FunctionsOnlineTranslation()
+        public FunctionsOnlineTranslationObsolete()
         {
             
             Translator = new GoogleAPIOLD();
