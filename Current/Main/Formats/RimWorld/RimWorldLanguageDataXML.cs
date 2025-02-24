@@ -1,4 +1,5 @@
 ﻿using System.IO;
+using System.Linq;
 using System.Xml;
 using System.Xml.Linq;
 
@@ -10,32 +11,46 @@ namespace TranslationHelper.Formats.RimWorld
 
         protected override void ParseFileContent()
         {
-            var xmldoc = new XmlDocument
+            // Load the XML document from the file, preserving whitespace
+            var xmlDoc = new XmlDocument { PreserveWhitespace = true };
+            using (var fileStream = new FileStream(FilePath, FileMode.Open, FileAccess.Read))
             {
-                PreserveWhitespace = true
-            };
-            using (var fs = new FileStream(FilePath, FileMode.Open, FileAccess.Read))
-            {
-                xmldoc.Load(fs);
+                xmlDoc.Load(fileStream);
             }
 
-            var languageDataNode = xmldoc.GetElementsByTagName("LanguageData");
-            foreach (XmlNode subnode in languageDataNode[0].ChildNodes)
+            // Retrieve "LanguageData" elements and validate presence
+            var languageDataNodes = xmlDoc.GetElementsByTagName("LanguageData");
+            if (languageDataNodes.Count == 0)
             {
-                if (!(subnode is XmlElement el)) continue;
+                // No "LanguageData" element found; exit early
+                return;
+            }
+            var languageDataNode = languageDataNodes[0]; // Process only the first "LanguageData" element
 
-                var s = el.InnerText;
-
-                if (string.IsNullOrWhiteSpace(el.Name)) continue;
-                if (string.IsNullOrWhiteSpace(el.InnerText)) continue;
-
-                if (AddRowData(ref s, "Element: \"" + el.Name + "\"") && SaveFileMode)
+            // Iterate over child elements of "LanguageData"
+            foreach (XmlElement element in languageDataNode.ChildNodes.OfType<XmlElement>())
+            {
+                // Skip elements with empty or whitespace-only content
+                if (string.IsNullOrWhiteSpace(element.InnerText))
                 {
-                    el.InnerText = s;
+                    continue;
+                }
+
+                var content = element.InnerText;
+                var elementDescription = $"Element: \"{element.Name}\"";
+
+                // Process content and update element if in save mode
+                if (AddRowData(ref content, elementDescription) && SaveFileMode)
+                {
+                    element.InnerText = content;
                 }
             }
 
-            if (SaveFileMode && ParseData.Ret) ParseData.ResultForWrite.Append(xmldoc.OuterXml);
+            // Append the modified XML to the result if conditions are met
+            if (SaveFileMode && ParseData.Ret)
+            {
+                ParseData.ResultForWrite.Append(xmlDoc.OuterXml);
+            }
         }
     }
 }
