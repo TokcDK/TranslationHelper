@@ -738,10 +738,10 @@ namespace TranslationHelper.Functions
 
         private string[] ApplyProjectPretranslationAction(string[] originalLines)
         {
-            if (AppData.CurrentProject.HideVARSMatchCollectionsList != null && AppData.CurrentProject.HideVARSMatchCollectionsList.Count > 0)
-            {
-                AppData.CurrentProject.HideVARSMatchCollectionsList.Clear();//clean of found maches collections
-            }
+            //if (AppData.CurrentProject.HideVARSMatchCollectionsList != null && AppData.CurrentProject.HideVARSMatchCollectionsList.Count > 0)
+            //{
+            //    AppData.CurrentProject.HideVARSMatchCollectionsList.Clear();//clean of found maches collections
+            //}
 
             for (int i = 0; i < originalLines.Length; i++)
             {
@@ -765,10 +765,10 @@ namespace TranslationHelper.Functions
                 }
             }
 
-            if (AppData.CurrentProject.HideVARSMatchCollectionsList != null && AppData.CurrentProject.HideVARSMatchCollectionsList.Count > 0)
-            {
-                AppData.CurrentProject.HideVARSMatchCollectionsList.Clear();//clean of found maches collections
-            }
+            //if (AppData.CurrentProject.HideVARSMatchCollectionsList != null && AppData.CurrentProject.HideVARSMatchCollectionsList.Count > 0)
+            //{
+            //    AppData.CurrentProject.HideVARSMatchCollectionsList.Clear();//clean of found maches collections
+            //}
 
             return translatedLines;
         }

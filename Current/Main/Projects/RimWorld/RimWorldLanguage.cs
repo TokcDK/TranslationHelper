@@ -13,9 +13,9 @@ namespace TranslationHelper.Projects.RimWorld
         public RimWorldLanguage()
         {
             HideVarsBase = new Dictionary<string, string>
-        {
-            { "[", @"\[[a-zA-Z0-9-_]+\]" }
-        };
+            {
+                { "[", @"\[[a-zA-Z0-9-_]+\]" }
+            };
         }
 
         public override string Name => "RimWorld mod language dir";

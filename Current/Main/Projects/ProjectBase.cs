@@ -227,6 +227,9 @@ namespace TranslationHelper.Projects
             return string.Empty;
         }
 
+        ProjectHideRestoreVarsInstance HideRestoreVarsInstance;
+        protected Dictionary<string, string> HideVarsBase { get; set; }
+
         /// <summary>
         /// Pre online translation project's actions
         /// </summary>
@@ -237,7 +240,9 @@ namespace TranslationHelper.Projects
         /// <returns></returns>
         internal virtual string OnlineTranslationProjectSpecificPretranslationAction(string o, string t, int tind = -1, int rind = -1)
         {
-            return HideVARSBase(o, HideVarsBase);
+            HideRestoreVarsInstance = new ProjectHideRestoreVarsInstance(HideVarsBase);
+
+            return HideRestoreVarsInstance.HideVARSBase(o);
         }
 
         /// <summary>
@@ -250,76 +255,9 @@ namespace TranslationHelper.Projects
         /// <returns></returns>
         internal virtual string OnlineTranslationProjectSpecificPostTranslationAction(string o, string t, int tind = -1, int rind = -1)
         {
-            return RestoreVARS(t);
-        }
+            var str = HideRestoreVarsInstance.RestoreVARS(t);
+            HideRestoreVarsInstance.Dispose();
 
-        /// <summary>
-        /// list of variables for hide
-        /// </summary>
-        internal Dictionary<string, string> HideVarsBase;
-        /// <summary>
-        /// list of found matches collections
-        /// </summary>
-        internal List<MatchCollection> HideVARSMatchCollectionsList;
-        internal string HideVARSBase(string str, Dictionary<string, string> HideVARSPatterns = null)
-        {
-            HideVARSPatterns = HideVARSPatterns ?? AppData.CurrentProject.HideVarsBase;
-
-            if (HideVARSPatterns == null || HideVARSPatterns.Count == 0) return str;
-
-            var keyfound = false;
-            foreach (var key in HideVARSPatterns.Keys)
-            {
-                if (str.Contains(key)) { keyfound = true; break; }
-            }
-            if (!keyfound) return str;
-
-            var mc = Regex.Matches(str, "(" + string.Join(")|(", HideVARSPatterns.Values) + ")");
-            if (mc.Count == 0) return str;
-
-            if (HideVARSMatchCollectionsList == null)//init list
-                HideVARSMatchCollectionsList = new List<MatchCollection>();
-
-            if (mcArrNum != 0)//reset vars count
-                mcArrNum = 0;
-
-            HideVARSMatchCollectionsList.Add(mc);
-
-            for (int m = mc.Count - 1; m >= 0; m--)
-            {
-                try
-                {
-                    str = str.Remove(mc[m].Index, mc[m].Value.Length).Insert(mc[m].Index, "{VAR" + m.ToString("000") + "}");
-                }
-                catch { }
-            }
-
-            return str;
-        }
-
-        int mcArrNum;
-
-        internal string RestoreVARS(string str)
-        {
-            if (HideVARSMatchCollectionsList == null || HideVARSMatchCollectionsList.Count == 0 || !Regex.IsMatch(str, @"\{ ?VAR ?([0-9]{3}) ?\}", RegexOptions.IgnoreCase) || HideVARSMatchCollectionsList[mcArrNum].Count == 0)
-            {
-                return str;
-            }
-
-            //restore broken vars
-            str = Regex.Replace(str, @"\{ ?VAR ?([0-9]{3}) ?\}", "{VAR$1}", RegexOptions.IgnoreCase);
-
-            int mi = 0;
-            foreach (Match m in HideVARSMatchCollectionsList[mcArrNum])
-            {
-                str = str.Replace("{VAR" + mi.ToString("000") + "}", m.Value);
-                mi++;
-            }
-            mcArrNum++;
-            if (mcArrNum == HideVARSMatchCollectionsList.Count)
-            {
-                HideVARSMatchCollectionsList.Clear();
-            }
             return str;
         }
 

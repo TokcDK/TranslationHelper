@@ -535,6 +535,7 @@
     <Compile Include="Projects\NScript\NScriptBase.cs" />
     <Compile Include="Projects\NScript\NScriptGame.cs" />
     <Compile Include="Projects\ProjectBase.cs" />
+    <Compile Include="Projects\ProjectHideRestoreVarsInstance.cs" />
     <Compile Include="Projects\ProjectTools.cs" />
     <Compile Include="Projects\ProjectToolsBackup.cs" />
     <Compile Include="Projects\ProjectToolsOpenSave.cs" />

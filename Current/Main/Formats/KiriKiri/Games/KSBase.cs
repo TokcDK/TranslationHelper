@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Text.RegularExpressions;
 using TranslationHelper.Data;
+using TranslationHelper.Projects;
 
 namespace TranslationHelper.Formats.KiriKiri.Games
 {
@@ -215,6 +216,8 @@ namespace TranslationHelper.Formats.KiriKiri.Games
             return 0;
         }
 
+        readonly ProjectHideRestoreVarsInstance _projectHideRestoreVarsInstance = new ProjectHideRestoreVarsInstance(null);
+
         bool endsWithWait;
         protected override KeywordActionAfter ParseStringFileLine()
         {
@@ -271,7 +274,7 @@ namespace TranslationHelper.Formats.KiriKiri.Games
                     }
                     else
                     {
-                        AppData.CurrentProject.HideVARSMatchCollectionsList?.Clear();//clear list of matches for hidevarbase
+                        _projectHideRestoreVarsInstance.Clear();//clear list of matches for hidevarbase
                     }
                 }
                 if (SaveFileMode && transApplied && ParseData.Ret)
@@ -376,37 +379,7 @@ namespace TranslationHelper.Formats.KiriKiri.Games
 
         internal string CleanVars(string str)
         {
-            var keyfound = false;
-            foreach (var key in AppData.CurrentProject.HideVarsBase.Keys)
-            {
-                if (str.Contains(key))
-                {
-                    keyfound = true;
-                    break;
-                }
-            }
-            if (!keyfound)
-            {
-                return str;
-            }
-
-            var mc = Regex.Matches(str, "(" + string.Join(")|(", AppData.CurrentProject.HideVarsBase.Values) + ")");
-            if (mc.Count == 0)
-            {
-                return str;
-            }
-
-            for (int m = mc.Count - 1; m >= 0; m--)
-            {
-                try
-                {
-                    str = str.Remove(mc[m].Index, mc[m].Value.Length);
-                }
-                catch (System.ArgumentOutOfRangeException)
-                {
-
-                }
-            }
+            str = _projectHideRestoreVarsInstance.HideVARSBase(str);
 
             if (Regex.IsMatch(str, @"\[[a-z]{1,10}\]"))
             {
@@ -431,8 +404,8 @@ namespace TranslationHelper.Formats.KiriKiri.Games
         /// <returns></returns>
         protected override string FixInvalidSymbols(string str)
         {
-            return AppData.CurrentProject.RestoreVARS(
-                AppData.CurrentProject.HideVARSBase(str)
+            return _projectHideRestoreVarsInstance.RestoreVARS(
+                _projectHideRestoreVarsInstance.HideVARSBase(str)
                 .Replace("[r]", "{R}")
                 .Replace("[p]", "{P}")
                 .Replace("[lr]", "{LR}")

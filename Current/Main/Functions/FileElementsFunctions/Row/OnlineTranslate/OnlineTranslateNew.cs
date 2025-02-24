@@ -418,11 +418,11 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
         /// <returns></returns>
         private static string[] ApplyProjectPretranslationAction(string[] originalLines)
         {
-            if (AppData.CurrentProject.HideVARSMatchCollectionsList?.Count > 0)
-            {
-                // Clear the collection of found matches
-                AppData.CurrentProject.HideVARSMatchCollectionsList.Clear();
-            }
+            //if (AppData.CurrentProject.HideVARSMatchCollectionsList?.Count > 0)
+            //{
+            //    // Clear the collection of found matches
+            //    AppData.CurrentProject.HideVARSMatchCollectionsList.Clear();
+            //}
 
             int numOriginalLines = originalLines.Length;
 
@@ -461,12 +461,12 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
                 }
             }
 
-            var hideVarsMatchCollections = AppData.CurrentProject.HideVARSMatchCollectionsList;
-            if (hideVarsMatchCollections?.Count > 0)
-            {
-                // Clear the collection of found matches
-                hideVarsMatchCollections.Clear();
-            }
+            //var hideVarsMatchCollections = AppData.CurrentProject.HideVARSMatchCollectionsList;
+            //if (hideVarsMatchCollections?.Count > 0)
+            //{
+            //    // Clear the collection of found matches
+            //    hideVarsMatchCollections.Clear();
+            //}
 
             return translatedLines;
         }

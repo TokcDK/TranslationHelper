@@ -94,7 +94,7 @@ namespace TranslationHelper.Projects.WolfRPG
         {
             t = HardcodedFixes(o, t);
 
-            return RestoreVARS(t);
+            return base.OnlineTranslationProjectSpecificPostTranslationAction(o, t, tind, rind);
         }
         //\\\\r\[[^\,]+\,[^\]]+\]
         internal override string HardcodedFixes(string original, string translation)
