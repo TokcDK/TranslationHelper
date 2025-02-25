@@ -131,7 +131,6 @@ namespace TranslationHelper.Projects.RPGMMV
         {
             var mvdatadir = new DirectoryInfo(Path.GetDirectoryName(Path.Combine(WWWDir, "data/")));
             return ProjectToolsOpenSave.OpenSaveFilesBase(this, mvdatadir, MVJsonFormats(), MVJsonFormatsMasks());
-            //foreach (FileInfo file in mvdatadir.GetFiles("*.json")) try { if (ParseRPGMakerMVjson(file.FullName)) isAnyFileCompleted = true; } catch { }
         }
 
         protected virtual List<Type> MVJsonFormats()
@@ -285,56 +284,12 @@ namespace TranslationHelper.Projects.RPGMMV
             }
         }
 
-        private bool ParseRPGMakerMVjson(string filePath)
-        {
-            try
-            {
-                //Вроде прочитало в DGV
-                //источник: https://stackoverflow.com/questions/23763446/how-to-display-the-json-data-in-datagridview-in-c-sharp-windows-application-from
-
-                string Jsonname = Path.GetFileNameWithoutExtension(filePath); // get json file name
-
-                FunctionsUI.ProgressInfo(true, ParseFileMessage + Jsonname + ".json");
-
-                //string jsondata = File.ReadAllText(FilePath); // get json data
-
-                bool ret = true;
-
-                //ret = ReadJson(Jsonname, sPath);
-
-                var format = new JSON
-                {
-                    FilePath = filePath
-                };
-
-                ret = SaveFileMode ? format.Save() : format.Open();
-
-                return ret;
-            }
-            catch
-            {
-                return false;
-            }
-        }
-
         public override bool Save()
         {
             if(string.IsNullOrWhiteSpace(WWWDir)) WWWDir = Path.Combine(AppData.CurrentProject.SelectedDir, HasWWWDir ? "www" : "");
             
             return ParseProjectFiles();
         }
-
-        //private JSBase GetCorrectJSbyName(string tableName)
-        //{
-        //    foreach (var JS in ListOfJS)
-        //    {
-        //        if (tableName == JS.JSName)
-        //        {
-        //            return JS;
-        //        }
-        //    }
-        //    return null;
-        //}
 
         /// <summary>
         /// data, font and js folders
@@ -353,44 +308,6 @@ namespace TranslationHelper.Projects.RPGMMV
             BakRestore();
 
             return ProjectToolsBackup.BackupRestorePaths(BakPaths);
-
-            //old
-            //RestoreFromBakIfNeedData();
-            //try
-            //{
-            //    File.Copy(Path.Combine(ProjectData.CurrentProject.SelectedDir, "www", "fonts", "gamefont.css")
-            //        , Path.Combine(ProjectData.CurrentProject.SelectedDir, "www", "fonts", "gamefont.css") + ".bak"
-            //        );
-            //}
-            //catch
-            //{
-
-            //}
-            //try
-            //{
-            //    string dataPath = Path.Combine(ProjectData.CurrentProject.SelectedDir, "www", "data");
-            //    dataPath.CopyAll(dataPath + "_bak");
-            //}
-            //catch
-            //{
-            //}
-            //foreach (JSBase JS in ListOfJS)
-            //{
-            //    try
-            //    {
-            //        string jsPath = Path.Combine(ProjectData.CurrentProject.SelectedDir, "www", "js", JS.JSSubfolder, JS.JSName);
-
-            //        RestoreFromBakIfNeedJS(JS);
-            //        if (File.Exists(jsPath))
-            //        {
-            //            File.Copy(jsPath, jsPath + ".bak");
-            //        }
-            //    }
-            //    catch
-            //    {
-            //    }
-            //}
-            //return true;
         }
 
         public override bool BakRestore()
