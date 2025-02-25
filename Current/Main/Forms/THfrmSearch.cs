@@ -437,7 +437,7 @@ namespace TranslationHelper
                      SearchEmptyCheckBox.Checked && !IsEmptyTranslation(row));
         }
 
-        private bool IsMatchingGeneralSearch(DataRow row, int columnIndex, string searchPattern, bool isRegex, bool isCaseSensitive)
+        private static bool IsMatchingGeneralSearch(DataRow row, int columnIndex, string searchPattern, bool isRegex, bool isCaseSensitive)
         {
             string text = row.Field<string>(columnIndex);
             if (string.IsNullOrEmpty(text)) return false;
@@ -447,7 +447,7 @@ namespace TranslationHelper
                 : text.IndexOf(searchPattern, isCaseSensitive ? StringComparison.Ordinal : StringComparison.OrdinalIgnoreCase) >= 0;
         }
 
-        private bool IsMatchingDoubleSearch(DataRow row, string originalPattern, string translationPattern, bool isRegex, bool isCaseSensitive)
+        private static bool IsMatchingDoubleSearch(DataRow row, string originalPattern, string translationPattern, bool isRegex, bool isCaseSensitive)
         {
             string originalText = row.Field<string>(_originalColumnIndex);
             string translationText = row.Field<string>(_translationColumnIndex);
@@ -473,16 +473,16 @@ namespace TranslationHelper
 
         private bool IsEmptyTranslation(DataRow row) => string.IsNullOrEmpty(row.Field<string>(_translationColumnIndex));
 
-        private bool OriginalEqualTranslation(DataRow row) => row.Field<string>(_originalColumnIndex).Equals(row.Field<string>(_translationColumnIndex));
+        private static bool OriginalEqualTranslation(DataRow row) => row.Field<string>(_originalColumnIndex).Equals(row.Field<string>(_translationColumnIndex));
 
         private readonly List<ISearchIssueChecker> _issueCheckers = new List<ISearchIssueChecker>
-    {
-        new ContainsNonRomaji(),
-        new CheckActorsNameTranslationConsistent(),
-        new CheckAnyLineTranslatable(),
-        new ProjectSpecificIssues(),
-        new CheckInternalQuoteUnescaped()
-    };
+        {
+            new ContainsNonRomaji(),
+            new CheckActorsNameTranslationConsistent(),
+            new CheckAnyLineTranslatable(),
+            new ProjectSpecificIssues(),
+            new CheckInternalQuoteUnescaped()
+        };
 
         private bool IsTheRowHasPossibleIssues(DataRow row)
         {
@@ -711,7 +711,7 @@ namespace TranslationHelper
             }
         }
 
-        private Action<DataRow> GetInfoSearchReplaceAction(string replacement)
+        private static Action<DataRow> GetInfoSearchReplaceAction(string replacement)
         {
             if (replacement == ReplaceToEqualMarker)
                 return row => row.SetField(_translationColumnIndex, row[_originalColumnIndex]);
