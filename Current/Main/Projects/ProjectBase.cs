@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Data;
 using System.IO;
 using System.Text.RegularExpressions;
+using System.Windows.Forms;
 using TranslationHelper.Data;
 using TranslationHelper.Main.Functions;
 using TranslationHelper.Menus.FileRowMenus;
@@ -23,6 +24,14 @@ namespace TranslationHelper.Projects
 
             if (SaveFileMode && DontLoadDuplicates) TablesLinesDict = new ConcurrentDictionary<string, string>();
         }
+
+        // for the project work session
+        // tables must store in the selected project
+        // and binded to the selected table
+        //internal virtual void BindFileContent(DataGridView visibleTable)
+        //{
+            //// visibleTable.DataSource = TheProjectCurrentTable binding code with any way; 
+        //}
 
         /// <summary>
         /// Can be set state if DB is loading for the project
