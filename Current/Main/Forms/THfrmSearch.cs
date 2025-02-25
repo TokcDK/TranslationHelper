@@ -175,9 +175,9 @@ namespace TranslationHelper
         {
             var items = new[]
             {
-            (ComboBox: SearchFormFindWhatComboBox, List: _searchQueries, IniName: "Search Queries"),
-            (ComboBox: SearchFormReplaceWithComboBox, List: _searchReplacers, IniName: "Search Replacers")
-        };
+                (ComboBox: SearchFormFindWhatComboBox, List: _searchQueries, IniName: "Search Queries"),
+                (ComboBox: SearchFormReplaceWithComboBox, List: _searchReplacers, IniName: "Search Replacers")
+            };
 
             foreach (var (comboBox, list, iniName) in items)
             {
@@ -231,7 +231,8 @@ namespace TranslationHelper
 
         private static void UnEscapeSearchValues(List<string> arr, bool unescape = true)
         {
-            for (int i = 0; i < arr.Count; i++)
+            int arrCount = arr.Count;
+            for (int i = 0; i < arrCount; i++)
             {
                 try
                 {
@@ -243,7 +244,8 @@ namespace TranslationHelper
 
         private static void RemoveQuotesFromLoadedSearchValues(List<string> items)
         {
-            for (int i = 0; i < items.Count; i++)
+            int itemsCount = items.Count;
+            for (int i = 0; i < itemsCount; i++)
             {
                 if (items[i].StartsWith("\"") && items[i].EndsWith("\""))
                     items[i] = items[i].Substring(1, items[i].Length - 2);
@@ -252,7 +254,8 @@ namespace TranslationHelper
 
         private static void AddQuotesToWritingSearchValues(List<string> items)
         {
-            for (int i = 0; i < items.Count; i++)
+            int itemsCount = items.Count;
+            for (int i = 0; i < itemsCount; i++)
                 items[i] = $"\"{items[i]}\"";
         }
 
@@ -757,6 +760,8 @@ namespace TranslationHelper
         }
         #endregion
 
+
+        #region Events
         private void SearchFindLinesWithPossibleIssuesCheckBox_CheckedChanged(object sender, EventArgs e)
         {
             SearchFormFindWhatTextBox.Text = string.Empty;
@@ -882,5 +887,6 @@ namespace TranslationHelper
         private void SearchAlwaysOnTopCheckBox_Click(object sender, EventArgs e)
         {
         }
+        #endregion
     }
 }
