@@ -601,19 +601,30 @@ namespace TranslationHelper
         {
             //skip equal lines if need, skip empty search cells && not skip when row issue search && when empty translation search
             return !(
-                        (chkbxDoNotTouchEqualOT.Checked && OriginalEqualTranslation(row2check)) // if enabled, skip original and translation equal
-                        ||
-                        (
-                        // skip empty translation
-                        !chkbxDoNotTouchEqualOT.Checked
+                        IsOriginalTranslationIsEqualAndMustSkip(row2check, searchcolumn) // if enabled, skip original and translation equal
+                        || IsEmptyValueAndIsNotRegexSearch(row2check, searchcolumn)
+                        || SearchEmptyCheckBox.Checked && !IsEmptyTranslation(row2check) // when skip empty there is not empty translation
+                    );
+        }
+
+        private bool IsEmptyValueAndIsNotRegexSearch(DataRow row2check, int searchcolumn)
+        {
+            return !chkbxDoNotTouchEqualOT.Checked
+                        && !SearchModeRegexRadioButton.Checked // regex can search something like "^$"
                         && !SearchFindLinesWithPossibleIssuesCheckBox.Checked
                         && !SearchEmptyCheckBox.Checked
-                        && row2check.Field<string>(searchcolumn).Length == 0
-                        )
-                        ||
-                        // when skip empty there is not empty translation
-                        SearchEmptyCheckBox.Checked && !IsEmptyTranslation(row2check)
-                    );
+                        && IsEmpty(row2check, searchcolumn);
+        }
+
+        private static bool IsEmpty(DataRow row2check, int searchcolumn)
+        {
+            var rowValue = row2check.Field<string>(searchcolumn);
+            return rowValue == null ||  rowValue.Length == 0;
+        }
+
+        private bool IsOriginalTranslationIsEqualAndMustSkip(DataRow row2check, int searchcolumn)
+        {
+            return chkbxDoNotTouchEqualOT.Checked && OriginalEqualTranslation(row2check);
         }
 
         private bool OriginalEqualTranslation(DataRow row2check)
