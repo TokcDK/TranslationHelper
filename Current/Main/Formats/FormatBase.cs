@@ -462,6 +462,90 @@ namespace TranslationHelper.Formats
         }
 
         /// <summary>
+        /// Sets the translation for a string if available.
+        /// </summary>
+        /// <param name="valueToTranslate">The original string; replaced with translation if found.</param>
+        /// <param name="existsTranslation">A pre-existing translation, if any.</param>
+        /// <param name="isCheckInput">Whether to validate the input string.</param>
+        /// <returns>True if a translation was set; otherwise, false.</returns>
+        internal bool SetTranslation(ref string valueToTranslate, string existsTranslation = null, bool isCheckInput = true)
+        {
+            if (OpenFileMode || (isCheckInput && !IsValidString(valueToTranslate))) return false;
+
+            bool letDuplicates = !AppData.CurrentProject.DontLoadDuplicates;
+            string original = valueToTranslate;
+
+            if (letDuplicates && AppData.CurrentProject.OriginalsTableRowCoordinates?.ContainsKey(original) == true)
+            {
+                var coordinates = AppData.CurrentProject.OriginalsTableRowCoordinates[original];
+                string tableName = FileName;
+
+                if (coordinates.TryGetValue(tableName, out var rows) && rows.Contains(RowNumber))
+                {
+                    return ApplyTranslation(tableName, RowNumber, original, existsTranslation, ref valueToTranslate);
+                }
+
+                AppData.AppLog.LogToFile($"Warning! Row or table not found. Row: {RowNumber}, Table: {tableName}, Original:\r\n{original}");
+                foreach (var rowsInTable in coordinates.Values)
+                {
+                    foreach (var rowIndex in rowsInTable)
+                    {
+                        if (ApplyTranslation(tableName, rowIndex, original, existsTranslation, ref valueToTranslate))
+                        {
+                            RowNumber++;
+                            return true;
+                        }
+                    }
+                }
+            }
+            else if (!letDuplicates && AppData.CurrentProject.TablesLinesDict?.ContainsKey(original) == true)
+            {
+                return ApplyTranslation(null, -1, original, existsTranslation, ref valueToTranslate);
+            }
+            return false;
+        }
+
+        /// <summary>
+        /// Applies a translation to the provided string.
+        /// </summary>
+        /// <param name="tableName">The table name, or null if using dictionary.</param>
+        /// <param name="rowNumber">The row number, or -1 if using dictionary.</param>
+        /// <param name="original">The original string.</param>
+        /// <param name="existsTranslation">A pre-existing translation.</param>
+        /// <param name="valueToTranslate">The string to update with the translation.</param>
+        /// <returns>True if translation applied; otherwise, false.</returns>
+        private bool ApplyTranslation(string tableName, int rowNumber, string original, string existsTranslation, ref string valueToTranslate)
+        {
+            valueToTranslate = tableName == null
+                ? AppData.CurrentProject.TablesLinesDict[original]
+                : AppData.CurrentProject.FilesContent.Tables[tableName].Rows[rowNumber][1]?.ToString() ?? string.Empty;
+
+            valueToTranslate = FixInvalidSymbols(valueToTranslate);
+            if (!string.IsNullOrEmpty(valueToTranslate) && (original != valueToTranslate || (existsTranslation != null && existsTranslation != valueToTranslate)))
+            {
+                RET = true;
+                SetTranslationIsTranslatedAction();
+                RowNumber++;
+                return true;
+            }
+            return false;
+        }
+
+        /// <summary>
+        /// Performs an action when a translation is set.
+        /// </summary>
+        protected virtual void SetTranslationIsTranslatedAction() { }
+
+        /// <summary>
+        /// Removes or replaces invalid symbols in a translation string.
+        /// </summary>
+        /// <param name="str">The string to fix.</param>
+        /// <returns>The cleaned string.</returns>
+        protected virtual string FixInvalidSymbols(string str) => str.Replace("\u200b", string.Empty);
+
+
+        #region extra code
+        /// <summary>
         /// Splits table cell values into a dictionary for translation lookups.
         /// </summary>
         /// <param name="tableName">The table to process.</param>
@@ -579,87 +663,6 @@ namespace TranslationHelper.Formats
                 dict.TryAdd(original, translation);
             }
         }
-
-        /// <summary>
-        /// Sets the translation for a string if available.
-        /// </summary>
-        /// <param name="valueToTranslate">The original string; replaced with translation if found.</param>
-        /// <param name="existsTranslation">A pre-existing translation, if any.</param>
-        /// <param name="isCheckInput">Whether to validate the input string.</param>
-        /// <returns>True if a translation was set; otherwise, false.</returns>
-        internal bool SetTranslation(ref string valueToTranslate, string existsTranslation = null, bool isCheckInput = true)
-        {
-            if (OpenFileMode || (isCheckInput && !IsValidString(valueToTranslate))) return false;
-
-            bool letDuplicates = !AppData.CurrentProject.DontLoadDuplicates;
-            string original = valueToTranslate;
-
-            if (letDuplicates && AppData.CurrentProject.OriginalsTableRowCoordinates?.ContainsKey(original) == true)
-            {
-                var coordinates = AppData.CurrentProject.OriginalsTableRowCoordinates[original];
-                string tableName = FileName;
-
-                if (coordinates.TryGetValue(tableName, out var rows) && rows.Contains(RowNumber))
-                {
-                    return ApplyTranslation(tableName, RowNumber, original, existsTranslation, ref valueToTranslate);
-                }
-
-                AppData.AppLog.LogToFile($"Warning! Row or table not found. Row: {RowNumber}, Table: {tableName}, Original:\r\n{original}");
-                foreach (var rowsInTable in coordinates.Values)
-                {
-                    foreach (var rowIndex in rowsInTable)
-                    {
-                        if (ApplyTranslation(tableName, rowIndex, original, existsTranslation, ref valueToTranslate))
-                        {
-                            RowNumber++;
-                            return true;
-                        }
-                    }
-                }
-            }
-            else if (!letDuplicates && AppData.CurrentProject.TablesLinesDict?.ContainsKey(original) == true)
-            {
-                return ApplyTranslation(null, -1, original, existsTranslation, ref valueToTranslate);
-            }
-            return false;
-        }
-
-        /// <summary>
-        /// Applies a translation to the provided string.
-        /// </summary>
-        /// <param name="tableName">The table name, or null if using dictionary.</param>
-        /// <param name="rowNumber">The row number, or -1 if using dictionary.</param>
-        /// <param name="original">The original string.</param>
-        /// <param name="existsTranslation">A pre-existing translation.</param>
-        /// <param name="valueToTranslate">The string to update with the translation.</param>
-        /// <returns>True if translation applied; otherwise, false.</returns>
-        private bool ApplyTranslation(string tableName, int rowNumber, string original, string existsTranslation, ref string valueToTranslate)
-        {
-            valueToTranslate = tableName == null
-                ? AppData.CurrentProject.TablesLinesDict[original]
-                : AppData.CurrentProject.FilesContent.Tables[tableName].Rows[rowNumber][1]?.ToString() ?? string.Empty;
-
-            valueToTranslate = FixInvalidSymbols(valueToTranslate);
-            if (!string.IsNullOrEmpty(valueToTranslate) && (original != valueToTranslate || (existsTranslation != null && existsTranslation != valueToTranslate)))
-            {
-                RET = true;
-                SetTranslationIsTranslatedAction();
-                RowNumber++;
-                return true;
-            }
-            return false;
-        }
-
-        /// <summary>
-        /// Performs an action when a translation is set.
-        /// </summary>
-        protected virtual void SetTranslationIsTranslatedAction() { }
-
-        /// <summary>
-        /// Removes or replaces invalid symbols in a translation string.
-        /// </summary>
-        /// <param name="str">The string to fix.</param>
-        /// <returns>The cleaned string.</returns>
-        protected virtual string FixInvalidSymbols(string str) => str.Replace("\u200b", string.Empty);
+        #endregion
     }
 }
