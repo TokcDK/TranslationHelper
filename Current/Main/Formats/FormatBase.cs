@@ -489,8 +489,7 @@ namespace TranslationHelper.Formats
             if (letDuplicates && AppData.CurrentProject.OriginalsTableRowCoordinates?.ContainsKey(original) == true)
             {
                 // any valid (even empty or equal original) added row in the table will be parsed then increment the row index
-                int rowIndex = RowIndex;
-                RowIndex++;
+                int rowIndex = RowIndex++;
 
                 var coordinates = AppData.CurrentProject.OriginalsTableRowCoordinates[original];
 
