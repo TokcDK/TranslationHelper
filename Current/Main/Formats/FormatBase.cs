@@ -483,37 +483,37 @@ namespace TranslationHelper.Formats
 
             if (OpenFileMode || (isCheckInput && !IsValidString(valueToTranslate))) return false;
 
-            if (FileName == "plugins.js")
-            {
-            }
-
             bool letDuplicates = !AppData.CurrentProject.DontLoadDuplicates;
             string original = valueToTranslate;
 
             if (letDuplicates && AppData.CurrentProject.OriginalsTableRowCoordinates?.ContainsKey(original) == true)
             {
+                // any valid (even empty or equal original) added row in the table will be parsed then increment the row index
+                int rowIndex = RowIndex;
+                RowIndex++;
+
                 var coordinates = AppData.CurrentProject.OriginalsTableRowCoordinates[original];
-                string tableName = FileName;
 
                 // standart get the translation by row index
-                if (coordinates.TryGetValue(tableName, out var rows) && rows.Contains(RowIndex))
+                string tableName = FileName;
+                if (coordinates.TryGetValue(tableName, out var rows) && rows.Contains(rowIndex))
                 {
-                    if(ApplyTranslation(tableName, RowIndex, original, existsTranslation, ref valueToTranslate))
+                    if(ApplyTranslation(tableName, rowIndex, original, existsTranslation, ref valueToTranslate))
                     {
-                        RowIndex++;
                         return true;
                     }
                 }
 
                 // when row not found in current table, set first translation from available translations
-                AppData.AppLog.LogToFile($"Warning! Row not found. Row: {RowIndex}, Table: {tableName}, Original:\r\n{original}\r\nExisting Translation:\r\n{existsTranslation}");
-                foreach (var rowsInTable in coordinates.Values)
+                //AppData.AppLog.LogToFile($"Warning! Row not found. Row: {RowIndex}, Table: {tableName}, Original:\r\n{original}\r\nExisting Translation:\r\n{existsTranslation}");
+                foreach (var tableRowsIndexes in coordinates)
                 {
-                    foreach (var rowIndex in rowsInTable)
+                    foreach (var rIndex in tableRowsIndexes.Value) 
                     {
-                        if (ApplyTranslation(tableName, rowIndex, original, existsTranslation, ref valueToTranslate))
+                        // iterate the table coordinates and try get first valid translation
+                        tableName = tableRowsIndexes.Key;
+                        if (ApplyTranslation(tableName, rIndex, original, existsTranslation, ref valueToTranslate))
                         {
-                            RowIndex++;
                             return true;
                         }
                     }
@@ -550,13 +550,15 @@ namespace TranslationHelper.Formats
             }
 
             valueToTranslate = FixInvalidSymbols(valueToTranslate);
+            bool isEqualOriginal = original == valueToTranslate;
             if (!string.IsNullOrEmpty(valueToTranslate) &&
-                (original != valueToTranslate || (existsTranslation != null && existsTranslation != valueToTranslate)))
+                (!isEqualOriginal || (existsTranslation != null && existsTranslation != valueToTranslate)))
             {
                 RET = true;
                 SetTranslationIsTranslatedAction();
                 return true;
             }
+
             return false;
         }
 
