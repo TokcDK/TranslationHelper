@@ -505,13 +505,15 @@ namespace TranslationHelper.Formats
                 }
 
                 // when row not found in current table, set first translation from available translations
-                //AppData.AppLog.LogToFile($"Warning! Row not found. Row: {RowIndex}, Table: {tableName}, Original:\r\n{original}\r\nExisting Translation:\r\n{existsTranslation}");
+                // AppData.AppLog.LogToFile($"Warning! Row not found. Row: {RowIndex}, Table: {tableName}, Original:\r\n{original}\r\nExisting Translation:\r\n{existsTranslation}");
+                // iterate the table coordinates and try get first valid translation
                 foreach (var tableRowsIndexes in coordinates)
                 {
-                    foreach (var rIndex in tableRowsIndexes.Value) 
+                    tableName = tableRowsIndexes.Key;
+                    var rowIndexes = tableRowsIndexes.Value;
+
+                    foreach (var rIndex in rowIndexes)
                     {
-                        // iterate the table coordinates and try get first valid translation
-                        tableName = tableRowsIndexes.Key;
                         if (ApplyTranslation(tableName, rIndex, original, existsTranslation, ref valueToTranslate))
                         {
                             return true;
