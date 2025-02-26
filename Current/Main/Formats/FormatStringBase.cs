@@ -12,7 +12,7 @@ namespace TranslationHelper.Formats
     {
         protected FormatStringBase()
         {
-            RowNumber = 0;
+            RowIndex = 0;
         }
 
         /// <summary>

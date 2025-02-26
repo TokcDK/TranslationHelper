@@ -8,6 +8,7 @@ using System.Threading;
 using TranslationHelper.Data;
 using TranslationHelper.Extensions;
 using TranslationHelper.Functions;
+using TranslationHelper.Menus.MainMenus.File;
 using WolfTrans.Net.Parsers.Events.Map.Event;
 
 namespace TranslationHelper.Formats
@@ -59,7 +60,7 @@ namespace TranslationHelper.Formats
         /// <summary>
         /// Current row number in the parsing table.
         /// </summary>
-        protected int RowNumber { get; set; } = 0;
+        protected int RowIndex { get; set; } = 0;
 
         /// <summary>
         /// Indicates whether a translation was set.
@@ -200,8 +201,17 @@ namespace TranslationHelper.Formats
         {
             OpenFileMode = false;
             // Note: Assuming FilesContent.Tables[FileName].HasAnyTranslated() exists elsewhere.
+            return IsAnyTranslated() && TrySave();
+        }
+
+        private bool IsAnyTranslated()
+        {
+            if (!AppData.CurrentProject.FilesContent.Tables.Contains(FileName))
+            {
+                return false;
+            }
             return AppData.CurrentProject.FilesContent.Tables[FileName].Rows.Cast<DataRow>()
-                .Any(row => !string.IsNullOrEmpty(row[1]?.ToString())) && TrySave();
+                .Any(row => !string.IsNullOrEmpty(GetRowTranslationText(row)));
         }
 
         /// <summary>
@@ -347,8 +357,8 @@ namespace TranslationHelper.Formats
                 var originals = AppData.CurrentProject.OriginalsTableRowCoordinates;
                 originals.TryAdd(original, new ConcurrentDictionary<string, ConcurrentSet<int>>());
                 originals[original].TryAdd(tablename, new ConcurrentSet<int>());
-                originals[original][tablename].TryAdd(RowNumber);
-                RowNumber++;
+                
+                if (originals[original][tablename].TryAdd(RowIndex)) RowIndex++;
             }
 
             try
@@ -462,15 +472,20 @@ namespace TranslationHelper.Formats
         }
 
         /// <summary>
-        /// Sets the translation for a string if available.
+        /// Sets the translation for a string if available, updating the original string in place.
         /// </summary>
         /// <param name="valueToTranslate">The original string; replaced with translation if found.</param>
-        /// <param name="existsTranslation">A pre-existing translation, if any.</param>
+        /// <param name="existsTranslation">An optional pre-existing translation to compare against.</param>
         /// <param name="isCheckInput">Whether to validate the input string.</param>
-        /// <returns>True if a translation was set; otherwise, false.</returns>
+        /// <returns>True if a translation was set and differs from the original or existing translation; otherwise, false.</returns>
         internal bool SetTranslation(ref string valueToTranslate, string existsTranslation = null, bool isCheckInput = true)
         {
+
             if (OpenFileMode || (isCheckInput && !IsValidString(valueToTranslate))) return false;
+
+            if (FileName == "plugins.js")
+            {
+            }
 
             bool letDuplicates = !AppData.CurrentProject.DontLoadDuplicates;
             string original = valueToTranslate;
@@ -480,19 +495,25 @@ namespace TranslationHelper.Formats
                 var coordinates = AppData.CurrentProject.OriginalsTableRowCoordinates[original];
                 string tableName = FileName;
 
-                if (coordinates.TryGetValue(tableName, out var rows) && rows.Contains(RowNumber))
+                // standart get the translation by row index
+                if (coordinates.TryGetValue(tableName, out var rows) && rows.Contains(RowIndex))
                 {
-                    return ApplyTranslation(tableName, RowNumber, original, existsTranslation, ref valueToTranslate);
+                    if(ApplyTranslation(tableName, RowIndex, original, existsTranslation, ref valueToTranslate))
+                    {
+                        RowIndex++;
+                        return true;
+                    }
                 }
 
-                AppData.AppLog.LogToFile($"Warning! Row or table not found. Row: {RowNumber}, Table: {tableName}, Original:\r\n{original}");
+                // when row not found in current table, set first translation from available translations
+                AppData.AppLog.LogToFile($"Warning! Row not found. Row: {RowIndex}, Table: {tableName}, Original:\r\n{original}\r\nExisting Translation:\r\n{existsTranslation}");
                 foreach (var rowsInTable in coordinates.Values)
                 {
                     foreach (var rowIndex in rowsInTable)
                     {
                         if (ApplyTranslation(tableName, rowIndex, original, existsTranslation, ref valueToTranslate))
                         {
-                            RowNumber++;
+                            RowIndex++;
                             return true;
                         }
                     }
@@ -506,26 +527,34 @@ namespace TranslationHelper.Formats
         }
 
         /// <summary>
-        /// Applies a translation to the provided string.
+        /// Applies a translation to the provided string if available.
         /// </summary>
-        /// <param name="tableName">The table name, or null if using dictionary.</param>
-        /// <param name="rowNumber">The row number, or -1 if using dictionary.</param>
+        /// <param name="tableName">The table name, or null if using dictionary lookup.</param>
+        /// <param name="rowNumber">The row number, or -1 if using dictionary lookup.</param>
         /// <param name="original">The original string.</param>
-        /// <param name="existsTranslation">A pre-existing translation.</param>
+        /// <param name="existsTranslation">An optional pre-existing translation.</param>
         /// <param name="valueToTranslate">The string to update with the translation.</param>
-        /// <returns>True if translation applied; otherwise, false.</returns>
+        /// <returns>True if a valid translation was applied; otherwise, false.</returns>
         private bool ApplyTranslation(string tableName, int rowNumber, string original, string existsTranslation, ref string valueToTranslate)
         {
-            valueToTranslate = tableName == null
-                ? AppData.CurrentProject.TablesLinesDict[original]
-                : AppData.CurrentProject.FilesContent.Tables[tableName].Rows[rowNumber][1]?.ToString() ?? string.Empty;
+            try
+            {
+                valueToTranslate = tableName == null
+                    ? AppData.CurrentProject.TablesLinesDict[original]
+                    :  GetRowTranslationText(AppData.CurrentProject.FilesContent.Tables[tableName].Rows[rowNumber]);
+            }
+            catch (Exception ex)
+            {
+                AppData.AppLog.LogToFile($"Error applying translation. Table: {tableName}, Row: {rowNumber}, Original: {original}, Error: {ex.Message}");
+                return false;
+            }
 
             valueToTranslate = FixInvalidSymbols(valueToTranslate);
-            if (!string.IsNullOrEmpty(valueToTranslate) && (original != valueToTranslate || (existsTranslation != null && existsTranslation != valueToTranslate)))
+            if (!string.IsNullOrEmpty(valueToTranslate) &&
+                (original != valueToTranslate || (existsTranslation != null && existsTranslation != valueToTranslate)))
             {
                 RET = true;
                 SetTranslationIsTranslatedAction();
-                RowNumber++;
                 return true;
             }
             return false;
@@ -569,8 +598,8 @@ namespace TranslationHelper.Formats
 
                     foreach (DataRow row in table.Rows)
                     {
-                        string original = row[0]?.ToString() ?? string.Empty;
-                        string translation = row[1]?.ToString() ?? string.Empty;
+                        string original = GetRowOriginalText(row);
+                        string translation = GetRowTranslationText(row);
                         if (string.IsNullOrEmpty(translation) || dict.ContainsKey(original)) continue;
 
                         int originalLines = original.GetLinesCount();
@@ -662,6 +691,15 @@ namespace TranslationHelper.Formats
             {
                 dict.TryAdd(original, translation);
             }
+        }
+
+        internal static string GetRowOriginalText(DataRow dataRow)
+        {
+            return dataRow.Field<string>(AppData.CurrentProject.OriginalColumnIndex);
+        }
+        internal static string GetRowTranslationText(DataRow dataRow)
+        {
+            return dataRow.Field<string>(AppData.CurrentProject.TranslationColumnIndex);
         }
         #endregion
     }
