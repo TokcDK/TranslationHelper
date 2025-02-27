@@ -17,10 +17,10 @@ namespace TranslationHelper.Formats.RPGMakerVXAce
 
             parser.parse_file();
 
-            foreach(var entry in parser.entries)
-            { 
+            //foreach(var entry in parser.entries)
+            //{ 
 
-            }
+            //}
         }
     }
 }

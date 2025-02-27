@@ -126,7 +126,7 @@ namespace TranslationHelper.Formats.RPGMakerVX.RVData2
             }
 
             // quoted strings with comment markers
-            foreach(var key in quotedStringsWithCommentMarker.Keys.ToArray())
+            foreach(var key in quotedStringsWithCommentMarker.Keys)
             {
                 string stringValue = quotedStringsWithCommentMarker[key];
                 var quotedStringMatch = _quoteCaptureHaveCommentMarkerRegex.Match(stringValue);
@@ -159,7 +159,7 @@ namespace TranslationHelper.Formats.RPGMakerVX.RVData2
             }
         }
 
-        private void RestoreVarsComments(StringBuilder scriptContentToChange, Dictionary<string, string>[] keyStringPairsList)
+        private static void RestoreVarsComments(StringBuilder scriptContentToChange, Dictionary<string, string>[] keyStringPairsList)
         {
             // replace all comment names back to comments
             // restore variables in case of if some was not replaced earlier
@@ -192,7 +192,7 @@ namespace TranslationHelper.Formats.RPGMakerVX.RVData2
             }
         }
 
-        private string RestoreStrings(string inputString, Dictionary<string, string> keyStringPairs, Regex regex)
+        private static string RestoreStrings(string inputString, Dictionary<string, string> keyStringPairs, Regex regex)
         {
             foreach (Match match in regex.Matches(inputString))
             {
@@ -205,7 +205,7 @@ namespace TranslationHelper.Formats.RPGMakerVX.RVData2
             return inputString;
         }
 
-        private Dictionary<string, string> HideVariables(string textWhereHide, Regex regex, StringBuilder stringBuilderWhereToHide, string keyPre = "%VAR", string keyAfter = "%")
+        private static Dictionary<string, string> HideVariables(string textWhereHide, Regex regex, StringBuilder stringBuilderWhereToHide, string keyPre = "%VAR", string keyAfter = "%")
         {
             var matches = regex.Matches(textWhereHide);
             var keyStringPairs = new Dictionary<string, string>(matches.Count);
