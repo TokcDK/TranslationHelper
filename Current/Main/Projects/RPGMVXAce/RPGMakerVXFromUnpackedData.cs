@@ -26,14 +26,14 @@ namespace TranslationHelper.Projects.RPGMVXAce
 
                 Directory.CreateDirectory(dataDirPath);
 
-                foreach (var entry in parser.parse_file(gameRgss3aPath))
+                foreach (var entry in parser.ParseFile(gameRgss3aPath))
                 {
-                    var filePath = gameDir + "\\" + entry.name;
+                    var filePath = gameDir + "\\" + entry.Name;
                     Directory.GetParent(filePath).Create();
-                    File.WriteAllBytes(filePath, parser.get_filedata(entry));
+                    File.WriteAllBytes(filePath, parser.GetFiledata(entry));
                 }
 
-                parser.close_file();
+                parser.CloseFile();
 
                 File.Move(gameRgss3aPath, gameRgss3aPath + ".orig");
             }

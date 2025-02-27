@@ -13,9 +13,9 @@ namespace TranslationHelper.Formats.RPGMakerVXAce
 
         protected override void ParseBytes()
         {
-            var parser = new RGSS_Extractor.RGSS3A_Parser(ParseData.BReader);
+            var parser = new RGSS_Extractor.RGSS3AParser(ParseData.BReader);
 
-            parser.parse_file();
+            parser.ParseFile();
 
             //foreach(var entry in parser.entries)
             //{ 
