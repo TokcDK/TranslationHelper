@@ -64,7 +64,7 @@
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
     <Reference Include="RaiLTools">
-      <HintPath>M:\0GIT\TranslationHelperUsing\RaiLTools\RailTools\obj\Debug\RaiLTools.dll</HintPath>
+      <HintPath>M:\0GIT\[TokcDK]\TranslationHelperUsing\RaiLTools\RailTools\obj\Debug\RaiLTools.dll</HintPath>
     </Reference>
     <Reference Include="Soft160.Data.Cryptography">
       <HintPath>K:\0 Repositories\FastCRC\src\bin\Release\net40\Soft160.Data.Cryptography.dll</HintPath>
@@ -692,7 +692,7 @@
     </BootstrapperPackage>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="M:\0GIT\RGSS-Extractor\RGSS Extractor.csproj">
+    <ProjectReference Include="M:\0GIT\[TokcDK]\TranslationHelperUsing\RGSS-Extractor\RGSS Extractor.csproj">
       <Project>{e6343190-3a80-4c26-9591-f22f65645ab9}</Project>
       <Name>RGSS Extractor</Name>
     </ProjectReference>

@@ -83,7 +83,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MesArcLibCSharp", "M:\0GIT\
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MesScriptDissAssLib", "M:\0GIT\[TokcDK]\MesScriptDissAssTest\MesScriptDissAssLib\MesScriptDissAssLib.csproj", "{1F44C885-5CF5-4C13-9B0A-CC805AA3CF64}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RGSS Extractor", "M:\0GIT\RGSS-Extractor\RGSS Extractor.csproj", "{E6343190-3A80-4C26-9591-F22F65645AB9}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RGSS Extractor", "M:\0GIT\[TokcDK]\TranslationHelperUsing\RGSS-Extractor\RGSS Extractor.csproj", "{E6343190-3A80-4C26-9591-F22F65645AB9}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CheckForEmptyDir", "M:\0GIT\[TokcDK]\LibsCollection\Net4\CheckForEmptyDir\CheckForEmptyDir.csproj", "{A814378F-EA3C-42B0-AE0C-27B85FB22359}"
 EndProject
@@ -91,7 +91,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GetListOfSubClasses", "M:\0
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "INIFileMan", "M:\0GIT\[TokcDK]\LibsCollection\Net4\INIFileMan\INIFileMan.csproj", "{5BF94FA5-1AAC-4CFD-A8DA-CD523FFBB962}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RailTools", "M:\0GIT\TranslationHelperUsing\RaiLTools\RailTools\RailTools.csproj", "{0432CDD0-54DB-40D2-B656-B93118E75EDB}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RailTools", "M:\0GIT\[TokcDK]\TranslationHelperUsing\RaiLTools\RailTools\RailTools.csproj", "{0432CDD0-54DB-40D2-B656-B93118E75EDB}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
