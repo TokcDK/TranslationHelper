@@ -64,7 +64,7 @@
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
     <Reference Include="RaiLTools">
-      <HintPath>K:\0 Repositories\000localization\RaiLTools\RailTools\bin\Release\RaiLTools.dll</HintPath>
+      <HintPath>M:\0GIT\TranslationHelperUsing\RaiLTools\RailTools\obj\Debug\RaiLTools.dll</HintPath>
     </Reference>
     <Reference Include="Soft160.Data.Cryptography">
       <HintPath>K:\0 Repositories\FastCRC\src\bin\Release\net40\Soft160.Data.Cryptography.dll</HintPath>
@@ -692,39 +692,39 @@
     </BootstrapperPackage>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="K:\0GIT\RGSS-Extractor\RGSS Extractor.csproj">
+    <ProjectReference Include="M:\0GIT\RGSS-Extractor\RGSS Extractor.csproj">
       <Project>{e6343190-3a80-4c26-9591-f22f65645ab9}</Project>
       <Name>RGSS Extractor</Name>
     </ProjectReference>
-    <ProjectReference Include="K:\0GIT\[TokcDK]\LC\LibsCollection\Net4\CheckForEmptyDir\CheckForEmptyDir.csproj">
-      <Project>{636976fe-5ffe-4e17-bcb1-7b858a78a8a3}</Project>
+    <ProjectReference Include="M:\0GIT\[TokcDK]\LibsCollection\Net4\CheckForEmptyDir\CheckForEmptyDir.csproj">
+      <Project>{a814378f-ea3c-42b0-ae0c-27b85fb22359}</Project>
       <Name>CheckForEmptyDir</Name>
     </ProjectReference>
-    <ProjectReference Include="K:\0GIT\[TokcDK]\LC\LibsCollection\Net4\GetListOfSubClasses\GetListOfSubClasses.csproj">
-      <Project>{fd599904-9718-4faf-a7b0-48f5d1be39e0}</Project>
+    <ProjectReference Include="M:\0GIT\[TokcDK]\LibsCollection\Net4\GetListOfSubClasses\GetListOfSubClasses.csproj">
+      <Project>{f8dce92f-e831-4797-884f-38686e34dbee}</Project>
       <Name>GetListOfSubClasses</Name>
     </ProjectReference>
-    <ProjectReference Include="K:\0GIT\[TokcDK]\LibsCollection\Net4\INIFileMan\INIFileMan.csproj">
-      <Project>{40ac8009-cecd-44d0-b564-96e07237fd1a}</Project>
+    <ProjectReference Include="M:\0GIT\[TokcDK]\LibsCollection\Net4\INIFileMan\INIFileMan.csproj">
+      <Project>{5bf94fa5-1aac-4cfd-a8da-cd523ffbb962}</Project>
       <Name>INIFileMan</Name>
     </ProjectReference>
-    <ProjectReference Include="K:\0GIT\[TokcDK]\LoadRPGMVJson\RPGMVJsonParser\RPGMVJsonParser.csproj">
+    <ProjectReference Include="M:\0GIT\[TokcDK]\LoadRPGMVJson\RPGMVJsonParser\RPGMVJsonParser.csproj">
       <Project>{449a8a59-1ba7-4e70-8f41-95527f4d39a6}</Project>
       <Name>RPGMVJsonParser</Name>
     </ProjectReference>
-    <ProjectReference Include="K:\0GIT\[TokcDK]\MesArcToolCSharp\MesArcLibCSharp\MesArcLibCSharp.csproj">
+    <ProjectReference Include="M:\0GIT\[TokcDK]\MesArcToolCSharp\MesArcLibCSharp\MesArcLibCSharp.csproj">
       <Project>{CD71A914-875F-4185-9C02-E2B606B9894C}</Project>
       <Name>MesArcLibCSharp</Name>
     </ProjectReference>
-    <ProjectReference Include="K:\0GIT\[TokcDK]\MesScriptDissAssTest\MesScriptDissAssLib\MesScriptDissAssLib.csproj">
+    <ProjectReference Include="M:\0GIT\[TokcDK]\MesScriptDissAssTest\MesScriptDissAssLib\MesScriptDissAssLib.csproj">
       <Project>{1F44C885-5CF5-4C13-9B0A-CC805AA3CF64}</Project>
       <Name>MesScriptDissAssLib</Name>
     </ProjectReference>
-    <ProjectReference Include="K:\0GIT\[TokcDK]\RPGMakerVXRVData2Assistant\RPGMakerVXRVData2Assistant\RPGMakerVXRVData2Assistant.csproj">
+    <ProjectReference Include="M:\0GIT\[TokcDK]\RPGMakerVXRVData2Assistant\RPGMakerVXRVData2Assistant\RPGMakerVXRVData2Assistant.csproj">
       <Project>{f3817f93-1016-487a-8797-a4fbdfa4fb0d}</Project>
       <Name>RPGMakerVXRVData2Assistant</Name>
     </ProjectReference>
-    <ProjectReference Include="K:\0GIT\[TokcDK]\wolftrans-csharp\WolfTrans.Net\WolfTrans.Net.csproj">
+    <ProjectReference Include="M:\0GIT\[TokcDK]\wolftrans-csharp\WolfTrans.Net\WolfTrans.Net.csproj">
       <Project>{494DB09B-C872-4E19-B6D8-3D2D5C1B44F0}</Project>
       <Name>WolfTrans.Net</Name>
     </ProjectReference>
@@ -732,6 +732,9 @@
   <ItemGroup>
     <PackageReference Include="AlphaFS.New">
       <Version>2.3.0</Version>
+    </PackageReference>
+    <PackageReference Include="CRC.Fast.Net">
+      <Version>1.1.0</Version>
     </PackageReference>
     <PackageReference Include="HtmlAgilityPack">
       <Version>1.11.72</Version>
