@@ -32,6 +32,11 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
             return true;
         }
 
+        protected override bool IsValidRow(RowBaseRowData rowData)
+        {
+            return true;
+        }
+
         protected async override void ActionsFinalize()
         {
             base.ActionsFinalize();
