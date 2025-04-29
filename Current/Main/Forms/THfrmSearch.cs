@@ -724,16 +724,16 @@ namespace TranslationHelper
         {
             return row =>
             {
-                string translation = row.Field<string>(_translationColumnIndex);
-                if (string.IsNullOrEmpty(translation)) return;
+                string valueToReplace = row.Field<string>(SearchColumnIndex);
+                if (string.IsNullOrEmpty(valueToReplace)) return;
 
                 bool isRegex = SearchModeRegexRadioButton.Checked;
                 var options = THSearchMatchCaseCheckBox.Checked ? RegexOptions.None : RegexOptions.IgnoreCase;
                 var comparison = THSearchMatchCaseCheckBox.Checked ? StringComparison.Ordinal : StringComparison.OrdinalIgnoreCase;
 
                 row.SetField(_translationColumnIndex, isRegex
-                    ? Regex.Replace(translation, searchPattern, replacement, options)
-                    : ReplaceEx.Replace(translation, searchPattern, replacement, comparison));
+                    ? Regex.Replace(valueToReplace, searchPattern, replacement, options)
+                    : ReplaceEx.Replace(valueToReplace, searchPattern, replacement, comparison));
             };
         }
 
