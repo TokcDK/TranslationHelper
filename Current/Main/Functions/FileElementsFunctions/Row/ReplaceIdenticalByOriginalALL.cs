@@ -12,6 +12,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
         // List to hold the list of items to replace 
         readonly HashSet<string> _listToReplace = new HashSet<string>();
         readonly bool _isActive = false;
+        int parsedCount = 0;
 
         public ReplaceIdenticalByOriginalALL(HashSet<string> listToReplace)
         {
@@ -19,21 +20,31 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
             _isActive = _listToReplace.Count > 0;
         }
 
+        protected override bool IsValidRow(RowBaseRowData rowData)
+        {
+            if (!_isActive) return false;
+
+            bool haveOriginal = _listToReplace.Contains(rowData.Original);
+            if ((_listToReplace.Contains(rowData.Original)
+                && rowData.Original == rowData.Translation) || !haveOriginal
+                ) return false;
+
+            return true;
+        }
+
         protected override bool Apply(RowBaseRowData rowData)
         {
-            if(!_isActive) return false;
+            rowData.Translation = rowData.Original;
+            parsedCount++;
 
-            if(!_listToReplace.Contains(rowData.Translation)) return false;
-
-            try
-            {
-                rowData.Translation = rowData.Original;
-            }
-            catch
-            {
-                return false;
-            }
             return true;
+        }
+
+        protected override void ActionsFinalize()
+        {
+            base.ActionsFinalize();
+
+            Logger.Info(T._("Replaced {0} values"), parsedCount);
         }
     }
 }
