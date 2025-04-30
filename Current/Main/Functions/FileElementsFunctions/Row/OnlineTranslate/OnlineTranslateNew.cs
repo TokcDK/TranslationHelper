@@ -173,7 +173,6 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
                 Logger.Info("Translate" + " " + rowData.SelectedTable.TableName + "/" + rowData.SelectedRowIndex);
 
                 SetRowLinesToBuffer(rowData);
-
                 
                 return true;
             }
@@ -501,7 +500,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
             }
             catch (Exception ex)
             {
-                Logger.Info("Error while translation:"
+                Logger.Warn("Error while translation:"
                     + Environment.NewLine
                     + ex
                     + Environment.NewLine

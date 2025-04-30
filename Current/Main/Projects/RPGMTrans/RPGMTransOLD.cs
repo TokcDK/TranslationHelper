@@ -550,7 +550,7 @@ namespace TranslationHelper.Projects.RPGMTrans
                 //THActionProgressBar.Visible = false;
                 //THInfolabel.Invoke((Action)(() => THInfolabel.Visible = false));
                 //THInfolabel.Invoke((Action)(() => THInfolabel.Text = string.Empty));
-                Logger.Info(string.Empty);
+                
                 FunctionsUI.SaveInAction = false;
                 return false;
             }
@@ -560,7 +560,7 @@ namespace TranslationHelper.Projects.RPGMTrans
                 //THActionProgressBar.Invoke((Action)(() => THActionProgressBar.Visible = false));
                 //THInfolabel.Invoke((Action)(() => THInfolabel.Visible = false));
                 //THInfolabel.Invoke((Action)(() => THInfolabel.Text = string.Empty));
-                Logger.Info(string.Empty);
+                
             }
 
             FunctionsUI.SaveInAction = false;

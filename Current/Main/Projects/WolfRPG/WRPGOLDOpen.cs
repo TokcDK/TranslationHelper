@@ -418,12 +418,12 @@ namespace TranslationHelper.Projects.WolfRPG
                 }
                 catch
                 {
-                    Logger.Info(string.Empty);
+                    
                     FunctionsUI.SaveInAction = false;
                 }
                 finally
                 {
-                    Logger.Info(string.Empty);
+                    
                 }
 
             }

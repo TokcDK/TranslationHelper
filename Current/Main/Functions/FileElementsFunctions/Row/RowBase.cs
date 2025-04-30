@@ -140,7 +140,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
             }
             catch (Exception ex)
             {
-                Logger.Info($"An error occurred in the Selected method. Error: {ex}");
+                Logger.Warn($"An error occurred in the Selected method. Error: {ex}");
             }
 
             ActionsPostRowApply();
@@ -549,7 +549,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
                     }
                     catch (Exception ex)
                     {
-                        Logger.Info($"An error occurred while parsing all tables in method '{nameof(All)}'. Error: {ex}");
+                        Logger.Warn($"An error occurred while parsing all tables in method '{nameof(All)}'. Error: {ex}");
                     }
                 }
             }

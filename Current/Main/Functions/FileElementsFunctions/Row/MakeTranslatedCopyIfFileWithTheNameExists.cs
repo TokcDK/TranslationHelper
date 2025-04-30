@@ -125,7 +125,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
             }
             catch (Exception ex)
             {
-                Logger.Info(@"An error occured while file copy\write:\r\n" + ex + "\r\noriginal=" + rowData.Original + "\r\ntranslation=" + rowData.Translation);
+                Logger.Warn(@"An error occured while file copy\write:\r\n" + ex + "\r\noriginal=" + rowData.Original + "\r\ntranslation=" + rowData.Translation);
             }
             return false;
         }

@@ -774,7 +774,7 @@ namespace TranslationHelper.Main.Functions
             //dbpath = Application.StartupPath + "\\DB";
             //string dbfilename = DateTime.Now.ToString("dd.MM.yyyy HH-mm-ss");
 
-            Logger.Info(true);
+            
 
             //lastautosavepath = dbpath + "\\Auto\\Auto" + dbfilename + GetDBCompressionExt();
 

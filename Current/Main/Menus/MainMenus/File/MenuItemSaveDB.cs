@@ -31,7 +31,7 @@ namespace TranslationHelper.Menus.MainMenus.File
 
             FunctionAutoSave.lastautosavepath = path;
 
-            Logger.Info(true);
+            
 
             //switch (AppData.CurrentProject.Name)
             //{

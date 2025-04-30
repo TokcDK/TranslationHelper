@@ -123,12 +123,12 @@ namespace TranslationHelper.Formats.RPGMMV.JsonParser
             }
             catch (JsonReaderException ex)
             {
-                Logger.Info("Error occured while json read (json is empty or corrupted): \r\n" + ex);
+                Logger.Warn("Error occured while json read (json is empty or corrupted): \r\n" + ex);
                 return false;
             }
             catch (Exception ex)
             {
-                Logger.Info("Error occured while json parse: \r\n" + ex);
+                Logger.Warn("Error occured while json parse: \r\n" + ex);
                 return false;
             }
 

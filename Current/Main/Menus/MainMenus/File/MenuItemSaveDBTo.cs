@@ -37,7 +37,7 @@ namespace TranslationHelper.Menus.MainMenus.File
                 //MessageBox.Show(THFOpenBD.FileName);
                 //LoadTranslationFromDB();
 
-                Logger.Info(true);
+                
 
                 switch (AppData.CurrentProject.Name)
                 {

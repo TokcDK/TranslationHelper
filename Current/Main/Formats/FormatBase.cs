@@ -372,7 +372,7 @@ namespace TranslationHelper.Formats
             }
             catch (Exception ex)
             {
-                Logger.Info($"Error adding row: {ex.Message}");
+                Logger.Warn($"Error adding row: {ex.Message}");
                 return false;
             }
         }
@@ -549,7 +549,7 @@ namespace TranslationHelper.Formats
             }
             catch (Exception ex)
             {
-                Logger.Info($"Error applying translation. Table: {tableName}, Row: {rowNumber}, Original: {original}, Error: {ex.Message}");
+                Logger.Warn($"Error applying translation. Table: {tableName}, Row: {rowNumber}, Original: {original}, Error: {ex.Message}");
                 return false;
             }
 

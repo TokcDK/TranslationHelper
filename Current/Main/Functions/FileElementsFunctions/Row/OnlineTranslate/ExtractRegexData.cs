@@ -86,8 +86,8 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
                     }
                     catch (System.ArgumentException ex)
                     {
-                        Logger.Info("ExtractMulty: Invalid regex:" + PatternReplacementPair.Key + "\r\nError:\r\n" + ex);
-                        Logger.Info("Invalid regex found. See " + THSettings.ApplicationLogName);
+                        Logger.Warn("ExtractMulty: Invalid regex:" + PatternReplacementPair.Key + "\r\nError:\r\n" + ex);
+                        Logger.Warn("Invalid regex found. See " + THSettings.ApplicationLogName);
                         continue;
                     }
 

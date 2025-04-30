@@ -183,7 +183,7 @@ namespace TranslationHelper.Projects
                 if (!ret || program.ExitCode > 0 || !IsPatchFilesExist(patchdir))
                 {
                     Logger.Error("RPGMaker Trans Patch failed: ret=" + ret + " Exitcode=" + program.ExitCode);
-                    Logger.Info(T._("Patching failed"));
+                    Logger.Warn(T._("Patching failed"));
                     CleanDirs(workdir);
 
                     Logger.Info(" " + T._("Somethig wrong") + ".. " + T._("Trying 2nd variant"));
@@ -282,7 +282,7 @@ namespace TranslationHelper.Projects
                             if (!ret)
                             {
                                 Logger.Error("RPGMaker Trans Patch failed: ret={0} Exitcode={1}",ret,program.ExitCode);
-                                Logger.Info(T._("Patching failed"));
+                                Logger.Warn(T._("Patching failed"));
                                 MessageBox.Show(T._("Error occured while patch execution."));
                                 CleanDirs(workdir);
                                 return false;
@@ -291,7 +291,7 @@ namespace TranslationHelper.Projects
                             if (program.ExitCode > 0)
                             {
                                 Logger.Error("RPGMaker Trans Patch failed: ret=" + ret + " Exitcode=" + program.ExitCode);
-                                Logger.Info(T._("Patching failed"));
+                                Logger.Warn(T._("Patching failed"));
                                 MessageBox.Show(T._("Patch creation finished unsuccesfully.")
                                     + "Exit code="
                                     + program.ExitCode

@@ -66,8 +66,8 @@ namespace TranslationHelper.Functions.StringChangers
                     }
                     catch (ArgumentException ex)
                     {
-                        Logger.Info("FixCells: Invalid regex:" + rule + "\r\nError:\r\n" + ex);
-                        Logger.Info("Invalid regex found. See " + THSettings.ApplicationLogName);
+                        Logger.Warn("FixCells: Invalid regex:" + rule + "\r\nError:\r\n" + ex);
+                        Logger.Warn("Invalid regex found. See " + THSettings.ApplicationLogName);
                         continue;
                     }
 
