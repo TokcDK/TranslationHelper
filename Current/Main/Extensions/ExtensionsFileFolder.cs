@@ -119,39 +119,20 @@ namespace TranslationHelper.Extensions
             }
         }
 
-        internal static string GetCrc32(this string fileName, bool showprogress = false, System.Windows.Forms.ProgressBar pb = null)
+        internal static string GetCrc32(this string fileName)
         {
             //https://stackoverflow.com/a/57450238
             using (var crc32 = new CRCServiceProvider())
             {
-                showprogress = showprogress && pb != null;
                 string hash = string.Empty;
                 using (var fs = File.Open(fileName, FileMode.Open))
                 {
                     var array = crc32.ComputeHash(fs);
                     var arrayLength = array.Length;
                     System.Windows.Forms.ProgressBarStyle oldpbstyle = System.Windows.Forms.ProgressBarStyle.Marquee;
-                    if (showprogress)
-                    {
-                        pb.Invoke((Action)(() => pb.Maximum = arrayLength));
-                        oldpbstyle = pb.Style;
-                        pb.Invoke((Action)(() => pb.Style = System.Windows.Forms.ProgressBarStyle.Blocks));
-                        pb.Invoke((Action)(() => pb.Visible = true));
-                    }
                     for (int i = 0; i < arrayLength; i++)
                     {
-                        if (showprogress && pb.Value <= pb.Maximum)
-                        {
-                            pb.Invoke((Action)(() => pb.Value = i));
-                        }
                         hash += array[i].ToString("x2")/*.ToLowerInvariant()*/;
-                    }
-
-                    if (showprogress && pb.Value > 0)
-                    {
-                        pb.Invoke((Action)(() => pb.Value = 0));
-                        pb.Invoke((Action)(() => pb.Style = oldpbstyle));
-                        pb.Invoke((Action)(() => pb.Visible = false));
                     }
                 }
 

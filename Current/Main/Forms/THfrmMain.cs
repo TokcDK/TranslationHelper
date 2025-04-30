@@ -128,7 +128,7 @@ namespace TranslationHelper
 
         public void IndicateSaveProcess(string infoText = "")
         {
-            FunctionsSave.IndicateSaveProcess(infoText, THInfolabel);
+            Logger.Info(infoText);
         }
 
         private void THMain_FormClosing(object sender, FormClosingEventArgs e)

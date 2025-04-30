@@ -184,7 +184,7 @@ namespace TranslationHelper.Projects.KiriKiri.Games
                         );
 
                     Logger.Info(progressMessageTitle + (usecrc ? T._("Calculate control crc") : string.Empty) + ":" + xp3File.FileInfo.Name);
-                    var crc = usecrc ? xp3File.FileInfo.FullName.GetCrc32(true, AppData.Main.THActionProgressBar) : string.Empty;
+                    var crc = usecrc ? xp3File.FileInfo.FullName.GetCrc32() : string.Empty;
                     var XP3crc32Path = usecrc ? targetSubFolder + ".xp3." + crc + ".crc32" : string.Empty;
                     var KiriKiriEXEargs = "-i \"" + xp3path + "\" -o \"" + targetSubFolder + "\"";
 

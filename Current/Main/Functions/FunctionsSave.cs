@@ -221,34 +221,5 @@ namespace TranslationHelper.Functions
                 AppData.Settings.THConfigINI.WriteFile();
             }
         }
-
-        internal static void IndicateSaveProcess(string infoText, Label thInfolabel)
-        {
-            try
-            {
-                bool THInfolabelEnabled = false;
-                if (!AppSettings.IsTranslationHelperWasClosed && !thInfolabel.Enabled)
-                {
-                    THInfolabelEnabled = true;
-                    _ = thInfolabel.Invoke((Action)(() => thInfolabel.Enabled = true));
-                }
-
-                if (!AppSettings.IsTranslationHelperWasClosed)
-                {
-                    _ = thInfolabel.Invoke((Action)(() => thInfolabel.Text = infoText));
-                }
-
-                FunctionsThreading.WaitThreaded(1000);
-
-                if (THInfolabelEnabled && !AppSettings.IsTranslationHelperWasClosed && thInfolabel.Enabled)
-                {
-                    _ = thInfolabel.Invoke((Action)(() => thInfolabel.Text = string.Empty));
-                    _ = thInfolabel.Invoke((Action)(() => thInfolabel.Enabled = false));
-                }
-            }
-            catch
-            {
-            }
-        }
     }
 }

@@ -60,8 +60,6 @@
             this.THSourceRichTextBox = new System.Windows.Forms.RichTextBox();
             this.THTargetRichTextBox = new System.Windows.Forms.RichTextBox();
             this.tlpWorkInfo = new System.Windows.Forms.TableLayoutPanel();
-            this.THActionProgressBar = new System.Windows.Forms.ProgressBar();
-            this.THInfolabel = new System.Windows.Forms.Label();
             this.tlpTextLenPosInfo = new System.Windows.Forms.TableLayoutPanel();
             this.TargetTextBoxColumnPositionLabel = new System.Windows.Forms.Label();
             this.TargetTextBoxLinePositionLabelData = new System.Windows.Forms.Label();
@@ -71,8 +69,8 @@
             this.TargetTextBoxColumnPositionLabelData = new System.Windows.Forms.Label();
             this.TableCompleteInfoLabel = new System.Windows.Forms.Label();
             this.mainFormRootWorkspaceLogContainer = new System.Windows.Forms.SplitContainer();
-            this.logSplitter = new System.Windows.Forms.Splitter();
             this.rtbLog = new System.Windows.Forms.RichTextBox();
+            this.logSplitter = new System.Windows.Forms.Splitter();
             this.MainMenus.SuspendLayout();
             this.frmMainPanel.SuspendLayout();
             this.tlpFrmMain.SuspendLayout();
@@ -482,8 +480,6 @@
             this.tlpWorkInfo.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 44.44445F));
             this.tlpWorkInfo.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 37.55458F));
             this.tlpWorkInfo.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 18.04949F));
-            this.tlpWorkInfo.Controls.Add(this.THActionProgressBar, 0, 0);
-            this.tlpWorkInfo.Controls.Add(this.THInfolabel, 1, 0);
             this.tlpWorkInfo.Controls.Add(this.tlpTextLenPosInfo, 2, 0);
             this.tlpWorkInfo.Controls.Add(this.TableCompleteInfoLabel, 3, 0);
             this.tlpWorkInfo.Dock = System.Windows.Forms.DockStyle.Fill;
@@ -494,29 +490,6 @@
             this.tlpWorkInfo.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
             this.tlpWorkInfo.Size = new System.Drawing.Size(790, 20);
             this.tlpWorkInfo.TabIndex = 6;
-            // 
-            // THActionProgressBar
-            // 
-            this.THActionProgressBar.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.THActionProgressBar.Location = new System.Drawing.Point(3, 7);
-            this.THActionProgressBar.MarqueeAnimationSpeed = 50;
-            this.THActionProgressBar.Name = "THActionProgressBar";
-            this.THActionProgressBar.Size = new System.Drawing.Size(82, 10);
-            this.THActionProgressBar.Style = System.Windows.Forms.ProgressBarStyle.Marquee;
-            this.THActionProgressBar.TabIndex = 6;
-            this.THActionProgressBar.Visible = false;
-            // 
-            // THInfolabel
-            // 
-            this.THInfolabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.THInfolabel.AutoSize = true;
-            this.THInfolabel.Location = new System.Drawing.Point(92, 7);
-            this.THInfolabel.Name = "THInfolabel";
-            this.THInfolabel.Size = new System.Drawing.Size(41, 13);
-            this.THInfolabel.TabIndex = 7;
-            this.THInfolabel.Text = "infotext";
-            this.THInfolabel.Visible = false;
-            this.THInfolabel.Click += new System.EventHandler(this.THInfolabel_Click);
             // 
             // tlpTextLenPosInfo
             // 
@@ -632,6 +605,16 @@
             this.mainFormRootWorkspaceLogContainer.SplitterDistance = 425;
             this.mainFormRootWorkspaceLogContainer.TabIndex = 17;
             // 
+            // rtbLog
+            // 
+            this.rtbLog.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.rtbLog.Location = new System.Drawing.Point(0, 3);
+            this.rtbLog.Name = "rtbLog";
+            this.rtbLog.ReadOnly = true;
+            this.rtbLog.Size = new System.Drawing.Size(790, 53);
+            this.rtbLog.TabIndex = 1;
+            this.rtbLog.Text = "";
+            // 
             // logSplitter
             // 
             this.logSplitter.BackColor = System.Drawing.SystemColors.ActiveBorder;
@@ -642,16 +625,6 @@
             this.logSplitter.Size = new System.Drawing.Size(790, 3);
             this.logSplitter.TabIndex = 0;
             this.logSplitter.TabStop = false;
-            // 
-            // rtbLog
-            // 
-            this.rtbLog.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.rtbLog.Location = new System.Drawing.Point(0, 3);
-            this.rtbLog.Name = "rtbLog";
-            this.rtbLog.ReadOnly = true;
-            this.rtbLog.Size = new System.Drawing.Size(790, 53);
-            this.rtbLog.TabIndex = 1;
-            this.rtbLog.Text = "";
             // 
             // FormMain
             // 
@@ -739,8 +712,6 @@
         public System.Windows.Forms.RichTextBox THSourceRichTextBox;
         public System.Windows.Forms.RichTextBox THTargetRichTextBox;
         private System.Windows.Forms.TableLayoutPanel tlpWorkInfo;
-        public System.Windows.Forms.ProgressBar THActionProgressBar;
-        public System.Windows.Forms.Label THInfolabel;
         internal System.Windows.Forms.TableLayoutPanel tlpTextLenPosInfo;
         internal System.Windows.Forms.Label TargetTextBoxColumnPositionLabel;
         internal System.Windows.Forms.Label TargetTextBoxLinePositionLabelData;
