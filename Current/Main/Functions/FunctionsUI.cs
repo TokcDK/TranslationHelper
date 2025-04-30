@@ -444,44 +444,13 @@ namespace TranslationHelper.Functions
 
             if (AppData.Main.THFileElementsDataGridView != null && AppData.Main.THFileElementsDataGridView.Columns.Count > 1)
             {
-                AppData.Main.THFileElementsDataGridView.Columns[THSettings.OriginalColumnName].HeaderText = T._(THSettings.OriginalColumnName);//THMainDGVOriginalColumnName;
-                AppData.Main.THFileElementsDataGridView.Columns[THSettings.TranslationColumnName].HeaderText = T._(THSettings.TranslationColumnName);//THMainDGVTranslationColumnName;
+                AppData.Main.THFileElementsDataGridView.Columns[THSettings.OriginalColumnName].HeaderText = T._(THSettings.OriginalColumnName);
+                AppData.Main.THFileElementsDataGridView.Columns[THSettings.TranslationColumnName].HeaderText = T._(THSettings.TranslationColumnName);
                 AppData.Main.THFileElementsDataGridView.Columns[THSettings.OriginalColumnName].ReadOnly = true;
                 AppData.Main.THFiltersDataGridView.Enabled = true;
                 AppData.Main.THSourceRichTextBox.Enabled = true;
                 AppData.Main.THTargetRichTextBox.Enabled = true;
             }
-
-            //SelectedToolStripMenuItem1.Enabled = true;
-            //TableToolStripMenuItem1.Enabled = true;
-            //FixCellsSelectedToolStripMenuItem.Enabled = true;
-            //FixCellsTableToolStripMenuItem.Enabled = true;
-            //SetOriginalValueToTranslationToolStripMenuItem.Enabled = true;
-            //CompleteRomajiotherLinesToolStripMenuItem.Enabled = true;
-            //CompleteRomajiotherLinesToolStripMenuItem1.Enabled = true;
-            //ForceSameForSimularToolStripMenuItem.Enabled = true;
-            //ForceSameForSimularToolStripMenuItem1.Enabled = true;
-            //CutToolStripMenuItem1.Enabled = true;
-            //CopyCellValuesToolStripMenuItem.Enabled = true;
-            //PasteCellValuesToolStripMenuItem.Enabled = true;
-            //ClearSelectedCellsToolStripMenuItem.Enabled = true;
-            //ToUPPERCASEToolStripMenuItem.Enabled = true;
-            //FirstCharacterToUppercaseToolStripMenuItem.Enabled = true;
-            //ToLowercaseToolStripMenuItem.Enabled = true;
-            //SetColumnSortingToolStripMenuItem.Enabled = true;
-            //OpenInWebContextToolStripMenuItem.Enabled = true;
-            //TranslateSelectedContextToolStripMenuItem.Enabled = true;
-            //TranslateTableContextToolStripMenuItem.Enabled = true;
-            //FixSymbolsContextToolStripMenuItem.Enabled = true;
-            //FixSymbolsTableContextToolStripMenuItem.Enabled = true;
-            //OriginalToTransalationContextToolStripMenuItem.Enabled = true;
-            //CutToolStripMenuItem.Enabled = true;
-            //CopyCMStripMenuItem.Enabled = true;
-            //PasteToolStripMenuItem.Enabled = true;
-            //CleanSelectedCellsToolStripMenuItem1.Enabled = true;
-            //ToolStripMenuItem14.Enabled = true;
-            //UppercaseToolStripMenuItem.Enabled = true;
-            //LowercaseToolStripMenuItem.Enabled = true;
         }
 
         private static void SetFilterDGV()

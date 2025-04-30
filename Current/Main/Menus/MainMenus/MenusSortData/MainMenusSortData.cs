@@ -21,7 +21,7 @@ namespace TranslationHelper.Menus.MainMenus.MenusSortData
     {
         public string Name => "File";
 
-        public string NameT => T._(Name);
+        public string NameT => T._("File");
 
         public IMenusSortData[] ChildSortData => new IMenusSortData[]
         {
@@ -32,7 +32,7 @@ namespace TranslationHelper.Menus.MainMenus.MenusSortData
     {
         public string Name => "Edit";
 
-        public string NameT => T._(Name);
+        public string NameT => T._("Edit");
 
         public IMenusSortData[] ChildSortData => new IMenusSortData[]
         {
