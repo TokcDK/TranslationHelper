@@ -24,6 +24,7 @@ namespace TranslationHelper.Helpers
                 FormName = mainForm.Name,
                 MaxLines = 100,
                 AutoScroll = true,
+                UseDefaultRowColoringRules = true,
                 Layout = generalLayout
             };
 
