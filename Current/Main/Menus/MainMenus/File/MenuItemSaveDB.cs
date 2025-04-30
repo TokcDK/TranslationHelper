@@ -44,6 +44,8 @@ namespace TranslationHelper.Menus.MainMenus.File
             await Task.Run(() => AppData.CurrentProject.PreSaveDB()).ConfigureAwait(true);
             await Task.Run(() => FunctionsDBFile.WriteDBFileLite(AppData.CurrentProject.FilesContent, new[] { path, pathNextToSource })).ConfigureAwait(true);
 
+            Logger.Info(T._("DB saved!"));
+
             FunctionsSounds.SaveDBComplete();
             
         }

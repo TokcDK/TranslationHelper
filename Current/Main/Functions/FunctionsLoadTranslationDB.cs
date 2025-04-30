@@ -38,6 +38,8 @@ namespace TranslationHelper.Functions
             var workTableDatagridview = AppData.Main.THFileElementsDataGridView;
             var filesList = AppData.THFilesList;
 
+            Logger.Info(T._("Load DB"));
+
             Parallel.ForEach(AppData.CurrentProject.FilesContent.Tables.Cast<DataTable>(), (table, state, tableIndex) =>
             {
                 if (!forced && FunctionsTable.IsTableColumnCellsAll(table))
@@ -47,8 +49,8 @@ namespace TranslationHelper.Functions
 
                 bool resetDGV = ResetDGVDataSource(tableIndex, filesList, workTableDatagridview);
 
-                string tableProgressInfo = string.Format("{0} {1}: {2}>{3}/{4}", T._("Load"), T._(THSettings.TranslationColumnName), table.TableName, tableIndex, AppData.CurrentProject.FilesContent.Tables.Count);
-                Logger.Info(tableProgressInfo);
+                //string tableProgressInfo = string.Format("{0} {1}: {2}>{3}/{4}", T._("Load"), T._(THSettings.TranslationColumnName), table.TableName, tableIndex, AppData.CurrentProject.FilesContent.Tables.Count);
+                //Logger.Info(tableProgressInfo);
 
                 bool dbTryToCheckLinesOfEachMultilineValue = AppSettings.DBTryToCheckLinesOfEachMultilineValue;
 
@@ -110,7 +112,8 @@ namespace TranslationHelper.Functions
 
             });
 
-            
+            Logger.Info(T._("DB loaded!"));
+
             System.Media.SystemSounds.Beep.Play();
         }
 
@@ -126,7 +129,8 @@ namespace TranslationHelper.Functions
 
             if (translationColIndex < 1) return;
 
-            var progressMessage = $"{T._("Load")}:";
+            //var progressMessage = $"{T._("Load")}:";
+            Logger.Info(T._("Load DB"));
 
             var workTableDatagridview = AppData.Main.THFileElementsDataGridView;
             var filesList = AppData.THFilesList;
@@ -140,8 +144,8 @@ namespace TranslationHelper.Functions
                     return;
                 }
 
-                var tableProgressMessage = $"{progressMessage} {table.TableName}>{tableIndex + 1}/{tables.Count}";
-                Logger.Info(tableProgressMessage);
+                //var tableProgressMessage = $"{progressMessage} {table.TableName}>{tableIndex + 1}/{tables.Count}";
+                //Logger.Info(tableProgressMessage);
 
                 var rows = table.Rows;
                 var rowCount = rows.Count;
@@ -223,10 +227,11 @@ namespace TranslationHelper.Functions
                     ResetDGVDataSource(-1, filesList, workTableDatagridview, false, table);
                 }
 
-                Logger.Info(tableProgressMessage);
+                //Logger.Info(tableProgressMessage);
             });
 
-            
+            Logger.Info(T._("Load DB finished!"));
+
             System.Media.SystemSounds.Beep.Play();
         }
 
