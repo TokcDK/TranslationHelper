@@ -241,14 +241,12 @@
             // 
             // THFilesListPanel
             // 
-            this.THFilesListPanel.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
             this.THFilesListPanel.Controls.Add(this.THFilesList);
+            this.THFilesListPanel.Dock = System.Windows.Forms.DockStyle.Fill;
             this.THFilesListPanel.Location = new System.Drawing.Point(0, 0);
             this.THFilesListPanel.Margin = new System.Windows.Forms.Padding(0);
             this.THFilesListPanel.Name = "THFilesListPanel";
-            this.THFilesListPanel.Size = new System.Drawing.Size(128, 281);
+            this.THFilesListPanel.Size = new System.Drawing.Size(127, 308);
             this.THFilesListPanel.TabIndex = 1;
             // 
             // THFilesList
@@ -260,7 +258,7 @@
             this.THFilesList.Margin = new System.Windows.Forms.Padding(0);
             this.THFilesList.Name = "THFilesList";
             this.THFilesList.SelectionMode = System.Windows.Forms.SelectionMode.MultiExtended;
-            this.THFilesList.Size = new System.Drawing.Size(128, 281);
+            this.THFilesList.Size = new System.Drawing.Size(127, 308);
             this.THFilesList.TabIndex = 0;
             // 
             // tlpFileElements

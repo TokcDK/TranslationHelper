@@ -22,7 +22,7 @@ namespace TranslationHelper.Helpers
                 Name = "ui",
                 ControlName = mainForm.rtbLog.Name,
                 FormName = mainForm.Name,
-                MaxLines = 100,
+                MaxLines = 500,
                 AutoScroll = true,
                 UseDefaultRowColoringRules = true,
                 Layout = generalLayout
