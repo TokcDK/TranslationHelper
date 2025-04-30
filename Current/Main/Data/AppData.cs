@@ -29,10 +29,6 @@ namespace TranslationHelper.Data
 
             FilesListControl = new FilesListControlListBox(); // set using files list control
 
-            //OriginalsTableRowCoordinates = new ConcurrentDictionary<string, ConcurrentDictionary<string, ConcurrentSet<int>>>();
-            //THFilesElementsDictionary = new Dictionary<string, string>();
-            //THFilesElementsDictionaryInfo = new Dictionary<string, string>();
-
             SelectedProjectFilePath = string.Empty;
 
             ProjectsList = ProjectTools.GetListOfProjectTypes();
