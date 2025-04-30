@@ -29,9 +29,9 @@
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle3 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle7 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle8 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle9 = new System.Windows.Forms.DataGridViewCellStyle();
             this.MainMenus = new System.Windows.Forms.MenuStrip();
             this.mainMenusHereToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.editToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -71,6 +71,8 @@
             this.mainFormRootWorkspaceLogContainer = new System.Windows.Forms.SplitContainer();
             this.rtbLog = new System.Windows.Forms.RichTextBox();
             this.logSplitter = new System.Windows.Forms.Splitter();
+            this.LogTableLayoutPanel = new System.Windows.Forms.TableLayoutPanel();
+            this.OpenCurrentLogFileButton = new System.Windows.Forms.Button();
             this.MainMenus.SuspendLayout();
             this.frmMainPanel.SuspendLayout();
             this.tlpFrmMain.SuspendLayout();
@@ -103,6 +105,7 @@
             this.mainFormRootWorkspaceLogContainer.Panel1.SuspendLayout();
             this.mainFormRootWorkspaceLogContainer.Panel2.SuspendLayout();
             this.mainFormRootWorkspaceLogContainer.SuspendLayout();
+            this.LogTableLayoutPanel.SuspendLayout();
             this.SuspendLayout();
             // 
             // MainMenus
@@ -303,28 +306,28 @@
             this.THFiltersDataGridView.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.THFiltersDataGridView.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.THFiltersDataGridView.ColumnHeadersVisible = false;
-            dataGridViewCellStyle1.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle1.BackColor = System.Drawing.SystemColors.Window;
-            dataGridViewCellStyle1.Font = new System.Drawing.Font("Tahoma", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            dataGridViewCellStyle1.ForeColor = System.Drawing.SystemColors.ControlText;
-            dataGridViewCellStyle1.SelectionBackColor = System.Drawing.SystemColors.HighlightText;
-            dataGridViewCellStyle1.SelectionForeColor = System.Drawing.SystemColors.ControlText;
-            dataGridViewCellStyle1.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
-            this.THFiltersDataGridView.DefaultCellStyle = dataGridViewCellStyle1;
+            dataGridViewCellStyle7.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle7.BackColor = System.Drawing.SystemColors.Window;
+            dataGridViewCellStyle7.Font = new System.Drawing.Font("Tahoma", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            dataGridViewCellStyle7.ForeColor = System.Drawing.SystemColors.ControlText;
+            dataGridViewCellStyle7.SelectionBackColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle7.SelectionForeColor = System.Drawing.SystemColors.ControlText;
+            dataGridViewCellStyle7.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
+            this.THFiltersDataGridView.DefaultCellStyle = dataGridViewCellStyle7;
             this.THFiltersDataGridView.Dock = System.Windows.Forms.DockStyle.Fill;
             this.THFiltersDataGridView.EditMode = System.Windows.Forms.DataGridViewEditMode.EditOnEnter;
             this.THFiltersDataGridView.Enabled = false;
             this.THFiltersDataGridView.Location = new System.Drawing.Point(1, 1);
             this.THFiltersDataGridView.Margin = new System.Windows.Forms.Padding(1);
             this.THFiltersDataGridView.Name = "THFiltersDataGridView";
-            dataGridViewCellStyle2.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle2.BackColor = System.Drawing.SystemColors.Control;
-            dataGridViewCellStyle2.Font = new System.Drawing.Font("Tahoma", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            dataGridViewCellStyle2.ForeColor = System.Drawing.SystemColors.WindowText;
-            dataGridViewCellStyle2.SelectionBackColor = System.Drawing.SystemColors.Control;
-            dataGridViewCellStyle2.SelectionForeColor = System.Drawing.SystemColors.Desktop;
-            dataGridViewCellStyle2.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
-            this.THFiltersDataGridView.RowHeadersDefaultCellStyle = dataGridViewCellStyle2;
+            dataGridViewCellStyle8.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle8.BackColor = System.Drawing.SystemColors.Control;
+            dataGridViewCellStyle8.Font = new System.Drawing.Font("Tahoma", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            dataGridViewCellStyle8.ForeColor = System.Drawing.SystemColors.WindowText;
+            dataGridViewCellStyle8.SelectionBackColor = System.Drawing.SystemColors.Control;
+            dataGridViewCellStyle8.SelectionForeColor = System.Drawing.SystemColors.Desktop;
+            dataGridViewCellStyle8.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
+            this.THFiltersDataGridView.RowHeadersDefaultCellStyle = dataGridViewCellStyle8;
             this.THFiltersDataGridView.RowTemplate.Height = 23;
             this.THFiltersDataGridView.Size = new System.Drawing.Size(633, 21);
             this.THFiltersDataGridView.TabIndex = 3;
@@ -361,8 +364,8 @@
             this.THFileElementsDataGridView.Location = new System.Drawing.Point(1, 26);
             this.THFileElementsDataGridView.Margin = new System.Windows.Forms.Padding(1, 1, 3, 1);
             this.THFileElementsDataGridView.Name = "THFileElementsDataGridView";
-            dataGridViewCellStyle3.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
-            this.THFileElementsDataGridView.RowsDefaultCellStyle = dataGridViewCellStyle3;
+            dataGridViewCellStyle9.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
+            this.THFileElementsDataGridView.RowsDefaultCellStyle = dataGridViewCellStyle9;
             this.THFileElementsDataGridView.RowTemplate.Height = 23;
             this.THFileElementsDataGridView.Size = new System.Drawing.Size(653, 281);
             this.THFileElementsDataGridView.TabIndex = 2;
@@ -597,7 +600,7 @@
             // 
             // mainFormRootWorkspaceLogContainer.Panel2
             // 
-            this.mainFormRootWorkspaceLogContainer.Panel2.Controls.Add(this.rtbLog);
+            this.mainFormRootWorkspaceLogContainer.Panel2.Controls.Add(this.LogTableLayoutPanel);
             this.mainFormRootWorkspaceLogContainer.Panel2.Controls.Add(this.logSplitter);
             this.mainFormRootWorkspaceLogContainer.Size = new System.Drawing.Size(790, 485);
             this.mainFormRootWorkspaceLogContainer.SplitterDistance = 425;
@@ -606,10 +609,11 @@
             // rtbLog
             // 
             this.rtbLog.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.rtbLog.Location = new System.Drawing.Point(0, 3);
+            this.rtbLog.Location = new System.Drawing.Point(0, 0);
+            this.rtbLog.Margin = new System.Windows.Forms.Padding(0);
             this.rtbLog.Name = "rtbLog";
             this.rtbLog.ReadOnly = true;
-            this.rtbLog.Size = new System.Drawing.Size(790, 53);
+            this.rtbLog.Size = new System.Drawing.Size(775, 53);
             this.rtbLog.TabIndex = 1;
             this.rtbLog.Text = "";
             // 
@@ -623,6 +627,33 @@
             this.logSplitter.Size = new System.Drawing.Size(790, 3);
             this.logSplitter.TabIndex = 0;
             this.logSplitter.TabStop = false;
+            // 
+            // LogTableLayoutPanel
+            // 
+            this.LogTableLayoutPanel.ColumnCount = 2;
+            this.LogTableLayoutPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.LogTableLayoutPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 15F));
+            this.LogTableLayoutPanel.Controls.Add(this.rtbLog, 0, 0);
+            this.LogTableLayoutPanel.Controls.Add(this.OpenCurrentLogFileButton, 1, 0);
+            this.LogTableLayoutPanel.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.LogTableLayoutPanel.Location = new System.Drawing.Point(0, 3);
+            this.LogTableLayoutPanel.Name = "LogTableLayoutPanel";
+            this.LogTableLayoutPanel.RowCount = 1;
+            this.LogTableLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.LogTableLayoutPanel.Size = new System.Drawing.Size(790, 53);
+            this.LogTableLayoutPanel.TabIndex = 2;
+            // 
+            // OpenCurrentLogFileButton
+            // 
+            this.OpenCurrentLogFileButton.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.OpenCurrentLogFileButton.Location = new System.Drawing.Point(775, 0);
+            this.OpenCurrentLogFileButton.Margin = new System.Windows.Forms.Padding(0);
+            this.OpenCurrentLogFileButton.Name = "OpenCurrentLogFileButton";
+            this.OpenCurrentLogFileButton.Size = new System.Drawing.Size(15, 53);
+            this.OpenCurrentLogFileButton.TabIndex = 2;
+            this.OpenCurrentLogFileButton.Text = ">";
+            this.OpenCurrentLogFileButton.UseVisualStyleBackColor = true;
+            this.OpenCurrentLogFileButton.Click += new System.EventHandler(this.OpenCurrentLogFileButton_Click);
             // 
             // FormMain
             // 
@@ -676,6 +707,7 @@
             this.mainFormRootWorkspaceLogContainer.Panel2.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.mainFormRootWorkspaceLogContainer)).EndInit();
             this.mainFormRootWorkspaceLogContainer.ResumeLayout(false);
+            this.LogTableLayoutPanel.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -721,6 +753,8 @@
         private System.Windows.Forms.SplitContainer mainFormRootWorkspaceLogContainer;
         private System.Windows.Forms.Splitter logSplitter;
         public System.Windows.Forms.RichTextBox rtbLog;
+        private System.Windows.Forms.TableLayoutPanel LogTableLayoutPanel;
+        private System.Windows.Forms.Button OpenCurrentLogFileButton;
     }
 }
 

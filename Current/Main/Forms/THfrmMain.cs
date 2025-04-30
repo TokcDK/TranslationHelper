@@ -333,6 +333,11 @@ namespace TranslationHelper
 
         }
 
+        private void OpenCurrentLogFileButton_Click(object sender, EventArgs e)
+        {
+            AppHelper.OpenCurrentFileLogFile();
+        }
+
         //Материалы
         //по оптимизации кода
         //https://cc.davelozinski.com/c-sharp/fastest-way-to-compare-strings

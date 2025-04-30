@@ -7,11 +7,28 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Transactions;
+using System.IO;
 
 namespace TranslationHelper.Helpers
 {
     internal class AppHelper
     {
+        private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
+
+        internal static void OpenCurrentFileLogFile()
+        {
+            var logFilePath = Logger.Factory.Configuration.FindTargetByName<FileTarget>("file")?.FileName.Render(new LogEventInfo());
+            if (logFilePath != null && File.Exists(logFilePath))
+            {
+                System.Diagnostics.Process.Start("explorer.exe", logFilePath);
+            }
+            else
+            {
+                Logger.Info("Logger file is not found", logFilePath);
+            }
+        }
+
         internal static void SetupLogging(FormMain mainForm)
         {
             var config = LogManager.Configuration ?? new LoggingConfiguration();
@@ -30,7 +47,7 @@ namespace TranslationHelper.Helpers
 
             var fileTarget = new FileTarget("file")
             {
-                FileName = "Logs/${date:yyyy-MM-dd}.txt",
+                FileName = "Logs\\${date:yyyy-MM-dd}.txt",
                 MaxArchiveDays = 10,
                 Layout = generalLayout
             };
