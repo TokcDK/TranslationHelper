@@ -764,8 +764,8 @@
     <PackageReference Include="NGettext">
       <Version>0.6.7</Version>
     </PackageReference>
-    <PackageReference Include="NLog">
-      <Version>5.4.0</Version>
+    <PackageReference Include="NLog.Windows.Forms">
+      <Version>5.2.3</Version>
     </PackageReference>
     <PackageReference Include="NUnit">
       <Version>4.3.2</Version>

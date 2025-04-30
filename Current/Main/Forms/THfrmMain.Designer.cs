@@ -29,9 +29,9 @@
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle4 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle5 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle6 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle3 = new System.Windows.Forms.DataGridViewCellStyle();
             this.MainMenus = new System.Windows.Forms.MenuStrip();
             this.mainMenusHereToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.editToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -43,44 +43,53 @@
             this.RowMenus = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.frmMainPanel = new System.Windows.Forms.Panel();
             this.tlpFrmMain = new System.Windows.Forms.TableLayoutPanel();
-            this.tlpWorkInfo = new System.Windows.Forms.TableLayoutPanel();
-            this.TableCompleteInfoLabel = new System.Windows.Forms.Label();
-            this.tlpTextLenPosInfo = new System.Windows.Forms.TableLayoutPanel();
-            this.TargetTextBoxColumnPositionLabelData = new System.Windows.Forms.Label();
-            this.RTBInfoLengthLabel = new System.Windows.Forms.Label();
-            this.TargetTextBoxLinePositionLabel = new System.Windows.Forms.Label();
-            this.TranslationLongestLineLenghtLabel = new System.Windows.Forms.Label();
-            this.TargetTextBoxLinePositionLabelData = new System.Windows.Forms.Label();
-            this.TargetTextBoxColumnPositionLabel = new System.Windows.Forms.Label();
-            this.THInfolabel = new System.Windows.Forms.Label();
-            this.THActionProgressBar = new System.Windows.Forms.ProgressBar();
             this.THWorkSpaceSplitContainer = new System.Windows.Forms.SplitContainer();
-            this.THTextInfoAndEditPanel = new System.Windows.Forms.Panel();
-            this.THInfoEditSplitContainer = new System.Windows.Forms.SplitContainer();
-            this.THEditElementsSplitContainer = new System.Windows.Forms.SplitContainer();
-            this.THTargetRichTextBox = new System.Windows.Forms.RichTextBox();
-            this.THSourceRichTextBox = new System.Windows.Forms.RichTextBox();
-            this.THInfoTextBox = new System.Windows.Forms.TextBox();
             this.THFilesElementsPanel = new System.Windows.Forms.Panel();
             this.THsplitContainerFilesElements = new System.Windows.Forms.SplitContainer();
-            this.tlpFileElements = new System.Windows.Forms.TableLayoutPanel();
-            this.THFileElementsDataGridView = new System.Windows.Forms.DataGridView();
-            this.tlpFileElementsFilterAndReset = new System.Windows.Forms.TableLayoutPanel();
-            this.THbtnMainResetTable = new System.Windows.Forms.Button();
-            this.THFiltersDataGridView = new System.Windows.Forms.DataGridView();
             this.THFilesListPanel = new System.Windows.Forms.Panel();
             this.THFilesList = new System.Windows.Forms.ListBox();
+            this.tlpFileElements = new System.Windows.Forms.TableLayoutPanel();
+            this.tlpFileElementsFilterAndReset = new System.Windows.Forms.TableLayoutPanel();
+            this.THFiltersDataGridView = new System.Windows.Forms.DataGridView();
+            this.THbtnMainResetTable = new System.Windows.Forms.Button();
+            this.THFileElementsDataGridView = new System.Windows.Forms.DataGridView();
+            this.THTextInfoAndEditPanel = new System.Windows.Forms.Panel();
+            this.THInfoEditSplitContainer = new System.Windows.Forms.SplitContainer();
+            this.THInfoTextBox = new System.Windows.Forms.TextBox();
+            this.THEditElementsSplitContainer = new System.Windows.Forms.SplitContainer();
+            this.THSourceRichTextBox = new System.Windows.Forms.RichTextBox();
+            this.THTargetRichTextBox = new System.Windows.Forms.RichTextBox();
+            this.tlpWorkInfo = new System.Windows.Forms.TableLayoutPanel();
+            this.THActionProgressBar = new System.Windows.Forms.ProgressBar();
+            this.THInfolabel = new System.Windows.Forms.Label();
+            this.tlpTextLenPosInfo = new System.Windows.Forms.TableLayoutPanel();
+            this.TargetTextBoxColumnPositionLabel = new System.Windows.Forms.Label();
+            this.TargetTextBoxLinePositionLabelData = new System.Windows.Forms.Label();
+            this.TranslationLongestLineLenghtLabel = new System.Windows.Forms.Label();
+            this.TargetTextBoxLinePositionLabel = new System.Windows.Forms.Label();
+            this.RTBInfoLengthLabel = new System.Windows.Forms.Label();
+            this.TargetTextBoxColumnPositionLabelData = new System.Windows.Forms.Label();
+            this.TableCompleteInfoLabel = new System.Windows.Forms.Label();
             this.mainFormRootWorkspaceLogContainer = new System.Windows.Forms.SplitContainer();
             this.logSplitter = new System.Windows.Forms.Splitter();
+            this.rtbLog = new System.Windows.Forms.RichTextBox();
             this.MainMenus.SuspendLayout();
             this.frmMainPanel.SuspendLayout();
             this.tlpFrmMain.SuspendLayout();
-            this.tlpWorkInfo.SuspendLayout();
-            this.tlpTextLenPosInfo.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.THWorkSpaceSplitContainer)).BeginInit();
             this.THWorkSpaceSplitContainer.Panel1.SuspendLayout();
             this.THWorkSpaceSplitContainer.Panel2.SuspendLayout();
             this.THWorkSpaceSplitContainer.SuspendLayout();
+            this.THFilesElementsPanel.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.THsplitContainerFilesElements)).BeginInit();
+            this.THsplitContainerFilesElements.Panel1.SuspendLayout();
+            this.THsplitContainerFilesElements.Panel2.SuspendLayout();
+            this.THsplitContainerFilesElements.SuspendLayout();
+            this.THFilesListPanel.SuspendLayout();
+            this.tlpFileElements.SuspendLayout();
+            this.tlpFileElementsFilterAndReset.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.THFiltersDataGridView)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.THFileElementsDataGridView)).BeginInit();
             this.THTextInfoAndEditPanel.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.THInfoEditSplitContainer)).BeginInit();
             this.THInfoEditSplitContainer.Panel1.SuspendLayout();
@@ -90,16 +99,8 @@
             this.THEditElementsSplitContainer.Panel1.SuspendLayout();
             this.THEditElementsSplitContainer.Panel2.SuspendLayout();
             this.THEditElementsSplitContainer.SuspendLayout();
-            this.THFilesElementsPanel.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.THsplitContainerFilesElements)).BeginInit();
-            this.THsplitContainerFilesElements.Panel1.SuspendLayout();
-            this.THsplitContainerFilesElements.Panel2.SuspendLayout();
-            this.THsplitContainerFilesElements.SuspendLayout();
-            this.tlpFileElements.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.THFileElementsDataGridView)).BeginInit();
-            this.tlpFileElementsFilterAndReset.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.THFiltersDataGridView)).BeginInit();
-            this.THFilesListPanel.SuspendLayout();
+            this.tlpWorkInfo.SuspendLayout();
+            this.tlpTextLenPosInfo.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.mainFormRootWorkspaceLogContainer)).BeginInit();
             this.mainFormRootWorkspaceLogContainer.Panel1.SuspendLayout();
             this.mainFormRootWorkspaceLogContainer.Panel2.SuspendLayout();
@@ -190,144 +191,6 @@
             this.tlpFrmMain.Size = new System.Drawing.Size(790, 425);
             this.tlpFrmMain.TabIndex = 0;
             // 
-            // tlpWorkInfo
-            // 
-            this.tlpWorkInfo.ColumnCount = 4;
-            this.tlpWorkInfo.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 89F));
-            this.tlpWorkInfo.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 44.44445F));
-            this.tlpWorkInfo.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 37.55458F));
-            this.tlpWorkInfo.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 18.04949F));
-            this.tlpWorkInfo.Controls.Add(this.THActionProgressBar, 0, 0);
-            this.tlpWorkInfo.Controls.Add(this.THInfolabel, 1, 0);
-            this.tlpWorkInfo.Controls.Add(this.tlpTextLenPosInfo, 2, 0);
-            this.tlpWorkInfo.Controls.Add(this.TableCompleteInfoLabel, 3, 0);
-            this.tlpWorkInfo.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.tlpWorkInfo.Location = new System.Drawing.Point(0, 405);
-            this.tlpWorkInfo.Margin = new System.Windows.Forms.Padding(0);
-            this.tlpWorkInfo.Name = "tlpWorkInfo";
-            this.tlpWorkInfo.RowCount = 1;
-            this.tlpWorkInfo.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tlpWorkInfo.Size = new System.Drawing.Size(790, 20);
-            this.tlpWorkInfo.TabIndex = 6;
-            // 
-            // TableCompleteInfoLabel
-            // 
-            this.TableCompleteInfoLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.TableCompleteInfoLabel.AutoSize = true;
-            this.TableCompleteInfoLabel.Location = new System.Drawing.Point(763, 7);
-            this.TableCompleteInfoLabel.Name = "TableCompleteInfoLabel";
-            this.TableCompleteInfoLabel.Size = new System.Drawing.Size(24, 13);
-            this.TableCompleteInfoLabel.TabIndex = 8;
-            this.TableCompleteInfoLabel.Text = "0/0";
-            this.TableCompleteInfoLabel.Click += new System.EventHandler(this.TableCompleteInfoLabel_Click);
-            // 
-            // tlpTextLenPosInfo
-            // 
-            this.tlpTextLenPosInfo.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.tlpTextLenPosInfo.ColumnCount = 6;
-            this.tlpTextLenPosInfo.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 20F));
-            this.tlpTextLenPosInfo.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 43F));
-            this.tlpTextLenPosInfo.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 23F));
-            this.tlpTextLenPosInfo.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 34F));
-            this.tlpTextLenPosInfo.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 22F));
-            this.tlpTextLenPosInfo.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 115F));
-            this.tlpTextLenPosInfo.Controls.Add(this.TargetTextBoxColumnPositionLabel, 4, 0);
-            this.tlpTextLenPosInfo.Controls.Add(this.TargetTextBoxLinePositionLabelData, 3, 0);
-            this.tlpTextLenPosInfo.Controls.Add(this.TranslationLongestLineLenghtLabel, 1, 0);
-            this.tlpTextLenPosInfo.Controls.Add(this.TargetTextBoxLinePositionLabel, 2, 0);
-            this.tlpTextLenPosInfo.Controls.Add(this.RTBInfoLengthLabel, 0, 0);
-            this.tlpTextLenPosInfo.Controls.Add(this.TargetTextBoxColumnPositionLabelData, 5, 0);
-            this.tlpTextLenPosInfo.Location = new System.Drawing.Point(400, 0);
-            this.tlpTextLenPosInfo.Margin = new System.Windows.Forms.Padding(0);
-            this.tlpTextLenPosInfo.Name = "tlpTextLenPosInfo";
-            this.tlpTextLenPosInfo.RowCount = 1;
-            this.tlpTextLenPosInfo.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tlpTextLenPosInfo.Size = new System.Drawing.Size(135, 20);
-            this.tlpTextLenPosInfo.TabIndex = 8;
-            // 
-            // TargetTextBoxColumnPositionLabelData
-            // 
-            this.TargetTextBoxColumnPositionLabelData.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.TargetTextBoxColumnPositionLabelData.AutoSize = true;
-            this.TargetTextBoxColumnPositionLabelData.Location = new System.Drawing.Point(145, 7);
-            this.TargetTextBoxColumnPositionLabelData.Name = "TargetTextBoxColumnPositionLabelData";
-            this.TargetTextBoxColumnPositionLabelData.Size = new System.Drawing.Size(25, 13);
-            this.TargetTextBoxColumnPositionLabelData.TabIndex = 13;
-            this.TargetTextBoxColumnPositionLabelData.Text = "999";
-            // 
-            // RTBInfoLengthLabel
-            // 
-            this.RTBInfoLengthLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.RTBInfoLengthLabel.AutoSize = true;
-            this.RTBInfoLengthLabel.Location = new System.Drawing.Point(3, 7);
-            this.RTBInfoLengthLabel.Name = "RTBInfoLengthLabel";
-            this.RTBInfoLengthLabel.Size = new System.Drawing.Size(12, 13);
-            this.RTBInfoLengthLabel.TabIndex = 10;
-            this.RTBInfoLengthLabel.Text = "l:";
-            // 
-            // TargetTextBoxLinePositionLabel
-            // 
-            this.TargetTextBoxLinePositionLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.TargetTextBoxLinePositionLabel.AutoSize = true;
-            this.TargetTextBoxLinePositionLabel.Location = new System.Drawing.Point(66, 7);
-            this.TargetTextBoxLinePositionLabel.Name = "TargetTextBoxLinePositionLabel";
-            this.TargetTextBoxLinePositionLabel.Size = new System.Drawing.Size(13, 13);
-            this.TargetTextBoxLinePositionLabel.TabIndex = 12;
-            this.TargetTextBoxLinePositionLabel.Text = "r:";
-            // 
-            // TranslationLongestLineLenghtLabel
-            // 
-            this.TranslationLongestLineLenghtLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.TranslationLongestLineLenghtLabel.AutoSize = true;
-            this.TranslationLongestLineLenghtLabel.Location = new System.Drawing.Point(23, 7);
-            this.TranslationLongestLineLenghtLabel.Name = "TranslationLongestLineLenghtLabel";
-            this.TranslationLongestLineLenghtLabel.Size = new System.Drawing.Size(37, 13);
-            this.TranslationLongestLineLenghtLabel.TabIndex = 9;
-            this.TranslationLongestLineLenghtLabel.Text = "99999";
-            // 
-            // TargetTextBoxLinePositionLabelData
-            // 
-            this.TargetTextBoxLinePositionLabelData.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.TargetTextBoxLinePositionLabelData.AutoSize = true;
-            this.TargetTextBoxLinePositionLabelData.Location = new System.Drawing.Point(89, 7);
-            this.TargetTextBoxLinePositionLabelData.Name = "TargetTextBoxLinePositionLabelData";
-            this.TargetTextBoxLinePositionLabelData.Size = new System.Drawing.Size(25, 13);
-            this.TargetTextBoxLinePositionLabelData.TabIndex = 11;
-            this.TargetTextBoxLinePositionLabelData.Text = "999";
-            // 
-            // TargetTextBoxColumnPositionLabel
-            // 
-            this.TargetTextBoxColumnPositionLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.TargetTextBoxColumnPositionLabel.AutoSize = true;
-            this.TargetTextBoxColumnPositionLabel.Location = new System.Drawing.Point(123, 7);
-            this.TargetTextBoxColumnPositionLabel.Name = "TargetTextBoxColumnPositionLabel";
-            this.TargetTextBoxColumnPositionLabel.Size = new System.Drawing.Size(16, 13);
-            this.TargetTextBoxColumnPositionLabel.TabIndex = 14;
-            this.TargetTextBoxColumnPositionLabel.Text = "c:";
-            // 
-            // THInfolabel
-            // 
-            this.THInfolabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.THInfolabel.AutoSize = true;
-            this.THInfolabel.Location = new System.Drawing.Point(92, 7);
-            this.THInfolabel.Name = "THInfolabel";
-            this.THInfolabel.Size = new System.Drawing.Size(41, 13);
-            this.THInfolabel.TabIndex = 7;
-            this.THInfolabel.Text = "infotext";
-            this.THInfolabel.Visible = false;
-            this.THInfolabel.Click += new System.EventHandler(this.THInfolabel_Click);
-            // 
-            // THActionProgressBar
-            // 
-            this.THActionProgressBar.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.THActionProgressBar.Location = new System.Drawing.Point(3, 7);
-            this.THActionProgressBar.MarqueeAnimationSpeed = 50;
-            this.THActionProgressBar.Name = "THActionProgressBar";
-            this.THActionProgressBar.Size = new System.Drawing.Size(82, 10);
-            this.THActionProgressBar.Style = System.Windows.Forms.ProgressBarStyle.Marquee;
-            this.THActionProgressBar.TabIndex = 6;
-            this.THActionProgressBar.Visible = false;
-            // 
             // THWorkSpaceSplitContainer
             // 
             this.THWorkSpaceSplitContainer.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
@@ -348,99 +211,6 @@
             this.THWorkSpaceSplitContainer.Size = new System.Drawing.Size(790, 405);
             this.THWorkSpaceSplitContainer.SplitterDistance = 310;
             this.THWorkSpaceSplitContainer.TabIndex = 5;
-            // 
-            // THTextInfoAndEditPanel
-            // 
-            this.THTextInfoAndEditPanel.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.THTextInfoAndEditPanel.Controls.Add(this.THInfoEditSplitContainer);
-            this.THTextInfoAndEditPanel.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.THTextInfoAndEditPanel.Location = new System.Drawing.Point(0, 0);
-            this.THTextInfoAndEditPanel.Margin = new System.Windows.Forms.Padding(0);
-            this.THTextInfoAndEditPanel.Name = "THTextInfoAndEditPanel";
-            this.THTextInfoAndEditPanel.Size = new System.Drawing.Size(790, 91);
-            this.THTextInfoAndEditPanel.TabIndex = 6;
-            // 
-            // THInfoEditSplitContainer
-            // 
-            this.THInfoEditSplitContainer.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.THInfoEditSplitContainer.Location = new System.Drawing.Point(0, 0);
-            this.THInfoEditSplitContainer.Margin = new System.Windows.Forms.Padding(0);
-            this.THInfoEditSplitContainer.Name = "THInfoEditSplitContainer";
-            // 
-            // THInfoEditSplitContainer.Panel1
-            // 
-            this.THInfoEditSplitContainer.Panel1.Controls.Add(this.THInfoTextBox);
-            // 
-            // THInfoEditSplitContainer.Panel2
-            // 
-            this.THInfoEditSplitContainer.Panel2.Controls.Add(this.THEditElementsSplitContainer);
-            this.THInfoEditSplitContainer.Size = new System.Drawing.Size(788, 89);
-            this.THInfoEditSplitContainer.SplitterDistance = 126;
-            this.THInfoEditSplitContainer.TabIndex = 5;
-            // 
-            // THEditElementsSplitContainer
-            // 
-            this.THEditElementsSplitContainer.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.THEditElementsSplitContainer.Location = new System.Drawing.Point(0, 0);
-            this.THEditElementsSplitContainer.Name = "THEditElementsSplitContainer";
-            // 
-            // THEditElementsSplitContainer.Panel1
-            // 
-            this.THEditElementsSplitContainer.Panel1.Controls.Add(this.THSourceRichTextBox);
-            // 
-            // THEditElementsSplitContainer.Panel2
-            // 
-            this.THEditElementsSplitContainer.Panel2.Controls.Add(this.THTargetRichTextBox);
-            this.THEditElementsSplitContainer.Size = new System.Drawing.Size(658, 89);
-            this.THEditElementsSplitContainer.SplitterDistance = 304;
-            this.THEditElementsSplitContainer.TabIndex = 4;
-            // 
-            // THTargetRichTextBox
-            // 
-            this.THTargetRichTextBox.BorderStyle = System.Windows.Forms.BorderStyle.None;
-            this.THTargetRichTextBox.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.THTargetRichTextBox.Enabled = false;
-            this.THTargetRichTextBox.Location = new System.Drawing.Point(0, 0);
-            this.THTargetRichTextBox.Margin = new System.Windows.Forms.Padding(0);
-            this.THTargetRichTextBox.Name = "THTargetRichTextBox";
-            this.THTargetRichTextBox.Size = new System.Drawing.Size(350, 89);
-            this.THTargetRichTextBox.TabIndex = 1;
-            this.THTargetRichTextBox.Text = "";
-            this.THTargetRichTextBox.SelectionChanged += new System.EventHandler(this.THTargetRichTextBox_SelectionChanged);
-            this.THTargetRichTextBox.TextChanged += new System.EventHandler(this.THTargetRichTextBox_TextChanged);
-            this.THTargetRichTextBox.KeyDown += new System.Windows.Forms.KeyEventHandler(this.THTargetTextBox_KeyDown);
-            this.THTargetRichTextBox.Leave += new System.EventHandler(this.THTargetTextBox_Leave);
-            this.THTargetRichTextBox.MouseEnter += new System.EventHandler(this.THTargetRichTextBox_MouseEnter);
-            this.THTargetRichTextBox.MouseLeave += new System.EventHandler(this.THTargetRichTextBox_MouseLeave);
-            // 
-            // THSourceRichTextBox
-            // 
-            this.THSourceRichTextBox.BorderStyle = System.Windows.Forms.BorderStyle.None;
-            this.THSourceRichTextBox.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.THSourceRichTextBox.Location = new System.Drawing.Point(0, 0);
-            this.THSourceRichTextBox.Margin = new System.Windows.Forms.Padding(0);
-            this.THSourceRichTextBox.Name = "THSourceRichTextBox";
-            this.THSourceRichTextBox.ReadOnly = true;
-            this.THSourceRichTextBox.Size = new System.Drawing.Size(304, 89);
-            this.THSourceRichTextBox.TabIndex = 2;
-            this.THSourceRichTextBox.Text = "";
-            this.THSourceRichTextBox.SelectionChanged += new System.EventHandler(this.THSourceRichTextBox_SelectionChanged);
-            this.THSourceRichTextBox.MouseClick += new System.Windows.Forms.MouseEventHandler(this.THSourceRichTextBox_MouseClick);
-            this.THSourceRichTextBox.MouseEnter += new System.EventHandler(this.THSourceRichTextBox_MouseEnter);
-            this.THSourceRichTextBox.MouseLeave += new System.EventHandler(this.THSourceRichTextBox_MouseLeave);
-            // 
-            // THInfoTextBox
-            // 
-            this.THInfoTextBox.BorderStyle = System.Windows.Forms.BorderStyle.None;
-            this.THInfoTextBox.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.THInfoTextBox.Location = new System.Drawing.Point(0, 0);
-            this.THInfoTextBox.Margin = new System.Windows.Forms.Padding(0);
-            this.THInfoTextBox.Multiline = true;
-            this.THInfoTextBox.Name = "THInfoTextBox";
-            this.THInfoTextBox.ReadOnly = true;
-            this.THInfoTextBox.ScrollBars = System.Windows.Forms.ScrollBars.Both;
-            this.THInfoTextBox.Size = new System.Drawing.Size(126, 89);
-            this.THInfoTextBox.TabIndex = 0;
             // 
             // THFilesElementsPanel
             // 
@@ -471,123 +241,6 @@
             this.THsplitContainerFilesElements.SplitterDistance = 127;
             this.THsplitContainerFilesElements.TabIndex = 3;
             // 
-            // tlpFileElements
-            // 
-            this.tlpFileElements.ColumnCount = 1;
-            this.tlpFileElements.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tlpFileElements.Controls.Add(this.tlpFileElementsFilterAndReset, 0, 0);
-            this.tlpFileElements.Controls.Add(this.THFileElementsDataGridView, 0, 1);
-            this.tlpFileElements.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.tlpFileElements.Location = new System.Drawing.Point(0, 0);
-            this.tlpFileElements.Margin = new System.Windows.Forms.Padding(0);
-            this.tlpFileElements.Name = "tlpFileElements";
-            this.tlpFileElements.RowCount = 2;
-            this.tlpFileElements.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 25F));
-            this.tlpFileElements.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tlpFileElements.Size = new System.Drawing.Size(657, 308);
-            this.tlpFileElements.TabIndex = 5;
-            // 
-            // THFileElementsDataGridView
-            // 
-            this.THFileElementsDataGridView.AllowUserToAddRows = false;
-            this.THFileElementsDataGridView.AllowUserToDeleteRows = false;
-            this.THFileElementsDataGridView.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.THFileElementsDataGridView.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
-            this.THFileElementsDataGridView.AutoSizeRowsMode = System.Windows.Forms.DataGridViewAutoSizeRowsMode.DisplayedCells;
-            this.THFileElementsDataGridView.BackgroundColor = System.Drawing.SystemColors.ButtonHighlight;
-            this.THFileElementsDataGridView.BorderStyle = System.Windows.Forms.BorderStyle.None;
-            this.THFileElementsDataGridView.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.THFileElementsDataGridView.EditMode = System.Windows.Forms.DataGridViewEditMode.EditOnKeystroke;
-            this.THFileElementsDataGridView.Location = new System.Drawing.Point(1, 26);
-            this.THFileElementsDataGridView.Margin = new System.Windows.Forms.Padding(1, 1, 3, 1);
-            this.THFileElementsDataGridView.Name = "THFileElementsDataGridView";
-            dataGridViewCellStyle4.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
-            this.THFileElementsDataGridView.RowsDefaultCellStyle = dataGridViewCellStyle4;
-            this.THFileElementsDataGridView.RowTemplate.Height = 23;
-            this.THFileElementsDataGridView.Size = new System.Drawing.Size(653, 281);
-            this.THFileElementsDataGridView.TabIndex = 2;
-            this.THFileElementsDataGridView.CellBeginEdit += new System.Windows.Forms.DataGridViewCellCancelEventHandler(this.THFileElementsDataGridView_CellBeginEdit);
-            this.THFileElementsDataGridView.CellClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.THFileElementsDataGridView_CellClick);
-            this.THFileElementsDataGridView.CellEndEdit += new System.Windows.Forms.DataGridViewCellEventHandler(this.THFileElementsDataGridView_CellEndEdit);
-            this.THFileElementsDataGridView.CellEnter += new System.Windows.Forms.DataGridViewCellEventHandler(this.THFileElementsDataGridView_CellEnter);
-            this.THFileElementsDataGridView.CellMouseClick += new System.Windows.Forms.DataGridViewCellMouseEventHandler(this.THFileElementsDataGridView_CellMouseClick);
-            this.THFileElementsDataGridView.CellMouseDown += new System.Windows.Forms.DataGridViewCellMouseEventHandler(this.THFileElementsDataGridView_CellMouseDown);
-            this.THFileElementsDataGridView.CellValidated += new System.Windows.Forms.DataGridViewCellEventHandler(this.THFileElementsDataGridView_CellValidated);
-            this.THFileElementsDataGridView.CellValueChanged += new System.Windows.Forms.DataGridViewCellEventHandler(this.THFileElementsDataGridView_CellValueChanged);
-            this.THFileElementsDataGridView.RowPostPaint += new System.Windows.Forms.DataGridViewRowPostPaintEventHandler(this.THFileElementsDataGridView_RowPostPaint);
-            this.THFileElementsDataGridView.SelectionChanged += new System.EventHandler(this.THFileElementsDataGridView_SelectionChanged);
-            this.THFileElementsDataGridView.Sorted += new System.EventHandler(this.THFileElementsDataGridView_Sorted);
-            // 
-            // tlpFileElementsFilterAndReset
-            // 
-            this.tlpFileElementsFilterAndReset.ColumnCount = 2;
-            this.tlpFileElementsFilterAndReset.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tlpFileElementsFilterAndReset.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 20F));
-            this.tlpFileElementsFilterAndReset.Controls.Add(this.THFiltersDataGridView, 0, 0);
-            this.tlpFileElementsFilterAndReset.Controls.Add(this.THbtnMainResetTable, 1, 0);
-            this.tlpFileElementsFilterAndReset.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.tlpFileElementsFilterAndReset.Location = new System.Drawing.Point(1, 1);
-            this.tlpFileElementsFilterAndReset.Margin = new System.Windows.Forms.Padding(1);
-            this.tlpFileElementsFilterAndReset.Name = "tlpFileElementsFilterAndReset";
-            this.tlpFileElementsFilterAndReset.RowCount = 1;
-            this.tlpFileElementsFilterAndReset.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tlpFileElementsFilterAndReset.Size = new System.Drawing.Size(655, 23);
-            this.tlpFileElementsFilterAndReset.TabIndex = 0;
-            // 
-            // THbtnMainResetTable
-            // 
-            this.THbtnMainResetTable.Location = new System.Drawing.Point(636, 1);
-            this.THbtnMainResetTable.Margin = new System.Windows.Forms.Padding(1);
-            this.THbtnMainResetTable.Name = "THbtnMainResetTable";
-            this.THbtnMainResetTable.Size = new System.Drawing.Size(18, 21);
-            this.THbtnMainResetTable.TabIndex = 4;
-            this.THbtnMainResetTable.Text = "-";
-            this.THbtnMainResetTable.UseVisualStyleBackColor = true;
-            this.THbtnMainResetTable.Click += new System.EventHandler(this.THMainResetTableButton_Click);
-            // 
-            // THFiltersDataGridView
-            // 
-            this.THFiltersDataGridView.AllowUserToAddRows = false;
-            this.THFiltersDataGridView.AllowUserToDeleteRows = false;
-            this.THFiltersDataGridView.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
-            this.THFiltersDataGridView.AutoSizeRowsMode = System.Windows.Forms.DataGridViewAutoSizeRowsMode.DisplayedCellsExceptHeaders;
-            this.THFiltersDataGridView.BackgroundColor = System.Drawing.SystemColors.ButtonHighlight;
-            this.THFiltersDataGridView.BorderStyle = System.Windows.Forms.BorderStyle.None;
-            this.THFiltersDataGridView.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.THFiltersDataGridView.ColumnHeadersVisible = false;
-            dataGridViewCellStyle5.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle5.BackColor = System.Drawing.SystemColors.Window;
-            dataGridViewCellStyle5.Font = new System.Drawing.Font("Tahoma", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            dataGridViewCellStyle5.ForeColor = System.Drawing.SystemColors.ControlText;
-            dataGridViewCellStyle5.SelectionBackColor = System.Drawing.SystemColors.HighlightText;
-            dataGridViewCellStyle5.SelectionForeColor = System.Drawing.SystemColors.ControlText;
-            dataGridViewCellStyle5.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
-            this.THFiltersDataGridView.DefaultCellStyle = dataGridViewCellStyle5;
-            this.THFiltersDataGridView.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.THFiltersDataGridView.EditMode = System.Windows.Forms.DataGridViewEditMode.EditOnEnter;
-            this.THFiltersDataGridView.Enabled = false;
-            this.THFiltersDataGridView.Location = new System.Drawing.Point(1, 1);
-            this.THFiltersDataGridView.Margin = new System.Windows.Forms.Padding(1);
-            this.THFiltersDataGridView.Name = "THFiltersDataGridView";
-            dataGridViewCellStyle6.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle6.BackColor = System.Drawing.SystemColors.Control;
-            dataGridViewCellStyle6.Font = new System.Drawing.Font("Tahoma", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            dataGridViewCellStyle6.ForeColor = System.Drawing.SystemColors.WindowText;
-            dataGridViewCellStyle6.SelectionBackColor = System.Drawing.SystemColors.Control;
-            dataGridViewCellStyle6.SelectionForeColor = System.Drawing.SystemColors.Desktop;
-            dataGridViewCellStyle6.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
-            this.THFiltersDataGridView.RowHeadersDefaultCellStyle = dataGridViewCellStyle6;
-            this.THFiltersDataGridView.RowTemplate.Height = 23;
-            this.THFiltersDataGridView.Size = new System.Drawing.Size(633, 21);
-            this.THFiltersDataGridView.TabIndex = 3;
-            this.THFiltersDataGridView.CellClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.THFiltersDataGridView_CellClick);
-            this.THFiltersDataGridView.CellValueChanged += new System.Windows.Forms.DataGridViewCellEventHandler(this.THFiltersDataGridView_CellValueChanged);
-            this.THFiltersDataGridView.RowPostPaint += new System.Windows.Forms.DataGridViewRowPostPaintEventHandler(this.THFiltersDataGridView_RowPostPaint);
-            this.THFiltersDataGridView.MouseEnter += new System.EventHandler(this.THFiltersDataGridView_MouseEnter);
-            this.THFiltersDataGridView.MouseLeave += new System.EventHandler(this.THFiltersDataGridView_MouseLeave);
-            // 
             // THFilesListPanel
             // 
             this.THFilesListPanel.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
@@ -612,6 +265,354 @@
             this.THFilesList.Size = new System.Drawing.Size(128, 281);
             this.THFilesList.TabIndex = 0;
             // 
+            // tlpFileElements
+            // 
+            this.tlpFileElements.ColumnCount = 1;
+            this.tlpFileElements.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.tlpFileElements.Controls.Add(this.tlpFileElementsFilterAndReset, 0, 0);
+            this.tlpFileElements.Controls.Add(this.THFileElementsDataGridView, 0, 1);
+            this.tlpFileElements.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.tlpFileElements.Location = new System.Drawing.Point(0, 0);
+            this.tlpFileElements.Margin = new System.Windows.Forms.Padding(0);
+            this.tlpFileElements.Name = "tlpFileElements";
+            this.tlpFileElements.RowCount = 2;
+            this.tlpFileElements.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 25F));
+            this.tlpFileElements.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.tlpFileElements.Size = new System.Drawing.Size(657, 308);
+            this.tlpFileElements.TabIndex = 5;
+            // 
+            // tlpFileElementsFilterAndReset
+            // 
+            this.tlpFileElementsFilterAndReset.ColumnCount = 2;
+            this.tlpFileElementsFilterAndReset.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.tlpFileElementsFilterAndReset.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 20F));
+            this.tlpFileElementsFilterAndReset.Controls.Add(this.THFiltersDataGridView, 0, 0);
+            this.tlpFileElementsFilterAndReset.Controls.Add(this.THbtnMainResetTable, 1, 0);
+            this.tlpFileElementsFilterAndReset.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.tlpFileElementsFilterAndReset.Location = new System.Drawing.Point(1, 1);
+            this.tlpFileElementsFilterAndReset.Margin = new System.Windows.Forms.Padding(1);
+            this.tlpFileElementsFilterAndReset.Name = "tlpFileElementsFilterAndReset";
+            this.tlpFileElementsFilterAndReset.RowCount = 1;
+            this.tlpFileElementsFilterAndReset.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.tlpFileElementsFilterAndReset.Size = new System.Drawing.Size(655, 23);
+            this.tlpFileElementsFilterAndReset.TabIndex = 0;
+            // 
+            // THFiltersDataGridView
+            // 
+            this.THFiltersDataGridView.AllowUserToAddRows = false;
+            this.THFiltersDataGridView.AllowUserToDeleteRows = false;
+            this.THFiltersDataGridView.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
+            this.THFiltersDataGridView.AutoSizeRowsMode = System.Windows.Forms.DataGridViewAutoSizeRowsMode.DisplayedCellsExceptHeaders;
+            this.THFiltersDataGridView.BackgroundColor = System.Drawing.SystemColors.ButtonHighlight;
+            this.THFiltersDataGridView.BorderStyle = System.Windows.Forms.BorderStyle.None;
+            this.THFiltersDataGridView.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.THFiltersDataGridView.ColumnHeadersVisible = false;
+            dataGridViewCellStyle1.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle1.BackColor = System.Drawing.SystemColors.Window;
+            dataGridViewCellStyle1.Font = new System.Drawing.Font("Tahoma", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            dataGridViewCellStyle1.ForeColor = System.Drawing.SystemColors.ControlText;
+            dataGridViewCellStyle1.SelectionBackColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle1.SelectionForeColor = System.Drawing.SystemColors.ControlText;
+            dataGridViewCellStyle1.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
+            this.THFiltersDataGridView.DefaultCellStyle = dataGridViewCellStyle1;
+            this.THFiltersDataGridView.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.THFiltersDataGridView.EditMode = System.Windows.Forms.DataGridViewEditMode.EditOnEnter;
+            this.THFiltersDataGridView.Enabled = false;
+            this.THFiltersDataGridView.Location = new System.Drawing.Point(1, 1);
+            this.THFiltersDataGridView.Margin = new System.Windows.Forms.Padding(1);
+            this.THFiltersDataGridView.Name = "THFiltersDataGridView";
+            dataGridViewCellStyle2.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle2.BackColor = System.Drawing.SystemColors.Control;
+            dataGridViewCellStyle2.Font = new System.Drawing.Font("Tahoma", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            dataGridViewCellStyle2.ForeColor = System.Drawing.SystemColors.WindowText;
+            dataGridViewCellStyle2.SelectionBackColor = System.Drawing.SystemColors.Control;
+            dataGridViewCellStyle2.SelectionForeColor = System.Drawing.SystemColors.Desktop;
+            dataGridViewCellStyle2.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
+            this.THFiltersDataGridView.RowHeadersDefaultCellStyle = dataGridViewCellStyle2;
+            this.THFiltersDataGridView.RowTemplate.Height = 23;
+            this.THFiltersDataGridView.Size = new System.Drawing.Size(633, 21);
+            this.THFiltersDataGridView.TabIndex = 3;
+            this.THFiltersDataGridView.CellClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.THFiltersDataGridView_CellClick);
+            this.THFiltersDataGridView.CellValueChanged += new System.Windows.Forms.DataGridViewCellEventHandler(this.THFiltersDataGridView_CellValueChanged);
+            this.THFiltersDataGridView.RowPostPaint += new System.Windows.Forms.DataGridViewRowPostPaintEventHandler(this.THFiltersDataGridView_RowPostPaint);
+            this.THFiltersDataGridView.MouseEnter += new System.EventHandler(this.THFiltersDataGridView_MouseEnter);
+            this.THFiltersDataGridView.MouseLeave += new System.EventHandler(this.THFiltersDataGridView_MouseLeave);
+            // 
+            // THbtnMainResetTable
+            // 
+            this.THbtnMainResetTable.Location = new System.Drawing.Point(636, 1);
+            this.THbtnMainResetTable.Margin = new System.Windows.Forms.Padding(1);
+            this.THbtnMainResetTable.Name = "THbtnMainResetTable";
+            this.THbtnMainResetTable.Size = new System.Drawing.Size(18, 21);
+            this.THbtnMainResetTable.TabIndex = 4;
+            this.THbtnMainResetTable.Text = "-";
+            this.THbtnMainResetTable.UseVisualStyleBackColor = true;
+            this.THbtnMainResetTable.Click += new System.EventHandler(this.THMainResetTableButton_Click);
+            // 
+            // THFileElementsDataGridView
+            // 
+            this.THFileElementsDataGridView.AllowUserToAddRows = false;
+            this.THFileElementsDataGridView.AllowUserToDeleteRows = false;
+            this.THFileElementsDataGridView.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.THFileElementsDataGridView.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
+            this.THFileElementsDataGridView.AutoSizeRowsMode = System.Windows.Forms.DataGridViewAutoSizeRowsMode.DisplayedCells;
+            this.THFileElementsDataGridView.BackgroundColor = System.Drawing.SystemColors.ButtonHighlight;
+            this.THFileElementsDataGridView.BorderStyle = System.Windows.Forms.BorderStyle.None;
+            this.THFileElementsDataGridView.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.THFileElementsDataGridView.EditMode = System.Windows.Forms.DataGridViewEditMode.EditOnKeystroke;
+            this.THFileElementsDataGridView.Location = new System.Drawing.Point(1, 26);
+            this.THFileElementsDataGridView.Margin = new System.Windows.Forms.Padding(1, 1, 3, 1);
+            this.THFileElementsDataGridView.Name = "THFileElementsDataGridView";
+            dataGridViewCellStyle3.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
+            this.THFileElementsDataGridView.RowsDefaultCellStyle = dataGridViewCellStyle3;
+            this.THFileElementsDataGridView.RowTemplate.Height = 23;
+            this.THFileElementsDataGridView.Size = new System.Drawing.Size(653, 281);
+            this.THFileElementsDataGridView.TabIndex = 2;
+            this.THFileElementsDataGridView.CellBeginEdit += new System.Windows.Forms.DataGridViewCellCancelEventHandler(this.THFileElementsDataGridView_CellBeginEdit);
+            this.THFileElementsDataGridView.CellClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.THFileElementsDataGridView_CellClick);
+            this.THFileElementsDataGridView.CellEndEdit += new System.Windows.Forms.DataGridViewCellEventHandler(this.THFileElementsDataGridView_CellEndEdit);
+            this.THFileElementsDataGridView.CellEnter += new System.Windows.Forms.DataGridViewCellEventHandler(this.THFileElementsDataGridView_CellEnter);
+            this.THFileElementsDataGridView.CellMouseClick += new System.Windows.Forms.DataGridViewCellMouseEventHandler(this.THFileElementsDataGridView_CellMouseClick);
+            this.THFileElementsDataGridView.CellMouseDown += new System.Windows.Forms.DataGridViewCellMouseEventHandler(this.THFileElementsDataGridView_CellMouseDown);
+            this.THFileElementsDataGridView.CellValidated += new System.Windows.Forms.DataGridViewCellEventHandler(this.THFileElementsDataGridView_CellValidated);
+            this.THFileElementsDataGridView.CellValueChanged += new System.Windows.Forms.DataGridViewCellEventHandler(this.THFileElementsDataGridView_CellValueChanged);
+            this.THFileElementsDataGridView.RowPostPaint += new System.Windows.Forms.DataGridViewRowPostPaintEventHandler(this.THFileElementsDataGridView_RowPostPaint);
+            this.THFileElementsDataGridView.SelectionChanged += new System.EventHandler(this.THFileElementsDataGridView_SelectionChanged);
+            this.THFileElementsDataGridView.Sorted += new System.EventHandler(this.THFileElementsDataGridView_Sorted);
+            // 
+            // THTextInfoAndEditPanel
+            // 
+            this.THTextInfoAndEditPanel.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.THTextInfoAndEditPanel.Controls.Add(this.THInfoEditSplitContainer);
+            this.THTextInfoAndEditPanel.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.THTextInfoAndEditPanel.Location = new System.Drawing.Point(0, 0);
+            this.THTextInfoAndEditPanel.Margin = new System.Windows.Forms.Padding(0);
+            this.THTextInfoAndEditPanel.Name = "THTextInfoAndEditPanel";
+            this.THTextInfoAndEditPanel.Size = new System.Drawing.Size(790, 91);
+            this.THTextInfoAndEditPanel.TabIndex = 6;
+            // 
+            // THInfoEditSplitContainer
+            // 
+            this.THInfoEditSplitContainer.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.THInfoEditSplitContainer.Location = new System.Drawing.Point(0, 0);
+            this.THInfoEditSplitContainer.Margin = new System.Windows.Forms.Padding(0);
+            this.THInfoEditSplitContainer.Name = "THInfoEditSplitContainer";
+            // 
+            // THInfoEditSplitContainer.Panel1
+            // 
+            this.THInfoEditSplitContainer.Panel1.Controls.Add(this.THInfoTextBox);
+            // 
+            // THInfoEditSplitContainer.Panel2
+            // 
+            this.THInfoEditSplitContainer.Panel2.Controls.Add(this.THEditElementsSplitContainer);
+            this.THInfoEditSplitContainer.Size = new System.Drawing.Size(788, 89);
+            this.THInfoEditSplitContainer.SplitterDistance = 126;
+            this.THInfoEditSplitContainer.TabIndex = 5;
+            // 
+            // THInfoTextBox
+            // 
+            this.THInfoTextBox.BorderStyle = System.Windows.Forms.BorderStyle.None;
+            this.THInfoTextBox.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.THInfoTextBox.Location = new System.Drawing.Point(0, 0);
+            this.THInfoTextBox.Margin = new System.Windows.Forms.Padding(0);
+            this.THInfoTextBox.Multiline = true;
+            this.THInfoTextBox.Name = "THInfoTextBox";
+            this.THInfoTextBox.ReadOnly = true;
+            this.THInfoTextBox.ScrollBars = System.Windows.Forms.ScrollBars.Both;
+            this.THInfoTextBox.Size = new System.Drawing.Size(126, 89);
+            this.THInfoTextBox.TabIndex = 0;
+            // 
+            // THEditElementsSplitContainer
+            // 
+            this.THEditElementsSplitContainer.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.THEditElementsSplitContainer.Location = new System.Drawing.Point(0, 0);
+            this.THEditElementsSplitContainer.Name = "THEditElementsSplitContainer";
+            // 
+            // THEditElementsSplitContainer.Panel1
+            // 
+            this.THEditElementsSplitContainer.Panel1.Controls.Add(this.THSourceRichTextBox);
+            // 
+            // THEditElementsSplitContainer.Panel2
+            // 
+            this.THEditElementsSplitContainer.Panel2.Controls.Add(this.THTargetRichTextBox);
+            this.THEditElementsSplitContainer.Size = new System.Drawing.Size(658, 89);
+            this.THEditElementsSplitContainer.SplitterDistance = 304;
+            this.THEditElementsSplitContainer.TabIndex = 4;
+            // 
+            // THSourceRichTextBox
+            // 
+            this.THSourceRichTextBox.BorderStyle = System.Windows.Forms.BorderStyle.None;
+            this.THSourceRichTextBox.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.THSourceRichTextBox.Location = new System.Drawing.Point(0, 0);
+            this.THSourceRichTextBox.Margin = new System.Windows.Forms.Padding(0);
+            this.THSourceRichTextBox.Name = "THSourceRichTextBox";
+            this.THSourceRichTextBox.ReadOnly = true;
+            this.THSourceRichTextBox.Size = new System.Drawing.Size(304, 89);
+            this.THSourceRichTextBox.TabIndex = 2;
+            this.THSourceRichTextBox.Text = "";
+            this.THSourceRichTextBox.SelectionChanged += new System.EventHandler(this.THSourceRichTextBox_SelectionChanged);
+            this.THSourceRichTextBox.MouseClick += new System.Windows.Forms.MouseEventHandler(this.THSourceRichTextBox_MouseClick);
+            this.THSourceRichTextBox.MouseEnter += new System.EventHandler(this.THSourceRichTextBox_MouseEnter);
+            this.THSourceRichTextBox.MouseLeave += new System.EventHandler(this.THSourceRichTextBox_MouseLeave);
+            // 
+            // THTargetRichTextBox
+            // 
+            this.THTargetRichTextBox.BorderStyle = System.Windows.Forms.BorderStyle.None;
+            this.THTargetRichTextBox.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.THTargetRichTextBox.Enabled = false;
+            this.THTargetRichTextBox.Location = new System.Drawing.Point(0, 0);
+            this.THTargetRichTextBox.Margin = new System.Windows.Forms.Padding(0);
+            this.THTargetRichTextBox.Name = "THTargetRichTextBox";
+            this.THTargetRichTextBox.Size = new System.Drawing.Size(350, 89);
+            this.THTargetRichTextBox.TabIndex = 1;
+            this.THTargetRichTextBox.Text = "";
+            this.THTargetRichTextBox.SelectionChanged += new System.EventHandler(this.THTargetRichTextBox_SelectionChanged);
+            this.THTargetRichTextBox.TextChanged += new System.EventHandler(this.THTargetRichTextBox_TextChanged);
+            this.THTargetRichTextBox.KeyDown += new System.Windows.Forms.KeyEventHandler(this.THTargetTextBox_KeyDown);
+            this.THTargetRichTextBox.Leave += new System.EventHandler(this.THTargetTextBox_Leave);
+            this.THTargetRichTextBox.MouseEnter += new System.EventHandler(this.THTargetRichTextBox_MouseEnter);
+            this.THTargetRichTextBox.MouseLeave += new System.EventHandler(this.THTargetRichTextBox_MouseLeave);
+            // 
+            // tlpWorkInfo
+            // 
+            this.tlpWorkInfo.ColumnCount = 4;
+            this.tlpWorkInfo.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 89F));
+            this.tlpWorkInfo.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 44.44445F));
+            this.tlpWorkInfo.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 37.55458F));
+            this.tlpWorkInfo.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 18.04949F));
+            this.tlpWorkInfo.Controls.Add(this.THActionProgressBar, 0, 0);
+            this.tlpWorkInfo.Controls.Add(this.THInfolabel, 1, 0);
+            this.tlpWorkInfo.Controls.Add(this.tlpTextLenPosInfo, 2, 0);
+            this.tlpWorkInfo.Controls.Add(this.TableCompleteInfoLabel, 3, 0);
+            this.tlpWorkInfo.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.tlpWorkInfo.Location = new System.Drawing.Point(0, 405);
+            this.tlpWorkInfo.Margin = new System.Windows.Forms.Padding(0);
+            this.tlpWorkInfo.Name = "tlpWorkInfo";
+            this.tlpWorkInfo.RowCount = 1;
+            this.tlpWorkInfo.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.tlpWorkInfo.Size = new System.Drawing.Size(790, 20);
+            this.tlpWorkInfo.TabIndex = 6;
+            // 
+            // THActionProgressBar
+            // 
+            this.THActionProgressBar.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.THActionProgressBar.Location = new System.Drawing.Point(3, 7);
+            this.THActionProgressBar.MarqueeAnimationSpeed = 50;
+            this.THActionProgressBar.Name = "THActionProgressBar";
+            this.THActionProgressBar.Size = new System.Drawing.Size(82, 10);
+            this.THActionProgressBar.Style = System.Windows.Forms.ProgressBarStyle.Marquee;
+            this.THActionProgressBar.TabIndex = 6;
+            this.THActionProgressBar.Visible = false;
+            // 
+            // THInfolabel
+            // 
+            this.THInfolabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.THInfolabel.AutoSize = true;
+            this.THInfolabel.Location = new System.Drawing.Point(92, 7);
+            this.THInfolabel.Name = "THInfolabel";
+            this.THInfolabel.Size = new System.Drawing.Size(41, 13);
+            this.THInfolabel.TabIndex = 7;
+            this.THInfolabel.Text = "infotext";
+            this.THInfolabel.Visible = false;
+            this.THInfolabel.Click += new System.EventHandler(this.THInfolabel_Click);
+            // 
+            // tlpTextLenPosInfo
+            // 
+            this.tlpTextLenPosInfo.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.tlpTextLenPosInfo.ColumnCount = 6;
+            this.tlpTextLenPosInfo.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 20F));
+            this.tlpTextLenPosInfo.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 43F));
+            this.tlpTextLenPosInfo.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 23F));
+            this.tlpTextLenPosInfo.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 34F));
+            this.tlpTextLenPosInfo.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 22F));
+            this.tlpTextLenPosInfo.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 115F));
+            this.tlpTextLenPosInfo.Controls.Add(this.TargetTextBoxColumnPositionLabel, 4, 0);
+            this.tlpTextLenPosInfo.Controls.Add(this.TargetTextBoxLinePositionLabelData, 3, 0);
+            this.tlpTextLenPosInfo.Controls.Add(this.TranslationLongestLineLenghtLabel, 1, 0);
+            this.tlpTextLenPosInfo.Controls.Add(this.TargetTextBoxLinePositionLabel, 2, 0);
+            this.tlpTextLenPosInfo.Controls.Add(this.RTBInfoLengthLabel, 0, 0);
+            this.tlpTextLenPosInfo.Controls.Add(this.TargetTextBoxColumnPositionLabelData, 5, 0);
+            this.tlpTextLenPosInfo.Location = new System.Drawing.Point(400, 0);
+            this.tlpTextLenPosInfo.Margin = new System.Windows.Forms.Padding(0);
+            this.tlpTextLenPosInfo.Name = "tlpTextLenPosInfo";
+            this.tlpTextLenPosInfo.RowCount = 1;
+            this.tlpTextLenPosInfo.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.tlpTextLenPosInfo.Size = new System.Drawing.Size(135, 20);
+            this.tlpTextLenPosInfo.TabIndex = 8;
+            // 
+            // TargetTextBoxColumnPositionLabel
+            // 
+            this.TargetTextBoxColumnPositionLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.TargetTextBoxColumnPositionLabel.AutoSize = true;
+            this.TargetTextBoxColumnPositionLabel.Location = new System.Drawing.Point(123, 7);
+            this.TargetTextBoxColumnPositionLabel.Name = "TargetTextBoxColumnPositionLabel";
+            this.TargetTextBoxColumnPositionLabel.Size = new System.Drawing.Size(16, 13);
+            this.TargetTextBoxColumnPositionLabel.TabIndex = 14;
+            this.TargetTextBoxColumnPositionLabel.Text = "c:";
+            // 
+            // TargetTextBoxLinePositionLabelData
+            // 
+            this.TargetTextBoxLinePositionLabelData.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.TargetTextBoxLinePositionLabelData.AutoSize = true;
+            this.TargetTextBoxLinePositionLabelData.Location = new System.Drawing.Point(89, 7);
+            this.TargetTextBoxLinePositionLabelData.Name = "TargetTextBoxLinePositionLabelData";
+            this.TargetTextBoxLinePositionLabelData.Size = new System.Drawing.Size(25, 13);
+            this.TargetTextBoxLinePositionLabelData.TabIndex = 11;
+            this.TargetTextBoxLinePositionLabelData.Text = "999";
+            // 
+            // TranslationLongestLineLenghtLabel
+            // 
+            this.TranslationLongestLineLenghtLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.TranslationLongestLineLenghtLabel.AutoSize = true;
+            this.TranslationLongestLineLenghtLabel.Location = new System.Drawing.Point(23, 7);
+            this.TranslationLongestLineLenghtLabel.Name = "TranslationLongestLineLenghtLabel";
+            this.TranslationLongestLineLenghtLabel.Size = new System.Drawing.Size(37, 13);
+            this.TranslationLongestLineLenghtLabel.TabIndex = 9;
+            this.TranslationLongestLineLenghtLabel.Text = "99999";
+            // 
+            // TargetTextBoxLinePositionLabel
+            // 
+            this.TargetTextBoxLinePositionLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.TargetTextBoxLinePositionLabel.AutoSize = true;
+            this.TargetTextBoxLinePositionLabel.Location = new System.Drawing.Point(66, 7);
+            this.TargetTextBoxLinePositionLabel.Name = "TargetTextBoxLinePositionLabel";
+            this.TargetTextBoxLinePositionLabel.Size = new System.Drawing.Size(13, 13);
+            this.TargetTextBoxLinePositionLabel.TabIndex = 12;
+            this.TargetTextBoxLinePositionLabel.Text = "r:";
+            // 
+            // RTBInfoLengthLabel
+            // 
+            this.RTBInfoLengthLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.RTBInfoLengthLabel.AutoSize = true;
+            this.RTBInfoLengthLabel.Location = new System.Drawing.Point(3, 7);
+            this.RTBInfoLengthLabel.Name = "RTBInfoLengthLabel";
+            this.RTBInfoLengthLabel.Size = new System.Drawing.Size(12, 13);
+            this.RTBInfoLengthLabel.TabIndex = 10;
+            this.RTBInfoLengthLabel.Text = "l:";
+            // 
+            // TargetTextBoxColumnPositionLabelData
+            // 
+            this.TargetTextBoxColumnPositionLabelData.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.TargetTextBoxColumnPositionLabelData.AutoSize = true;
+            this.TargetTextBoxColumnPositionLabelData.Location = new System.Drawing.Point(145, 7);
+            this.TargetTextBoxColumnPositionLabelData.Name = "TargetTextBoxColumnPositionLabelData";
+            this.TargetTextBoxColumnPositionLabelData.Size = new System.Drawing.Size(25, 13);
+            this.TargetTextBoxColumnPositionLabelData.TabIndex = 13;
+            this.TargetTextBoxColumnPositionLabelData.Text = "999";
+            // 
+            // TableCompleteInfoLabel
+            // 
+            this.TableCompleteInfoLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.TableCompleteInfoLabel.AutoSize = true;
+            this.TableCompleteInfoLabel.Location = new System.Drawing.Point(763, 7);
+            this.TableCompleteInfoLabel.Name = "TableCompleteInfoLabel";
+            this.TableCompleteInfoLabel.Size = new System.Drawing.Size(24, 13);
+            this.TableCompleteInfoLabel.TabIndex = 8;
+            this.TableCompleteInfoLabel.Text = "0/0";
+            this.TableCompleteInfoLabel.Click += new System.EventHandler(this.TableCompleteInfoLabel_Click);
+            // 
             // mainFormRootWorkspaceLogContainer
             // 
             this.mainFormRootWorkspaceLogContainer.Dock = System.Windows.Forms.DockStyle.Fill;
@@ -625,6 +626,7 @@
             // 
             // mainFormRootWorkspaceLogContainer.Panel2
             // 
+            this.mainFormRootWorkspaceLogContainer.Panel2.Controls.Add(this.rtbLog);
             this.mainFormRootWorkspaceLogContainer.Panel2.Controls.Add(this.logSplitter);
             this.mainFormRootWorkspaceLogContainer.Size = new System.Drawing.Size(790, 485);
             this.mainFormRootWorkspaceLogContainer.SplitterDistance = 425;
@@ -640,6 +642,16 @@
             this.logSplitter.Size = new System.Drawing.Size(790, 3);
             this.logSplitter.TabIndex = 0;
             this.logSplitter.TabStop = false;
+            // 
+            // rtbLog
+            // 
+            this.rtbLog.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.rtbLog.Location = new System.Drawing.Point(0, 3);
+            this.rtbLog.Name = "rtbLog";
+            this.rtbLog.ReadOnly = true;
+            this.rtbLog.Size = new System.Drawing.Size(790, 53);
+            this.rtbLog.TabIndex = 1;
+            this.rtbLog.Text = "";
             // 
             // FormMain
             // 
@@ -661,14 +673,20 @@
             this.MainMenus.PerformLayout();
             this.frmMainPanel.ResumeLayout(false);
             this.tlpFrmMain.ResumeLayout(false);
-            this.tlpWorkInfo.ResumeLayout(false);
-            this.tlpWorkInfo.PerformLayout();
-            this.tlpTextLenPosInfo.ResumeLayout(false);
-            this.tlpTextLenPosInfo.PerformLayout();
             this.THWorkSpaceSplitContainer.Panel1.ResumeLayout(false);
             this.THWorkSpaceSplitContainer.Panel2.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.THWorkSpaceSplitContainer)).EndInit();
             this.THWorkSpaceSplitContainer.ResumeLayout(false);
+            this.THFilesElementsPanel.ResumeLayout(false);
+            this.THsplitContainerFilesElements.Panel1.ResumeLayout(false);
+            this.THsplitContainerFilesElements.Panel2.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.THsplitContainerFilesElements)).EndInit();
+            this.THsplitContainerFilesElements.ResumeLayout(false);
+            this.THFilesListPanel.ResumeLayout(false);
+            this.tlpFileElements.ResumeLayout(false);
+            this.tlpFileElementsFilterAndReset.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.THFiltersDataGridView)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.THFileElementsDataGridView)).EndInit();
             this.THTextInfoAndEditPanel.ResumeLayout(false);
             this.THInfoEditSplitContainer.Panel1.ResumeLayout(false);
             this.THInfoEditSplitContainer.Panel1.PerformLayout();
@@ -679,16 +697,10 @@
             this.THEditElementsSplitContainer.Panel2.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.THEditElementsSplitContainer)).EndInit();
             this.THEditElementsSplitContainer.ResumeLayout(false);
-            this.THFilesElementsPanel.ResumeLayout(false);
-            this.THsplitContainerFilesElements.Panel1.ResumeLayout(false);
-            this.THsplitContainerFilesElements.Panel2.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)(this.THsplitContainerFilesElements)).EndInit();
-            this.THsplitContainerFilesElements.ResumeLayout(false);
-            this.tlpFileElements.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)(this.THFileElementsDataGridView)).EndInit();
-            this.tlpFileElementsFilterAndReset.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)(this.THFiltersDataGridView)).EndInit();
-            this.THFilesListPanel.ResumeLayout(false);
+            this.tlpWorkInfo.ResumeLayout(false);
+            this.tlpWorkInfo.PerformLayout();
+            this.tlpTextLenPosInfo.ResumeLayout(false);
+            this.tlpTextLenPosInfo.PerformLayout();
             this.mainFormRootWorkspaceLogContainer.Panel1.ResumeLayout(false);
             this.mainFormRootWorkspaceLogContainer.Panel2.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.mainFormRootWorkspaceLogContainer)).EndInit();
@@ -739,6 +751,7 @@
         internal System.Windows.Forms.Label TableCompleteInfoLabel;
         private System.Windows.Forms.SplitContainer mainFormRootWorkspaceLogContainer;
         private System.Windows.Forms.Splitter logSplitter;
+        public System.Windows.Forms.RichTextBox rtbLog;
     }
 }
 

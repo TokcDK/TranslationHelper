@@ -1,4 +1,7 @@
-﻿using System;
+﻿using NLog.Config;
+using NLog.Windows.Forms;
+using NLog;
+using System;
 using System.Data;
 using System.Drawing;
 using System.Globalization;
@@ -17,6 +20,7 @@ using TranslationHelper.Functions.FileElementsFunctions.Row;
 using TranslationHelper.Functions.FileElementsFunctions.Row.AutoSameForSimular;
 using TranslationHelper.Main.Functions;
 using TranslationHelper.Menus.MainMenus.File;
+using NLog.Targets;
 
 namespace TranslationHelper
 {
@@ -25,20 +29,48 @@ namespace TranslationHelper
         internal string extractedpatchpath = string.Empty;
 
         internal string FVariant = string.Empty;
+        private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
 
         public FormMain()
         {
             InitializeComponent();
-            //LangF = new THLang();
 
             AppData.Init(this);
 
             FunctionsUI.Init(this);
         }
 
+        private void SetupLogging()
+        {
+            var config = LogManager.Configuration ?? new LoggingConfiguration();
+
+            var rtbTarget = new RichTextBoxTarget()
+            {
+                Name = "ui",
+                ControlName = this.rtbLog.Name,
+                FormName = this.Name,
+                Layout = "${longdate} (${level:uppercase=true}): ${message}"
+            };
+
+            var fileTarget = new FileTarget("file")
+            {
+                FileName = "log.txt",
+                Layout = "${longdate}: (${level}) ${message}"
+            };
+
+            config.AddTarget("ui", rtbTarget);
+            config.AddTarget("file", fileTarget);
+            config.AddRule(LogLevel.Info, LogLevel.Fatal, "ui");
+            config.AddRule(LogLevel.Debug, LogLevel.Fatal, "file");
+
+            LogManager.Configuration = config;
+        }
+
         private void THMain_Load(object sender, EventArgs e)
         {
+            SetupLogging();
             FunctionsUI.THMain_Load();
+            Logger.Info(T._("Application started"));
         }
         private void THFilesListBox_MouseClick(object sender, MouseEventArgs e)
         {
