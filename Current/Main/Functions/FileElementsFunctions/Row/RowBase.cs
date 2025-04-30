@@ -636,7 +636,10 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
                     _parsedCount++;
                 }
             }
-            catch { }
+            catch (Exception ex)
+            {
+                Logger.Debug("Failed to parse row. Error: {0}", ex);
+            }
         }
 
         /// <summary>
