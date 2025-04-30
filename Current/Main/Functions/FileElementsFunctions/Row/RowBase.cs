@@ -93,9 +93,10 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
         {
             if (tableIndex == -1)
             {
-                FilesList.Invoke((Action)(() =>
-                    tableIndex = FilesList.SelectedIndex
-                ));
+                if (FilesList.InvokeRequired)
+                {
+                    FilesList.BeginInvoke((Action)(() => tableIndex = FilesList.SelectedIndex));
+                }
 
                 if (tableIndex == -1) return false;
             }
