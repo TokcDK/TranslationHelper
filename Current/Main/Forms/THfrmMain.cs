@@ -1,26 +1,15 @@
-﻿using NLog.Config;
+﻿using NLog;
+using NLog.Config;
+using NLog.Targets;
 using NLog.Windows.Forms;
-using NLog;
 using System;
-using System.Data;
-using System.Drawing;
 using System.Globalization;
-using System.IO;
-using System.Linq;
-using System.Reflection;
-using System.Text;
-using System.Text.RegularExpressions;
-using System.Threading;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 using TranslationHelper.Data;
 using TranslationHelper.Extensions;
 using TranslationHelper.Functions;
 using TranslationHelper.Functions.FileElementsFunctions.Row;
-using TranslationHelper.Functions.FileElementsFunctions.Row.AutoSameForSimular;
 using TranslationHelper.Main.Functions;
-using TranslationHelper.Menus.MainMenus.File;
-using NLog.Targets;
 
 namespace TranslationHelper
 {
@@ -49,12 +38,15 @@ namespace TranslationHelper
                 Name = "ui",
                 ControlName = this.rtbLog.Name,
                 FormName = this.Name,
+                MaxLines = 100,
+                AutoScroll = true,
                 Layout = "${longdate} (${level:uppercase=true}): ${message}"
             };
 
             var fileTarget = new FileTarget("file")
             {
                 FileName = "log.txt",
+                MaxArchiveDays = 10,
                 Layout = "${longdate}: (${level}) ${message}"
             };
 
@@ -70,7 +62,10 @@ namespace TranslationHelper
         {
             SetupLogging();
             FunctionsUI.THMain_Load();
-            Logger.Info(T._("Application started"));
+            for (int i = 0; i < 10; i++)
+            {
+                Logger.Info(T._($"Application started {i}"));
+            }
         }
         private void THFilesListBox_MouseClick(object sender, MouseEventArgs e)
         {
