@@ -11,6 +11,9 @@ using TranslationHelper.Main.Functions;
 
 namespace TranslationHelper.Functions.FileElementsFunctions.Row
 {
+    /// <summary>
+    /// Represents a table and its index within the DataSet.
+    /// </summary>
     public class TableData
     {
         public TableData(DataTable selectedTable, int selectedTableIndex)
@@ -23,6 +26,9 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
         public int SelectedTableIndex { get; }
     }
 
+    /// <summary>
+    /// Encapsulates information about a single DataRow in context of a TableData.
+    /// </summary>
     public class RowBaseRowData
     {
         public RowBaseRowData(DataRow row, int rowIndex, TableData table)
@@ -51,12 +57,16 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
         public int SelectedTableIndex => TableData.SelectedTableIndex;
     }
 
+    /// <summary>
+    /// Base class for row-based operations across one or more DataTables.
+    /// Supports single-row, multi-row, single-table, multi-table, and all-tables modes.
+    /// </summary>
     internal abstract class RowBase
     {
         public virtual string Name { get; } = string.Empty;
         protected static readonly Logger Logger = LogManager.GetCurrentClassLogger();
 
-        #region Base fields
+        #region State fields
         protected bool NeedInit = true;
         protected Dictionary<string, string> SessionData;
         protected bool Ret;
@@ -66,7 +76,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
         private int _parsedCount;
         #endregion
 
-        #region Flags
+        #region Mode flags
         protected bool IsAll { get; private set; }
         protected bool IsTables { get; private set; }
         protected bool IsTable { get; private set; }
@@ -75,18 +85,18 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
         protected virtual bool IsParallelTables => false;
         #endregion
 
-        #region Cached static properties
+        #region Cached static indices
         protected static int ColumnIndexOriginal => AppData.CurrentProject.OriginalColumnIndex;
         protected static int ColumnIndexTranslation => AppData.CurrentProject.TranslationColumnIndex;
         #endregion
 
-        #region UI Components
+        #region UI references
         protected readonly ListBox FilesList = AppData.THFilesList;
         protected readonly DataSet AllFiles = AppData.CurrentProject.FilesContent;
         protected readonly DataGridView WorkTableDatagridView = AppData.Main.THFileElementsDataGridView;
         #endregion
 
-        #region Abstract/Virtual hooks
+        #region Extension points (hooks)
         protected virtual bool IsOkSelected(TableData tableData) => true;
         protected virtual bool IsOkTable(TableData tableData) => true;
         protected virtual bool IsOkAll() => true;
@@ -110,119 +120,157 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
         protected virtual void CompleteSound() => System.Media.SystemSounds.Asterisk.Play();
         #endregion
 
-        #region Public APIs
+        #region Public/internal APIs
+        /// <summary>
+        /// Process a single DataRow, using current selection if indices not provided.
+        /// </summary>
+        /// <param name="row">Optional DataRow. If null, the row at <paramref name="rowIndex"/> is used.</param>
+        /// <param name="tableIndex">Index of table in DataSet; -1 to use UI selection.</param>
+        /// <param name="rowIndex">Row index; -1 to use UI selection.</param>
+        /// <returns>True if any Apply() succeeded.</returns>
         internal bool Selected(DataRow row, int tableIndex = -1, int rowIndex = -1)
         {
             ResolveSingleContext(row, ref tableIndex, ref rowIndex, out var tableData, out var realRowIdx);
-            if (tableData == null) return false;
-            if (!IsOkSelected(tableData)) return false;
-            return ExecutePerTable(
-                new[] { tableData },
-                new[] { realRowIdx }
-            );
+            if (tableData == null || !IsOkSelected(tableData))
+                return false;
+
+            return ExecutePerTable(new[] { tableData }, new[] { realRowIdx });
         }
 
+        /// <summary>
+        /// Process multiple selected rows in the currently selected table.
+        /// </summary>
+        /// <returns>True if any Apply() succeeded.</returns>
         internal bool Rows()
         {
             var tableIndexes = GetSelectedTableIndexes();
-            if (tableIndexes.Length != 1) return false;
+            if (tableIndexes.Length != 1)
+                return false;
+
             var tableData = new TableData(AllFiles.Tables[tableIndexes[0]], tableIndexes[0]);
-            if (!IsOkSelected(tableData)) return false;
+            if (!IsOkSelected(tableData))
+                return false;
 
             var rowIndexes = GetSelectedRowIndexes(tableData);
-            if (rowIndexes.Length == 0) return false;
+            if (rowIndexes.Length == 0)
+                return false;
 
-            // if all rows selected, treat as full table
+            // full table if all rows are selected
             if (rowIndexes.Length == tableData.SelectedTable.Rows.Count)
-                return ExecutePerTable(new[] { tableData }, null);
+                rowIndexes = null;
 
-            return ExecutePerTable(
-                new[] { tableData },
-                rowIndexes
-            );
+            return ExecutePerTable(new[] { tableData }, rowIndexes);
         }
 
+        /// <summary>
+        /// Process one or more user-selected tables fully.
+        /// </summary>
+        /// <returns>True if any Apply() succeeded.</returns>
         internal bool Table()
         {
-            if (!IsOkAll()) return false;
+            if (!IsOkAll())
+                return false;
+
             var tables = GetSelectedTableIndexes()
                 .Select(idx => new TableData(AllFiles.Tables[idx], idx))
                 .ToArray();
-            if (tables.Length == 0) return false;
+            if (tables.Length == 0)
+                return false;
+
             return ExecutePerTable(tables, null);
         }
 
+        /// <summary>
+        /// Async wrapper for Table().
+        /// </summary>
         internal async Task<bool> TableT() => await Task.Run(Table).ConfigureAwait(false);
 
+        /// <summary>
+        /// Process every table in the DataSet.
+        /// </summary>
+        /// <returns>True if any Apply() succeeded.</returns>
         internal bool All()
         {
-            if (!IsOkAll()) return false;
-            var tables = Enumerable.Range(0, AllFiles.Tables.Count)
+            if (!IsOkAll())
+                return false;
+
+            var all = Enumerable.Range(0, AllFiles.Tables.Count)
                 .Select(idx => new TableData(AllFiles.Tables[idx], idx))
                 .ToArray();
-            if (tables.Length == 0) return false;
-            return ExecutePerTable(tables, null);
+            return ExecutePerTable(all, null);
         }
 
+        /// <summary>
+        /// Async wrapper for All().
+        /// </summary>
         internal async Task<bool> AllT() => await Task.Run(All).ConfigureAwait(false);
         #endregion
 
-        #region Core logic
+        #region Core execution
+        /// <summary>
+        /// Drives processing per table and per row.
+        /// </summary>
         private bool ExecutePerTable(TableData[] tables, int[] specificRowIndexes)
         {
             Ret = false;
             ResetCounters(tables, specificRowIndexes);
-            // set flags
+
             IsAll = specificRowIndexes == null && tables.Length == AllFiles.Tables.Count;
             IsTables = specificRowIndexes == null && tables.Length > 1;
             IsTable = specificRowIndexes == null && tables.Length == 1;
 
             ActionsInit();
-            if (IsTables) ActionsPreTablesApply();
+            if (IsTables)
+                ActionsPreTablesApply();
 
             foreach (var tableData in tables)
             {
-                if (specificRowIndexes == null)
-                {
-                    if (!IsOkTable(tableData)) continue;
-                    ActionsPreTableApply(tableData);
-                    ExecuteRows(tableData, Enumerable.Range(0, tableData.SelectedTable.Rows.Count).ToArray());
-                    ActionsPostTableApply(tableData);
-                }
-                else
-                {
-                    ActionsPreTableApply(tableData);
-                    ExecuteRows(tableData, specificRowIndexes);
-                    ActionsPostTableApply(tableData);
-                }
+                if (specificRowIndexes == null && !IsOkTable(tableData))
+                    continue;
+
+                ActionsPreTableApply(tableData);
+                ExecuteRows(tableData, specificRowIndexes);
+                ActionsPostTableApply(tableData);
             }
 
-            if (IsTables) ActionsPostTablesApply();
+            if (IsTables)
+                ActionsPostTablesApply();
+
             ActionsFinalize();
-            if (IsTables || IsAll) CompleteSound();
+            if (IsTables || IsAll)
+                CompleteSound();
 
             return Ret;
         }
 
+        /// <summary>
+        /// Iterate over specified or all rows in a table.
+        /// </summary>
         private void ExecuteRows(TableData tableData, int[] rowIndexes)
         {
-            SelectedRowsCount = rowIndexes.Length;
-            SelectedRowsCountRest = SelectedRowsCount;
+            int count = rowIndexes?.Length ?? tableData.SelectedTable.Rows.Count;
+            SelectedRowsCount = count;
+            SelectedRowsCountRest = count;
             ActionsPreRowsApply(tableData);
 
             if (IsParallelRows)
             {
-                Parallel.ForEach(rowIndexes, rowIndex => ProcessRow(tableData, rowIndex));
+                Parallel.For(0, count, i => ProcessRow(tableData, rowIndexes == null ? i : rowIndexes[i]));
             }
             else
             {
-                foreach (var rowIndex in rowIndexes)
-                    ProcessRow(tableData, rowIndex);
+                for (int i = 0; i < count; i++)
+                {
+                    ProcessRow(tableData, rowIndexes == null ? i : rowIndexes[i]);
+                }
             }
 
             ActionsPostRowsApply(tableData);
         }
 
+        /// <summary>
+        /// Runs hooks and Apply() for a single row.
+        /// </summary>
         private void ProcessRow(TableData tableData, int rowIndex)
         {
             SelectedTable = tableData.SelectedTable;
@@ -267,10 +315,9 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
         {
             _parsedCount = 0;
             TablesCount = tables.Length;
-            if (specificRows != null)
-                SelectedRowsCount = specificRows.Length * tables.Length;
-            else
-                SelectedRowsCount = tables.Sum(t => t.SelectedTable.Rows.Count);
+            SelectedRowsCount = specificRows == null
+                ? tables.Sum(t => t.SelectedTable.Rows.Count)
+                : specificRows.Length * tables.Length;
             SelectedRowsCountRest = SelectedRowsCount;
         }
 
@@ -283,14 +330,13 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
 
         private int[] GetSelectedRowIndexes(TableData tableData)
         {
-            var distinctRows = WorkTableDatagridView.SelectedCells
+            return WorkTableDatagridView.SelectedCells
                 .Cast<DataGridViewCell>()
                 .Select(c => c.RowIndex)
                 .Distinct()
                 .Select(r => FunctionsTable.GetRealRowIndex(tableData.SelectedTableIndex, r))
                 .OrderBy(i => i)
                 .ToArray();
-            return distinctRows;
         }
 
         private void ResolveSingleContext(DataRow row, ref int tableIndex, ref int rowIndex,
@@ -300,11 +346,10 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
             realRowIdx = -1;
             if (tableIndex < 0)
             {
-                int tInd = 0;
-                FilesList.Invoke((Action)(() => tInd = FilesList.SelectedIndex));
+                int i = -1;
+                FilesList.Invoke((Action)(() => i = FilesList.SelectedIndex));
                 if (tableIndex < 0) return;
-
-                tableIndex = tInd;
+                tableIndex = i;
             }
             var table = AllFiles.Tables[tableIndex];
             tableData = new TableData(table, tableIndex);
@@ -313,11 +358,10 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
             {
                 var selected = WorkTableDatagridView.GetSelectedRowsIndexes().ToArray();
                 if (selected.Length != 1) return;
-                rowIndex = selected.First();
+                rowIndex = selected[0];
             }
 
             realRowIdx = FunctionsTable.GetRealRowIndex(tableIndex, rowIndex);
-            // row parameter ignored; we set SelectedRow via table lookup
         }
         #endregion
     }
