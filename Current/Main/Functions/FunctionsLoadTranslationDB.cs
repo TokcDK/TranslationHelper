@@ -383,7 +383,7 @@ namespace TranslationHelper.Functions
 
             if (translationColIndex < 1) return;
 
-            var progressMessage = $"{T._("Load")} {T._(THSettings.TranslationColumnName)}:";
+            var progressMessage = $"{T._("Load")}:";
 
             var workTableDatagridview = AppData.Main.THFileElementsDataGridView;
             var filesList = AppData.THFilesList;
