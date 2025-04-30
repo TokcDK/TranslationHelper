@@ -45,7 +45,7 @@ namespace TranslationHelper
 
             var fileTarget = new FileTarget("file")
             {
-                FileName = "log.txt",
+                FileName = "Logs/${date:yyyy-MM-dd}.txt",
                 MaxArchiveDays = 10,
                 Layout = "${longdate}: (${level}) ${message}"
             };
