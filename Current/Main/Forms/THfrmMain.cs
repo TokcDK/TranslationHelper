@@ -34,10 +34,7 @@ namespace TranslationHelper
         {
             AppHelper.SetupLogging(this);
             FunctionsUI.THMain_Load();
-            for (int i = 0; i < 10; i++)
-            {
-                Logger.Info(T._($"Application started {i}"));
-            }
+            Logger.Info(T._($"Application started"));
         }
         private void THFilesListBox_MouseClick(object sender, MouseEventArgs e)
         {
