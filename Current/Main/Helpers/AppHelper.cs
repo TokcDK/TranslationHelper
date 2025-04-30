@@ -16,6 +16,7 @@ namespace TranslationHelper.Helpers
         {
             var config = LogManager.Configuration ?? new LoggingConfiguration();
 
+            string generalLayout = "${longdate} (${level:uppercase=true}): ${message}";
             var rtbTarget = new RichTextBoxTarget()
             {
                 Name = "ui",
@@ -23,14 +24,14 @@ namespace TranslationHelper.Helpers
                 FormName = mainForm.Name,
                 MaxLines = 100,
                 AutoScroll = true,
-                Layout = "${longdate} (${level:uppercase=true}): ${message}"
+                Layout = generalLayout
             };
 
             var fileTarget = new FileTarget("file")
             {
                 FileName = "Logs/${date:yyyy-MM-dd}.txt",
                 MaxArchiveDays = 10,
-                Layout = "${longdate}: (${level}) ${message}"
+                Layout = generalLayout
             };
 
             config.AddTarget("ui", rtbTarget);
