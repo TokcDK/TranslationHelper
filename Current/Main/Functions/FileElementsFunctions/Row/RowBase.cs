@@ -52,6 +52,8 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
 
     internal abstract class RowBase
     {
+        public virtual string Name { get; } = "";
+
         protected static readonly Logger Logger = LogManager.GetCurrentClassLogger();
         protected RowBase()
         {
@@ -337,7 +339,11 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
         /// apply the actions after all selected type of object will be parsed
         /// will be executed always last, after all elements of selected type of object and after any other actions
         /// </summary>
-        protected virtual void ActionsFinalize() { }
+        protected virtual void ActionsFinalize()
+        {
+            string name = string.IsNullOrWhiteSpace(Name) ? "!" : Name;
+            Logger.Info(T._("{0}: parsed {1} values"), name, _parsedCount);
+        }
 
         /// <summary>
         /// init selected table's data
@@ -597,6 +603,11 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
         /// </summary>
         bool _setRestRows = true;//
 
+        /// <summary>
+        /// Complete succesfuly parsed rows
+        /// </summary>
+        int _parsedCount = 0;
+
         ///// <summary>
         ///// true when last row processed
         ///// </summary>
@@ -619,7 +630,11 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
 
             try
             {
-                if (Apply(rowData)) Ret = true;
+                if (Apply(rowData))
+                {
+                    Ret = true;
+                    _parsedCount++;
+                }
             }
             catch { }
         }

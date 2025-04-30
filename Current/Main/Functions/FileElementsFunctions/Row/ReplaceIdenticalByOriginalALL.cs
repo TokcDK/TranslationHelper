@@ -9,10 +9,11 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
     /// </summary>
     class ReplaceIdenticalByOriginalALL : RowBase
     {
+        public override string Name => "Replace identical by original";
+
         // List to hold the list of items to replace 
         readonly HashSet<string> _listToReplace = new HashSet<string>();
         readonly bool _isActive = false;
-        int parsedCount = 0;
 
         public ReplaceIdenticalByOriginalALL(HashSet<string> listToReplace)
         {
@@ -35,16 +36,8 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
         protected override bool Apply(RowBaseRowData rowData)
         {
             rowData.Translation = rowData.Original;
-            parsedCount++;
 
             return true;
-        }
-
-        protected override void ActionsFinalize()
-        {
-            base.ActionsFinalize();
-
-            Logger.Info(T._("Replaced {0} values"), parsedCount);
         }
     }
 }
