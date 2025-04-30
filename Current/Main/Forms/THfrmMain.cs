@@ -9,6 +9,7 @@ using TranslationHelper.Data;
 using TranslationHelper.Extensions;
 using TranslationHelper.Functions;
 using TranslationHelper.Functions.FileElementsFunctions.Row;
+using TranslationHelper.Helpers;
 using TranslationHelper.Main.Functions;
 
 namespace TranslationHelper
@@ -29,38 +30,9 @@ namespace TranslationHelper
             FunctionsUI.Init(this);
         }
 
-        private void SetupLogging()
-        {
-            var config = LogManager.Configuration ?? new LoggingConfiguration();
-
-            var rtbTarget = new RichTextBoxTarget()
-            {
-                Name = "ui",
-                ControlName = this.rtbLog.Name,
-                FormName = this.Name,
-                MaxLines = 100,
-                AutoScroll = true,
-                Layout = "${longdate} (${level:uppercase=true}): ${message}"
-            };
-
-            var fileTarget = new FileTarget("file")
-            {
-                FileName = "Logs/${date:yyyy-MM-dd}.txt",
-                MaxArchiveDays = 10,
-                Layout = "${longdate}: (${level}) ${message}"
-            };
-
-            config.AddTarget("ui", rtbTarget);
-            config.AddTarget("file", fileTarget);
-            config.AddRule(LogLevel.Info, LogLevel.Fatal, "ui");
-            config.AddRule(LogLevel.Debug, LogLevel.Fatal, "file");
-
-            LogManager.Configuration = config;
-        }
-
         private void THMain_Load(object sender, EventArgs e)
         {
-            SetupLogging();
+            AppHelper.SetupLogging(this);
             FunctionsUI.THMain_Load();
             for (int i = 0; i < 10; i++)
             {

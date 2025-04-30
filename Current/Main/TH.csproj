@@ -398,6 +398,7 @@
     <Compile Include="Functions\UndoRedo\UndoRedoCommandChangeDataRowTranslationText.cs" />
     <Compile Include="Functions\UndoRedo\UndoRedoCommandChangeTextBoxText.cs" />
     <Compile Include="GlobalSuppressions.cs" />
+    <Compile Include="Helpers\AppHelper.cs" />
     <Compile Include="Menus\DefaultMenu.cs" />
     <Compile Include="Menus\FileRowMenus\FileRowMenuItemBase.cs" />
     <Compile Include="Menus\FileRowMenus\ShowTranslationRegexMenu.cs" />
