@@ -1,4 +1,5 @@
-﻿using System;
+﻿using NLog;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
@@ -38,6 +39,8 @@ namespace TranslationHelper.Translators
     /// </summary>
     abstract class TranslatorsBase : IDisposable
     {
+        protected static readonly Logger Logger = LogManager.GetCurrentClassLogger();
+
         // Web error counters to track failures.
         internal int ErrorsWebCnt = 0;
         internal int ErrorsWebCntOverall = 0;

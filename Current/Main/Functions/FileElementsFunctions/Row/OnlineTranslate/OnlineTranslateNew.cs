@@ -145,7 +145,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
                 if (result != DialogResult.Yes) return;
             }
 
-            FunctionsUI.ProgressInfo(true, "Get all DB");
+            Logger.Info("Get all DB");
 
             var mergingAllDb = new Task(() => FunctionsDBFile.MergeAllDBtoOne());
             mergingAllDb.ConfigureAwait(true);
@@ -153,7 +153,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
             mergingAllDb.Wait();
             _allDbLoaded4All = true;
 
-            FunctionsUI.ProgressInfo(false);
+            
         }
         protected override void ActionsFinalize()
         {
@@ -161,7 +161,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
 
             FunctionsOnlineCache.Unload();
 
-            FunctionsUI.ProgressInfo(false);
+            
 
             if (AppSettings.InterruptTtanslation) AppSettings.InterruptTtanslation = false;
         }
@@ -170,11 +170,11 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
         {
             try
             {
-                FunctionsUI.ProgressInfo(true, "Translate" + " " + rowData.SelectedTable.TableName + "/" + rowData.SelectedRowIndex);
+                Logger.Info("Translate" + " " + rowData.SelectedTable.TableName + "/" + rowData.SelectedRowIndex);
 
                 SetRowLinesToBuffer(rowData);
 
-                FunctionsUI.ProgressInfo(false);
+                
                 return true;
             }
             catch
@@ -501,7 +501,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
             }
             catch (Exception ex)
             {
-                _log.LogToFile("Error while translation:"
+                Logger.Info("Error while translation:"
                     + Environment.NewLine
                     + ex
                     + Environment.NewLine

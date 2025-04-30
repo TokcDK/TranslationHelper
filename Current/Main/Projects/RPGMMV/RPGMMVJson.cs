@@ -58,7 +58,7 @@ namespace TranslationHelper.Projects.RPGMMV
             {
             }
 
-            FunctionsUI.ProgressInfo(false);
+            
             return false;
         }
 
@@ -68,7 +68,7 @@ namespace TranslationHelper.Projects.RPGMMV
             {
                 string Jsonname = Path.GetFileNameWithoutExtension(filePath); // get json file name
 
-                FunctionsUI.ProgressInfo(true, ParseFileMessage + Jsonname + ".json");
+                Logger.Info(ParseFileMessage + Jsonname + ".json");
 
                 //string jsondata = File.ReadAllText(FilePath); // get json data
 

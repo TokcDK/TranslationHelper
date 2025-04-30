@@ -149,11 +149,6 @@ namespace TranslationHelper.Data
         /// </summary>
         internal static Dictionary<int, int> RpgMVAddedCodesStat = new Dictionary<int, int>();
 
-        /// <summary>
-        /// Application log
-        /// </summary>
-        internal static FunctionsLogs AppLog = new FunctionsLogs();
-
         ///// <summary>
         ///// Fileslist control object
         ///// </summary>

@@ -260,11 +260,11 @@ namespace TranslationHelper.Formats.RPGMMV
             }
             catch (JsonReaderException ex)
             {
-                ProjectData.AppLog.LogToFile("Error occured while json read (json is empty or corrupted): \r\n" + ex);
+                ProjectData.AppLogger.Info("Error occured while json read (json is empty or corrupted): \r\n" + ex);
             }
             catch (Exception ex)
             {
-                ProjectData.AppLog.LogToFile("Error occured while json parse: \r\n" + ex);
+                ProjectData.AppLogger.Info("Error occured while json parse: \r\n" + ex);
                 //LogToFile(string.Empty, true);
             }
             finally

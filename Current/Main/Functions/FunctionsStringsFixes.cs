@@ -1,4 +1,5 @@
-﻿using System;
+﻿using NLog;
+using System;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
@@ -10,6 +11,7 @@ namespace TranslationHelper.Functions
 {
     static class FunctionsStringFixes
     {
+        private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
         internal static string ApplyHardFixes(string original, string translation, int tind = -1, int rind = -1)
         {
             if (string.IsNullOrWhiteSpace(translation) || original == translation || string.IsNullOrWhiteSpace(original))
@@ -83,7 +85,7 @@ namespace TranslationHelper.Functions
             }
             catch (Exception ex)
             {
-                new Functions.FunctionsLogs().LogToFile(Environment.NewLine + "Hard fixes error:" + Environment.NewLine + ex + Environment.NewLine);
+                Logger.Error(Environment.NewLine + "Hard fixes error:" + Environment.NewLine + ex + Environment.NewLine);
             }
 
             return translation;

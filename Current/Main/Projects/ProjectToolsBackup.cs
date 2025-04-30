@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using NLog;
+using System.Collections.Generic;
 using System.IO;
 using TranslationHelper.Data;
 using TranslationHelper.Functions;
@@ -7,6 +8,8 @@ namespace TranslationHelper.Projects
 {
     internal static class ProjectToolsBackup
     {
+        private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
+
         /// <summary>
         /// make buckup .bak copy of selected dir
         /// </summary>
@@ -50,7 +53,7 @@ namespace TranslationHelper.Projects
         /// <returns></returns>
         internal static bool BackupFile(string file)
         {
-            FunctionsUI.ProgressInfo(true, T._("backup") + ":" + Path.GetFileName(file));
+            Logger.Info(T._("backup") + ":" + Path.GetFileName(file));
 
             try
             {
@@ -61,7 +64,7 @@ namespace TranslationHelper.Projects
             catch
             {
             }
-            FunctionsUI.ProgressInfo(false);
+            
             return File.Exists(file + ".bak");
         }
 
@@ -155,7 +158,7 @@ namespace TranslationHelper.Projects
         /// <returns></returns>
         internal static bool RestoreFile(string file)
         {
-            FunctionsUI.ProgressInfo(true, T._("restore") + ":" + Path.GetFileName(file));
+            Logger.Info(T._("restore") + ":" + Path.GetFileName(file));
 
             try
             {
@@ -179,12 +182,12 @@ namespace TranslationHelper.Projects
                     {
                         new FileInfo(file + ".tmp").Attributes = FileAttributes.Normal;
                         File.Delete(file + ".tmp");
-                        FunctionsUI.ProgressInfo(false);
+                        
                         return true;
                     }
                     else if (!tmp && File.Exists(file))
                     {
-                        FunctionsUI.ProgressInfo(false);
+                        
                         return true;
                     }
                 }
@@ -193,7 +196,7 @@ namespace TranslationHelper.Projects
             {
             }
 
-            FunctionsUI.ProgressInfo(false);
+            
             return false;
         }
     }

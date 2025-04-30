@@ -1,4 +1,5 @@
-﻿using System;
+﻿using NLog;
+using System;
 using System.Windows.Forms;
 
 namespace TranslationHelper.Menus
@@ -8,6 +9,7 @@ namespace TranslationHelper.Menus
     /// </summary>
     public abstract class MenuItemBase : IMenuItem
     {
+        protected static readonly Logger Logger = LogManager.GetCurrentClassLogger();
         public virtual string ParentMenuName => "";
 
         public abstract string Text { get; }

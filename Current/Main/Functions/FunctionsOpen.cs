@@ -1,4 +1,5 @@
-﻿using System;
+﻿using NLog;
+using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Globalization;
@@ -18,6 +19,7 @@ namespace TranslationHelper.Functions
 {
     class FunctionsOpen
     {
+        private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
         internal static async void OpenProject(string filePath = null)
         {
             if (filePath == null || !File.Exists(filePath))
@@ -57,7 +59,7 @@ namespace TranslationHelper.Functions
             //https://ru.stackoverflow.com/questions/222414/%d0%9a%d0%b0%d0%ba-%d0%bf%d1%80%d0%b0%d0%b2%d0%b8%d0%bb%d1%8c%d0%bd%d0%be-%d0%b2%d1%8b%d0%bf%d0%be%d0%bb%d0%bd%d0%b8%d1%82%d1%8c-%d0%bc%d0%b5%d1%82%d0%be%d0%b4-%d0%b2-%d0%be%d1%82%d0%b4%d0%b5%d0%bb%d1%8c%d0%bd%d0%be%d0%bc-%d0%bf%d0%be%d1%82%d0%be%d0%ba%d0%b5 
             await Task.Run(() => isProjectFound = GetSourceType(AppData.SelectedProjectFilePath)).ConfigureAwait(true);
 
-            FunctionsUI.ProgressInfo(false, string.Empty);
+            Logger.Info(string.Empty);
 
             if (!isProjectFound)
             {

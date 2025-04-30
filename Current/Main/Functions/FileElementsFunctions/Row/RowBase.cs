@@ -1,4 +1,5 @@
-﻿using System;
+﻿using NLog;
+using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
@@ -51,6 +52,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
 
     internal abstract class RowBase
     {
+        protected static readonly Logger Logger = LogManager.GetCurrentClassLogger();
         protected RowBase()
         {
             SelectedRowsCount = 0;
@@ -138,7 +140,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
             }
             catch (Exception ex)
             {
-                _log.LogToFile($"An error occurred in the Selected method. Error: {ex}");
+                Logger.Info($"An error occurred in the Selected method. Error: {ex}");
             }
 
             ActionsPostRowApply();
@@ -178,11 +180,6 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
 
         //    return SelectedRowIndex;
         //}
-
-        /// <summary>
-        /// Application log
-        /// </summary>
-        protected readonly FunctionsLogs _log = new FunctionsLogs();
 
         /// <summary>
         /// True when !IsAll && !IsTables && !IsTable
@@ -277,7 +274,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
                     ActionsFinalize();
                 }
             }
-            catch (Exception ex) { _log.LogToFile("an error occured in base row function. error=\r\n" + ex); }
+            catch (Exception ex) { Logger.Info("an error occured in base row function. error=\r\n" + ex); }
 
             return Ret;
         }
@@ -552,7 +549,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
                     }
                     catch (Exception ex)
                     {
-                        _log.LogToFile($"An error occurred while parsing all tables in method '{nameof(All)}'. Error: {ex}");
+                        Logger.Info($"An error occurred while parsing all tables in method '{nameof(All)}'. Error: {ex}");
                     }
                 }
             }

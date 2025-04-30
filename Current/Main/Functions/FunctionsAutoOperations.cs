@@ -1,4 +1,5 @@
-﻿using System;
+﻿using NLog;
+using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Globalization;
@@ -12,13 +13,14 @@ namespace TranslationHelper.Main.Functions
 {
     static class FunctionsAutoOperations
     {
+        private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
         public static string THExtractTextForTranslation(string input)
         {
             foreach (var PatternReplacementPair in AppData.TranslationRegexRules)
             {
                 if (Regex.IsMatch(input, PatternReplacementPair.Key))
                 {
-                    //new FunctionsLogs().LogToFile("applied translation rule: "+ PatternReplacementPair.Key);
+                    //Logger.Error("applied translation rule: "+ PatternReplacementPair.Key);
                     return Regex.Replace(input, PatternReplacementPair.Key, PatternReplacementPair.Value);
                 }
             }
@@ -111,7 +113,7 @@ namespace TranslationHelper.Main.Functions
                 catch (ArgumentException ex)
                 {
                     var message = T._("Error in") + " TranslationHelperCellFixesRegexRules.txt" + Environment.NewLine + "Regex: " + rule + Environment.NewLine + "Error:" + Environment.NewLine + ex;
-                    new FunctionsLogs().LogToFile(message);
+                    Logger.Error(message);
                     MessageBox.Show(message);
                 }
             }

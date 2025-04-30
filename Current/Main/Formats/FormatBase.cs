@@ -1,4 +1,5 @@
-﻿using System;
+﻿using NLog;
+using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Data;
@@ -15,6 +16,8 @@ namespace TranslationHelper.Formats
 {
     public abstract class FormatBase : IFormat
     {
+        protected static readonly Logger Logger = LogManager.GetCurrentClassLogger();
+
         /// <summary>
         /// Initializes a new instance of the <see cref="FormatBase"/> class with no file path.
         /// </summary>
@@ -369,7 +372,7 @@ namespace TranslationHelper.Formats
             }
             catch (Exception ex)
             {
-                AppData.AppLog.LogToFile($"Error adding row: {ex.Message}");
+                Logger.Info($"Error adding row: {ex.Message}");
                 return false;
             }
         }
@@ -504,7 +507,7 @@ namespace TranslationHelper.Formats
                 }
 
                 // when row not found in current table, set first translation from available translations
-                // AppData.AppLog.LogToFile($"Warning! Row not found. Row: {RowIndex}, Table: {tableName}, Original:\r\n{original}\r\nExisting Translation:\r\n{existsTranslation}");
+                // Logger.Info($"Warning! Row not found. Row: {RowIndex}, Table: {tableName}, Original:\r\n{original}\r\nExisting Translation:\r\n{existsTranslation}");
                 // iterate the table coordinates and try get first valid translation
                 foreach (var tableRowsIndexes in coordinates)
                 {
@@ -546,7 +549,7 @@ namespace TranslationHelper.Formats
             }
             catch (Exception ex)
             {
-                AppData.AppLog.LogToFile($"Error applying translation. Table: {tableName}, Row: {rowNumber}, Original: {original}, Error: {ex.Message}");
+                Logger.Info($"Error applying translation. Table: {tableName}, Row: {rowNumber}, Original: {original}, Error: {ex.Message}");
                 return false;
             }
 

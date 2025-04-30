@@ -1,4 +1,6 @@
-﻿using System;
+﻿using NLog;
+using NLog.Fluent;
+using System;
 using System.Diagnostics;
 using System.IO;
 using System.Windows.Forms;
@@ -13,6 +15,7 @@ namespace TranslationHelper.Projects
 {
     class RPGMGame : ProjectBase
     {
+        private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
         public int RPGMTransPatchVersion { get; private set; }
 
         internal override bool IsValid()
@@ -98,7 +101,7 @@ namespace TranslationHelper.Projects
             }
 
             var ret = CreateUpdatePatch(GameDirPath.FullName, workdir);
-            FunctionsUI.ProgressInfo(false);
+            
             return ret;
         }
 
@@ -160,14 +163,14 @@ namespace TranslationHelper.Projects
                 }
             })
             {
-                FunctionsUI.ProgressInfo(true, T._("Writing ") + "Patch.cmd");
+                Logger.Info(T._("Writing ") + "Patch.cmd");
                 var patch = Path.Combine(AppData.CurrentProject.ProjectWorkDir, "Patch.cmd");
                 File.WriteAllText(patch, "\r\n\"" + rpgmakertranscli + "\" " + args + "\r\npause");
                 try
                 {
-                    FunctionsUI.ProgressInfo(true, T._("Restore baks"));
+                    Logger.Info(T._("Restore baks"));
                     BakRestore();//restore original files before patch creation
-                    FunctionsUI.ProgressInfo(true, T._("Patching"));
+                    Logger.Info(T._("Patching"));
                     ret = program.Start();
                     program.WaitForExit();
                 }
@@ -179,19 +182,19 @@ namespace TranslationHelper.Projects
 
                 if (!ret || program.ExitCode > 0 || !IsPatchFilesExist(patchdir))
                 {
-                    new FunctionsLogs().LogToFile("RPGMaker Trans Patch failed: ret=" + ret + " Exitcode=" + program.ExitCode);
-                    FunctionsUI.ProgressInfo(true, T._("Patching failed"));
+                    Logger.Error("RPGMaker Trans Patch failed: ret=" + ret + " Exitcode=" + program.ExitCode);
+                    Logger.Info(T._("Patching failed"));
                     CleanDirs(workdir);
 
-                    FunctionsUI.ProgressInfo(true, " " + T._("Somethig wrong") + ".. " + T._("Trying 2nd variant"));
+                    Logger.Info(" " + T._("Somethig wrong") + ".. " + T._("Trying 2nd variant"));
                     //2nd try because was error sometime after 1st patch creation execution
                     BakRestore();
                     program.StartInfo.Arguments = args + " -b";
 
-                    FunctionsUI.ProgressInfo(true, T._("Writing ") + "Patch.cmd");
+                    Logger.Info(T._("Writing ") + "Patch.cmd");
                     File.WriteAllText(patch, "\r\n\"" + rpgmakertranscli + "\" " + args + " -b" + "\r\npause");
 
-                    FunctionsUI.ProgressInfo(true, T._("Patching") + "-b");
+                    Logger.Info(T._("Patching") + "-b");
                     ret = program.Start();
                     program.WaitForExit();
                 }
@@ -199,8 +202,8 @@ namespace TranslationHelper.Projects
                 //extract Game.rgss
                 if (OpenFileMode && !ret || program.ExitCode > 0 || !IsPatchFilesExist(patchdir))
                 {
-                    new FunctionsLogs().LogToFile("RPGMaker Trans Patch failed: ret=" + ret + " Exitcode=" + program.ExitCode);
-                    FunctionsUI.ProgressInfo(true, T._("Last try"));
+                    Logger.Error("RPGMaker Trans Patch failed: ret=" + ret + " Exitcode=" + program.ExitCode);
+                    Logger.Info(T._("Last try"));
                     //Maybe rgss3 file was not extracted and need to extract it manually
                     string GameRgss3Path = RPGMFunctions.GetRPGMakerArc(gamedirPath);
                     if (GameRgss3Path.Length == 0)
@@ -216,7 +219,7 @@ namespace TranslationHelper.Projects
 
                     var rgssdecrypterargs = "\"--output=" + tempExtractDir + "\" \"" + GameRgss3Path + "\"";
 
-                    FunctionsUI.ProgressInfo(true, T._("Extracting") + " " + "Game.rgss3");
+                    Logger.Info(T._("Extracting") + " " + "Game.rgss3");
                     FunctionsProcess.RunProgram(rgssdecrypter, rgssdecrypterargs);
 
                     if (!tempExtractDir.HasAnyDirs())
@@ -268,7 +271,7 @@ namespace TranslationHelper.Projects
                         {
                             CleanDirs(workdir);
 
-                            FunctionsUI.ProgressInfo(true, T._("Patching") + " 3");
+                            Logger.Info(T._("Patching") + " 3");
                             //попытка с параметром -b - Use UTF-8 BOM in Patch files
                             program.StartInfo.FileName = rpgmakertranscli;
                             program.StartInfo.Arguments = args + " -b";
@@ -278,8 +281,8 @@ namespace TranslationHelper.Projects
                             //error checks
                             if (!ret)
                             {
-                                new FunctionsLogs().LogToFile("RPGMaker Trans Patch failed: ret=" + ret + " Exitcode=" + program.ExitCode);
-                                FunctionsUI.ProgressInfo(true, T._("Patching failed"));
+                                Logger.Error("RPGMaker Trans Patch failed: ret={0} Exitcode={1}",ret,program.ExitCode);
+                                Logger.Info(T._("Patching failed"));
                                 MessageBox.Show(T._("Error occured while patch execution."));
                                 CleanDirs(workdir);
                                 return false;
@@ -287,8 +290,8 @@ namespace TranslationHelper.Projects
 
                             if (program.ExitCode > 0)
                             {
-                                new FunctionsLogs().LogToFile("RPGMaker Trans Patch failed: ret=" + ret + " Exitcode=" + program.ExitCode);
-                                FunctionsUI.ProgressInfo(true, T._("Patching failed"));
+                                Logger.Error("RPGMaker Trans Patch failed: ret=" + ret + " Exitcode=" + program.ExitCode);
+                                Logger.Info(T._("Patching failed"));
                                 MessageBox.Show(T._("Patch creation finished unsuccesfully.")
                                     + "Exit code="
                                     + program.ExitCode

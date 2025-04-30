@@ -1,4 +1,5 @@
-﻿using System;
+﻿using NLog;
+using System;
 using System.Data;
 using System.IO;
 using System.Text;
@@ -13,7 +14,8 @@ namespace TranslationHelper.Projects.WolfRPG
     [Obsolete]
     class WRPGOLDOpen
     {
-        
+        private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
+
         public WRPGOLDOpen()
         {
             
@@ -85,7 +87,7 @@ namespace TranslationHelper.Projects.WolfRPG
                 try
                 {
                     string fname = Path.GetFileName(txtFile);
-                    FunctionsUI.ProgressInfo(true, T._("opening file: ") + fname + ".txt");
+                    Logger.Info(T._("opening file: ") + fname + ".txt");
                     using (StreamReader _file = new StreamReader(txtFile))
                     {
                         AppData.CurrentProject.FilesContent.Tables.Add(fname);
@@ -363,7 +365,7 @@ namespace TranslationHelper.Projects.WolfRPG
                     int translationcolumnindex = AppData.CurrentProject.FilesContent.Tables[fileName].Columns[THSettings.TranslationColumnName].Ordinal;
                     //int contextcolumnindex = THFilesElementsDatasetInfo.Tables[fileName].Columns["Context"].Ordinal;
 
-                    FunctionsUI.ProgressInfo(true, T._("saving file: ") + fileName);
+                    Logger.Info(T._("saving file: ") + fileName);
 
                     buffer.AppendLine("> WOLF TRANS PATCH FILE VERSION 1.0");// + Environment.NewLine);
                                                                              //for (int y = 0; y < THRPGMTransPatchFiles[i].blocks.Count; y++)
@@ -416,12 +418,12 @@ namespace TranslationHelper.Projects.WolfRPG
                 }
                 catch
                 {
-                    FunctionsUI.ProgressInfo(false, string.Empty);
+                    Logger.Info(string.Empty);
                     FunctionsUI.SaveInAction = false;
                 }
                 finally
                 {
-                    FunctionsUI.ProgressInfo(false, string.Empty);
+                    Logger.Info(string.Empty);
                 }
 
             }

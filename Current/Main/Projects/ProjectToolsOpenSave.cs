@@ -1,4 +1,5 @@
-﻿using System;
+﻿using NLog;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -13,6 +14,8 @@ namespace TranslationHelper.Projects
 {
     internal static class ProjectToolsOpenSave
     {
+        private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
+
         public static List<FileInfo> GetNewestFilesList(DirectoryInfo dir, string mask = "*.*")
         {
             var newestfiles = new Dictionary<string, FileInfo>();
@@ -132,7 +135,7 @@ namespace TranslationHelper.Projects
                 // check extension for case im mask was "*.*" or kind of
                 if (!string.IsNullOrWhiteSpace(format.Extension) && file.Extension != format.Extension) return;
 
-                FunctionsUI.ProgressInfo(true, (project.OpenFileMode ? T._("Opening") : T._("Saving")) + " " + file.Name);
+                Logger.Info((project.OpenFileMode ? T._("Opening") : T._("Saving")) + " " + file.Name);
 
                 bool isOpenSuccess = false;
                 try
@@ -148,7 +151,7 @@ namespace TranslationHelper.Projects
                     project.BakPaths.Add(file.FullName);
             });
 
-            FunctionsUI.ProgressInfo(false);
+            
 
             return ret;
         }

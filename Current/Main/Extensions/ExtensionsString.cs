@@ -1,4 +1,5 @@
-﻿using System;
+﻿using NLog;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Globalization;
@@ -14,6 +15,7 @@ namespace TranslationHelper.Extensions
 {
     internal static class ExtensionsString
     {
+        private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
         /// <summary>
         /// escape all <paramref name="quoteSymbol"/> by \
         /// </summary>
@@ -109,7 +111,6 @@ namespace TranslationHelper.Extensions
                 bufferExtracted[lineCoordinates].Add(lineNum, new Dictionary<string, string>());//add linenum
             }
 
-            var log = new FunctionsLogs();
             var GroupValues = new List<string>();//list of values for captured groups which containing in PatternReplacementPair.Value
             try
             {
@@ -124,8 +125,8 @@ namespace TranslationHelper.Extensions
                     }
                     catch (System.ArgumentException ex)
                     {
-                        log.LogToFile("ExtractMulty: Invalid regex:" + PatternReplacementPair.Key + "\r\nError:\r\n" + ex);
-                        FunctionsUI.ProgressInfo(true, "Invalid regex found. See " + THSettings.ApplicationLogName);
+                        Logger.Warn("ExtractMulty: Invalid regex:" + PatternReplacementPair.Key + "\r\nError:\r\n" + ex);
+                        Logger.Warn("Invalid regex found. See {0}", THSettings.ApplicationLogName);
                         continue;
                     }
 

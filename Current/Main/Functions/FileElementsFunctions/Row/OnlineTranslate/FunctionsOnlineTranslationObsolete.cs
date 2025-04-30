@@ -1,4 +1,5 @@
-﻿using System;
+﻿using NLog;
+using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
@@ -16,7 +17,8 @@ namespace TranslationHelper.Functions
     [Obsolete]
     class FunctionsOnlineTranslationObsolete : IDisposable
     {
-        
+        private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
+
         readonly GoogleAPIOLD Translator;
 
         public FunctionsOnlineTranslationObsolete()
@@ -121,7 +123,7 @@ namespace TranslationHelper.Functions
                         CurrentRowIndex = r;
                     }
 
-                    FunctionsUI.ProgressInfo(true, progressinfo);
+                    Logger.Info(progressinfo);
                     //LogToFile("111=" + 111, true);
                     //проверка пустого значения поля для перевода
                     //if (THFileElementsDataGridView[cind + 1, rind].Value == null || string.IsNullOrEmpty(THFileElementsDataGridView[cind + 1, rind].Value.ToString()))
@@ -229,7 +231,7 @@ namespace TranslationHelper.Functions
 
             AppData.Main.IsTranslating = false;
             FunctionsOnlineCache.Unload();
-            FunctionsUI.ProgressInfo(false);
+            
         }
 
         private string TranslateMultilineValue(string[] InputLines/*, DataSet cacheDS*/)
@@ -341,7 +343,7 @@ namespace TranslationHelper.Functions
             {
                 if (AppSettings.UseAllDBFilesForOnlineTranslationForAll && Method == "a")
                 {
-                    FunctionsUI.ProgressInfo(true, "Get all databases");
+                    Logger.Info("Get all databases");
                     FunctionsDBFile.MergeAllDBtoOne();
                 }
 
@@ -377,7 +379,7 @@ namespace TranslationHelper.Functions
                             continue;
                         }
 
-                        Task.Run(() => FunctionsUI.ProgressInfo(true, T._("getting translation") + t + "/" + TableMaxIndex + ": " + Table.TableName + " ")).ConfigureAwait(false);
+                        Task.Run(() => Logger.Info(T._("getting translation") + t + "/" + TableMaxIndex + ": " + Table.TableName + " ")).ConfigureAwait(false);
 
                         RowsCountInTable = (Method == "a" || Method == "t") ? Table.Rows.Count : SelectedIndexes.Length;
 
@@ -394,7 +396,7 @@ namespace TranslationHelper.Functions
                             {
                                 //AppData.Main.Invoke((Action)(() => AppData.Main.translationInteruptToolStripMenuItem.Visible = false));
                                 FunctionsOnlineCache.Unload();
-                                FunctionsUI.ProgressInfo(false);
+                                
                                 //Thread.CurrentThread.Abort();
                                 return;
                             }
@@ -538,7 +540,7 @@ namespace TranslationHelper.Functions
 
             FunctionsOnlineCache.Unload();
 
-            FunctionsUI.ProgressInfo(false);
+            
         }
 
         private void TranslateItNow(List<string> InputLines, List<InputLinesInfoData> InputLinesInfo)
@@ -588,7 +590,7 @@ namespace TranslationHelper.Functions
                     }
                     catch (Exception ex)
                     {
-                        new FunctionsLogs().LogToFile("TranslateLinesAndSetTranslation. Error while translation:"
+                        Logger.Error("TranslateLinesAndSetTranslation. Error while translation:"
                             + Environment.NewLine
                             + ex
                             + Environment.NewLine
@@ -688,7 +690,7 @@ namespace TranslationHelper.Functions
             }
             catch (Exception ex)
             {
-                new Functions.FunctionsLogs().LogToFile(
+                Logger.Error(
                     Environment.NewLine + "TranslateLinesAndSetTranslation error:" + Environment.NewLine + ex
                     + Environment.NewLine + "InfoIndex=" + DebugInfoIndex
                     + Environment.NewLine + "TranslatedLinesIndex=" + DebugTranslatedLinesIndex
@@ -811,7 +813,7 @@ namespace TranslationHelper.Functions
                     }
                     catch (ArgumentNullException ex)
                     {
-                        new FunctionsLogs().LogToFile("Error occured:" + Environment.NewLine + ex);
+                        Logger.Error("Error occured:" + Environment.NewLine + ex);
                     }
                 }
                 ResultValue.Clear();

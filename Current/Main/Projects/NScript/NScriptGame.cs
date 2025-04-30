@@ -30,7 +30,7 @@ namespace TranslationHelper.Projects.NScript
 
         private bool OpenSaveNScript()
         {
-            FunctionsUI.ProgressInfo(true, (OpenFileMode ? T._("Opening") : T._("Saving")) + ": nscript.dat");
+            Logger.Info((OpenFileMode ? T._("Opening") : T._("Saving")) + ": nscript.dat");
             var filePath = Path.Combine(AppData.CurrentProject.SelectedGameDir, "nscript.dat");
             bool ret;
             var format = new NSCRIPT
@@ -52,7 +52,7 @@ namespace TranslationHelper.Projects.NScript
                 ret = format.Save();
             }
 
-            FunctionsUI.ProgressInfo(false);
+            
             return ret;
         }
 

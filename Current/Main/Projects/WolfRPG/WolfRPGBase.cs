@@ -71,7 +71,7 @@ namespace TranslationHelper.Projects.WolfRPG
                         if (extractedDirPath.Exists && !extractedDirPath.IsEmpty()) continue;
 
                         //.mps, .dat, .project
-                        FunctionsUI.ProgressInfo(true, progressMessageTitle + T._("Extract") + " " + Path.GetFileName(wolfFile));
+                        Logger.Info(progressMessageTitle + T._("Extract") + " " + Path.GetFileName(wolfFile));
                         if (FunctionsProcess.RunProcess(wolfextractor, "\"" + wolfFile + "\""))
                         {
                             ret = true;

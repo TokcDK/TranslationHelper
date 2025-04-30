@@ -1,4 +1,5 @@
-﻿using System;
+﻿using NLog;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,10 +9,7 @@ namespace TranslationHelper.Functions.StringChangers
 {
     internal abstract class StringChangerBase
     {
-        /// <summary>
-        /// Application log
-        /// </summary>
-        protected readonly FunctionsLogs _log = new FunctionsLogs();
+        protected static readonly Logger Logger = LogManager.GetCurrentClassLogger();
 
         internal abstract string Description { get; }
 

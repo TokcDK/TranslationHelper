@@ -1,4 +1,5 @@
-﻿using System;
+﻿using NLog;
+using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
@@ -15,6 +16,8 @@ namespace TranslationHelper.OnlineTranslators
 {
     internal class GoogleTranslateMin
     {
+        private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
+
         internal int ErrorsWebCnt = 0;
         internal int ErrorsWebCntOverall = 0;
 
@@ -60,13 +63,13 @@ namespace TranslationHelper.OnlineTranslators
             }
             catch (WebException ex)
             {
-                new Functions.FunctionsLogs().LogToFile("google array translation web error:" + Environment.NewLine + ex + Environment.NewLine + "uri=" + uri);
+                Logger.Error("google array translation web error:" + Environment.NewLine + ex + Environment.NewLine + "uri=" + uri);
                 AppData.OnlineTranslatorCookies = null;
                 ErrorsWebCnt++;
             }
             catch (Exception ex)
             {
-                new Functions.FunctionsLogs().LogToFile("google array translation error:" + Environment.NewLine + ex + Environment.NewLine + "uri=" + uri);
+                Logger.Error("google array translation error:" + Environment.NewLine + ex + Environment.NewLine + "uri=" + uri);
             }
 
             return null;

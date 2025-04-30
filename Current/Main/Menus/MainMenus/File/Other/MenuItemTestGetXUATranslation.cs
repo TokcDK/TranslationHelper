@@ -27,7 +27,7 @@ namespace TranslationHelper.Menus.MainMenus.File
                 try
                 {
                     var dict = new Dictionary<string, string>();
-                    FunctionsUI.ProgressInfo(true, T._("Loading") + ": " + T._("Static translations") + "-" + "XUA");
+                    Logger.Info(T._("Loading") + ": " + T._("Static translations") + "-" + "XUA");
                     ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;//tls12 for github
                     var xuaStatic = wc.DownloadString(new Uri("https://github.com/bbepis/XUnity.AutoTranslator/raw/master/src/XUnity.AutoTranslator.Plugin.Core/Translations/StaticTranslations.txt"));
                     foreach (var line in xuaStatic.SplitToLines())
@@ -45,7 +45,7 @@ namespace TranslationHelper.Menus.MainMenus.File
                 }
                 catch { }
             }
-            FunctionsUI.ProgressInfo(false);
+            
         }
     }
 }

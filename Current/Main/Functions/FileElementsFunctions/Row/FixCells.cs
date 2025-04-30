@@ -1,4 +1,5 @@
-﻿using System;
+﻿using NLog;
+using System;
 using System.Text.RegularExpressions;
 using System.Windows.Forms;
 using TranslationHelper.Data;
@@ -58,8 +59,8 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
                         }
                         catch (System.ArgumentException ex)
                         {
-                           _log.LogToFile("FixCells: Invalid regex:" + rule + "\r\nError:\r\n" + ex);
-                            FunctionsUI.ProgressInfo(true, "Invalid regex found. See " + THSettings.ApplicationLogName);
+                            Logger.Info("FixCells: Invalid regex:" + rule + "\r\nError:\r\n" + ex);
+                            Logger.Info("Invalid regex found. See " + THSettings.ApplicationLogName);
                             continue;
                         }
 

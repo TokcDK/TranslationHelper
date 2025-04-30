@@ -1,4 +1,5 @@
-﻿using System;
+﻿using NLog;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
@@ -27,6 +28,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
 
     public class ExtractRegexInfo
     {
+        private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
         public ExtractRegexInfo(string inputString)
         {
             InputString = inputString;
@@ -68,7 +70,6 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
         /// <returns></returns>
         void ExtractMulty()
         {
-            var log = new FunctionsLogs();
             try
             {
                 foreach (var PatternReplacementPair in AppData.TranslationRegexRules)
@@ -85,8 +86,8 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
                     }
                     catch (System.ArgumentException ex)
                     {
-                        log.LogToFile("ExtractMulty: Invalid regex:" + PatternReplacementPair.Key + "\r\nError:\r\n" + ex);
-                        FunctionsUI.ProgressInfo(true, "Invalid regex found. See " + THSettings.ApplicationLogName);
+                        Logger.Info("ExtractMulty: Invalid regex:" + PatternReplacementPair.Key + "\r\nError:\r\n" + ex);
+                        Logger.Info("Invalid regex found. See " + THSettings.ApplicationLogName);
                         continue;
                     }
 

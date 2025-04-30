@@ -100,7 +100,7 @@ namespace TranslationHelper.Projects.WolfRPG
                         //+ " > \"" + log + "\""
                         ;
 
-                    FunctionsUI.ProgressInfo(true, progressMessageTitle);
+                    Logger.Info(progressMessageTitle);
                     var patch = Path.Combine(WorkFolder, "Patch.cmd");
                     File.WriteAllText(patch, "\r\n\"" + ruby + "\" " + args + "\r\npause");
 
@@ -119,7 +119,7 @@ namespace TranslationHelper.Projects.WolfRPG
                         try
                         {
                             if (OpenFileMode) BakRestore();//restore original files before patch creation
-                            FunctionsUI.ProgressInfo(true, "Patching..");
+                            Logger.Info("Patching..");
                             ret = RubyWolfTrans.Start();
                             RubyWolfTrans.WaitForExit();
                         }
@@ -131,7 +131,7 @@ namespace TranslationHelper.Projects.WolfRPG
 
                         if (!ret || RubyWolfTrans.ExitCode > 0)
                         {
-                            FunctionsUI.ProgressInfo(true, progressMessageTitle + " " + T._("Somethig wrong") + ".. " + T._("Trying again"));
+                            Logger.Info(progressMessageTitle + " " + T._("Somethig wrong") + ".. " + T._("Trying again"));
                             //2nd try because was error sometime after 1st patch creation execution
                             if (OpenFileMode) BakRestore();
                             ret = RubyWolfTrans.Start();
@@ -166,10 +166,10 @@ namespace TranslationHelper.Projects.WolfRPG
 
                 if (ret && SaveFileMode)
                 {
-                    FunctionsUI.ProgressInfo(true, T._("Create buckup of original files"));
+                    Logger.Info(T._("Create buckup of original files"));
                     BakCreate();
 
-                    FunctionsUI.ProgressInfo(true, T._("Replace translated files"));
+                    Logger.Info(T._("Replace translated files"));
                     ReplaceFilesWithTranslated();
                 }
             }
@@ -178,7 +178,7 @@ namespace TranslationHelper.Projects.WolfRPG
 
             }
 
-            FunctionsUI.ProgressInfo(false);
+            
             return ret;
         }
 

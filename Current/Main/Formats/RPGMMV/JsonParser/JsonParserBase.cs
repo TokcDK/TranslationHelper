@@ -1,5 +1,6 @@
 ﻿using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using NLog;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -9,6 +10,7 @@ namespace TranslationHelper.Formats.RPGMMV.JsonParser
 {
     abstract class JsonParserBase
     {
+        private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
         protected JsonParserBase(FormatBase format)
         {
             if (AppData.CurrentProject == null) return;
@@ -121,12 +123,12 @@ namespace TranslationHelper.Formats.RPGMMV.JsonParser
             }
             catch (JsonReaderException ex)
             {
-                AppData.AppLog.LogToFile("Error occured while json read (json is empty or corrupted): \r\n" + ex);
+                Logger.Info("Error occured while json read (json is empty or corrupted): \r\n" + ex);
                 return false;
             }
             catch (Exception ex)
             {
-                AppData.AppLog.LogToFile("Error occured while json parse: \r\n" + ex);
+                Logger.Info("Error occured while json parse: \r\n" + ex);
                 return false;
             }
 

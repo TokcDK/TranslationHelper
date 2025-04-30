@@ -235,67 +235,6 @@ namespace TranslationHelper.Functions
         internal static volatile bool SaveInAction;
         internal static bool FileDataWasChanged;
 
-        /// <summary>
-        /// control progressbar Current\Max
-        /// </summary>
-        /// <param name="CurrentProgressBar">current value</param>
-        /// <param name="MaxProgressBar">max value</param>
-        public static void ProgressInfo(int CurrentProgressBar, int MaxProgressBar)
-        {
-            ProgressInfo(true, "", true, CurrentProgressBar, MaxProgressBar);
-        }
-
-        /// <summary>
-        /// show status text in left-bottom field of window
-        /// </summary>
-        /// <param name="ShowStatus">show status</param>
-        /// <param name="StatusText"></param>
-        public static void ProgressInfo(string StatusText = "")
-        {
-            ProgressInfo(StatusText.Length > 0, StatusText);
-        }
-
-        /// <summary>
-        /// show status text in left-bottom field of window
-        /// </summary>
-        /// <param name="ShowStatus">show status</param>
-        /// <param name="StatusText"></param>
-        public static void ProgressInfo(bool ShowStatus, string StatusText = "", bool SetProgressBar = false, int CurrentProgressBar = -1, int MaxProgressBar = -1)
-        {
-            if (SetProgressBar && AppData.Main.THActionProgressBar.Visible && AppData.Main.THInfolabel.Visible && CurrentProgressBar != -1 && MaxProgressBar != -1)
-            {
-                if (AppData.Main.THActionProgressBar.Style != ProgressBarStyle.Continuous)
-                {
-                    _ = AppData.Main.THActionProgressBar.Invoke((Action)(() => AppData.Main.THActionProgressBar.Style = ProgressBarStyle.Continuous));
-                }
-                if (AppData.Main.THActionProgressBar.Maximum != MaxProgressBar)
-                {
-                    _ = AppData.Main.THActionProgressBar.Invoke((Action)(() => AppData.Main.THActionProgressBar.Maximum = MaxProgressBar));
-                }
-                if (CurrentProgressBar < MaxProgressBar)
-                {
-                    _ = AppData.Main.THActionProgressBar.Invoke((Action)(() => AppData.Main.THActionProgressBar.Value = CurrentProgressBar));
-                }
-            }
-            else
-            {
-                StatusText = StatusText?.Length == 0 ? T._("working..") : StatusText;
-                try
-                {
-                    _ = AppData.Main.THActionProgressBar.Invoke((Action)(() => AppData.Main.THActionProgressBar.Visible = ShowStatus));
-                    _ = AppData.Main.THInfolabel.Invoke((Action)(() => AppData.Main.THInfolabel.Visible = ShowStatus));
-                    if (!ShowStatus)
-                    {
-                        _ = AppData.Main.THActionProgressBar.Invoke((Action)(() => AppData.Main.THActionProgressBar.Style = ProgressBarStyle.Marquee));
-                    }
-                    _ = AppData.Main.THInfolabel.Invoke((Action)(() => AppData.Main.THInfolabel.Text = StatusText));
-                }
-                catch
-                {
-                }
-            }
-        }
-
         internal static void CellChangedRegistration(int ColumnIndex = -1)
         {
             if (ColumnIndex > 0)

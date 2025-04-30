@@ -1,4 +1,5 @@
-﻿using System;
+﻿using NLog;
+using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Data;
@@ -15,6 +16,7 @@ namespace TranslationHelper.Projects
 {
     public abstract class ProjectBase : IProject, IProjectBackupUser
     {
+        protected static readonly Logger Logger = LogManager.GetCurrentClassLogger();
         protected ProjectBase()
         {
             // set value of the parameter for the project work session

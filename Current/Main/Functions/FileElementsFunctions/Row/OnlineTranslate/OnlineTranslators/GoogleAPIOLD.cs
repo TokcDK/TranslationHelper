@@ -56,12 +56,12 @@ namespace TranslationHelper
             }
             catch (WebException ex)
             {
-                new Functions.FunctionsLogs().LogToFile($"google translation web error:{Environment.NewLine}{ex}");
+                Logger.Error($"google translation web error:{Environment.NewLine}{ex}");
                 AppData.OnlineTranslatorCookies = null;
             }
             catch (Exception ex)
             {
-                new Functions.FunctionsLogs().LogToFile($"google translation error:{Environment.NewLine}{ex}");
+                Logger.Error($"google translation error:{Environment.NewLine}{ex}");
             }
             return string.Empty;
         }
@@ -100,7 +100,7 @@ namespace TranslationHelper
             }
             catch (Exception ex)
             {
-                new Functions.FunctionsLogs().LogToFile($"google array translation error:{Environment.NewLine}{ex}{Environment.NewLine}uri={uri}");
+                Logger.Error($"google array translation error:{Environment.NewLine}{ex}{Environment.NewLine}uri={uri}");
                 return null;
             }
         }

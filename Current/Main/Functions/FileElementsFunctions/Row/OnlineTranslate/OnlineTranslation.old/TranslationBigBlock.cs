@@ -32,7 +32,7 @@
 //            {
 //                if (AppSettings.UseAllDBFilesForOnlineTranslationForAll && Method == "a")
 //                {
-//                    FunctionsUI.ProgressInfo(true, "Get all databases");
+//                    Logger.Info("Get all databases");
 //                    FunctionsDBFile.MergeAllDBtoOne();
 //                }
 
@@ -68,7 +68,7 @@
 //                            continue;
 //                        }
 
-//                        Task.Run(() => FunctionsUI.ProgressInfo(true, T._("getting translation") + t + "/" + TableMaxIndex + ": " + Table.TableName + " ")).ConfigureAwait(false);
+//                        Task.Run(() => Logger.Info(T._("getting translation") + t + "/" + TableMaxIndex + ": " + Table.TableName + " ")).ConfigureAwait(false);
 
 //                        RowsCountInTable = (Method == "a" || Method == "t") ? Table.Rows.Count : SelectedIndexes.Length;
 
@@ -85,7 +85,7 @@
 //                            {
 //                                //AppData.Main.Invoke((Action)(() => AppData.Main.translationInteruptToolStripMenuItem.Visible = false));
 //                                CacheUnloadWhenNeed();
-//                                FunctionsUI.ProgressInfo(false);
+//                                
 //                                //Thread.CurrentThread.Abort();
 //                                return;
 //                            }
@@ -229,7 +229,7 @@
 
 //            CacheUnloadWhenNeed();
 
-//            FunctionsUI.ProgressInfo(false);
+//            
 //        }
 
 //        private static void CacheInitWhenNeed()
@@ -366,7 +366,7 @@
 //                }
 //                catch (Exception ex)
 //                {
-//                    new FunctionsLogs().LogToFile("TranslateLinesAndSetTranslation. Error while translation:"
+//                    Logger.Error("TranslateLinesAndSetTranslation. Error while translation:"
 //                        + Environment.NewLine
 //                        + ex
 //                        + Environment.NewLine
@@ -465,7 +465,7 @@
 //            }
 //            catch (Exception ex)
 //            {
-//                new FunctionsLogs().LogToFile(
+//                Logger.Error(
 //                    Environment.NewLine + "TranslateLinesAndSetTranslation error:" + Environment.NewLine + ex
 //                    + Environment.NewLine + "InfoIndex=" + DebugInfoIndex
 //                    + Environment.NewLine + "TranslatedLinesIndex=" + DebugTranslatedLinesIndex
@@ -512,7 +512,7 @@
 //                    }
 //                    catch (ArgumentNullException ex)
 //                    {
-//                        new FunctionsLogs().LogToFile("Error occured:" + Environment.NewLine + ex);
+//                        Logger.Error("Error occured:" + Environment.NewLine + ex);
 //                    }
 //                }
 //                ResultValue.Clear();

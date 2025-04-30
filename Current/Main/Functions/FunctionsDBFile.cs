@@ -1,4 +1,5 @@
-﻿using System;
+﻿using NLog;
+using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Globalization;
@@ -22,6 +23,8 @@ namespace TranslationHelper.Main.Functions
 {
     static class FunctionsDBFile
     {
+        private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
+
         private const string _baseNamePattern = @"^(.+)_[0-9]{2,4}\.[0-9]{2}\.[0-9]{2,4} [0-9]{2}-[0-9]{2}-[0-9]{2}$";
 
         public static void WriteTranslationCacheIfValid(DataSet translationCacheDataSet, string translationCachePath)
@@ -574,7 +577,7 @@ namespace TranslationHelper.Main.Functions
                 {
                     using (var dbDataSet = new DataSet())
                     {
-                        FunctionsUI.ProgressInfo(true, T._("Loading") + " " + Path.GetFileName(dbFile.Value.Name));
+                        Logger.Info(T._("Loading") + " " + Path.GetFileName(dbFile.Value.Name));
 
                         ReadDBFile(dataSet: dbDataSet, dbFilePath: dbFile.Value.FullName, useOriginaldbFilePath: true);
                         dbDataSet.ToDictionary(inputDB: AppData.AllDBmerged, dontAddEmptyTranslation: true, dontAddEqualTranslation: true, _dbDataSetToDictionaryAddLocker);
@@ -771,7 +774,7 @@ namespace TranslationHelper.Main.Functions
             //dbpath = Application.StartupPath + "\\DB";
             //string dbfilename = DateTime.Now.ToString("dd.MM.yyyy HH-mm-ss");
 
-            FunctionsUI.ProgressInfo(true);
+            Logger.Info(true);
 
             //lastautosavepath = dbpath + "\\Auto\\Auto" + dbfilename + GetDBCompressionExt();
 
@@ -784,7 +787,7 @@ namespace TranslationHelper.Main.Functions
 
             if (UseAllDB)
             {
-                FunctionsUI.ProgressInfo(true, "Get all databases");
+                Logger.Info("Get all databases");
                 FunctionsDBFile.MergeAllDBtoOne();
                 FunctionsLoadTranslationDB.THLoadDBCompareFromDictionaryParallellTables(AppData.AllDBmerged);
             }
@@ -816,11 +819,11 @@ namespace TranslationHelper.Main.Functions
 
             if (!File.Exists(sPath))
             {
-                FunctionsUI.ProgressInfo(false);
+                
                 return Task.CompletedTask;
             }
 
-            FunctionsUI.ProgressInfo(true, T._("Reading DB File") + "...");
+            Logger.Info(T._("Reading DB File") + "...");
 
             try
             {
@@ -878,7 +881,7 @@ namespace TranslationHelper.Main.Functions
 
             }
 
-            FunctionsUI.ProgressInfo(false);
+            
 
             return Task.CompletedTask;
         }

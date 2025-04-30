@@ -139,7 +139,7 @@ namespace TranslationHelper.Projects.RPGMMV
                 // Consider logging in a future enhancement: Logger.Log(ex);
             }
 
-            FunctionsUI.ProgressInfo(false);
+            
             return hasAnyFileBeenProcessed;
         }
 
@@ -214,7 +214,7 @@ namespace TranslationHelper.Projects.RPGMMV
                     var format = (FormatBase)Activator.CreateInstance(jsType);
                     format.FilePath = filePath;
 
-                    FunctionsUI.ProgressInfo(true, ParseFileMessage + js.JSName);
+                    Logger.Info(ParseFileMessage + js.JSName);
                     if ((OpenFileMode && format.Open()) || (SaveFileMode && format.Save()))
                     {
                         hasAnyFileBeenProcessed = true;
@@ -249,7 +249,7 @@ namespace TranslationHelper.Projects.RPGMMV
                 if (!File.Exists(jsFileInfo)) continue;
 
                 var format = new ZZZOtherJS { FilePath = jsFileInfo };
-                FunctionsUI.ProgressInfo(true, ParseFileMessage + jsName);
+                Logger.Info(ParseFileMessage + jsName);
 
                 try
                 {
@@ -276,7 +276,7 @@ namespace TranslationHelper.Projects.RPGMMV
             if (!File.Exists(filePath)) return false;
 
             var format = new GAMEFONTCSS { FilePath = filePath };
-            FunctionsUI.ProgressInfo(true, ParseFileMessage + "gamefont.css");
+            Logger.Info(ParseFileMessage + "gamefont.css");
 
             try
             {

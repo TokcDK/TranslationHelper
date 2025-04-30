@@ -54,7 +54,7 @@ namespace TranslationHelper.Projects.IrisField
         {
             var ret = false;
 
-            FunctionsUI.ProgressInfo(true, Path.GetFileName(AppData.SelectedProjectFilePath));
+            Logger.Info(Path.GetFileName(AppData.SelectedProjectFilePath));
             var openPath = new DirectoryInfo(Path.GetDirectoryName(AppData.SelectedProjectFilePath));
             if (ProjectToolsOpenSave.OpenSaveFilesBase(this, openPath, GameExeFormatType, GameExeName + ".exe", searchOption: SearchOption.TopDirectoryOnly))
             {
@@ -71,7 +71,7 @@ namespace TranslationHelper.Projects.IrisField
                 }
             }
 
-            FunctionsUI.ProgressInfo(false);
+            
             return ret;
         }
 

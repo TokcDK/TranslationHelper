@@ -92,11 +92,11 @@ namespace TranslationHelper.Projects.KiriKiri.Games
 
             if (ret && SaveFileMode)
             {
-                FunctionsUI.ProgressInfo(true, T._("Creating translation patch"));
+                Logger.Info(T._("Creating translation patch"));
                 ret = PackTranslatedFilesInPatch();
             }
 
-            FunctionsUI.ProgressInfo(false);
+            
             return ret;
         }
 
@@ -174,7 +174,7 @@ namespace TranslationHelper.Projects.KiriKiri.Games
                         continue;
                     }
 
-                    FunctionsUI.ProgressInfo(true, progressMessageTitle + T._("Proceed") + ":" + xp3File.FileInfo.Name);
+                    Logger.Info(progressMessageTitle + T._("Proceed") + ":" + xp3File.FileInfo.Name);
                     var xp3path = xp3File.FileInfo.FullName;
 
                     DirectoryInfo targetSubFolder = new DirectoryInfo(
@@ -183,7 +183,7 @@ namespace TranslationHelper.Projects.KiriKiri.Games
                         + Path.GetFileNameWithoutExtension(xp3File.FileInfo.FullName)
                         );
 
-                    FunctionsUI.ProgressInfo(true, progressMessageTitle + (usecrc ? T._("Calculate control crc") : string.Empty) + ":" + xp3File.FileInfo.Name);
+                    Logger.Info(progressMessageTitle + (usecrc ? T._("Calculate control crc") : string.Empty) + ":" + xp3File.FileInfo.Name);
                     var crc = usecrc ? xp3File.FileInfo.FullName.GetCrc32(true, AppData.Main.THActionProgressBar) : string.Empty;
                     var XP3crc32Path = usecrc ? targetSubFolder + ".xp3." + crc + ".crc32" : string.Empty;
                     var KiriKiriEXEargs = "-i \"" + xp3path + "\" -o \"" + targetSubFolder + "\"";
@@ -200,7 +200,7 @@ namespace TranslationHelper.Projects.KiriKiri.Games
                     {
                         if (SkipAlreadyExtracted)
                         {
-                            FunctionsUI.ProgressInfo(true, progressMessageTitle + T._("Skipped:") + ":" + xp3File.FileInfo.Name);
+                            Logger.Info(progressMessageTitle + T._("Skipped:") + ":" + xp3File.FileInfo.Name);
                             ret = true;
                             continue;
                         }
@@ -229,7 +229,7 @@ namespace TranslationHelper.Projects.KiriKiri.Games
                         }
                     }
 
-                    FunctionsUI.ProgressInfo(true, progressMessageTitle + T._("Extract files from") + " " + xp3File.FileInfo.Name);
+                    Logger.Info(progressMessageTitle + T._("Extract files from") + " " + xp3File.FileInfo.Name);
                     FunctionsProcess.RunProcess(kirikiriunpacker, KiriKiriEXEargs);
 
                     if (!ret)
@@ -280,7 +280,7 @@ namespace TranslationHelper.Projects.KiriKiri.Games
 
                     if (parseData)
                     {
-                        FunctionsUI.ProgressInfo(true, progressMessageTitle + (usecrc ? T._("Calculate control crc") : string.Empty) + ":" + dataDir.Name);
+                        Logger.Info(progressMessageTitle + (usecrc ? T._("Calculate control crc") : string.Empty) + ":" + dataDir.Name);
 
                         var sourceFilePaths = KiriKiriGameUtils.GetKiriKiriScriptPaths(dataDir, Mask());
 
@@ -310,7 +310,7 @@ namespace TranslationHelper.Projects.KiriKiri.Games
             {
             }
 
-            FunctionsUI.ProgressInfo(false);
+            
             return ret;
         }
 

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using NLog;
+using System;
 using System.Collections.Generic;
 using System.Data;
 using System.IO;
@@ -14,6 +15,7 @@ namespace TranslationHelper.Functions
 {
     class FunctionsLoadTranslationDB
     {
+        private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
         public FunctionsLoadTranslationDB()
         {
 
@@ -70,7 +72,7 @@ namespace TranslationHelper.Functions
         //                continue;
 
         //            string tableprogressinfo = infomessage + table.TableName + ">" + t + "/" + tcount;
-        //            FunctionsUI.ProgressInfo(true, tableprogressinfo);
+        //            Logger.Info(tableprogressinfo);
 
         //            int rcount = table.Rows.Count;
         //            //проход по всем строкам таблицы рабочего dataset
@@ -135,7 +137,7 @@ namespace TranslationHelper.Functions
         //        }
         //    }
 
-        //    FunctionsUI.ProgressInfo(false);
+        //    
         //}
 
         //private static void CompareLiteIfIdentical(DataSet tHTempDS)
@@ -155,7 +157,7 @@ namespace TranslationHelper.Functions
         //                continue;
 
         //            string tableprogressinfo = infomessage + table.TableName + ">" + t + "/" + tcount;
-        //            FunctionsUI.ProgressInfo(true, tableprogressinfo);
+        //            Logger.Info(tableprogressinfo);
 
         //            int rcount = table.Rows.Count;
         //            //проход по всем строкам таблицы рабочего dataset
@@ -178,7 +180,7 @@ namespace TranslationHelper.Functions
         //            if(b) ResetDGVDataSource(-1, false, table);
         //        }
         //    }
-        //    FunctionsUI.ProgressInfo(false);
+        //    
         //}
 
         ///// <summary>
@@ -214,7 +216,7 @@ namespace TranslationHelper.Functions
         //                continue;
 
         //            string tableprogressinfo = infomessage + table.TableName + ">" + t + "/" + tcount;
-        //            FunctionsUI.ProgressInfo(true, tableprogressinfo);
+        //            Logger.Info(tableprogressinfo);
 
         //            int rcount = table.Rows.Count;
         //            //проход по всем строкам таблицы рабочего dataset
@@ -272,7 +274,7 @@ namespace TranslationHelper.Functions
         //    //timer.Stop();
         //    //TimeSpan difference = new TimeSpan(timer.ElapsedTicks);
         //    //MessageBox.Show(difference.ToString());
-        //    FunctionsUI.ProgressInfo(false);
+        //    
         //    System.Media.SystemSounds.Beep.Play();
         //}
 
@@ -303,7 +305,7 @@ namespace TranslationHelper.Functions
                 bool resetDGV = ResetDGVDataSource(tableIndex, filesList, workTableDatagridview);
 
                 string tableProgressInfo = string.Format("{0} {1}: {2}>{3}/{4}", T._("Load"), T._(THSettings.TranslationColumnName), table.TableName, tableIndex, AppData.CurrentProject.FilesContent.Tables.Count);
-                FunctionsUI.ProgressInfo(true, tableProgressInfo);
+                Logger.Info(tableProgressInfo);
 
                 bool dbTryToCheckLinesOfEachMultilineValue = AppSettings.DBTryToCheckLinesOfEachMultilineValue;
 
@@ -365,7 +367,7 @@ namespace TranslationHelper.Functions
 
             });
 
-            FunctionsUI.ProgressInfo(false);
+            
             System.Media.SystemSounds.Beep.Play();
         }
 
@@ -396,7 +398,7 @@ namespace TranslationHelper.Functions
                 }
 
                 var tableProgressMessage = $"{progressMessage} {table.TableName}>{tableIndex + 1}/{tables.Count}";
-                FunctionsUI.ProgressInfo(true, tableProgressMessage);
+                Logger.Info(tableProgressMessage);
 
                 var rows = table.Rows;
                 var rowCount = rows.Count;
@@ -478,10 +480,10 @@ namespace TranslationHelper.Functions
                     ResetDGVDataSource(-1, filesList, workTableDatagridview, false, table);
                 }
 
-                FunctionsUI.ProgressInfo(true, tableProgressMessage);
+                Logger.Info(tableProgressMessage);
             });
 
-            FunctionsUI.ProgressInfo(false);
+            
             System.Media.SystemSounds.Beep.Play();
         }
 
@@ -509,7 +511,7 @@ namespace TranslationHelper.Functions
         //        if (!FunctionsTable.IsTableColumnCellsAll(AppData.CurrentProject.FilesContent.Tables[t]))
         //        {
         //            string tableprogressinfo = infomessage + AppData.CurrentProject.FilesContent.Tables[t].TableName + ">" + t + "/" + tcount;
-        //            FunctionsUI.ProgressInfo(true, tableprogressinfo);
+        //            Logger.Info(tableprogressinfo);
 
         //            int rcount = AppData.CurrentProject.FilesContent.Tables[t].Rows.Count;
         //            //проход по всем строкам таблицы рабочего dataset
@@ -541,7 +543,7 @@ namespace TranslationHelper.Functions
         //    //timer.Stop();
         //    //TimeSpan difference = new TimeSpan(timer.ElapsedTicks);
         //    //MessageBox.Show(difference.ToString());
-        //    FunctionsUI.ProgressInfo(false);
+        //    
         //    System.Media.SystemSounds.Beep.Play();
         //}
         private static bool ResetDGVDataSource(long tableIndex, ListBox filesList, DataGridView dgv, bool isReset = true, DataTable table = null)
@@ -584,7 +586,7 @@ namespace TranslationHelper.Functions
         //    string infomessage = T._("Load") + " " + T._(THSettings.TranslationColumnName) + ":";
         //    //int tableDataKeysCount = tableData.Keys.Count;
         //    //int cur/* = 0*/;
-        //    FunctionsUI.ProgressInfo(true, infomessage);
+        //    Logger.Info(infomessage);
         //    foreach (var original in tableData.Keys)
         //    {
         //        //ProjectData.Main.ProgressInfo(true, infomessage + cur +"/"+ tableDataKeysCount);
@@ -604,7 +606,7 @@ namespace TranslationHelper.Functions
         //    //timer.Stop();
         //    //TimeSpan difference = new TimeSpan(timer.ElapsedTicks);
         //    //MessageBox.Show(difference.ToString());
-        //    FunctionsUI.ProgressInfo(false);
+        //    
         //    System.Media.SystemSounds.Beep.Play();
         //}
 
