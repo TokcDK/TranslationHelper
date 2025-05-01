@@ -102,7 +102,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
         /// </summary>
         protected override void ActionsFinalize()
         {
-            if (_buffer.Count > 0) TranslateStrings();
+            if (!_buffer.IsEmpty) TranslateStrings();
             FunctionsOnlineCache.Unload();
             if (AppSettings.InterruptTtanslation) AppSettings.InterruptTtanslation = false;
             Logger.Info(T._("Translation complete"));
@@ -477,7 +477,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
         /// <summary>
         /// Determines the type of replacer used for merging.
         /// </summary>
-        private TranslationRegexExtractType DetermineReplacerType(string replacer)
+        private static TranslationRegexExtractType DetermineReplacerType(string replacer)
         {
             var trimmed = replacer.Trim();
             if (_oneMatchNeedInsertTextRegex.IsMatch(trimmed)) return TranslationRegexExtractType.ReplaceOne;
@@ -718,7 +718,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
             }
         }
 
-        private string ExtractTranslation(string html)
+        private static string ExtractTranslation(string html)
         {
             var match = Regex.Match(html, @"<div class=""result-container"">(.*?)</div>");
             if (!match.Success)
