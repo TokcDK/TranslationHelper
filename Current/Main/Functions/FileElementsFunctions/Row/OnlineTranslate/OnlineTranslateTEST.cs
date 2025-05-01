@@ -8,6 +8,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Web;
 using System.Windows.Forms;
 using TranslationHelper.Data;
 using TranslationHelper.Data.Interfaces;
@@ -654,11 +655,11 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
             _sourceLanguage = sourceLanguage ?? throw new ArgumentNullException(nameof(sourceLanguage));
             _targetLanguage = targetLanguage ?? throw new ArgumentNullException(nameof(targetLanguage));
             _userAgents = new List<string>
-            {
-                "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36",
-                "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/14.0 Safari/605.1.15",
-                "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/92.0.4515.107 Safari/537.36"
-            };
+        {
+            "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36",
+            "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/14.0 Safari/605.1.15",
+            "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/92.0.4515.107 Safari/537.36"
+        };
             _random = new Random();
             _semaphore = new SemaphoreSlim(maxConcurrentRequests);
             _delayBetweenRequests = TimeSpan.FromMilliseconds(delayMs);
@@ -719,11 +720,13 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
         private string ExtractTranslation(string html)
         {
             var match = Regex.Match(html, @"<div class=""result-container"">(.*?)</div>");
-            if (match.Success)
+            if (!match.Success)
             {
-                return match.Groups[1].Value;
+                throw new InvalidOperationException("Failed to extract translation from response.");
             }
-            throw new InvalidOperationException("Failed to extract translation from response.");
+
+            // Decode HTML entities to normalize special characters (e.g., &#39; to ')
+            return HttpUtility.HtmlDecode(match.Groups[1].Value);
         }
 
         public void Dispose()
