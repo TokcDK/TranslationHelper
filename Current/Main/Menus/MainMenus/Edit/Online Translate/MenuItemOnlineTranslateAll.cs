@@ -26,6 +26,7 @@ namespace TranslationHelper.Menus.MainMenus.Edit.OnlineTranslate
             trans.Start();
         }
 
-        protected virtual ParameterizedThreadStart Param { get => (obj) => new OnlineTranslateNew().All(); }
+        //protected virtual ParameterizedThreadStart Param { get => (obj) => new OnlineTranslateNew().All(); }
+        protected virtual ParameterizedThreadStart Param { get => (obj) => new OnlineTranslateTEST().All(); }
     }
 }

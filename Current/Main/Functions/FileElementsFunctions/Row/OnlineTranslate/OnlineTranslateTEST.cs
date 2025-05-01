@@ -2,9 +2,11 @@
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Net.Http;
 using System.Text;
 using System.Text.RegularExpressions;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using TranslationHelper.Data;
@@ -636,55 +638,102 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
         void Write();
     }
 
-    public class GoogleTranslator : ITranslator
+    public class GoogleTranslator : ITranslator, IDisposable
     {
         private readonly HttpClient _httpClient;
         private readonly string _sourceLanguage;
         private readonly string _targetLanguage;
+        private readonly List<string> _userAgents;
+        private readonly Random _random;
+        private readonly SemaphoreSlim _semaphore;
+        private readonly TimeSpan _delayBetweenRequests;
+        private bool _disposed;
 
-        public GoogleTranslator(string sourceLanguage, string targetLanguage)
+        public GoogleTranslator(string sourceLanguage, string targetLanguage, int maxConcurrentRequests = 5, int delayMs = 1000)
         {
-            _httpClient = new HttpClient();
-            _sourceLanguage = sourceLanguage;
-            _targetLanguage = targetLanguage;
-        }
-
-        public string[] Translate(string[] texts)
-        {
-            var tasks = new Task<string>[texts.Length];
-            for (int i = 0; i < texts.Length; i++)
+            _sourceLanguage = sourceLanguage ?? throw new ArgumentNullException(nameof(sourceLanguage));
+            _targetLanguage = targetLanguage ?? throw new ArgumentNullException(nameof(targetLanguage));
+            _userAgents = new List<string>
             {
-                tasks[i] = TranslateAsync(texts[i]);
-            }
-            Task.WaitAll(tasks);
-            return Array.ConvertAll(tasks, t => t.Result);
+                "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36",
+                "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/14.0 Safari/605.1.15",
+                "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/92.0.4515.107 Safari/537.36"
+            };
+            _random = new Random();
+            _semaphore = new SemaphoreSlim(maxConcurrentRequests);
+            _delayBetweenRequests = TimeSpan.FromMilliseconds(delayMs);
+
+            var handler = new HttpClientHandler
+            {
+                CookieContainer = new CookieContainer(),
+                UseCookies = true
+            };
+            _httpClient = new HttpClient(handler)
+            {
+                Timeout = TimeSpan.FromSeconds(30)
+            };
         }
 
         public string Translate(string text)
         {
-            return TranslateAsync(text).Result;
+            return TranslateAsync(text).GetAwaiter().GetResult();
+        }
+
+        public string[] Translate(string[] texts)
+        {
+            return Task.WhenAll(texts.Select(TranslateAsync)).GetAwaiter().GetResult();
         }
 
         private async Task<string> TranslateAsync(string text)
         {
+            if (string.IsNullOrEmpty(text))
+                throw new ArgumentException("Text to translate cannot be null or empty.", nameof(text));
+
+            await _semaphore.WaitAsync();
             try
             {
+                await Task.Delay(_delayBetweenRequests);
+                string userAgent = _userAgents[_random.Next(_userAgents.Count)];
+                _httpClient.DefaultRequestHeaders.UserAgent.Clear();
+                _httpClient.DefaultRequestHeaders.UserAgent.ParseAdd(userAgent);
+
                 string url = $"https://translate.google.com/m?hl=en&sl={_sourceLanguage}&tl={_targetLanguage}&ie=UTF-8&prev=_m&q={Uri.EscapeDataString(text)}";
-                string response = await _httpClient.GetStringAsync(url);
-                string translation = ExtractTranslation(response);
+                HttpResponseMessage response = await _httpClient.GetAsync(url);
+
+                if (response.StatusCode == (HttpStatusCode)429)
+                {
+                    throw new HttpRequestException("Rate limit exceeded (HTTP 429). Consider increasing delay or using proxies.");
+                }
+
+                response.EnsureSuccessStatusCode();
+                string html = await response.Content.ReadAsStringAsync();
+                string translation = ExtractTranslation(html);
                 return translation;
             }
-            catch (Exception ex)
+            finally
             {
-                Console.WriteLine($"Translation failed: {ex.Message}");
-                return string.Empty;
+                _semaphore.Release();
             }
         }
 
         private string ExtractTranslation(string html)
         {
             var match = Regex.Match(html, @"<div class=""result-container"">(.*?)</div>");
-            return match.Success ? match.Groups[1].Value : string.Empty;
+            if (match.Success)
+            {
+                return match.Groups[1].Value;
+            }
+            throw new InvalidOperationException("Failed to extract translation from response.");
+        }
+
+        public void Dispose()
+        {
+            if (!_disposed)
+            {
+                _httpClient.Dispose();
+                _semaphore.Dispose();
+                _disposed = true;
+            }
         }
     }
 
