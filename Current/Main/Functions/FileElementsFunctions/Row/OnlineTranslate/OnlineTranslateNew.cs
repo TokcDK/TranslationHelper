@@ -19,6 +19,8 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
 {
     partial class OnlineTranslateNew : RowBase
     {
+        public override string Name => T._("Translator");
+
         protected override bool IsParallelTables => false;
         protected override bool IsParallelRows => false;
         protected virtual bool IsTranslateAll => true;
@@ -145,7 +147,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
                 if (result != DialogResult.Yes) return;
             }
 
-            Logger.Info("Get all DB");
+            Logger.Info(T._("Get all DB"));
 
             var mergingAllDb = new Task(() => FunctionsDBFile.MergeAllDBtoOne());
             mergingAllDb.ConfigureAwait(true);
@@ -160,17 +162,24 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
             if(_buffer.Count > 0) TranslateStrings();
 
             FunctionsOnlineCache.Unload();
-
-            
-
+                     
             if (AppSettings.InterruptTtanslation) AppSettings.InterruptTtanslation = false;
+
+            Logger.Info(T._("Translation complete"));
         }
+
+        private string _lasTableName = string.Empty;
 
         protected override bool Apply(RowBaseRowData rowData)
         {
             try
             {
-                Logger.Info("Translate" + " " + rowData.SelectedTable.TableName + "/" + rowData.SelectedRowIndex);
+                if(_lasTableName != rowData.SelectedTable.TableName)
+                {
+                    _lasTableName = rowData.SelectedTable.TableName;
+
+                    Logger.Info(T._("Translate {0}"), _lasTableName);
+                }
 
                 SetRowLinesToBuffer(rowData);
                 
