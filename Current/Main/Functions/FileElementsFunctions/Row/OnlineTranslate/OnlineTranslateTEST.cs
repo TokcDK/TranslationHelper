@@ -48,7 +48,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
         /// </summary>
         public OnlineTranslateTEST(ITranslator translator = null, ITranslationCache cache = null)
         {
-            _translator = translator ?? new GoogleTranslator("auto", "en");
+            _translator = translator ?? new GoogleTranslator(THSettings.SourceLanguageCode, THSettings.TargetLanguageCode);
             _cache = cache ?? new TranslationCache();
             _buffer = new ConcurrentDictionary<int, TranslationData>();
         }
