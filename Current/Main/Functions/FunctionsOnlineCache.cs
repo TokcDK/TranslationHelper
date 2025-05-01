@@ -69,10 +69,14 @@ namespace TranslationHelper.Functions
             }
         }
 
-        readonly object cacheWriteLocker = new object();
+        readonly static object cacheWriteLocker = new object();
         public void Write()
         {
-            if (cache == null || cache.Count < 1) return;
+            Write(cache);
+        }
+        public static void Write(Dictionary<string, string> cache)
+        {
+            if (cache == null || cache.Count == 0) return;
 
             lock (cacheWriteLocker)
             {
@@ -83,7 +87,6 @@ namespace TranslationHelper.Functions
                         new XElement(THSettings.TranslationColumnName, KeyValue.Value)
                         )
                     ));
-                //el.Save("cache.xml");
                 FunctionsDBFile.WriteXElementToXMLFile(el, AppSettings.THTranslationCachePath);
             }
         }
