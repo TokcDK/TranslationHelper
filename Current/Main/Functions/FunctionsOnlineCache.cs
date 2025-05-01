@@ -38,6 +38,7 @@ namespace TranslationHelper.Functions
             else
             {
                 var trimmed = keyValue.TrimAllExceptLettersOrDigits();
+                int index;
                 if (AppSettings.UseAllDBFilesForOnlineTranslationForAll
                    && trimmed.Length > 0
                    && AppData.AllDBmerged != null
@@ -45,12 +46,11 @@ namespace TranslationHelper.Functions
                    && AppData.AllDBmerged.TryGetValue(trimmed, out string mergedDBValueByTrimmed)
                    && !string.IsNullOrWhiteSpace(mergedDBValueByTrimmed))
                 {
-                    var ind = keyValue.IndexOf(trimmed); //sometimes inex is -1 of 'え' in 'え゛？' for example
-                    try
+                    index = keyValue.IndexOf(trimmed); //sometimes index is -1 of 'え' in 'え゛？' for example
+                    if(index != -1)
                     {
-                        return keyValue.Remove(ind, trimmed.Length).Insert(ind, mergedDBValueByTrimmed);
+                        return keyValue.Remove(index, trimmed.Length).Insert(index, mergedDBValueByTrimmed);
                     }
-                    catch { }
                 }
                 else if (
                     trimmed.Length > 0
@@ -58,12 +58,11 @@ namespace TranslationHelper.Functions
                     && Cache.TryGetValue(trimmed, out string cachedValueByTrimmed)
                     && !string.IsNullOrWhiteSpace(cachedValueByTrimmed))
                 {
-                    var ind = keyValue.IndexOf(trimmed);
-                    try
+                    index = keyValue.IndexOf(trimmed);
+                    if (index != -1)
                     {
-                        return keyValue.Remove(ind, trimmed.Length).Insert(ind, cachedValueByTrimmed);
+                        return keyValue.Remove(index, trimmed.Length).Insert(index, cachedValueByTrimmed);
                     }
-                    catch { }
                 }
 
                 return string.Empty;
