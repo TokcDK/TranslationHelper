@@ -736,7 +736,10 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
             {
                 _httpClient.Dispose();
                 _semaphore.Dispose();
+
                 _disposed = true;
+
+                GC.SuppressFinalize(this);
             }
         }
     }
