@@ -769,6 +769,47 @@ namespace TranslationHelper.Extensions
             return keyValue.Trim(trimit.ToArray());
         }
 
+        internal static string TrimLettersAndDigits(string input)
+        {
+            if (string.IsNullOrWhiteSpace(input))
+                return input;
+
+            int startIndex = -1;
+            for (int i = 0; i < input.Length; i++)
+            {
+                if (char.IsLetterOrDigit(input[i]))
+                {
+                    startIndex = i;
+                    break; 
+                }
+            }
+
+            int endIndex = -1;
+            for (int i = input.Length; i >= 0; i--)
+            {
+                if (char.IsLetterOrDigit(input[i]))
+                {
+                    endIndex = i;
+                    break;
+                }
+            }
+
+            if(startIndex == -1 && endIndex == -1)
+            {
+                return input;
+            }
+            else if(startIndex == -1)
+            {
+                return input.Remove(endIndex);
+            }
+            else if(endIndex == -1)
+            {
+                return input.Substring(startIndex);
+            }
+
+            return input.Remove(endIndex).Substring(startIndex);
+        }
+
         internal static bool IsSoundsText(this string str)
         {
             var regexed = Regex.Replace(str, THSettings.SoundsTextRegexPattern, "");
