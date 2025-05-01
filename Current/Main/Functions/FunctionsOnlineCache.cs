@@ -22,12 +22,9 @@ namespace TranslationHelper.Functions
         {
             if (!AppSettings.EnableTranslationCache) return string.Empty;
 
-            if (AppSettings.UseAllDBFilesForOnlineTranslationForAll
-                && TryGetNonEmptyValue(AppData.AllDBmerged, key, out var mergedDBValue))
-            {
-                return mergedDBValue;
-            }
-            else if (TryGetNonEmptyValue(Cache, key, out var cachedValue))
+            if ((AppSettings.UseAllDBFilesForOnlineTranslationForAll
+                && TryGetNonEmptyValue(AppData.AllDBmerged, key, out var cachedValue)) 
+                || TryGetNonEmptyValue(Cache, key, out cachedValue))
             {
                 return cachedValue;
             }
@@ -35,19 +32,12 @@ namespace TranslationHelper.Functions
             {
                 var trimmed = key.TrimAllExceptLettersOrDigits();
                 int index;
-                if (AppSettings.UseAllDBFilesForOnlineTranslationForAll
-                   && TryGetNonEmptyValue(AppData.AllDBmerged, trimmed, out var mergedDBValueByTrimmed))
+                if ((AppSettings.UseAllDBFilesForOnlineTranslationForAll
+                   && TryGetNonEmptyValue(AppData.AllDBmerged, trimmed, out var cachedValueByTrimmed))
+                   || TryGetNonEmptyValue(Cache, trimmed, out cachedValueByTrimmed))
                 {
                     index = key.IndexOf(trimmed); //sometimes index is -1 of 'え' in 'え゛？' for example
                     if(index != -1)
-                    {
-                        return key.Remove(index, trimmed.Length).Insert(index, mergedDBValueByTrimmed);
-                    }
-                }
-                else if (TryGetNonEmptyValue(Cache, trimmed, out var cachedValueByTrimmed))
-                {
-                    index = key.IndexOf(trimmed);
-                    if (index != -1)
                     {
                         return key.Remove(index, trimmed.Length).Insert(index, cachedValueByTrimmed);
                     }
