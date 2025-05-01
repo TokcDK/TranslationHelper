@@ -186,6 +186,10 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
 
         private void SetRowLinesToBuffer(RowBaseRowData rowData)
         {
+            if (rowData == null) throw new ArgumentNullException(nameof(rowData));
+            if (rowData.SelectedTable == null) throw new InvalidOperationException("SelectedTable is null");
+            if (rowData.Original == null) throw new InvalidOperationException("Original text is null");
+
             // Find the table data for the selected table index, or create a new one if it doesn't exist
             var selectedTableData = _buffer.FirstOrDefault(tableData => tableData.TableIndex == rowData.SelectedTableIndex);
             if (selectedTableData == null)
