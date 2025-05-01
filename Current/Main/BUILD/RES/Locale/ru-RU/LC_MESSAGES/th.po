@@ -1,60 +1,53 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: \n"
-"POT-Creation-Date: 2022-12-03 12:31+0500\n"
-"PO-Revision-Date: 2022-12-03 12:37+0500\n"
+"POT-Creation-Date: 2025-05-02 00:26+0500\n"
+"PO-Revision-Date: 2025-05-02 00:37+0500\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: ru\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Poedit 1.8.7\n"
-"X-Poedit-Basepath: ../../..\n"
+"X-Generator: Poedit 3.6\n"
+"X-Poedit-Basepath: ../../../../..\n"
 "X-Poedit-SourceCharset: UTF-8\n"
-"X-Poedit-KeywordsList: GetString;GetPluralString:1,2;"
-"GetParticularString:1c,2;GetParticularPluralString:1c,2,3;_;_n:1,2;_p:1c,2;"
-"_pn:1c,2,3;T_\n"
-"X-Poedit-SearchPath-0: .\n"
+"X-Poedit-KeywordsList: "
+"GetString;GetPluralString:1,2;GetParticularString:1c,2;GetParticularPluralString:1c,2,3;_;_n:1,2;_p:1c,2;_pn:1c,2,3;T_\n"
+"X-Poedit-SearchPath-0: BUILD/RES\n"
+"X-Poedit-SearchPath-1: .\n"
 
 #: Formats/AliceSoft/AINTXT.cs:27
 msgid "Last group"
 msgstr "Последняя группа"
-
-#: Formats/FormatStringBase.cs:234
-msgid "Extracted with"
-msgstr "Извлечено с помощью"
 
 #: Formats/KiriKiri/Overall/SCRIPT.cs:183 Projects/KiriKiri/KiriKiriOLD.cs:324
 msgid "Variable>Must be Identical in all files>Only A-Za-z0-9"
 msgstr "Переменная>Должно быть Идентично во всех файлах>Только A-Za-z0-9"
 
 #: Formats/KiriKiri/Overall/XP3.cs:49 Projects/KiriKiri/KiriKiriGame.cs:150
-#: Projects/RPGMaker/RPGMGame.cs:87 Projects/RPGMaker/RPGMGameOLD.cs:45
+#: Projects/RPGMaker/RPGMGame.cs:90 Projects/RPGMaker/RPGMGameOLD.cs:45
 msgid "Found already extracted files in work dir. Continue with them?"
 msgstr "Найдены уже распакованные файлы в рабочей папке. Продолжить с ними?"
 
-#: Formats/KiriKiri/Overall/XP3.cs:49
-#: Projects/KiriKiri/Games/KiriKiriGameBase.cs:216
-#: Projects/KiriKiri/KiriKiriGame.cs:150 Projects/RPGMaker/RPGMGame.cs:87
+#: Formats/KiriKiri/Overall/XP3.cs:49 Projects/KiriKiri/Games/KiriKiriGameBase.cs:217
+#: Projects/KiriKiri/KiriKiriGame.cs:150 Projects/RPGMaker/RPGMGame.cs:90
 #: Projects/RPGMaker/RPGMGameOLD.cs:45
 msgid "Found extracted files"
 msgstr "Найдены распакованные файлы"
 
-#: Formats/RPGMMV/GAMEFONTCSS.cs:36
+#: Formats/RPGMMV/GAMEFONTCSS.cs:20
 msgid ""
 "GameFont.\n"
 "Value in Translation field must be exist font css file name or path.\n"
 "If it is exists, it will be copied into %GAME%\\www\\fonts\\.\n"
-"If value is font file name, it will be searching in system fonts folder "
-"location.Useful to change font when need to reduce size of text in game if "
-"need.Examples:browa.ttf\n"
+"If value is font file name, it will be searching in system fonts folder location.Useful "
+"to change font when need to reduce size of text in game if need.Examples:browa.ttf\n"
 "c:/windows/fonts/browa.ttf\n"
 "%LocalAppData%/Microsoft/Windows/Fonts/browa.ttf"
 msgstr ""
 "Игровой шрифт\n"
-"Значение в поле Перевод должно быть именем существующего файла шрифта или "
-"путем к нему.\n"
+"Значение в поле Перевод должно быть именем существующего файла шрифта или путем к нему.\n"
 "Если шрифт найден, он будет скопирован в папку %GAME%\\www\\fonts\\.\n"
 "Если значение это имя файла, будет поиск его в папках шрифтов системы.\n"
 "Полезно изменять шрифт, когда нужно уменьшить размер текста в игре.\n"
@@ -89,9 +82,7 @@ msgid "Utility which helps in translation of some RPGMaker and other games."
 msgstr "Утилита, которая помогает в переводе некоторых RPGMaker и прочих игр."
 
 #: Forms/THfrmAbout.cs:21
-msgid ""
-"It is merge of some my utilities which was made for help with games "
-"translation."
+msgid "It is merge of some my utilities which was made for help with games translation."
 msgstr "Утилита для помощи в переводе."
 
 #: Forms/THfrmAbout.cs:24
@@ -104,23 +95,23 @@ msgstr "RPG Maker Trans Patch и игры поддерживаемые им"
 
 #: Forms/THfrmAbout.cs:28
 msgid "RPG Maker MV"
-msgstr ""
+msgstr "RPG Maker MV"
 
 #: Forms/THfrmAbout.cs:30
 msgid "WOLFRPG"
-msgstr ""
+msgstr "WOLFRPG"
 
 #: Forms/THfrmAbout.cs:32
 msgid "KiriKiri"
-msgstr ""
+msgstr "KiriKiri"
 
 #: Forms/THfrmAbout.cs:34
 msgid "SCPack EAGLS"
-msgstr ""
+msgstr "SCPack EAGLS"
 
 #: Forms/THfrmAbout.cs:36
 msgid "NSPack"
-msgstr ""
+msgstr "NSPack"
 
 #: Forms/THfrmAbout.cs:38
 msgid "Some standalone"
@@ -130,147 +121,95 @@ msgstr "Некоторые другие"
 msgid "Credits"
 msgstr "Благодарности"
 
-#: Forms/THfrmMain.cs:169
-msgid "Resets filters and tab sorting"
-msgstr "Сбрасывает фильтры и сортировку столбцов"
+#: Forms/THfrmMain.cs:37
+msgid "Application started"
+msgstr "Программа запущена"
 
-#: Forms/THfrmMain.cs:170
-msgid "Filters for columns of main table"
-msgstr "Фильтры для колонок главной таблицы"
-
-#: Forms/THfrmMain.cs:171
-msgid ""
-"Shows overal number of completed lines.\n"
-"Click to show first untranslated."
-msgstr ""
-"Отображает общее число переведенных строк.\n"
-"Нажмите для выбора первой непереведенной."
-
-#: Forms/THfrmMain.cs:587
-msgid "rowinfo:"
-msgstr "информация о строке:"
-
-#: Forms/THfrmMain.cs:590
-msgid "Selected bytes length"
-msgstr "Длина выбранного в байтах"
-
-#: Forms/THfrmMain.cs:594
-msgid ""
-"Several strings also can be in Plugins.js in 'www\\js' folder and referred "
-"plugins in plugins folder."
-msgstr ""
-"Некоторые строки также могут быть в файле Plugins.js в папке 'www\\js' и "
-"ссылаемых плагинах папки plugins."
-
-#: Forms/THfrmMain.cs:701
-msgid "working.."
-msgstr "работаю.."
-
-#: Forms/THfrmMain.cs:884 Forms/THfrmMain.cs:1383
-#: Projects/NScript/NScriptGame.cs:32 Projects/ProjectBase.cs:267
-msgid "Saving"
-msgstr "Сохранение"
-
-#: Forms/THfrmMain.cs:967
-msgid "DB not found. Try to load from all exist?"
-msgstr "БД не найдена. Попробовать загрузить все существующие?"
-
-#: Forms/THfrmMain.cs:967
-msgid "DB not found"
-msgstr "БД не найдена."
-
-#: Forms/THfrmMain.cs:1036
-msgid "Reading DB File"
-msgstr "Чтение файла БД"
-
-#: Forms/THfrmSearch.cs:36 Forms/THfrmSearch.cs:53 Forms/THfrmSearch.cs:54
+#: Forms/THfrmSearch.cs:129 Forms/THfrmSearch.cs:145
 msgid "Find and Replace"
 msgstr "Поиск и замена"
 
-#: Forms/THfrmSearch.cs:38
+#: Forms/THfrmSearch.cs:130
 msgid "Search Mode"
 msgstr "Режим поиска"
 
-#: Forms/THfrmSearch.cs:39
+#: Forms/THfrmSearch.cs:131
 msgid "Normal"
 msgstr "Нормальный"
 
-#: Forms/THfrmSearch.cs:40
+#: Forms/THfrmSearch.cs:132
 msgid "Range"
 msgstr "Диапазон"
 
-#: Forms/THfrmSearch.cs:41 Menus/MainMenus/Edit/MenuItemRowTextClearTable.cs:24
-#: Menus/MainMenus/Edit/Online Translate/MenuItemOnlineTranslateTable.cs:15
+#: Forms/THfrmSearch.cs:133
+#: ⁨Menus/MainMenus/Edit/Online Translate/MenuItemOnlineTranslateTable.cs⁩:15
+#: Menus/MainMenus/Edit/TextCutCopyPaste/MenuItemRowTextClearTable.cs:24
 msgid "Table"
 msgstr "Таблица"
 
-#: Forms/THfrmSearch.cs:42
+#: Forms/THfrmSearch.cs:134
 msgid "Anywhere"
 msgstr "Везде"
 
-#: Forms/THfrmSearch.cs:43
+#: Forms/THfrmSearch.cs:135
 msgid "Method"
 msgstr "Метод"
 
-#: Forms/THfrmSearch.cs:44
+#: Forms/THfrmSearch.cs:136
 msgid "Find in Original and Paste to Translation"
 msgstr "Поиск в Оригинале и вставка в Перевод"
 
-#: Forms/THfrmSearch.cs:45
+#: Forms/THfrmSearch.cs:137
 msgid "Find and Replace in Translation"
 msgstr "Поиск и замена в переводе"
 
-#: Forms/THfrmSearch.cs:46
+#: Forms/THfrmSearch.cs:138
 msgid "Match Case"
 msgstr "Учитывать регистр"
 
-#: Forms/THfrmSearch.cs:47
+#: Forms/THfrmSearch.cs:139
 msgid "Find All"
 msgstr "Искать все"
 
-#: Forms/THfrmSearch.cs:48
+#: Forms/THfrmSearch.cs:140
 msgid "Find Next"
 msgstr "Искать далее"
 
-#: Forms/THfrmSearch.cs:49
+#: Forms/THfrmSearch.cs:141
 msgid "Replace"
 msgstr "Заменить"
 
-#: Forms/THfrmSearch.cs:50 Forms/THfrmSearch.cs:986
+#: Forms/THfrmSearch.cs:142 Forms/THfrmSearch.cs:680
 msgid "Replace All"
 msgstr "Заменить все"
 
-#: Forms/THfrmSearch.cs:51
+#: Forms/THfrmSearch.cs:143
 msgid "Find what:"
 msgstr "Искать:"
 
-#: Forms/THfrmSearch.cs:52
+#: Forms/THfrmSearch.cs:144
 msgid "Replace with:"
 msgstr "Заменить на:"
 
-#: Forms/THfrmSearch.cs:452 Forms/THfrmSearch.cs:1017
+#: Forms/THfrmSearch.cs:321 Forms/THfrmSearch.cs:703
 msgid "Found "
 msgstr "Найдено "
 
-#: Forms/THfrmSearch.cs:452 Forms/THfrmSearch.cs:1017
+#: Forms/THfrmSearch.cs:321 Forms/THfrmSearch.cs:703
 msgid " records"
 msgstr " записей"
 
-#: Forms/THfrmSearch.cs:461 Forms/THfrmSearch.cs:1006
-msgid "Nothing Found"
-msgstr "Ничего не найдено"
+#: Forms/THfrmSearch.cs:382
+msgid "Invalid regex!"
+msgstr "Неверный регекс!"
 
-#: Forms/THfrmSearch.cs:532 Forms/THfrmSearch.cs:579
-msgid "Invalid regex"
-msgstr "Неверный регекс"
-
-#: Forms/THfrmSearch.cs:942
-msgid "Nothing Found."
-msgstr "Ничего не найдено"
-
-#: Forms/THfrmSearch.cs:986
+#: Forms/THfrmSearch.cs:680
 msgid "Confirmation"
 msgstr "Подтверждение"
+
+#: Forms/THfrmSearch.cs:709
+msgid "Nothing Found"
+msgstr "Ничего не найдено"
 
 #: Forms/THfrmSettings.cs:39
 msgid "Full recursive scan while translation DB loading (slower)"
@@ -318,133 +257,232 @@ msgstr "Настройки"
 
 #: Forms/THfrmSettings.cs:75
 msgid ""
-"In time of DB loading will be checked all DB lines for each line of table "
-"for translation."
+"In time of DB loading will be checked all DB lines for each line of table for "
+"translation."
 msgstr ""
 "При загрузке перевода будет проверяться вся БД для каждой строки таблицы.\n"
 "Полезно, к примеру, при загрузке перевода из других БД."
 
 #: Forms/THfrmSettings.cs:77
 msgid ""
-"String will not be loaded for translation if this string contains romaji "
-"characters in text more of specified percent."
+"String will not be loaded for translation if this string contains romaji characters in "
+"text more of specified percent."
 msgstr ""
-"Строка не будет загружена для перевода, если содержит ромаджи символы более "
-"указанного процента."
+"Строка не будет загружена для перевода, если содержит ромаджи символы более указанного "
+"процента."
 
 #: Forms/THfrmSettings.cs:81
-msgid ""
-"Format for DB files: standard not compressed xml and compressed xml for both "
-"other"
+msgid "Format for DB files: standard not compressed xml and compressed xml for both other"
 msgstr "Формат файлов БД: xml без сжатия и сжатый xml для двух других"
 
 #: Forms/THfrmSettings.cs:83
-msgid ""
-"Automatically will be translated all almost identical cells with same "
-"original."
-msgstr ""
-"Автоматически будут переведены все наиболее похожие строки с таким же "
-"оригиналом."
+msgid "Automatically will be translated all almost identical cells with same original."
+msgstr "Автоматически будут переведены все наиболее похожие строки с таким же оригиналом."
 
 #: Forms/THfrmSettings.cs:84
 msgid ""
-"Will save online translation result in cache db to use it in next time for "
-"same values instead of attemp to connect to service."
+"Will save online translation result in cache db to use it in next time for same values "
+"instead of attemp to connect to service."
 msgstr ""
-"Сохранит онлайн-перевод в БД кеша для использования в следующий раз для "
-"таких же строк, вместо попыток подключиться к сервису."
+"Сохранит онлайн-перевод в БД кеша для использования в следующий раз для таких же строк, "
+"вместо попыток подключиться к сервису."
 
 #: Forms/THfrmSettings.cs:85
 msgid ""
-"Web site which wil be opened by pressing F12 key with added selected table "
-"cells values. Can be any here Google, Yandex, DeepL or other."
+"Web site which wil be opened by pressing F12 key with added selected table cells values. "
+"Can be any here Google, Yandex, DeepL or other."
 msgstr ""
-"Веб-сайт, который будет открыт нажатием F12, с добавлением выбранных "
-"значений ячеек. Можно добавить что угодно здесь^ Google, Yandex, DeepL и "
-"прочие."
+"Веб-сайт, который будет открыт нажатием F12, с добавлением выбранных значений ячеек. "
+"Можно добавить что угодно здесь^ Google, Yandex, DeepL и прочие."
 
 #: Functions/FileElementsFunctions/Row/FixCells.cs:82
-#: Functions/FunctionsAutoOperations.cs:112
-#: Functions/FunctionsAutoOperations.cs:265
+#: Functions/FunctionsAutoOperations.cs:115 Functions/FunctionsAutoOperations.cs:268
+#: Functions/StringChangers/FixCellsChanger.cs:89
 msgid "Error in"
 msgstr "Ошибка в"
 
-#: Functions/FileElementsFunctions/Row/OnlineTranslate.cs:68
-#: Functions/FileElementsFunctions/Row/OnlineTranslate/OnlineTranslateNew.cs:100
-msgid ""
-"Translation cache disabled but load all DB enabled. While all DB loading "
-"cache can be enabled in settings. Load all DB?"
-msgstr ""
-"Кеш перевода отключен но загрузка всех БД включена. Пока все БД грузятся, "
-"кеш может быть включен в настройках. Загрузить все БД?"
+#: Functions/FileElementsFunctions/Row/OnlineTranslate/OnlineTranslateNew.cs:21
+msgid "Translator"
+msgstr "Переводчик"
 
-#: Functions/FileElementsFunctions/Row/OnlineTranslate.cs:68
-#: Functions/FileElementsFunctions/Row/OnlineTranslate/OnlineTranslateNew.cs:100
+#: Functions/FileElementsFunctions/Row/OnlineTranslate/OnlineTranslateNew.cs:141
+#: Functions/FileElementsFunctions/Row/OnlineTranslate/OnlineTranslateTEST.cs:81
+msgid ""
+"Translation cache disabled but load all DB enabled. While all DB loading cache can be "
+"enabled in settings. Load all DB?"
+msgstr ""
+"Кеш перевода отключен но загрузка всех БД включена. Пока все БД грузятся, кеш может быть "
+"включен в настройках. Загрузить все БД?"
+
+#: Functions/FileElementsFunctions/Row/OnlineTranslate/OnlineTranslateNew.cs:141
+#: Functions/FileElementsFunctions/Row/OnlineTranslate/OnlineTranslateTEST.cs:82
 msgid "Translation cache disabled"
 msgstr "Кеш перевода отключен"
+
+#: Functions/FileElementsFunctions/Row/OnlineTranslate/OnlineTranslateNew.cs:147
+#: Functions/FileElementsFunctions/Row/OnlineTranslate/OnlineTranslateTEST.cs:88
+msgid "Load all exist database files?"
+msgstr "Загрузить все существующие БД?"
+
+#: Functions/FileElementsFunctions/Row/OnlineTranslate/OnlineTranslateNew.cs:147
+#: Functions/FileElementsFunctions/Row/OnlineTranslate/OnlineTranslateTEST.cs:88
+#: Functions/FunctionsLoadTranslationDB.cs:276
+msgid "Load all DB"
+msgstr "Загрузка всех БД"
+
+#: Functions/FileElementsFunctions/Row/OnlineTranslate/OnlineTranslateNew.cs:151
+#: Functions/FileElementsFunctions/Row/OnlineTranslate/OnlineTranslateTEST.cs:92
+msgid "Get all DB"
+msgstr "Загрузка всех БД"
+
+#: Functions/FileElementsFunctions/Row/OnlineTranslate/OnlineTranslateNew.cs:167
+msgid "Translation interrupted"
+msgstr "Перевод прерван"
+
+#: Functions/FileElementsFunctions/Row/OnlineTranslate/OnlineTranslateNew.cs:171
+#: Functions/FileElementsFunctions/Row/OnlineTranslate/OnlineTranslateTEST.cs:105
+msgid "Translation complete"
+msgstr "Перевод завершен"
+
+#: Functions/FileElementsFunctions/Row/OnlineTranslate/OnlineTranslateNew.cs:184
+#: Functions/FileElementsFunctions/Row/OnlineTranslate/OnlineTranslateTEST.cs:118
+#, csharp-format
+msgid "Translate {0}"
+msgstr "Перевод {0}"
+
+#: Functions/FileElementsFunctions/Row/OnlineTranslate/OnlineTranslateTEST.cs:28
+msgid "TranslatorTEST"
+msgstr "Перевод"
+
+#: Functions/FileElementsFunctions/Row/RowBase.cs:118
+#, csharp-format
+msgid "{0}: parsed {1} values"
+msgstr "{0}: обработано {1} записей"
+
+#: Functions/FileElementsFunctions/Row/ShowTranslationRegex.cs:39
+msgid "Line"
+msgstr "Строка"
+
+#: Functions/FileElementsFunctions/Row/ShowTranslationRegex.cs:40
+msgid "Pattern"
+msgstr "Паттерн"
+
+#: Functions/FileElementsFunctions/Row/ShowTranslationRegex.cs:41
+msgid "Replacer"
+msgstr "Заменитель"
+
+#: Functions/FileElementsFunctions/Row/ShowTranslationRegex.cs:52
+msgid "Copied to clipboard"
+msgstr "Скопировано в буфер обмена"
+
+#: Functions/FileElementsFunctions/Row/ShowTranslationRegex.cs:54
+msgid "No matching translation regex found.."
+msgstr "Не найдено совпадающих regex для перевода.."
+
+#: Functions/FunctionAutoSave.cs:55 Functions/FunctionsDBFile.cs:643
+#: Projects/NScript/NScriptGame.cs:33 Projects/ProjectToolsOpenSave.cs:138
+msgid "Saving"
+msgstr "Сохранение"
 
 #: Functions/FunctionsCleanup.cs:130 Menus/MenusCreator.cs:21
 msgid "Project"
 msgstr "Проект"
 
-#: Functions/FunctionsCopyPaste.cs:37
+#: Functions/FunctionsCopyPaste.cs:44
 msgid "Select cell first"
 msgstr "Сначала выберете ячейки"
 
-#: Functions/FunctionsCopyPaste.cs:37
-#: Menus/MainMenus/Edit/MenuItemRowTextPaste.cs:21
+#: Functions/FunctionsCopyPaste.cs:44
+#: Menus/MainMenus/Edit/TextCutCopyPaste/MenuItemRowTextPaste.cs:21
 msgid "Paste"
 msgstr "Вставить"
 
-#: Functions/FunctionsDBFile.cs:564
+#: Functions/FunctionsDBFile.cs:522
 #: Menus/MainMenus/File/Other/MenuItemTestGetXUATranslation.cs:30
 msgid "Loading"
 msgstr "Загрузка"
 
-#: Functions/FunctionsLoadTranslationDB.cs:60
-#: Functions/FunctionsLoadTranslationDB.cs:148
-#: Functions/FunctionsLoadTranslationDB.cs:210
-#: Functions/FunctionsLoadTranslationDB.cs:317
-#: Functions/FunctionsLoadTranslationDB.cs:424
-#: Functions/FunctionsLoadTranslationDB.cs:598
-#: Functions/FunctionsLoadTranslationDB.cs:663
-msgid "Load"
-msgstr "Загрузка"
+#: Functions/FunctionsDBFile.cs:755
+msgid "Reading DB File"
+msgstr "Чтение файла БД"
 
-#: Functions/FunctionsLoadTranslationDB.cs:699
+#: Functions/FunctionsLoadTranslationDB.cs:41 Functions/FunctionsLoadTranslationDB.cs:133
+#: Menus/MainMenus/File/MenuItemLoadDB.cs:20
+msgid "Load DB"
+msgstr "Загрузка БД"
+
+#: Functions/FunctionsLoadTranslationDB.cs:115
+msgid "DB loaded!"
+msgstr " БД загружена"
+
+#: Functions/FunctionsLoadTranslationDB.cs:233
+msgid "Load DB finished!"
+msgstr "Загрузка БД завершена!"
+
+#: Functions/FunctionsLoadTranslationDB.cs:268
 msgid "Found translation DB. Load it?"
 msgstr "Найдена БД перевода. Загрузить?"
 
-#: Functions/FunctionsLoadTranslationDB.cs:699
+#: Functions/FunctionsLoadTranslationDB.cs:268
 msgid "Load translation DB"
 msgstr "Загрузить БД перевода"
 
-#: Functions/FunctionsLoadTranslationDB.cs:706
+#: Functions/FunctionsLoadTranslationDB.cs:276
 msgid "Try to find translations in all avalaible DB? (Can take some time)"
 msgstr "Попробовать найти перевод во всех доступных БД? (Займет время)"
 
-#: Functions/FunctionsLoadTranslationDB.cs:706
-msgid "Load all DB"
-msgstr "Загрузка всех БД"
+#: Functions/FunctionsOnlineCache.cs:165
+#, csharp-format
+msgid "Cache file '{0}' broken and renamed to {1}. Error: {2}"
+msgstr "Файл кеша '{0}'испорчен и переименован в {1}. Ошибка: {2}"
 
-#: Functions/FunctionsOnlineTranslation.cs:105
-#: Functions/FunctionsOnlineTranslation.cs:111
-#: Functions/FunctionsOnlineTranslation.cs:117
-msgid "getting translation: "
-msgstr "получение перевода: "
-
-#: Functions/FunctionsOnlineTranslation.cs:378
-#: Functions/OnlineTranslation/TranslationBigBlock.cs:71
-msgid "getting translation"
-msgstr "получение перевода"
-
-#: Functions/FunctionsOpen.cs:68
+#: Functions/FunctionsOpen.cs:70
 msgid "Failed to open project"
 msgstr "Не удалось открыть проект"
 
 #: Functions/FunctionsRomajiKana.cs:119
 msgid "contains"
 msgstr "содержит"
+
+#: Functions/FunctionsUI.cs:182
+msgid "rowinfo:"
+msgstr "информация о строке:"
+
+#: Functions/FunctionsUI.cs:185
+msgid "Selected bytes length"
+msgstr "Длина выбранного в байтах"
+
+#: Functions/FunctionsUI.cs:189
+msgid ""
+"Several strings also can be in Plugins.js in 'www\\js' folder and referred plugins in "
+"plugins folder."
+msgstr ""
+"Некоторые строки также могут быть в файле Plugins.js в папке 'www\\js' и ссылаемых "
+"плагинах папки plugins."
+
+#: Functions/FunctionsUI.cs:619
+msgid "Resets filters and tab sorting"
+msgstr "Сбрасывает фильтры и сортировку столбцов"
+
+#: Functions/FunctionsUI.cs:620
+msgid "Filters for columns of main table"
+msgstr "Фильтры для колонок главной таблицы"
+
+#: Functions/FunctionsUI.cs:621
+msgid ""
+"Shows overal number of completed lines.\n"
+"Click to show first untranslated."
+msgstr ""
+"Отображает общее число переведенных строк.\n"
+"Нажмите для выбора первой непереведенной."
+
+#: Functions/StringChangers/HardFixes/RemoveIeroglifsChanger.cs:16
+msgid "Remove japanese chars"
+msgstr "Удаления японских букв"
+
+#: Menus/FileRowMenus/ShowTranslationRegexMenu.cs:13
+msgid "Show matching translation regex"
+msgstr "Показать совпадающий regex для перевода"
 
 #: Menus/FilesListMenus/FileListMenuItemCopyName.cs:23
 msgid "Copy name"
@@ -454,7 +492,9 @@ msgstr "Копировать имя"
 msgid "Copy name of selected tables"
 msgstr "Копировать имена выбранных файлов"
 
+#: Menus/MainMenus/Edit/MainMenuEditRootItem.cs:11
 #: Menus/MainMenus/Edit/MainMenuEditSubBase.cs:5
+#: Menus/MainMenus/MenusSortData/MainMenusSortData.cs:35
 msgid "Edit"
 msgstr "Правка"
 
@@ -462,24 +502,41 @@ msgstr "Правка"
 msgid "Case Morph"
 msgstr "Изменение регистра"
 
-#: Menus/MainMenus/Edit/MainMenuFileSubItemCaseMorph.cs:25
+#: Menus/MainMenus/Edit/MainMenuFileSubItemCaseMorph.cs:27
 msgid "To lower"
 msgstr "нижний"
 
-#: Menus/MainMenus/Edit/MainMenuFileSubItemCaseMorph.cs:27
+#: Menus/MainMenus/Edit/MainMenuFileSubItemCaseMorph.cs:29
 msgid "Change case of rows chars to lower"
 msgstr "Изменение регистра строки на нижний"
 
-#: Menus/MainMenus/Edit/MainMenuFileSubItemCaseMorph.cs:38
-#: Menus/MainMenus/Edit/MainMenuFileSubItemCaseMorph.cs:51
+#: Menus/MainMenus/Edit/MainMenuFileSubItemCaseMorph.cs:39
+msgid "To lower 1st"
+msgstr "нИЖНИЙ"
+
+#: Menus/MainMenus/Edit/MainMenuFileSubItemCaseMorph.cs:41
+msgid "Change first char case of row string to lower"
+msgstr "Изменение регистра первой буквы на нижний"
+
+#: Menus/MainMenus/Edit/MainMenuFileSubItemCaseMorph.cs:52
+#: Menus/MainMenus/Edit/MainMenuFileSubItemCaseMorph.cs:65
 msgid "To Upper"
 msgstr "Верхний"
 
-#: Menus/MainMenus/Edit/MainMenuFileSubItemCaseMorph.cs:40
-msgid "Change first case of row string to Upper"
+#: Menus/MainMenus/Edit/MainMenuFileSubItemCaseMorph.cs:54
+#: Menus/MainMenus/Edit/MainMenuFileSubItemCaseMorph.cs:67
+msgid "Change first char case of row string to Upper"
 msgstr "Изменение регистра первой буквы на Верхний"
 
-#: Menus/MainMenus/Edit/MainMenuFileSubItemCaseMorph.cs:53
+#: Menus/MainMenus/Edit/MainMenuFileSubItemCaseMorph.cs:65
+msgid "All lines"
+msgstr "Все строки"
+
+#: Menus/MainMenus/Edit/MainMenuFileSubItemCaseMorph.cs:78
+msgid "To UPPER"
+msgstr "ВЕРХНИЙ"
+
+#: Menus/MainMenus/Edit/MainMenuFileSubItemCaseMorph.cs:80
 msgid "Change case of row string chars to UPPER"
 msgstr "Изменение регистра строки на ВЕРХНИЙ"
 
@@ -500,44 +557,52 @@ msgstr "Фиксы строк (принудительно)"
 msgid "Force fix cells by regex rules"
 msgstr "Принудительный фикс строк, даже для переведенных"
 
-#: Menus/MainMenus/Edit/MainMenuFileSubItemEnQuotesToJp.cs:15
+#: Menus/MainMenus/Edit/MainMenuFileSubItemEnQuotesToJp.cs:19
 msgid "En Quotes To Jp"
 msgstr "Конвертация кавычек в японские кавычки"
 
-#: Menus/MainMenus/Edit/MainMenuFileSubItemEnQuotesToJp.cs:25
+#: Menus/MainMenus/Edit/MainMenuFileSubItemEnQuotesToJp.cs:29
 msgid "Run"
 msgstr "Запуск"
 
-#: Menus/MainMenus/Edit/MainMenuFileSubItemEnQuotesToJp.cs:27
+#: Menus/MainMenus/Edit/MainMenuFileSubItemEnQuotesToJp.cs:31
 msgid "EnQuotesToJp"
-msgstr ""
+msgstr "Конвертация кавычек в японские кавычки"
+
+#: Menus/MainMenus/Edit/MainMenuFileSubItemEnQuotesToJp.cs:51
+msgid "Run2"
+msgstr "Запуск 2"
+
+#: Menus/MainMenus/Edit/MainMenuFileSubItemEnQuotesToJp.cs:53
+msgid "EnQuotesToJp2"
+msgstr "Конвертация кавычек в японские кавычки 2"
 
 #: Menus/MainMenus/Edit/MainMenuFileSubItemFixJpMessagesTranslation.cs:13
 msgid "FixJpMessagesTranslation"
-msgstr ""
+msgstr "Исправить перевод яп. сообщений"
 
 #: Menus/MainMenus/Edit/MainMenuFileSubItemFixJpMessagesTranslation.cs:22
 msgid "JP->EN"
-msgstr ""
+msgstr "JP->EN"
 
 #: Menus/MainMenus/Edit/MainMenuFileSubItemFixJpMessagesTranslation.cs:24
 msgid "Corrects japanese state message translation by static translations list"
 msgstr ""
 
-#: Menus/MainMenus/Edit/MainMenuFileSubItemOriginalToTranslation.cs:17
+#: Menus/MainMenus/Edit/MainMenuFileSubItemOriginalToTranslation.cs:18
 msgid "Original To Translation"
-msgstr ""
+msgstr "Оригинал в перевод"
 
-#: Menus/MainMenus/Edit/MainMenuFileSubItemOriginalToTranslation.cs:29
+#: Menus/MainMenus/Edit/MainMenuFileSubItemOriginalToTranslation.cs:30
 msgid "Original=Translation"
 msgstr "Перевод=Оригинал"
 
-#: Menus/MainMenus/Edit/MainMenuFileSubItemOriginalToTranslation.cs:31
+#: Menus/MainMenus/Edit/MainMenuFileSubItemOriginalToTranslation.cs:32
 msgid "Set rows translation equal to original"
 msgstr ""
 
-#: Menus/MainMenus/Edit/MainMenuFileSubItemOriginalToTranslation.cs:52
-#: Menus/MainMenus/Edit/MainMenuFileSubItemOriginalToTranslation.cs:54
+#: Menus/MainMenus/Edit/MainMenuFileSubItemOriginalToTranslation.cs:53
+#: Menus/MainMenus/Edit/MainMenuFileSubItemOriginalToTranslation.cs:55
 msgid "All, if exists file/dir with name"
 msgstr ""
 
@@ -570,8 +635,8 @@ msgstr ""
 
 #: Menus/MainMenus/Edit/MenuItemCompleteRomajiotherLines.cs:22
 msgid ""
-"For japanese language check if row have most of romajii or other chars and "
-"set it identical to original"
+"For japanese language check if row have most of romajii or other chars and set it "
+"identical to original"
 msgstr ""
 
 #: Menus/MainMenus/Edit/MenuItemExtraFixesAll.cs:21
@@ -588,8 +653,8 @@ msgstr ""
 
 #: Menus/MainMenus/Edit/MenuItemForceSameTranslationForIdentical.cs:23
 msgid ""
-"Forse set same translation for rows where original is almost same liks "
-"'book1', 'book2' and kind of'"
+"Forse set same translation for rows where original is almost same liks 'book1', 'book2' "
+"and kind of'"
 msgstr ""
 
 #: Menus/MainMenus/Edit/MenuItemOpenInWeb.cs:21
@@ -598,6 +663,14 @@ msgstr "Открыть в Web"
 
 #: Menus/MainMenus/Edit/MenuItemOpenInWeb.cs:23
 msgid "Open selected rows in web service"
+msgstr ""
+
+#: Menus/MainMenus/Edit/MenuItemReplaceIdenticalByOriginal.cs:21
+msgid "Set all identical to original"
+msgstr ""
+
+#: Menus/MainMenus/Edit/MenuItemReplaceIdenticalByOriginal.cs:23
+msgid "Set the all rows with the same translations to original value"
 msgstr ""
 
 #: Menus/MainMenus/Edit/MenuItemRowFixNameInstance.cs:22
@@ -611,8 +684,8 @@ msgstr ""
 
 #: Menus/MainMenus/Edit/MenuItemRowMakeFileCopyWithTranslationName.cs:23
 msgid ""
-"Search file in game dir with name ofrow original value and create copy of it "
-"with name as translated"
+"Search file in game dir with name ofrow original value and create copy of it with name "
+"as translated"
 msgstr ""
 
 #: Menus/MainMenus/Edit/MenuItemRowSearch.cs:24
@@ -623,96 +696,107 @@ msgstr "Поиск"
 msgid "Open search Window"
 msgstr ""
 
-#: Menus/MainMenus/Edit/MenuItemRowTextClearAll.cs:21
-#: Menus/MainMenus/Edit/MenuItemRowTextClearSelected.cs:21
-#: Menus/MainMenus/Edit/MenuItemRowTextClearTable.cs:22
-msgid "Clear"
-msgstr "Очистка"
-
-#: Menus/MainMenus/Edit/MenuItemRowTextClearAll.cs:22
-#: Menus/MainMenus/Edit/Online Translate/MenuItemOnlineTranslateAll.cs:13
-msgid "All"
-msgstr "Все"
-
-#: Menus/MainMenus/Edit/MenuItemRowTextClearAll.cs:24
-msgid "Clear translation in all tables"
-msgstr ""
-
-#: Menus/MainMenus/Edit/MenuItemRowTextClearSelected.cs:22
-#: Menus/MainMenus/Edit/Online Translate/MenuItemOnlineTranslateSelected.cs:14
-msgid "Selected"
-msgstr "Выбраное"
-
-#: Menus/MainMenus/Edit/MenuItemRowTextClearSelected.cs:24
-msgid "Clear translation in selected rows"
-msgstr ""
-
-#: Menus/MainMenus/Edit/MenuItemRowTextClearTable.cs:26
-msgid "Clear translation in selected tables"
-msgstr ""
-
-#: Menus/MainMenus/Edit/MenuItemRowTextCopy.cs:23
-msgid "Copy"
-msgstr "Копировать"
-
-#: Menus/MainMenus/Edit/MenuItemRowTextCopy.cs:25
-msgid "Copy selected rows translation"
-msgstr ""
-
-#: Menus/MainMenus/Edit/MenuItemRowTextCopyOriginal.cs:21
-msgid "Copy original"
-msgstr "Копировать оригинал"
-
-#: Menus/MainMenus/Edit/MenuItemRowTextCopyOriginal.cs:23
-msgid "Copy selected rows original values"
-msgstr ""
-
-#: Menus/MainMenus/Edit/MenuItemRowTextCut.cs:21
-msgid "Cut"
-msgstr "Вырезать"
-
-#: Menus/MainMenus/Edit/MenuItemRowTextCut.cs:23
-msgid "Cut selected rows translation"
-msgstr ""
-
-#: Menus/MainMenus/Edit/MenuItemRowTextPaste.cs:23
-msgid "Paste translation into selected rows"
-msgstr ""
-
 #: Menus/MainMenus/Edit/MenuItemShowCharCategory.cs:21
 #: Menus/MainMenus/Edit/MenuItemShowCharCategory.cs:23
 msgid "ShowCharCategory"
 msgstr ""
 
-#: Menus/MainMenus/Edit/Online
-#: Translate/MainMenuFileSubItemOnlineTranslateBase.cs:5
-#: Translate/MainMenuFileSubItemOnlineTranslateCategory.cs:10
+#: ⁨Menus/MainMenus/Edit/Online Translate/MainMenuFileSubItemOnlineTranslateBase.cs⁩:5
+#: ⁨Menus/MainMenus/Edit/Online Translate/MainMenuFileSubItemOnlineTranslateCategory.cs⁩:10
 msgid "Translate online"
 msgstr "Онлайн перевод"
 
-#: Menus/MainMenus/Edit/Online Translate/MenuItemOnlineTranslateAll.cs:15
+#: ⁨Menus/MainMenus/Edit/Online Translate/MenuItemOnlineTranslateAll.cs⁩:13
+#: Menus/MainMenus/Edit/TextCutCopyPaste/MenuItemRowTextClearAll.cs:22
+msgid "All"
+msgstr "Все"
+
+#: ⁨Menus/MainMenus/Edit/Online Translate/MenuItemOnlineTranslateAll.cs⁩:15
 msgid "Translate all rows"
 msgstr "Онлайн перевод всех строк"
 
-#: Menus/MainMenus/Edit/Online Translate/MenuItemOnlineTranslateInterupt.cs:15
+#: ⁨Menus/MainMenus/Edit/Online Translate/MenuItemOnlineTranslateEmpty.cs⁩:15
+msgid "Empty"
+msgstr "Пустые"
+
+#: ⁨Menus/MainMenus/Edit/Online Translate/MenuItemOnlineTranslateEmpty.cs⁩:17
+msgid "Translate empty rows"
+msgstr "Перевод пустых строк"
+
+#: ⁨Menus/MainMenus/Edit/Online Translate/MenuItemOnlineTranslateInterupt.cs⁩:16
 msgid "Interupt"
 msgstr "Прервать"
 
-#: Menus/MainMenus/Edit/Online Translate/MenuItemOnlineTranslateInterupt.cs:17
+#: ⁨Menus/MainMenus/Edit/Online Translate/MenuItemOnlineTranslateInterupt.cs⁩:18
 msgid "Interupt translation"
 msgstr "Прервать перевод"
 
-#: Menus/MainMenus/Edit/Online Translate/MenuItemOnlineTranslateSelected.cs:16
+#: ⁨Menus/MainMenus/Edit/Online Translate/MenuItemOnlineTranslateSelected.cs⁩:14
+#: Menus/MainMenus/Edit/TextCutCopyPaste/MenuItemRowTextClearSelected.cs:23
+msgid "Selected"
+msgstr "Выбраное"
+
+#: ⁨Menus/MainMenus/Edit/Online Translate/MenuItemOnlineTranslateSelected.cs⁩:16
 msgid "Translate selected rows"
 msgstr ""
 
-#: Menus/MainMenus/Edit/Online Translate/MenuItemOnlineTranslateTable.cs:17
+#: ⁨Menus/MainMenus/Edit/Online Translate/MenuItemOnlineTranslateTable.cs⁩:17
 msgid "Translate table rows"
+msgstr ""
+
+#: Menus/MainMenus/Edit/TextCutCopyPaste/MenuItemRowTextClearAll.cs:21
+#: Menus/MainMenus/Edit/TextCutCopyPaste/MenuItemRowTextClearSelected.cs:22
+#: Menus/MainMenus/Edit/TextCutCopyPaste/MenuItemRowTextClearTable.cs:22
+msgid "Clear"
+msgstr "Очистка"
+
+#: Menus/MainMenus/Edit/TextCutCopyPaste/MenuItemRowTextClearAll.cs:24
+msgid "Clear translation in all tables"
+msgstr ""
+
+#: Menus/MainMenus/Edit/TextCutCopyPaste/MenuItemRowTextClearSelected.cs:25
+msgid "Clear translation in selected rows"
+msgstr ""
+
+#: Menus/MainMenus/Edit/TextCutCopyPaste/MenuItemRowTextClearTable.cs:26
+msgid "Clear translation in selected tables"
+msgstr ""
+
+#: Menus/MainMenus/Edit/TextCutCopyPaste/MenuItemRowTextCopy.cs:23
+msgid "Copy"
+msgstr "Копировать"
+
+#: Menus/MainMenus/Edit/TextCutCopyPaste/MenuItemRowTextCopy.cs:25
+msgid "Copy selected rows translation"
+msgstr ""
+
+#: Menus/MainMenus/Edit/TextCutCopyPaste/MenuItemRowTextCopyOriginal.cs:21
+msgid "Copy original"
+msgstr "Копировать оригинал"
+
+#: Menus/MainMenus/Edit/TextCutCopyPaste/MenuItemRowTextCopyOriginal.cs:23
+msgid "Copy selected rows original values"
+msgstr ""
+
+#: Menus/MainMenus/Edit/TextCutCopyPaste/MenuItemRowTextCut.cs:21
+msgid "Cut"
+msgstr "Вырезать"
+
+#: Menus/MainMenus/Edit/TextCutCopyPaste/MenuItemRowTextCut.cs:23
+msgid "Cut selected rows translation"
+msgstr ""
+
+#: Menus/MainMenus/Edit/TextCutCopyPaste/MenuItemRowTextPaste.cs:23
+msgid "Paste translation into selected rows"
 msgstr ""
 
 #: Menus/MainMenus/File/Export/MainMenuFileSubItemExportBase.cs:5
 msgid "Export"
 msgstr "Экспорт"
+
+#: Menus/MainMenus/File/Export/MenuItemExportToExcel.cs:18
+msgid "Export translation to Excel tables"
+msgstr "Экпорт перевода в таблицы Exel"
 
 #: Menus/MainMenus/File/Export/MenuItemExportToRPGMakerTransPatch.cs:18
 msgid "Export translation to RPG Maker Trans patch"
@@ -722,20 +806,18 @@ msgstr ""
 msgid "Import"
 msgstr "Импорт"
 
-#: Menus/MainMenus/File/Import/MenuItemExportToRPGMakerTransPatch.cs:21
+#: Menus/MainMenus/File/Import/MenuItemImportFromPOfile.cs:21
 msgid "Import translation from PO file"
 msgstr ""
 
+#: Menus/MainMenus/File/MainMenuFileRootItem.cs:11
 #: Menus/MainMenus/File/MainMenuFileSubItemBase.cs:5
-#: Menus/MainMenus/File/MenuItemRecent.cs:82
+#: Menus/MainMenus/File/MenuItemRecent.cs:84
+#: Menus/MainMenus/MenusSortData/MainMenusSortData.cs:24
 msgid "File"
 msgstr "Файл"
 
-#: Menus/MainMenus/File/MenuItemLoadDB.cs:18
-msgid "Load DB"
-msgstr "Загрузка БД"
-
-#: Menus/MainMenus/File/MenuItemLoadDB.cs:20
+#: Menus/MainMenus/File/MenuItemLoadDB.cs:22
 msgid "Load translated strings from database file if exist"
 msgstr ""
 
@@ -747,15 +829,16 @@ msgstr "Загрузка БД как"
 msgid "Load translated strings from database file of selected locatin"
 msgstr ""
 
-#: Menus/MainMenus/File/MenuItemLoadDBAsForced.cs:18
+#: Menus/MainMenus/File/MenuItemLoadDBAsForced.cs:19
 msgid "Load DB as (forced)"
 msgstr "Загрузка БД как (с перезаписью)"
 
-#: Menus/MainMenus/File/MenuItemLoadDBAsForced.cs:20
+#: Menus/MainMenus/File/MenuItemLoadDBAsForced.cs:21
 msgid "Load translated strings from database file of selected location"
 msgstr ""
 
 #: Menus/MainMenus/File/MenuItemOpen.cs:12
+#: Menus/MainMenus/View/OpenPathByExplorerMainMenuViewSubItemBase.cs:19
 #: Projects/RPGMMV/Menus/SkipJSFileOpen.cs:11
 msgid "Open"
 msgstr "Открыть"
@@ -766,19 +849,23 @@ msgstr "Выбрать exe игры или файл для открытия"
 
 #: Menus/MainMenus/File/MenuItemRecent.cs:17
 msgid "Recent oened paths"
-msgstr ""
+msgstr "Последние открытые файлы"
 
-#: Menus/MainMenus/File/MenuItemRecent.cs:70
+#: Menus/MainMenus/File/MenuItemRecent.cs:72
 msgid "Recent"
 msgstr "Недавнее"
 
-#: Menus/MainMenus/File/MenuItemSaveDB.cs:17
+#: Menus/MainMenus/File/MenuItemSaveDB.cs:13
 msgid "Save DB"
 msgstr "Сохранить БД"
 
-#: Menus/MainMenus/File/MenuItemSaveDB.cs:19
+#: Menus/MainMenus/File/MenuItemSaveDB.cs:15
 msgid "Save translated strings into database file"
 msgstr "Сохранить переведенные строки в файл БД"
+
+#: Menus/MainMenus/File/MenuItemSaveDB.cs:47
+msgid "DB saved!"
+msgstr "БД сохранена!"
 
 #: Menus/MainMenus/File/MenuItemSaveDBTo.cs:18
 msgid "Save DB to"
@@ -804,7 +891,7 @@ msgstr "Другое"
 msgid "Static translations"
 msgstr "Статический перевод"
 
-#: Menus/MainMenus/Help/MainMenuHelpCategoryItem.cs:8
+#: Menus/MainMenus/Help/MainMenuHelpRootItem.cs:8
 #: Menus/MainMenus/Help/MainMenuHelpSubItemBase.cs:5
 msgid "Help"
 msgstr "Помощь"
@@ -813,22 +900,26 @@ msgstr "Помощь"
 msgid "About"
 msgstr "О программе"
 
+#: Menus/MainMenus/View/MainMenuViewRootItem.cs:11
 #: Menus/MainMenus/View/MainMenuViewSubItemBase.cs:5
 msgid "View"
 msgstr "Вид"
 
-#: Menus/MainMenus/View/MenuItemOpenCellFixesFile.cs:9
-#: Menus/MainMenus/View/MenuItemOpenTranslationRulesFile.cs:9
-msgid "OpenTranslationRulesFile"
-msgstr "Открыть файл с правилами перевода"
+#: Menus/MainMenus/View/MenuItemOpenCellFixesFile.cs:10
+msgid "CellFixes rules file"
+msgstr "Фиксы строк, файл правил"
 
-#: Menus/MainMenus/View/MenuItemOpenProjectsDir.cs:23
-msgid "OpenProjectsDir"
-msgstr "Открыть папку проекта"
+#: Menus/MainMenus/View/MenuItemOpenProjectsDir.cs:24
+msgid "Selected projects dir"
+msgstr "Папка выбранного проекта"
 
 #: Menus/MainMenus/View/MenuItemOpenSettings.cs:23
 msgid "Open Settings"
 msgstr "Открыть настройки"
+
+#: Menus/MainMenus/View/MenuItemOpenTranslationRulesFile.cs:10
+msgid "Translation rules file"
+msgstr "Правила перевода, файл правил"
 
 #: Menus/MainMenus/View/MenuItemReloadRules.cs:23
 msgid "ReloadRules"
@@ -852,8 +943,7 @@ msgstr "Создание выходного ain файла не удалось"
 
 #: Projects/AliceSoft/AliceSoftGame.cs:109
 msgid "Try to run 'write.bat' manually and check console for errors"
-msgstr ""
-"Попробуйте запустить файл 'write.bat' вручную и проверьте консоль на ошибки"
+msgstr "Попробуйте запустить файл 'write.bat' вручную и проверьте консоль на ошибки"
 
 #: Projects/EAGLS/EAGLSBase.cs:81
 msgid "Errors was occcured while packing"
@@ -863,38 +953,37 @@ msgstr "Произошла ошибка при упаковке"
 msgid "Will be opened log and work dir"
 msgstr "Будет открыта рабочая папка"
 
-#: Projects/KiriKiri/Games/KiriKiriGameBase.cs:94
+#: Projects/KiriKiri/Games/KiriKiriGameBase.cs:95
 msgid "Creating translation patch"
 msgstr "Создание патча перевода"
 
-#: Projects/KiriKiri/Games/KiriKiriGameBase.cs:150
+#: Projects/KiriKiri/Games/KiriKiriGameBase.cs:151
 msgid "Extraction"
 msgstr "Извлечение"
 
-#: Projects/KiriKiri/Games/KiriKiriGameBase.cs:176
-#: Projects/LiveMaker/LiveMakerGame.cs:87
+#: Projects/KiriKiri/Games/KiriKiriGameBase.cs:177 Projects/LiveMaker/LiveMakerGame.cs:89
 #: Projects/LiveMaker/LiveMakerGame.cs:185
 msgid "Proceed"
 msgstr "Запуск"
 
-#: Projects/KiriKiri/Games/KiriKiriGameBase.cs:185
-#: Projects/KiriKiri/Games/KiriKiriGameBase.cs:282
+#: Projects/KiriKiri/Games/KiriKiriGameBase.cs:186
+#: Projects/KiriKiri/Games/KiriKiriGameBase.cs:283
 msgid "Calculate control crc"
 msgstr "Посчитать crc32"
 
-#: Projects/KiriKiri/Games/KiriKiriGameBase.cs:202
+#: Projects/KiriKiri/Games/KiriKiriGameBase.cs:203
 msgid "Skipped:"
 msgstr "Пропущен:"
 
-#: Projects/KiriKiri/Games/KiriKiriGameBase.cs:216
+#: Projects/KiriKiri/Games/KiriKiriGameBase.cs:217
 msgid "Found already extracted files"
 msgstr "Найдены уже извлеченные файлы"
 
-#: Projects/KiriKiri/Games/KiriKiriGameBase.cs:216
+#: Projects/KiriKiri/Games/KiriKiriGameBase.cs:217
 msgid "Skip already extracted?"
 msgstr "Пропустить уже узвлеченные?"
 
-#: Projects/KiriKiri/Games/KiriKiriGameBase.cs:231
+#: Projects/KiriKiri/Games/KiriKiriGameBase.cs:232
 msgid "Extract files from"
 msgstr "Извлечение файлов из"
 
@@ -906,174 +995,225 @@ msgstr "Нечего добавлять"
 msgid "finished"
 msgstr "завершено"
 
-#: Projects/LiveMaker/LiveMakerGame.cs:64
+#: Projects/LiveMaker/LiveMakerGame.cs:68
 msgid "Resource extraction"
 msgstr "Извлечение ресурсов"
 
-#: Projects/LiveMaker/LiveMakerGame.cs:101
+#: Projects/LiveMaker/LiveMakerGame.cs:103
 msgid "text extraction in csv"
 msgstr "извлечение текста из csv"
 
-#: Projects/LiveMaker/LiveMakerGame.cs:117
+#: Projects/LiveMaker/LiveMakerGame.cs:119
 msgid "menu text extraction in csv"
 msgstr "извлечение текста меню из csv"
 
-#: Projects/LiveMaker/LiveMakerGame.cs:132
+#: Projects/LiveMaker/LiveMakerGame.cs:134
 msgid "scripts extraction in lns"
 msgstr "Извлечение скриптов из lns"
 
-#: Projects/LiveMaker/LiveMakerGame.cs:193
+#: Projects/LiveMaker/LiveMakerGame.cs:192
 msgid "write text"
 msgstr "запись текста"
 
-#: Projects/LiveMaker/LiveMakerGame.cs:204
+#: Projects/LiveMaker/LiveMakerGame.cs:203
 msgid "write menus"
 msgstr "запись меню"
 
-#: Projects/LiveMaker/LiveMakerGame.cs:215
+#: Projects/LiveMaker/LiveMakerGame.cs:214
 msgid "write scripts"
 msgstr "запись скриптов"
 
-#: Projects/LiveMaker/LiveMakerGame.cs:226
+#: Projects/LiveMaker/LiveMakerGame.cs:223
 msgid "Copy lsb for insertion"
 msgstr "копирование lsb для вставки"
 
-#: Projects/LiveMaker/LiveMakerGame.cs:267
+#: Projects/LiveMaker/LiveMakerGame.cs:264
 msgid "Inserting lsb in game"
 msgstr "вставка lsb в игру"
 
-#: Projects/NScript/NScriptGame.cs:32 Projects/ProjectBase.cs:267
+#: Projects/NScript/NScriptGame.cs:33 Projects/ProjectToolsOpenSave.cs:138
 msgid "Opening"
 msgstr "Открытие"
 
-#: Projects/ProjectBase.cs:595
-msgid "restore"
-msgstr "восстановление"
-
-#: Projects/ProjectBase.cs:718
+#: Projects/ProjectToolsBackup.cs:56
 msgid "backup"
 msgstr "резервная копия"
 
-#: Projects/RPGMMV/Menus/AddToSkipJS.cs:14
-#: Projects/RPGMMV/Menus/SkipJSFileOpen.cs:11
+#: Projects/ProjectToolsBackup.cs:161
+msgid "restore"
+msgstr "восстановление"
+
+#: Projects/RPGMMV/Menus/AddToSkipJS.cs:14 Projects/RPGMMV/Menus/SkipJSFileOpen.cs:11
 msgid "Skip JS"
 msgstr "Пропуск JS"
 
 #: Projects/RPGMMV/Menus/AddToSkipJS.cs:16
 msgid "Add selected item to Skip.js file"
-msgstr ""
-"Добавить выбранный файл в файл Skip.js для его пропуска при следующем "
-"открытии"
+msgstr "Добавить выбранный файл в файл Skip.js для его пропуска при следующем открытии"
 
 #: Projects/RPGMMV/Menus/OpenJsonSkipCodesList.cs:12
 msgid " Open SkipCodesList"
 msgstr "Открыть список кодов команд для пропуска"
 
-#: Projects/RPGMMV/RPGMMVGame.cs:76 Projects/RPGMMV/RPGMMVJson.cs:48
+#: Projects/RPGMMV/RPGMMVGame.cs:119 Projects/RPGMMV/RPGMMVJson.cs:49
 msgid "write file: "
 msgstr "запись файла:"
 
-#: Projects/RPGMMV/RPGMMVGame.cs:76 Projects/RPGMMV/RPGMMVJson.cs:48
-#: Projects/RPGMMV/RPGMMVOLD.cs:61 Projects/RPGMTrans/RPGMTransOLD.cs:129
-#: Projects/WolfRPG/WRPGOLDOpen.cs:87
+#: Projects/RPGMMV/RPGMMVGame.cs:119 Projects/RPGMMV/RPGMMVJson.cs:49
+#: Projects/RPGMMV/RPGMMVOLD.cs:63 Projects/RPGMTrans/RPGMTransOLD.cs:132
+#: Projects/WolfRPG/WRPGOLDOpen.cs:90
 msgid "opening file: "
 msgstr "открытие файла: "
 
-#: Projects/RPGMMV/RPGMMVOLD.cs:438
+#: Projects/RPGMMV/RPGMMVOLD.cs:440
 msgid "Writing: "
 msgstr "Запись: "
 
-#: Projects/RPGMTrans/RPGMTransOLD.cs:398
-#: Projects/RPGMTrans/RPGMTransOLD.cs:476 Projects/WolfRPG/WRPGOLDOpen.cs:365
+#: Projects/RPGMTrans/RPGMTransOLD.cs:401 Projects/RPGMTrans/RPGMTransOLD.cs:479
+#: Projects/WolfRPG/WRPGOLDOpen.cs:368
 msgid "saving file: "
 msgstr "сохранение файла: "
 
-#: Projects/RPGMaker/RPGMGame.cs:163 Projects/RPGMaker/RPGMGame.cs:191
+#: Projects/RPGMaker/RPGMGame.cs:166 Projects/RPGMaker/RPGMGame.cs:194
 msgid "Writing "
 msgstr "Запись "
 
-#: Projects/RPGMaker/RPGMGame.cs:168
+#: Projects/RPGMaker/RPGMGame.cs:171
 msgid "Restore baks"
 msgstr "Восстановление bak"
 
-#: Projects/RPGMaker/RPGMGame.cs:170 Projects/RPGMaker/RPGMGame.cs:194
-#: Projects/RPGMaker/RPGMGame.cs:271
+#: Projects/RPGMaker/RPGMGame.cs:173 Projects/RPGMaker/RPGMGame.cs:197
+#: Projects/RPGMaker/RPGMGame.cs:274
 msgid "Patching"
 msgstr "Патч"
 
-#: Projects/RPGMaker/RPGMGame.cs:176 Projects/WolfRPG/WolfRPGGame.cs:127
+#: Projects/RPGMaker/RPGMGame.cs:179 Projects/WolfRPG/WolfRPGGame.cs:128
 msgid "Error occured while patch execution. Error "
 msgstr "Произошла ошибка при выполнении патча. Ошибка "
 
-#: Projects/RPGMaker/RPGMGame.cs:183 Projects/RPGMaker/RPGMGame.cs:282
-#: Projects/RPGMaker/RPGMGame.cs:291
+#: Projects/RPGMaker/RPGMGame.cs:186 Projects/RPGMaker/RPGMGame.cs:285
+#: Projects/RPGMaker/RPGMGame.cs:294
 msgid "Patching failed"
 msgstr "Патч не удался"
 
-#: Projects/RPGMaker/RPGMGame.cs:186 Projects/WolfRPG/WolfRPGGame.cs:133
+#: Projects/RPGMaker/RPGMGame.cs:189 Projects/WolfRPG/WolfRPGGame.cs:134
 msgid "Somethig wrong"
 msgstr "Что то случилось"
 
-#: Projects/RPGMaker/RPGMGame.cs:186
+#: Projects/RPGMaker/RPGMGame.cs:189
 msgid "Trying 2nd variant"
 msgstr "Пробуем 2й вариант"
 
-#: Projects/RPGMaker/RPGMGame.cs:203
+#: Projects/RPGMaker/RPGMGame.cs:206
 msgid "Last try"
 msgstr "Последняя попытка"
 
-#: Projects/RPGMaker/RPGMGame.cs:219
+#: Projects/RPGMaker/RPGMGame.cs:222
 msgid "Extracting"
 msgstr "Извлечение"
 
-#: Projects/RPGMaker/RPGMGame.cs:283 Projects/WolfRPG/WolfRPGGame.cs:143
+#: Projects/RPGMaker/RPGMGame.cs:286 Projects/WolfRPG/WolfRPGGame.cs:144
 msgid "Error occured while patch execution."
 msgstr "Произошла ошибка при выполнении патча."
 
-#: Projects/RPGMaker/RPGMGame.cs:292 Projects/WolfRPG/WolfRPGGame.cs:148
+#: Projects/RPGMaker/RPGMGame.cs:295 Projects/WolfRPG/WolfRPGGame.cs:149
 msgid "Patch creation finished unsuccesfully."
 msgstr "Создание патча не удалось"
 
-#: Projects/RPGMaker/RPGMGame.cs:296 Projects/WolfRPG/WolfRPGGame.cs:152
+#: Projects/RPGMaker/RPGMGame.cs:299 Projects/WolfRPG/WolfRPGGame.cs:153
 msgid "Work folder will be opened."
 msgstr "Будет открыта рабочая папка"
 
-#: Projects/RPGMaker/RPGMGame.cs:298 Projects/WolfRPG/WolfRPGGame.cs:154
+#: Projects/RPGMaker/RPGMGame.cs:301 Projects/WolfRPG/WolfRPGGame.cs:155
 msgid "Try to run Patch.cmd manually and check it for errors."
-msgstr ""
-"Попробуйте запустить файл 'Patch.cmd' вручную и проверьте консоль на ошибки"
+msgstr "Попробуйте запустить файл 'Patch.cmd' вручную и проверьте консоль на ошибки"
 
-#: Projects/WolfRPG/WolfRPGBase.cs:45 Projects/WolfRPG/WolfRPGGame.cs:58
+#: Projects/RimWorld/FileRowTryImportStringsFrom.cs:17
+msgid "Try import translations from.."
+msgstr "Попробовать импортировать перевод из.."
+
+#: Projects/RimWorld/FileRowTryImportStringsFrom.cs:19
+msgid "Try import translations from other language dir"
+msgstr "Попробовать импортировать перевод из папки языка"
+
+#: Projects/RimWorld/FileRowTryImportStringsFrom.cs:41
+msgid "Xml files"
+msgstr "Xml файлы"
+
+#: Projects/RimWorld/FileRowTryImportStringsFrom.cs:42
+msgid "Select an xml file in targett language folder where from need to import"
+msgstr ""
+
+#: Projects/RimWorld/MainMenuTryReadEnglishTranslations.cs:19
+msgid "Try read English language strings into translations"
+msgstr ""
+
+#: Projects/RimWorld/MainMenuTryReadEnglishTranslations.cs:21
+msgid "Try read translation from same elements of English language if present"
+msgstr ""
+
+#: Projects/WolfRPG/WolfRPGBase.cs:46 Projects/WolfRPG/WolfRPGGame.cs:59
 msgid "Create patch"
 msgstr "Создание патча"
 
-#: Projects/WolfRPG/WolfRPGBase.cs:45 Projects/WolfRPG/WolfRPGGame.cs:58
+#: Projects/WolfRPG/WolfRPGBase.cs:46 Projects/WolfRPG/WolfRPGGame.cs:59
 msgid "Write patch"
 msgstr "Запись патча"
 
-#: Projects/WolfRPG/WolfRPGBase.cs:73
+#: Projects/WolfRPG/WolfRPGBase.cs:74
 msgid "Extract"
 msgstr "Извлечение"
 
-#: Projects/WolfRPG/WolfRPGGame.cs:133
+#: Projects/WolfRPG/WolfRPGGame.cs:134
 msgid "Trying again"
 msgstr "Повторная попытка"
 
-#: Projects/WolfRPG/WolfRPGGame.cs:168
+#: Projects/WolfRPG/WolfRPGGame.cs:169
 msgid "Create buckup of original files"
 msgstr "Создание резервных копий переведенных файлов"
 
-#: Projects/WolfRPG/WolfRPGGame.cs:171
+#: Projects/WolfRPG/WolfRPGGame.cs:172
 msgid "Replace translated files"
 msgstr "Замена переведенных файлов"
 
-#: Projects/ZZZZFormats/ZZZZProjectByExtension.cs:82
+#: Projects/ZZZZFormats/ZZZZProjectByExtension.cs:45
+msgid "Try open file by extension"
+msgstr "Попробовать открыть файл по расширению"
+
+#: Projects/ZZZZFormats/ZZZZProjectByExtension.cs:134
 msgid "Found similar files. Open them too?"
 msgstr "Найдены похожие файлы. Открыть их тоже?"
 
-#: Projects/ZZZZFormats/ZZZZProjectByExtension.cs:82
-msgid "Found files with same extension"
-msgstr "Найдены файлы с тем же расширением"
+#: Projects/ZZZZFormats/ZZZZProjectByExtension.cs:146
+msgid "Recursive"
+msgstr "Рекурсивно"
+
+#~ msgid "Extracted with"
+#~ msgstr "Извлечено с помощью"
+
+#~ msgid "working.."
+#~ msgstr "работаю.."
+
+#~ msgid "DB not found. Try to load from all exist?"
+#~ msgstr "БД не найдена. Попробовать загрузить все существующие?"
+
+#~ msgid "DB not found"
+#~ msgstr "БД не найдена."
+
+#~ msgid "Nothing Found."
+#~ msgstr "Ничего не найдено"
+
+#~ msgid "Load"
+#~ msgstr "Загрузка"
+
+#~ msgid "getting translation: "
+#~ msgstr "получение перевода: "
+
+#~ msgid "getting translation"
+#~ msgstr "получение перевода"
+
+#~ msgid "OpenProjectsDir"
+#~ msgstr "Открыть папку проекта"
 
 #~ msgid "Save translation"
 #~ msgstr "Сохранить перевод"
@@ -1129,9 +1269,6 @@ msgstr "Найдены файлы с тем же расширением"
 #~ msgid "Original"
 #~ msgstr "Оригинал"
 
-#~ msgid "Translation"
-#~ msgstr "Перевод"
-
 #~ msgid "Translation Helper by DenisK (c) 2019"
 #~ msgstr "Translation Helper от DenisK (c) 2019"
 
@@ -1166,17 +1303,10 @@ msgstr "Найдены файлы с тем же расширением"
 #~ msgstr "открытие.."
 
 #~ msgid "Problem with source opening. Try to report to devs about it."
-#~ msgstr ""
-#~ "Проблема с открытием источника. Попробуйте сообщить разработчикам об этом."
-
-#~ msgid " loaded"
-#~ msgstr " загружено"
+#~ msgstr "Проблема с открытием источника. Попробуйте сообщить разработчикам об этом."
 
 #~ msgid "contains: "
 #~ msgstr "содержит: "
-
-#~ msgid "loading translation"
-#~ msgstr "загрузка перевода"
 
 #~ msgid "Already in process.."
 #~ msgstr "Уже в процессе.."
@@ -1190,12 +1320,9 @@ msgstr "Найдены файлы с тем же расширением"
 #~ msgid "Problem with loading"
 #~ msgstr "Проблема при загрузке"
 
-#~ msgid "Translation  Helper support:"
-#~ msgstr "Поддержка Translation  Helper:"
-
 #~ msgid ""
-#~ "Is true while online translating. Will be used both with other chars "
-#~ "like .!/? and other same"
+#~ "Is true while online translating. Will be used both with other chars like .!/? and "
+#~ "other same"
 #~ msgstr ""
-#~ "Включить при переводе. Будет использовано вместе с такими символами "
-#~ "как .!/? и прочими такого рода"
+#~ "Включить при переводе. Будет использовано вместе с такими символами как .!/? и "
+#~ "прочими такого рода"
