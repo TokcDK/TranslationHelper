@@ -96,7 +96,7 @@ namespace TranslationHelper.Data
                     FunctionsOnlineCache.Unload();
                     return;
                 }
-                else if (value.cache.Count == 0)
+                else if (value.Cache.Count == 0)
                 {
                     onlineTranslationCache.UsersCount++;
                     return;

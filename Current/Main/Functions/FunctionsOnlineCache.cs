@@ -12,7 +12,7 @@ namespace TranslationHelper.Functions
 {
     class FunctionsOnlineCache
     {
-        internal Dictionary<string, string> cache = new Dictionary<string, string>();
+        internal Dictionary<string, string> Cache = new Dictionary<string, string>();
 
         internal string GetValueFromCacheOrReturnEmpty(string keyValue)
         {
@@ -20,18 +20,16 @@ namespace TranslationHelper.Functions
 
             if (AppSettings.UseAllDBFilesForOnlineTranslationForAll
                 && AppData.AllDBmerged != null
-                //&& AppData.AllDBmerged.Count > 0
-                && AppData.AllDBmerged.ContainsKey(keyValue)
-                && !string.IsNullOrWhiteSpace(AppData.AllDBmerged[keyValue]))
+                && AppData.AllDBmerged.TryGetValue(keyValue, out string mergedDBValue)
+                && !string.IsNullOrWhiteSpace(mergedDBValue))
             {
-                return AppData.AllDBmerged[keyValue];
+                return mergedDBValue;
             }
-            else if (cache != null
-                && cache.Count > 0
-                && cache.ContainsKey(keyValue)
-                && !string.IsNullOrWhiteSpace(cache[keyValue]))
+            else if (Cache != null
+                && Cache.TryGetValue(keyValue, out string cachedValue)
+                && !string.IsNullOrWhiteSpace(cachedValue))
             {
-                return cache[keyValue];
+                return cachedValue;
             }
             else
             {
@@ -40,27 +38,26 @@ namespace TranslationHelper.Functions
                    && trimmed.Length > 0
                    && AppData.AllDBmerged != null
                    //&& AppData.AllDBmerged.Count > 0
-                   && AppData.AllDBmerged.ContainsKey(trimmed)
-                   && !string.IsNullOrWhiteSpace(AppData.AllDBmerged[trimmed]))
+                   && AppData.AllDBmerged.TryGetValue(trimmed, out string mergedDBValueByTrimmed)
+                   && !string.IsNullOrWhiteSpace(mergedDBValueByTrimmed))
                 {
                     var ind = keyValue.IndexOf(trimmed); //sometimes inex is -1 of 'え' in 'え゛？' for example
                     try
                     {
-                        return keyValue.Remove(ind, trimmed.Length).Insert(ind, AppData.AllDBmerged[trimmed]);
+                        return keyValue.Remove(ind, trimmed.Length).Insert(ind, mergedDBValueByTrimmed);
                     }
                     catch { }
                 }
                 else if (
                     trimmed.Length > 0
-                    && cache != null
-                    //&& cache.Count > 0
-                    && cache.ContainsKey(trimmed)
-                    && !string.IsNullOrWhiteSpace(cache[trimmed]))
+                    && Cache != null
+                    && Cache.TryGetValue(trimmed, out string cachedValueByTrimmed)
+                    && !string.IsNullOrWhiteSpace(cachedValueByTrimmed))
                 {
                     var ind = keyValue.IndexOf(trimmed);
                     try
                     {
-                        return keyValue.Remove(ind, trimmed.Length).Insert(ind, cache[trimmed]);
+                        return keyValue.Remove(ind, trimmed.Length).Insert(ind, cachedValueByTrimmed);
                     }
                     catch { }
                 }
@@ -72,7 +69,7 @@ namespace TranslationHelper.Functions
         readonly static object cacheWriteLocker = new object();
         public void Write()
         {
-            Write(cache);
+            Write(Cache);
         }
         public static void Write(Dictionary<string, string> cache)
         {
@@ -125,7 +122,7 @@ namespace TranslationHelper.Functions
         readonly object cacheReadLocker = new object();
         public void Read()
         {
-            if (cache != null && cache.Count > 0) return;
+            if (Cache != null && Cache.Count > 0) return;
 
             lock (cacheReadLocker)
             {
@@ -146,7 +143,7 @@ namespace TranslationHelper.Functions
                 foreach (var el in rootElement.Elements())
                 {
                     string key = el.Element(THSettings.OriginalColumnName).Value;
-                    if (!cache.ContainsKey(key)) cache.Add(key, el.Element(THSettings.TranslationColumnName).Value);
+                    if (!Cache.ContainsKey(key)) Cache.Add(key, el.Element(THSettings.TranslationColumnName).Value);
                 }
             }
 
@@ -158,9 +155,9 @@ namespace TranslationHelper.Functions
             if (string.IsNullOrWhiteSpace(Translation)) return;
             if (string.Equals(Original, Translation)) return;
             if (Original.GetLinesCount() != Translation.GetLinesCount()) return;
-            if (AppData.OnlineTranslationCache.cache.ContainsKey(Original)) return;
+            if (AppData.OnlineTranslationCache.Cache.ContainsKey(Original)) return;
 
-            AppData.OnlineTranslationCache.cache.Add(Original, Translation);
+            AppData.OnlineTranslationCache.Cache.Add(Original, Translation);
         }
     }
 }
