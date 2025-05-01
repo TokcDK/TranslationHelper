@@ -626,20 +626,6 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
         string Translate(string text);
     }
 
-    /// <summary>
-    /// Defines the contract for translation caching.
-    /// </summary>
-    public interface ITranslationCache : IDisposable
-    {
-        string TryGetValue(string key);
-        void TryAdd(string key, string value);
-
-        /// <summary>
-        /// For purpose if need to write cache earlier
-        /// </summary>
-        void Write();
-    }
-
     public class GoogleTranslator : ITranslator, IDisposable
     {
         private readonly HttpClient _httpClient;
@@ -737,51 +723,6 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
             {
                 _httpClient.Dispose();
                 _semaphore.Dispose();
-
-                _disposed = true;
-
-                GC.SuppressFinalize(this);
-            }
-        }
-    }
-
-    public class TranslationCache : ITranslationCache
-    {
-        bool _disposed = false;
-
-        public TranslationCache()
-        {
-            FunctionsOnlineCache.Init(this);
-            Read();
-        }
-
-        public string TryGetValue(string key)
-        {
-            return FunctionsOnlineCache.TryGetValue(key);
-        }
-
-        public void TryAdd(string key, string value)
-        {
-            FunctionsOnlineCache.TryAdd(key, value);
-        }
-
-        public void Write()
-        {
-            FunctionsOnlineCache.Write();
-        }
-
-        static void Read()
-        {
-            FunctionsOnlineCache.Read();
-        }
-
-        public void Dispose()
-        {
-            if (!_disposed)
-            {
-                Write();
-
-                FunctionsOnlineCache.Unload(this);
 
                 _disposed = true;
 

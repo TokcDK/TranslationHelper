@@ -308,7 +308,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
             ResetSizeAndBuffer();
 
             // Write the translation cache periodically
-            FunctionsOnlineCache.Write();
+            _cache.Write();
         }
 
         private void ResetSizeAndBuffer()
@@ -324,13 +324,13 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
                 TranslateStrings();
 
                 // Write the translation cache periodically
-                FunctionsOnlineCache.Write();
+                _cache.Write();
             }
         }
 
         private bool CheckInCache(string line, LineTranslationData lineData)
         {
-            var lineCache = FunctionsOnlineCache.TryGetValue(line);
+            var lineCache = _cache.TryGetValue(line);
             if (!string.IsNullOrEmpty(lineCache))
             {
                 lineData.Translation = lineCache;
@@ -349,7 +349,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
             foreach (var extractedValueData in extractData.ExtractedValuesList)
             {
                 // Get the translation from the translation cache, if available
-                var translationCache = FunctionsOnlineCache.TryGetValue(extractedValueData.Original);
+                var translationCache = _cache.TryGetValue(extractedValueData.Original);
 
                 if (!string.IsNullOrEmpty(translationCache))
                 {
@@ -602,7 +602,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
 
                 translations.Add(original, translation);
 
-                FunctionsOnlineCache.TryAdd(original, translation);
+                _cache.TryAdd(original, translation);
             }
 
             Parallel.ForEach(EnumerateBufferedLinesData(), lineData =>
