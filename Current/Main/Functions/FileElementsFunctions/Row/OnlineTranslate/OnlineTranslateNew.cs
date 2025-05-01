@@ -3,6 +3,7 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
@@ -284,7 +285,14 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
                 {
                     selectedRowData = null;
                     selectedTableData.Rows.Remove(selectedRowData);
-                    if (selectedTableData.Rows.Count == 0) _buffer.Remove(selectedTableData);
+                    if (selectedTableData.Rows.Count == 0)
+                    {
+                        lock (_bufferLock)
+                        {
+                            _buffer.Remove(selectedTableData);
+                        }
+                    }
+
                     return;
                 }
             }
@@ -651,7 +659,13 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
                     }
                 }
 
-                if (dataRows.Count == 0) _buffer.Remove(data);
+                if (dataRows.Count == 0)
+                {
+                    lock (_bufferLock)
+                    {
+                        _buffer.Remove(data);
+                    }
+                }
             }
         }
 
