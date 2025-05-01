@@ -18,55 +18,60 @@ namespace TranslationHelper.Functions
 
         internal Dictionary<string, string> Cache = new Dictionary<string, string>();
 
-        internal string GetValueFromCacheOrReturnEmpty(string keyValue)
+        internal string GetValueFromCacheOrReturnEmpty(string key)
         {
             if (!AppSettings.EnableTranslationCache) return string.Empty;
 
             if (AppSettings.UseAllDBFilesForOnlineTranslationForAll
-                && AppData.AllDBmerged != null
-                && AppData.AllDBmerged.TryGetValue(keyValue, out string mergedDBValue)
-                && !string.IsNullOrWhiteSpace(mergedDBValue))
+                && TryGetNonEmptyValue(AppData.AllDBmerged, key, out var mergedDBValue))
             {
                 return mergedDBValue;
             }
-            else if (Cache != null
-                && Cache.TryGetValue(keyValue, out string cachedValue)
-                && !string.IsNullOrWhiteSpace(cachedValue))
+            else if (TryGetNonEmptyValue(Cache, key, out var cachedValue))
             {
                 return cachedValue;
             }
             else
             {
-                var trimmed = keyValue.TrimAllExceptLettersOrDigits();
+                var trimmed = key.TrimAllExceptLettersOrDigits();
                 int index;
                 if (AppSettings.UseAllDBFilesForOnlineTranslationForAll
-                   && trimmed.Length > 0
-                   && AppData.AllDBmerged != null
-                   //&& AppData.AllDBmerged.Count > 0
-                   && AppData.AllDBmerged.TryGetValue(trimmed, out string mergedDBValueByTrimmed)
-                   && !string.IsNullOrWhiteSpace(mergedDBValueByTrimmed))
+                   && TryGetNonEmptyValue(AppData.AllDBmerged, trimmed, out var mergedDBValueByTrimmed))
                 {
-                    index = keyValue.IndexOf(trimmed); //sometimes index is -1 of 'え' in 'え゛？' for example
+                    index = key.IndexOf(trimmed); //sometimes index is -1 of 'え' in 'え゛？' for example
                     if(index != -1)
                     {
-                        return keyValue.Remove(index, trimmed.Length).Insert(index, mergedDBValueByTrimmed);
+                        return key.Remove(index, trimmed.Length).Insert(index, mergedDBValueByTrimmed);
                     }
                 }
-                else if (
-                    trimmed.Length > 0
-                    && Cache != null
-                    && Cache.TryGetValue(trimmed, out string cachedValueByTrimmed)
-                    && !string.IsNullOrWhiteSpace(cachedValueByTrimmed))
+                else if (TryGetNonEmptyValue(Cache, trimmed, out var cachedValueByTrimmed))
                 {
-                    index = keyValue.IndexOf(trimmed);
+                    index = key.IndexOf(trimmed);
                     if (index != -1)
                     {
-                        return keyValue.Remove(index, trimmed.Length).Insert(index, cachedValueByTrimmed);
+                        return key.Remove(index, trimmed.Length).Insert(index, cachedValueByTrimmed);
                     }
                 }
 
                 return string.Empty;
             }
+        }
+
+        internal static bool TryGetNonEmptyValue(Dictionary<string, string> dictionary, string keyString, out string value)
+        {
+            value = null;
+
+            if(string.IsNullOrWhiteSpace(keyString)
+               || dictionary == null
+               || !dictionary.TryGetValue(keyString, out string s)
+               || !string.IsNullOrWhiteSpace(s))
+            {
+                return false;
+            }
+
+            value = s;
+
+            return true;
         }
 
         public void Write()
