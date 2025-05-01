@@ -564,29 +564,35 @@ namespace TranslationHelper.Main.Functions
             return db;
         }
 
+        readonly static object _dbDataSetToDictionaryAddLocker = new object();
+
         internal static void MergeAllDBtoOne()
         {
-            if (AppData.AllDBmerged == null) AppData.AllDBmerged = new Dictionary<string, string>();
-
-            var newestFilesList = GetNewestFIlesList(THSettings.DBDirPathByLanguage);
-
-            object _dbDataSetToDictionaryAddLocker = new object();
-            Parallel.ForEach(newestFilesList, dbFile =>
+            lock (_dbDataSetToDictionaryAddLocker)
             {
-                try
-                {
-                    using (var dbDataSet = new DataSet())
-                    {
-                        Logger.Info(T._("Loading") + " " + Path.GetFileName(dbFile.Value.Name));
+                if (AppData.AllDBmerged != null && AppData.AllDBmerged.Count > 0) return;
 
-                        ReadDBFile(dataSet: dbDataSet, dbFilePath: dbFile.Value.FullName, useOriginaldbFilePath: true);
-                        dbDataSet.ToDictionary(inputDB: AppData.AllDBmerged, dontAddEmptyTranslation: true, dontAddEqualTranslation: true, _dbDataSetToDictionaryAddLocker);
-                    }
-                }
-                catch
+                if (AppData.AllDBmerged == null) AppData.AllDBmerged = new Dictionary<string, string>();
+
+                var newestFilesList = GetNewestFIlesList(THSettings.DBDirPathByLanguage);
+
+                Parallel.ForEach(newestFilesList, dbFile =>
                 {
-                }
-            });
+                    try
+                    {
+                        using (var dbDataSet = new DataSet())
+                        {
+                            Logger.Info(T._("Loading") + " " + Path.GetFileName(dbFile.Value.Name));
+
+                            ReadDBFile(dataSet: dbDataSet, dbFilePath: dbFile.Value.FullName, useOriginaldbFilePath: true);
+                            dbDataSet.ToDictionary(inputDB: AppData.AllDBmerged, dontAddEmptyTranslation: true, dontAddEqualTranslation: true, _dbDataSetToDictionaryAddLocker);
+                        }
+                    }
+                    catch
+                    {
+                    }
+                });
+            }
         }
 
         private static List<KeyValuePair<string, FileInfo>> GetNewestFIlesList(string dbDir)

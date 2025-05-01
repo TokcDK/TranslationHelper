@@ -7,6 +7,7 @@ using System.Web.Caching;
 using System.Xml.Linq;
 using TranslationHelper.Data;
 using TranslationHelper.Extensions;
+using TranslationHelper.Functions.FileElementsFunctions.Row;
 using TranslationHelper.Main.Functions;
 
 //https://stackoverflow.com/questions/1799767/easy-way-to-convert-a-dictionarystring-string-to-xml-and-vice-versa
@@ -14,11 +15,61 @@ namespace TranslationHelper.Functions
 {
     class FunctionsOnlineCache
     {
-        protected static readonly Logger Logger = LogManager.GetCurrentClassLogger();
+        static readonly Logger Logger = LogManager.GetCurrentClassLogger();
 
-        internal Dictionary<string, string> Cache = new Dictionary<string, string>();
+        readonly static object _translationCacheLocker = new object();
 
-        internal string GetValueFromCacheOrReturnEmpty(string key)
+        static Dictionary<string, string> Cache;
+
+        static List<ITranslationCache> CacheInstancesList;
+
+        /// <summary>
+        /// init cache and cache use instance
+        /// </summary>
+        internal static void Init(TranslationCache cache)
+        {
+            lock (_translationCacheLocker)
+            {
+                if(cache == null)
+                {
+                    throw new ArgumentNullException("Translation cache instance was null");
+                }
+                if(Cache == null)
+                {
+                    Cache = new Dictionary<string, string>();
+                }
+                if(CacheInstancesList == null)
+                {
+                    CacheInstancesList = new List<ITranslationCache>();
+                }
+
+                if (!CacheInstancesList.Contains(cache))
+                {
+                    CacheInstancesList.Add(cache);
+                }
+            }
+        }
+
+        /// <summary>
+        /// unload cache and cache user instance
+        /// </summary>
+        internal static void Unload(TranslationCache translationCache)
+        {
+            lock (_translationCacheLocker)
+            {
+                if (CacheInstancesList.Contains(translationCache))
+                {
+                    CacheInstancesList.Remove(translationCache);
+                }
+
+                if (CacheInstancesList.Count == 0)
+                {
+                    Cache = null;
+                }
+            }
+        }
+
+        internal static string TryGetValue(string key)
         {
             if (!AppSettings.EnableTranslationCache) return string.Empty;
 
@@ -64,7 +115,7 @@ namespace TranslationHelper.Functions
             return true;
         }
 
-        public void Write()
+        public static void Write()
         {
             Write(Cache);
         }
@@ -87,39 +138,7 @@ namespace TranslationHelper.Functions
             }
         }
 
-        /// <summary>
-        /// init cache when it was not init
-        /// </summary>
-        internal static void Init()
-        {
-            //if (!AppSettings.IsTranslationCacheEnabled)
-            //    return;
-
-            AppData.OnlineTranslationCache.UsersCount++;
-        }
-
-        /// <summary>
-        /// Count of users of the instance of cache
-        /// </summary>
-        internal int UsersCount = 0;
-
-        /// <summary>
-        /// unload cache when need
-        /// </summary>
-        internal static void Unload()
-        {
-            AppData.OnlineTranslationCache.Write(); // write on unload
-
-            AppData.OnlineTranslationCache.UsersCount--; // decrease users count
-
-            if (AppData.OnlineTranslationCache != null && AppData.OnlineTranslationCache.UsersCount == 0)
-            {
-                AppData.OnlineTranslationCache = null;
-            }
-        }
-
-        readonly static object _translationCacheLocker = new object();
-        public void Read()
+        public static void Read()
         {
             Read(Cache);
         }
@@ -161,9 +180,9 @@ namespace TranslationHelper.Functions
             if (string.IsNullOrWhiteSpace(Translation)) return;
             if (string.Equals(Original, Translation)) return;
             if (Original.GetLinesCount() != Translation.GetLinesCount()) return;
-            if (AppData.OnlineTranslationCache.Cache.ContainsKey(Original)) return;
+            if (Cache.ContainsKey(Original)) return;
 
-            AppData.OnlineTranslationCache.Cache.Add(Original, Translation);
+            Cache.Add(Original, Translation);
         }
     }
 }

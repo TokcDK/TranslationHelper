@@ -136,7 +136,7 @@ namespace TranslationHelper.Functions
                         //if ( SelectedLocalePercentFromStringIsNotValid(THFileElementsDataGridView[cind, rind].Value.ToString()) || SelectedLocalePercentFromStringIsNotValid(THFileElementsDataGridView[cind, rind].Value.ToString(), "other"))
 
                         //string ResultValue = FunctionsTable.TranslationCacheFind(THTranslationCache, InputValue);
-                        string ResultValue = AppData.OnlineTranslationCache.GetValueFromCacheOrReturnEmpty(InputValue);
+                        string ResultValue = FunctionsOnlineCache.TryGetValue(InputValue);
 
                         if (ResultValue.Length != 0)
                         {
@@ -167,7 +167,7 @@ namespace TranslationHelper.Functions
                                 else
                                 {
                                     //string CachedExtractedValue = FunctionsTable.TranslationCacheFind(THTranslationCache, ExtractedValue);
-                                    string CachedExtractedValue = AppData.OnlineTranslationCache.GetValueFromCacheOrReturnEmpty(ExtractedValue);
+                                    string CachedExtractedValue = FunctionsOnlineCache.TryGetValue(ExtractedValue);
                                     //LogToFile("cachedvalue=" + cachedvalue, true);
                                     if (CachedExtractedValue.Length == 0)
                                     {
@@ -225,7 +225,7 @@ namespace TranslationHelper.Functions
             }
 
             //FunctionsDBFile.WriteTranslationCacheIfValid(THTranslationCache, THTranslationCachePath);
-            AppData.OnlineTranslationCache.Write();
+            FunctionsOnlineCache.Write();
 
             THTranslationCache.Dispose();
 
@@ -258,7 +258,7 @@ namespace TranslationHelper.Functions
                     if (ExtractedOriginal.Length == 0 || ExtractedOriginal == OriginalLine)
                     {
                         //Result = TranslatorsFunctions.ReturnTranslatedOrCache(cacheDS, OriginalLine);
-                        Result = AppData.OnlineTranslationCache.GetValueFromCacheOrReturnEmpty(OriginalLine);
+                        Result = FunctionsOnlineCache.TryGetValue(OriginalLine);
                         //FunctionsTable.AddToTranslationCacheIfValid(cacheDS, OriginalLine, Result);
                         if (Result.Length == 0 || Result == OriginalLine)
                         {
@@ -268,7 +268,7 @@ namespace TranslationHelper.Functions
                     }
                     else
                     {
-                        string ExtractedTranslation = AppData.OnlineTranslationCache.GetValueFromCacheOrReturnEmpty(ExtractedOriginal);
+                        string ExtractedTranslation = FunctionsOnlineCache.TryGetValue(ExtractedOriginal);
                         if (ExtractedTranslation.Length == 0 || ExtractedTranslation == ExtractedOriginal)
                         {
                             ExtractedTranslation = Translator.Translate(ExtractedOriginal);
@@ -438,7 +438,7 @@ namespace TranslationHelper.Functions
                             if (string.IsNullOrEmpty(Cell))
                             {
                                 //string InputOriginalLineFromCache = FunctionsTable.TranslationCacheFind(THTranslationCache, InputOriginalLine);//поиск оригинала в кеше
-                                string InputOriginalLineFromCache = AppData.OnlineTranslationCache.GetValueFromCacheOrReturnEmpty(InputOriginalLine);
+                                string InputOriginalLineFromCache = FunctionsOnlineCache.TryGetValue(InputOriginalLine);
 
 
                                 if (InputOriginalLineFromCache.Length > 0)
@@ -463,7 +463,7 @@ namespace TranslationHelper.Functions
 
                                         string Translation = string.Empty;
                                         //cache = FunctionsTable.TranslationCacheFind(THTranslationCache, linevalue);//поиск подстроки в кеше
-                                        cache = AppData.OnlineTranslationCache.GetValueFromCacheOrReturnEmpty(linevalue);//поиск подстроки в кеше
+                                        cache = FunctionsOnlineCache.TryGetValue(linevalue);//поиск подстроки в кеше
                                         if (cache.Length > 0)
                                         {
                                             Translation = cache;//если нашло в кеше, присвоить как перевод
@@ -482,7 +482,7 @@ namespace TranslationHelper.Functions
 
                                                     // только если извлеченное значение отличается от оригинальной строки
                                                     //cache = extractedvalue == linevalue ? string.Empty : FunctionsTable.TranslationCacheFind(THTranslationCache, extractedvalue);//поиск извлеченной подстроки в кеше
-                                                    cache = extractedvalue == linevalue ? string.Empty : AppData.OnlineTranslationCache.GetValueFromCacheOrReturnEmpty(extractedvalue);//поиск извлеченной подстроки в кеше
+                                                    cache = extractedvalue == linevalue ? string.Empty : FunctionsOnlineCache.TryGetValue(extractedvalue);//поиск извлеченной подстроки в кеше
                                                     if (cache.Length > 0)
                                                     {
                                                         Translation = PasteTranslationBackIfExtracted(cache, linevalue, extractedvalue);
@@ -530,7 +530,7 @@ namespace TranslationHelper.Functions
                     }
 
                     //FunctionsDBFile.WriteTranslationCacheIfValid(THTranslationCache, THTranslationCachePath);
-                    AppData.OnlineTranslationCache.Write();
+                    FunctionsOnlineCache.Write();
                 }
             }
             catch (Exception ex)
@@ -552,7 +552,7 @@ namespace TranslationHelper.Functions
 
 
             //FunctionsDBFile.WriteTranslationCacheIfValid(THTranslationCache, THTranslationCachePath);//промежуточная запись кеша
-            AppData.OnlineTranslationCache.Write();//промежуточная запись кеша
+            FunctionsOnlineCache.Write();//промежуточная запись кеша
 
             InputLines.Clear();
             InputLinesInfo.Clear();

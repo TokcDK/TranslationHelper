@@ -16,7 +16,6 @@ using TranslationHelper.Extensions;
 using TranslationHelper.Functions.StringChangers;
 using TranslationHelper.Functions.StringChangers.HardFixes;
 using TranslationHelper.Main.Functions;
-using TranslationHelper.OnlineTranslators;
 
 namespace TranslationHelper.Functions.FileElementsFunctions.Row
 {
@@ -75,8 +74,6 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
         /// </summary>
         protected async override void ActionsInit()
         {
-            FunctionsOnlineCache.Init();
-
             if (_allDbLoaded4All || !IsAll || !AppSettings.UseAllDBFilesForOnlineTranslationForAll) return;
 
             if (!AppSettings.EnableTranslationCache)
@@ -103,7 +100,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
         protected override void ActionsFinalize()
         {
             if (!_buffer.IsEmpty) TranslateStrings();
-            FunctionsOnlineCache.Unload();
+            _cache.Dispose();
             if (AppSettings.InterruptTtanslation) AppSettings.InterruptTtanslation = false;
             Logger.Info(T._("Translation complete"));
         }
@@ -181,7 +178,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
         /// </summary>
         private bool CheckInCache(string line, LineTranslationData lineData)
         {
-            var cached = _cache.GetValueFromCacheOrReturnEmpty(line);
+            var cached = _cache.TryGetValue(line);
             if (!string.IsNullOrEmpty(cached))
             {
                 lineData.Translation = cached;
@@ -199,7 +196,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
             skippedValuesCount = 0;
             foreach (var value in extractData.ExtractedValuesList)
             {
-                var cached = _cache.GetValueFromCacheOrReturnEmpty(value.Original);
+                var cached = _cache.TryGetValue(value.Original);
                 if (!string.IsNullOrEmpty(cached))
                 {
                     value.Translation = cached;
@@ -632,10 +629,14 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
     /// <summary>
     /// Defines the contract for translation caching.
     /// </summary>
-    public interface ITranslationCache
+    public interface ITranslationCache : IDisposable
     {
-        string GetValueFromCacheOrReturnEmpty(string key);
+        string TryGetValue(string key);
         void TryAdd(string key, string value);
+
+        /// <summary>
+        /// For purpose if need to write cache earlier
+        /// </summary>
         void Write();
     }
 
@@ -746,30 +747,46 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
 
     public class TranslationCache : ITranslationCache
     {
-        private readonly Dictionary<string, string> _cache = new Dictionary<string, string>();
+        bool _disposed = false;
 
-        public string GetValueFromCacheOrReturnEmpty(string key)
+        public TranslationCache()
         {
-            return _cache.TryGetValue(key, out string value) ? value : string.Empty;
+            FunctionsOnlineCache.Init(this);
+            Read();
+        }
+
+        public string TryGetValue(string key)
+        {
+            return FunctionsOnlineCache.TryGetValue(key);
         }
 
         public void TryAdd(string key, string value)
         {
-            if (!_cache.ContainsKey(key))
-            {
-                _cache[key] = value;
-            }
+            FunctionsOnlineCache.TryAdd(key, value);
         }
 
         public void Write()
         {
-            // Placeholder for persisting cache to storage (e.g., file or database)
-            // Example: File.WriteAllLines("cache.txt", _cache.Select(kv => $"{kv.Key}:{kv.Value}"));
+            FunctionsOnlineCache.Write();
         }
 
-        public void Read()
+        static void Read()
         {
+            FunctionsOnlineCache.Read();
+        }
 
+        public void Dispose()
+        {
+            if (!_disposed)
+            {
+                Write();
+
+                FunctionsOnlineCache.Unload(this);
+
+                _disposed = true;
+
+                GC.SuppressFinalize(this);
+            }
         }
     }
 }

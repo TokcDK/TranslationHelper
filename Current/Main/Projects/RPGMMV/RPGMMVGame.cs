@@ -364,7 +364,7 @@ namespace TranslationHelper.Projects.RPGMMV
             if (!translation.StartsWith(@"\n<>")) return translation;
 
             var name = Regex.Replace(original, @"^\\n<(.+)>[\s\S]*$", "$1");
-            var translatedName = AppData.OnlineTranslationCache.GetValueFromCacheOrReturnEmpty(name);
+            var translatedName = FunctionsOnlineCache.TryGetValue(name);
 
             if (translatedName.Length > 0)
                 return translation.Remove(3, name.Length).Insert(3, translatedName);

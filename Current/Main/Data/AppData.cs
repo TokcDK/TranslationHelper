@@ -71,43 +71,6 @@ namespace TranslationHelper.Data
         internal static string SelectedProjectFilePath { get; set; }
 
         /// <summary>
-        /// Online Translation Cache
-        /// </summary>
-        internal static FunctionsOnlineCache OnlineTranslationCache 
-        {
-            get
-            {
-                if(onlineTranslationCache == null)
-                {
-                    // autoinit and read
-                    onlineTranslationCache = new FunctionsOnlineCache();
-                    onlineTranslationCache.UsersCount++;
-                    onlineTranslationCache.Read();
-                }
-
-                return onlineTranslationCache;
-            }
-            set
-            {
-                if (onlineTranslationCache == value) return;
-
-                if(value == null)
-                {
-                    FunctionsOnlineCache.Unload();
-                    return;
-                }
-                else if (value.Cache.Count == 0)
-                {
-                    onlineTranslationCache.UsersCount++;
-                    return;
-                }
-
-                onlineTranslationCache = value;
-            }
-        }
-        static FunctionsOnlineCache onlineTranslationCache;
-
-        /// <summary>
         /// target textbox control value
         /// </summary>
         internal static string TargetTextBoxPreValue;
