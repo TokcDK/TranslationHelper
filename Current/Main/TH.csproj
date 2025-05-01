@@ -138,6 +138,7 @@
     <Compile Include="Formats\RPGMMV\StopCVPluginTXT.cs" />
     <Compile Include="Formats\RPGMMV\ValueLocationPresetTxt.cs" />
     <Compile Include="Formats\WolfRPG\TextEPH.cs" />
+    <Compile Include="Functions\FileElementsFunctions\Row\OnlineTranslate\OnlineTranslateTEST.cs" />
     <Compile Include="Functions\FileElementsFunctions\Row\OnlineTranslate\StringsTranslatorGoogle.cs" />
     <Compile Include="Functions\FileElementsFunctions\Row\ReplaceIdenticalByOriginalGetSelected.cs" />
     <Compile Include="Functions\FileElementsFunctions\Row\ReplaceIdenticalByOriginalALL.cs" />
