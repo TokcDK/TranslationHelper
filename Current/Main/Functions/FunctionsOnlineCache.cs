@@ -1,7 +1,9 @@
-﻿using System;
+﻿using NLog;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Web.Caching;
 using System.Xml.Linq;
 using TranslationHelper.Data;
 using TranslationHelper.Extensions;
@@ -12,6 +14,8 @@ namespace TranslationHelper.Functions
 {
     class FunctionsOnlineCache
     {
+        protected static readonly Logger Logger = LogManager.GetCurrentClassLogger();
+
         internal Dictionary<string, string> Cache = new Dictionary<string, string>();
 
         internal string GetValueFromCacheOrReturnEmpty(string keyValue)
@@ -66,7 +70,6 @@ namespace TranslationHelper.Functions
             }
         }
 
-        readonly static object cacheWriteLocker = new object();
         public void Write()
         {
             Write(Cache);
@@ -75,8 +78,10 @@ namespace TranslationHelper.Functions
         {
             if (cache == null || cache.Count == 0) return;
 
-            lock (cacheWriteLocker)
+            lock (_translationCacheLocker)
             {
+                ReadCacheFile(cache); // read first to get new values if there was any added
+
                 XElement el = new XElement("TranslationCache",
                     cache.Select(KeyValue =>
                     new XElement("Value",
@@ -119,34 +124,41 @@ namespace TranslationHelper.Functions
             }
         }
 
-        readonly object cacheReadLocker = new object();
+        readonly static object _translationCacheLocker = new object();
         public void Read()
         {
-            if (Cache != null && Cache.Count > 0) return;
-
-            lock (cacheReadLocker)
+            Read(Cache);
+        }
+        public static void Read(Dictionary<string, string> cache)
+        {
+            lock (_translationCacheLocker)
             {
-                string xml = FunctionsDBFile.ReadXMLToString(AppSettings.THTranslationCachePath);
-                if (xml.Length == 0) return;
+                ReadCacheFile(cache);
+            }
+        }
 
-                XElement rootElement;// = null;
-                try { rootElement = XElement.Parse(xml); }
-                catch (Exception ex)
-                {
-                    //write exception, rename broken cache file and return
-                    string targetFilePath = FunctionsFileFolder.NewFilePathPlusIndex(AppSettings.THTranslationCachePath + ".broken");
-                    File.WriteAllText(Path.Combine(Path.GetDirectoryName(targetFilePath), Path.GetFileName(targetFilePath) + ".log"), ex.ToString());
-                    File.Move(AppSettings.THTranslationCachePath, targetFilePath);
-                    return;
-                }
+        private static void ReadCacheFile(Dictionary<string, string> cache)
+        {
+            string xml = FunctionsDBFile.ReadXMLToString(AppSettings.THTranslationCachePath);
+            if (xml.Length == 0) return;
 
-                foreach (var el in rootElement.Elements())
-                {
-                    string key = el.Element(THSettings.OriginalColumnName).Value;
-                    if (!Cache.ContainsKey(key)) Cache.Add(key, el.Element(THSettings.TranslationColumnName).Value);
-                }
+            XElement rootElement;// = null;
+            try { rootElement = XElement.Parse(xml); }
+            catch (Exception ex)
+            {
+                //write exception, rename broken cache file and return
+                string targetFilePath = FunctionsFileFolder.NewFilePathPlusIndex(AppSettings.THTranslationCachePath + ".broken");
+                File.Move(AppSettings.THTranslationCachePath, targetFilePath);
+                Logger.Warn(T._("Cache file '{0}' broken and renamed to {1}. Error: {2}"), AppSettings.THTranslationCachePath, targetFilePath, ex.ToString());
+
+                return;
             }
 
+            foreach (var el in rootElement.Elements())
+            {
+                string key = el.Element(THSettings.OriginalColumnName).Value;
+                if (!cache.ContainsKey(key)) cache.Add(key, el.Element(THSettings.TranslationColumnName).Value);
+            }
         }
 
         public static void TryAdd(string Original, string Translation)
