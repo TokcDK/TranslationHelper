@@ -49,44 +49,6 @@ namespace TranslationHelper.Main.Functions
             ReadWriteDBFile(dataSet: dataSet, dbFilePath: dbFilePath, useOriginaldbFilePath: useOriginaldbFilePath);
         }
 
-        // <summary>
-        // Remove illegal XML characters from a string.
-        // </summary>
-        //public static string SanitizeXmlString(string xml)
-        //{
-        //    if (xml == null)
-        //    {
-        //        throw new ArgumentNullException(nameof(xml));
-        //    }
-
-        //    StringBuilder buffer = new StringBuilder(xml.Length);
-
-        //    foreach (char c in xml)
-        //    {
-        //        if (IsLegalXmlChar(c))
-        //        {
-        //            buffer.Append(c);
-        //        }
-        //    }
-
-        //    return buffer.ToString();
-        //}
-        // <summary>
-        // Whether a given character is allowed by XML 1.0.
-        // </summary>
-        //public static bool IsLegalXmlChar(int character)
-        //{
-        //    return
-        //    (
-        //         character == 0x9 /* == '\t' == 9   */          ||
-        //         character == 0xA /* == '\n' == 10  */          ||
-        //         character == 0xD /* == '\r' == 13  */          ||
-        //        (character >= 0x20 && character <= 0xD7FF) ||
-        //        (character >= 0xE000 && character <= 0xFFFD) ||
-        //        (character >= 0x10000 && character <= 0x10FFFF)
-        //    );
-        //}
-
         /// <summary>
         /// File browser filters for Database Files
         /// </summary>
@@ -169,9 +131,7 @@ namespace TranslationHelper.Main.Functions
 
         internal static string GetDBCompressionExt()
         {
-            //MessageBox.Show(Settings.THConfigINI.ReadINI("Optimizations", "THOptionDBCompressionCheckBox.Checked"));
             if (AppSettings.DBCompression) return "." + FunctionsInterfaces.GetCurrentDBFormat().Ext;
-            //MessageBox.Show("Default .xml");
             return ".xml";
         }
 
@@ -179,14 +139,6 @@ namespace TranslationHelper.Main.Functions
         {
             string projectDirName = string.Empty;
             if (AppData.CurrentProject != null) projectDirName = AppData.CurrentProject.ProjectDBFolderName;
-            //else if (ProjectData.CurrentProject.Name().Contains("RPG Maker MV"))
-            //{
-            //    ret = "RPGMakerMV";
-            //}
-            //else if (ProjectData.CurrentProject.Name().Contains("RPGMaker") || ProjectData.CurrentProject.Name().Contains("RPG Maker"))
-            //{
-            //    ret = "RMakerTranPGsPatch";
-            //}
 
             projectDirName = Path.Combine(THSettings.DBDirPathByLanguage, projectDirName.Length > 0 ? projectDirName : "Other");
             Directory.CreateDirectory(projectDirName);
@@ -220,10 +172,6 @@ namespace TranslationHelper.Main.Functions
                 //dbfilename as name of single file in files list
                 fName = Path.GetFileNameWithoutExtension(AppData.Main.THFilesList.GetItemName(0).ToString());
             }
-            //else if (THSelectedSourceType.Contains("RPGMaker") || THSelectedSourceType.Contains("RPG Maker"))
-            //{
-
-            //}
             return fName + (saveAs ? "_" + DateTime.Now.ToString("yyyy.MM.dd HH-mm-ss", CultureInfo.InvariantCulture) : string.Empty);
         }
 
@@ -236,17 +184,6 @@ namespace TranslationHelper.Main.Functions
                     new XElement(THSettings.TranslationColumnName, kv.Value)
                     )
                 ));
-
-            //el = new XElement("TranslationCache");
-            //foreach (var kv in db)
-            //{
-            //    el.Add(new XElement("Value",
-            //        new XElement(THSettings.OriginalColumnName, kv.Key),
-            //        new XElement(THSettings.TranslationColumnName, kv.Value)
-            //        ));
-            //}
-
-            //el.Save("cache.xml");
 
             WriteXElementToXMLFile(el, xmlPath);
         }
@@ -777,20 +714,6 @@ namespace TranslationHelper.Main.Functions
             }
             LoadTranslationToolStripMenuItem_ClickIsBusy = true;
 
-            //dbpath = Application.StartupPath + "\\DB";
-            //string dbfilename = DateTime.Now.ToString("dd.MM.yyyy HH-mm-ss");
-
-            
-
-            //lastautosavepath = dbpath + "\\Auto\\Auto" + dbfilename + GetDBCompressionExt();
-
-            //WriteDBFile(THFilesElementsDataset, lastautosavepath);
-            //THFilesElementsDataset.WriteXml(lastautosavepath); // make buckup of previous data
-
-            //THFilesElementsDataset.Reset();
-            //THFilesListBox.Items.Clear();
-
-
             if (UseAllDB)
             {
                 Logger.Info("Get all databases");
@@ -835,7 +758,6 @@ namespace TranslationHelper.Main.Functions
             {
                 //load new data
                 FunctionsDBFile.ReadDBFile(dbDataSet, sPath);
-
 
                 //отключение DataSource для избежания проблем от изменений DataGridView
                 //bool tableSourceWasCleaned = false;
