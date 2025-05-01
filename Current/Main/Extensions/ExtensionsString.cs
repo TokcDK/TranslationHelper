@@ -785,7 +785,7 @@ namespace TranslationHelper.Extensions
             }
 
             int endIndex = -1;
-            for (int i = input.Length; i >= 0; i--)
+            for (int i = input.Length - 1; i >= 0; i--)
             {
                 if (char.IsLetterOrDigit(input[i]))
                 {

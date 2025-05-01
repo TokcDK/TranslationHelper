@@ -220,13 +220,13 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
         private void TranslateStrings()
         {
             var originals = GetOriginals();
-            if (originals.Length == 0 && _buffer.Count == 0) return;
+            if (originals.Length == 0 && _buffer.IsEmpty) return;
 
             var translated = TranslateOriginals(originals);
             SetTranslationsToBuffer(originals, translated);
             SetBufferToRows();
             TranslationTextLength = 0;
-            _cache.Write();
+            if(originals.Length > 1) _cache.Write();
         }
 
         /// <summary>
