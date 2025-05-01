@@ -769,7 +769,7 @@ namespace TranslationHelper.Extensions
             return keyValue.Trim(trimit.ToArray());
         }
 
-        internal static string TrimLettersAndDigits(this string input)
+        internal static string TrimAllExceptLettersAndDigits(this string input)
         {
             if (string.IsNullOrWhiteSpace(input))
                 return input;

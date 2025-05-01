@@ -64,7 +64,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
                 _dict.Add(orig, trans);
             }
 
-            var trimmedorig = orig.TrimLettersAndDigits();
+            var trimmedorig = orig.TrimAllExceptLettersAndDigits();
 
             //when trimmed not equal orig add also trimmed
             if (trimmedorig != orig)
