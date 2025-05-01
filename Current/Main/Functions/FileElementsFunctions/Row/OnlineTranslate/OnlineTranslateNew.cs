@@ -7,6 +7,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.Windows.Markup;
 using TranslationHelper.Data;
 using TranslationHelper.Data.Interfaces;
 using TranslationHelper.Extensions;
@@ -184,6 +185,8 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
             return true;
         }
 
+        private readonly object _bufferLock = new object();
+
         private void SetRowLinesToBuffer(RowBaseRowData rowData)
         {
             if (rowData == null) throw new ArgumentNullException(nameof(rowData));
@@ -195,7 +198,10 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
             if (selectedTableData == null)
             {
                 selectedTableData = new TranslationData(rowData);
-                _buffer.Add(selectedTableData);
+                lock (_bufferLock)
+                {
+                    _buffer.Add(selectedTableData);
+                }
             }
 
             // Find the row data for the selected row index under the selected table, or create a new one if it doesn't exist
