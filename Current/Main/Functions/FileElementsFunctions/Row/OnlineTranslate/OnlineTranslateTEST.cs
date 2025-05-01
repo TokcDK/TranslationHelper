@@ -766,5 +766,10 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
             // Placeholder for persisting cache to storage (e.g., file or database)
             // Example: File.WriteAllLines("cache.txt", _cache.Select(kv => $"{kv.Key}:{kv.Value}"));
         }
+
+        public void Read()
+        {
+
+        }
     }
 }
