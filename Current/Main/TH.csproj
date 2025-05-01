@@ -365,7 +365,6 @@
     <Compile Include="Functions\FunctionsMenus.cs" />
     <Compile Include="Functions\FunctionsMessage.cs" />
     <Compile Include="Functions\FunctionsStringExtensions.cs" />
-    <Compile Include="Functions\FileElementsFunctions\Row\OnlineTranslate\FunctionsOnlineTranslationObsolete.cs" />
     <Compile Include="Functions\FunctionsOpen.cs" />
     <Compile Include="Functions\FunctionsSave.cs" />
     <Compile Include="Functions\FunctionsOnlineCache.cs" />
@@ -377,9 +376,6 @@
     <Compile Include="appSettings\Sections\General\General.cs" />
     <Compile Include="appSettings\Sections\Optimizations\Optimizations.cs" />
     <Compile Include="Functions\FunctionTest.cs" />
-    <Compile Include="Functions\FileElementsFunctions\Row\OnlineTranslate\OnlineTranslation.old\TranslationBase.cs" />
-    <Compile Include="Functions\FileElementsFunctions\Row\OnlineTranslate\OnlineTranslation.old\TranslationBigBlock.cs" />
-    <Compile Include="Functions\FileElementsFunctions\Row\OnlineTranslate\OnlineTranslation.old\TranslationBigBlockMulti.cs" />
     <Compile Include="Functions\RowParsersParallel\ClearCellsParallel.cs" />
     <Compile Include="Functions\RowParsersParallel\RowParallelParserBase.cs" />
     <Compile Include="Functions\StringChangers\HardFixes\AllHardFixesChanger.cs" />
