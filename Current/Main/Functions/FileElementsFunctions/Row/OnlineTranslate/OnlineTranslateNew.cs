@@ -107,6 +107,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
 
         int TranslationTextLength { get; set; }
         static int MaxTranslationTextLength { get => 1000; }
+        const int BufferMaxRows = 300;
 
         bool IsMax()
         {
@@ -294,7 +295,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
             }
 
             // If this is not the last row and fewer than 300 rows have been added to the buffer, return
-            if (!rowData.IsLastRow && _buffer.Count < 300) return;
+            if (!rowData.IsLastRow && _buffer.Count < BufferMaxRows) return;
 
             // Translate the strings and reset the buffer
             TranslateStrings();
