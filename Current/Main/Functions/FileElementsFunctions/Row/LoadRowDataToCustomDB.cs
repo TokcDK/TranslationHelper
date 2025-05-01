@@ -64,17 +64,17 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
                 _dict.Add(orig, trans);
             }
 
-            var trimmedorig = orig.TrimAllExceptLettersOrDigits();
+            var trimmedorig = orig.RemoveAllCharsExceptLettersOrDigits();
 
             //when trimmed not equal orig add also trimmed
             if (trimmedorig != orig)
                 if (_dict.ContainsKey(trimmedorig))
                 {
-                    _dict[trimmedorig] = trans.TrimAllExceptLettersOrDigits();
+                    _dict[trimmedorig] = trans.RemoveAllCharsExceptLettersOrDigits();
                 }
                 else
                 {
-                    _dict.Add(trimmedorig, trans.TrimAllExceptLettersOrDigits());
+                    _dict.Add(trimmedorig, trans.RemoveAllCharsExceptLettersOrDigits());
                 }
 
             return true;

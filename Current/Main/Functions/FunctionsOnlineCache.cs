@@ -30,7 +30,7 @@ namespace TranslationHelper.Functions
             }
             else
             {
-                var trimmed = key.TrimAllExceptLettersOrDigits();
+                var trimmed = key.RemoveAllCharsExceptLettersOrDigits();
                 int index;
                 if ((AppSettings.UseAllDBFilesForOnlineTranslationForAll
                    && TryGetNonEmptyValue(AppData.AllDBmerged, trimmed, out var cachedValueByTrimmed))

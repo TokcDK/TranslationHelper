@@ -755,7 +755,7 @@ namespace TranslationHelper.Extensions
         /// </summary>
         /// <param name="keyValue"></param>
         /// <returns></returns>
-        internal static string TrimAllExceptLettersOrDigits(this string keyValue)
+        internal static string RemoveAllCharsExceptLettersOrDigits(this string keyValue)
         {
             var trimit = new HashSet<char>(keyValue.Length);
             foreach (var c in keyValue)
@@ -772,7 +772,7 @@ namespace TranslationHelper.Extensions
         internal static bool IsSoundsText(this string str)
         {
             var regexed = Regex.Replace(str, THSettings.SoundsTextRegexPattern, "");
-            var trimmed = regexed.TrimAllExceptLettersOrDigits();
+            var trimmed = regexed.RemoveAllCharsExceptLettersOrDigits();
             return trimmed.Length == 0;
         }
 
