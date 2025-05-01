@@ -130,7 +130,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
         /// true if all DB was loaded
         /// </summary>
         bool _allDbLoaded4All;
-        protected override void ActionsInit()
+        protected async override void ActionsInit()
         {
             FunctionsOnlineCache.Init();
 
@@ -151,13 +151,9 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
 
             Logger.Info(T._("Get all DB"));
 
-            var mergingAllDb = new Task(() => FunctionsDBFile.MergeAllDBtoOne());
-            mergingAllDb.ConfigureAwait(true);
-            mergingAllDb.Start();
-            mergingAllDb.Wait();
-            _allDbLoaded4All = true;
+            await Task.Run(() => FunctionsDBFile.MergeAllDBtoOne()).ConfigureAwait(true);
 
-            
+            _allDbLoaded4All = true;            
         }
         protected override void ActionsFinalize()
         {
