@@ -172,24 +172,16 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
 
         protected override bool Apply(RowBaseRowData rowData)
         {
-            try
+            if (_lasTableName != rowData.SelectedTable.TableName)
             {
-                if(_lasTableName != rowData.SelectedTable.TableName)
-                {
-                    _lasTableName = rowData.SelectedTable.TableName;
+                _lasTableName = rowData.SelectedTable.TableName;
 
-                    Logger.Info(T._("Translate {0}"), _lasTableName);
-                }
-
-                SetRowLinesToBuffer(rowData);
-                
-                return true;
-            }
-            catch
-            {
+                Logger.Info(T._("Translate {0}"), _lasTableName);
             }
 
-            return false;
+            SetRowLinesToBuffer(rowData);
+
+            return true;
         }
 
         private void SetRowLinesToBuffer(RowBaseRowData rowData)
