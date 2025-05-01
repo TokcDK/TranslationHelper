@@ -695,11 +695,12 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
             {
                 await Task.Delay(_delayBetweenRequests);
                 string userAgent = _userAgents[_random.Next(_userAgents.Count)];
-                _httpClient.DefaultRequestHeaders.UserAgent.Clear();
-                _httpClient.DefaultRequestHeaders.UserAgent.ParseAdd(userAgent);
 
                 string url = $"https://translate.google.com/m?hl=en&sl={_sourceLanguage}&tl={_targetLanguage}&ie=UTF-8&prev=_m&q={Uri.EscapeDataString(text)}";
-                HttpResponseMessage response = await _httpClient.GetAsync(url);
+                var request = new HttpRequestMessage(HttpMethod.Get, url);
+                request.Headers.UserAgent.ParseAdd(userAgent);
+
+                HttpResponseMessage response = await _httpClient.SendAsync(request);
 
                 if (response.StatusCode == (HttpStatusCode)429)
                 {
