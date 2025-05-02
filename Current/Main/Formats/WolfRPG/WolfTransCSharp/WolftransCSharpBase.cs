@@ -15,13 +15,13 @@ namespace TranslationHelper.Formats.WolfRPG.WolfTransCSharp
                 && inputString != "\u25A0";// from wolftrans ruby
         }
 
-        protected ParserBase Data = null;
+        protected ParserBase WolfParserBase = null;
 
         protected override bool WriteFileData(string filePath = "")
         {
             if (!ParseData.Ret) return false;
 
-            try { Data.Write(); } catch { return false; }
+            try { WolfParserBase.Write(); } catch { return false; }
             return true;
         }
     }

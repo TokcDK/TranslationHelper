@@ -17,10 +17,10 @@ namespace TranslationHelper.Formats.WolfRPG.WolfTransCSharp
 
         protected override void FileOpen()
         {
-            Data = new WT.Parsers.CommonEvents.ParserCommonEvents();
-            Data.Read(FilePath);
+            WolfParserBase = new WT.Parsers.CommonEvents.ParserCommonEvents();
+            WolfParserBase.Read(FilePath);
 
-            var events = ((WT.Parsers.CommonEvents.ParserCommonEvents)Data).Events;
+            var events = ((WT.Parsers.CommonEvents.ParserCommonEvents)WolfParserBase).Events;
             var eventsCount = events.Count;
             for (int e = 0; e < eventsCount; e++)
             {

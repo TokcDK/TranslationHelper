@@ -15,10 +15,10 @@ namespace TranslationHelper.Formats.WolfRPG.WolfTransCSharp
             if (!File.Exists(FilePath)) return;
 
             var db_name = Path.GetFileNameWithoutExtension(FilePath);
-            Data = new WTNet.Parsers.Database.ParserDatabase();
-            Data.Read(FilePath);
+            WolfParserBase = new WTNet.Parsers.Database.ParserDatabase();
+            WolfParserBase.Read(FilePath);
 
-            var types = ((WTNet.Parsers.Database.ParserDatabase)Data).Types;
+            var types = ((WTNet.Parsers.Database.ParserDatabase)WolfParserBase).Types;
             int dataTypesCount = types.Count;
             for (int t = 0; t < dataTypesCount; t++)
             {
