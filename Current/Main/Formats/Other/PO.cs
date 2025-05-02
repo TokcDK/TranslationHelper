@@ -8,7 +8,7 @@ namespace TranslationHelper.Formats.Other
     {
         public override string Extension => ".po";
 
-        StringBuilder Info = new StringBuilder();
+        readonly StringBuilder Info = new StringBuilder();
         protected override KeywordActionAfter ParseStringFileLine()
         {
             if (OpenFileMode && ParseData.Line.StartsWith("#"))
