@@ -22,7 +22,6 @@ namespace TranslationHelper.Formats.TyranoBuilder.Extracted
         public override string Extension => ".ks";
 
         bool IsScript = false;
-        //bool TextOn = false;
         readonly Script scriptMark;
         readonly TAG Tag;
         readonly List<string> textOnMessage;
@@ -99,7 +98,6 @@ namespace TranslationHelper.Formats.TyranoBuilder.Extracted
 
                     var parts = new List<LinePart>();
                     int startIndex = 0;
-                    int ii = 0;
                     foreach (var tagIndex in tagIndexes)
                     {
                         if (tagIndex.Parent.Any()) continue; // skip subbrackets

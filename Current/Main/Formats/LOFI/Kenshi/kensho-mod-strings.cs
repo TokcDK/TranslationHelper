@@ -7,7 +7,6 @@ namespace TranslationHelper.Formats.LOFI.Kenshi
         public override string Extension => ".kenshi-mod-strings";
 
         bool reading = false;
-        bool readingOriginal = true;
         protected override KeywordActionAfter ParseStringFileLine()
         {
             if (!reading && ParseData.Line.StartsWith("> BEGIN STRING"))
