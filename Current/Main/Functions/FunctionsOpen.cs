@@ -152,7 +152,6 @@ namespace TranslationHelper.Functions
             return tHSelectedGameDir;
         }
 
-        internal DirectoryInfo mvdatadir;
         private static bool GetSourceType(string sPath)
         {
             var dir = new DirectoryInfo(Path.GetDirectoryName(sPath));
