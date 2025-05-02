@@ -1,14 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Data;
-using System.Linq;
-using System.Text;
-using System.Text.RegularExpressions;
-using System.Threading.Tasks;
+﻿using System.Data;
 using TranslationHelper.Data;
 using TranslationHelper.Extensions;
-using TranslationHelper.Formats.RPGMakerVX.RVData2;
-using System.Linq;
 
 namespace TranslationHelper.Functions.FileElementsFunctions.Row.SearchIssueCheckers
 {
@@ -43,9 +35,9 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row.SearchIssueCheck
                 var translation = ActorsLine.Field<string>(AppData.CurrentProject.OriginalColumnIndex);
 
                 //если оригинал содержит оригинал(Анна) из Actors, а перевод не содержит определение(Anna) из Actors
-                if (translation.Length > 0 
-                    && original.Length < 80 
-                    && thisOriginal.Contains(original) 
+                if (translation.Length > 0
+                    && original.Length < 80
+                    && thisOriginal.Contains(original)
                     && !thisTranslation.Contains(translation))
                 {
                     return true;
