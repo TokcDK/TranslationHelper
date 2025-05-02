@@ -1,5 +1,4 @@
 ﻿using NLog;
-using NLog.Fluent;
 using System;
 using System.Diagnostics;
 using System.IO;
@@ -8,14 +7,12 @@ using TranslationHelper.Data;
 using TranslationHelper.Extensions;
 using TranslationHelper.Formats.RPGMaker.Functions;
 using TranslationHelper.Formats.RPGMTransPatch;
-using TranslationHelper.Functions;
 using TranslationHelper.Main.Functions;
 
 namespace TranslationHelper.Projects
 {
     class RPGMGame : ProjectBase
     {
-        private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
         public int RPGMTransPatchVersion { get; private set; }
 
         internal override bool IsValid()
@@ -101,7 +98,7 @@ namespace TranslationHelper.Projects
             }
 
             var ret = CreateUpdatePatch(GameDirPath.FullName, workdir);
-            
+
             return ret;
         }
 
@@ -281,7 +278,7 @@ namespace TranslationHelper.Projects
                             //error checks
                             if (!ret)
                             {
-                                Logger.Error("RPGMaker Trans Patch failed: ret={0} Exitcode={1}",ret,program.ExitCode);
+                                Logger.Error("RPGMaker Trans Patch failed: ret={0} Exitcode={1}", ret, program.ExitCode);
                                 Logger.Warn(T._("Patching failed"));
                                 MessageBox.Show(T._("Error occured while patch execution."));
                                 CleanDirs(workdir);

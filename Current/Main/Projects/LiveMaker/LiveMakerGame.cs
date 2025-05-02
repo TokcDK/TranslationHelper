@@ -13,8 +13,6 @@ namespace TranslationHelper.Projects.LiveMaker
 {
     class LiveMakerGame : ProjectBase
     {
-        private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
-
         public LiveMakerGame()
         {
         }
