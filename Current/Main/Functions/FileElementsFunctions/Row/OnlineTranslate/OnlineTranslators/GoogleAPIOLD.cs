@@ -13,7 +13,7 @@ using TranslationHelper.Functions;
 using TranslationHelper.OnlineTranslators;
 using TranslationHelper.Translators;
 
-namespace TranslationHelper
+namespace TranslationHelper.Functions.FileElementsFunctions.Row.OnlineTranslate.OnlineTranslators
 {
     /// <summary>
     /// Legacy Google Translate API integration for translating text via web requests.
@@ -224,7 +224,7 @@ namespace TranslationHelper
             {
                 long a = opStr[t + 2] >= 'a' ? opStr[t + 2] - 87 : opStr[t + 2] - '0';
                 a = opStr[t + 1] == '+' ? r >> (int)a : r << (int)a;
-                r = opStr[t] == '+' ? (r + a) & 4294967295 : r ^ a;
+                r = opStr[t] == '+' ? r + a & 4294967295 : r ^ a;
             }
             return r;
         }
@@ -245,23 +245,23 @@ namespace TranslationHelper
                 }
                 else if (code < 2048)
                 {
-                    byteList.Add((code >> 6) | 192);
-                    byteList.Add((code & 63) | 128);
+                    byteList.Add(code >> 6 | 192);
+                    byteList.Add(code & 63 | 128);
                 }
                 else if ((code & 64512) == 55296 && i + 1 < text.Length && ((long)text[i + 1] & 64512) == 56320)
                 {
                     // Handle surrogate pair.
                     code = 65536 + ((code & 1023) << 10) + (text[++i] & 1023);
-                    byteList.Add((code >> 18) | 240);
-                    byteList.Add(((code >> 12) & 63) | 128);
-                    byteList.Add(((code >> 6) & 63) | 128);
-                    byteList.Add((code & 63) | 128);
+                    byteList.Add(code >> 18 | 240);
+                    byteList.Add(code >> 12 & 63 | 128);
+                    byteList.Add(code >> 6 & 63 | 128);
+                    byteList.Add(code & 63 | 128);
                 }
                 else
                 {
-                    byteList.Add((code >> 12) | 224);
-                    byteList.Add(((code >> 6) & 63) | 128);
-                    byteList.Add((code & 63) | 128);
+                    byteList.Add(code >> 12 | 224);
+                    byteList.Add(code >> 6 & 63 | 128);
+                    byteList.Add(code & 63 | 128);
                 }
             }
 

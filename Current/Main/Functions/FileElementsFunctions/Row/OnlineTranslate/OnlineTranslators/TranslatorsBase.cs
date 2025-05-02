@@ -14,7 +14,7 @@ using TranslationHelper.OnlineTranslators;
 //https://stackoverflow.com/questions/16642196/get-html-code-from-website-in-c-sharp
 //https://www.c-sharpcorner.com/blogs/difference-between-syatemnetwebrequest-and-httpclient-and-webclient-in-c-sharp
 //https://html-agility-pack.net/knowledge-base/33679834/is-there-anyway-to-use--browsersession--to-download-files--csharp
-namespace TranslationHelper.Translators
+namespace TranslationHelper.Functions.FileElementsFunctions.Row.OnlineTranslate.OnlineTranslators
 {
     internal static class TranslatorsTools
     {

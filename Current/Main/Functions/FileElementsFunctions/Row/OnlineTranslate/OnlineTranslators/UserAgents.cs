@@ -1,4 +1,4 @@
-﻿namespace TranslationHelper.OnlineTranslators
+﻿namespace TranslationHelper.Functions.FileElementsFunctions.Row.OnlineTranslate.OnlineTranslators
 {
     public static class UserAgents
     {

@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 using System.Web;
 using TranslationHelper.Translators;
 
-namespace TranslationHelper.OnlineTranslators
+namespace TranslationHelper.Functions.FileElementsFunctions.Row.OnlineTranslate.OnlineTranslators
 {
     public abstract class TranslatorBase
     {

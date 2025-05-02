@@ -3,17 +3,18 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Web.Caching;
 using System.Xml.Linq;
 using TranslationHelper.Data;
 using TranslationHelper.Extensions;
-using TranslationHelper.Functions.FileElementsFunctions.Row;
 using TranslationHelper.Main.Functions;
 
 //https://stackoverflow.com/questions/1799767/easy-way-to-convert-a-dictionarystring-string-to-xml-and-vice-versa
-namespace TranslationHelper.Functions
+namespace TranslationHelper.Functions.FileElementsFunctions.Row.OnlineTranslate
 {
-    class FunctionsOnlineCache
+    /// <summary>
+    /// Half static cache to make it alive on time of app loaded
+    /// </summary>
+    public abstract class TranslationCacheBase : ITranslationCache
     {
         static readonly Logger Logger = LogManager.GetCurrentClassLogger();
 
@@ -26,19 +27,20 @@ namespace TranslationHelper.Functions
         /// <summary>
         /// init cache and cache use instance
         /// </summary>
-        internal static void Init(TranslationCache cache)
+        protected static void Init(TranslationCache cache)
         {
             lock (_translationCacheLocker)
             {
-                if(cache == null)
+                if (cache == null)
                 {
                     throw new ArgumentNullException("Translation cache instance was null");
                 }
-                if(Cache == null)
+                if (Cache == null)
                 {
                     Cache = new Dictionary<string, string>();
                 }
-                if(CacheInstancesList == null)
+
+                if (CacheInstancesList == null)
                 {
                     CacheInstancesList = new List<ITranslationCache>();
                 }
@@ -48,12 +50,14 @@ namespace TranslationHelper.Functions
                     CacheInstancesList.Add(cache);
                 }
             }
+
+            Read(); // moved out of locker because Read also using locker
         }
 
         /// <summary>
         /// unload cache and cache user instance
         /// </summary>
-        internal static void Unload(TranslationCache translationCache)
+        protected static void Unload(TranslationCache translationCache)
         {
             lock (_translationCacheLocker)
             {
@@ -64,37 +68,8 @@ namespace TranslationHelper.Functions
 
                 if (CacheInstancesList.Count == 0)
                 {
-                    Cache = null;
+                    //Cache = null; // if not commented, it will reread it each time
                 }
-            }
-        }
-
-        internal static string TryGetValue(string key)
-        {
-            if (!AppSettings.EnableTranslationCache) return string.Empty;
-
-            if ((AppSettings.UseAllDBFilesForOnlineTranslationForAll
-                && TryGetNonEmptyValue(AppData.AllDBmerged, key, out var cachedValue)) 
-                || TryGetNonEmptyValue(Cache, key, out cachedValue))
-            {
-                return cachedValue;
-            }
-            else
-            {
-                var trimmed = key.TrimAllExceptLettersAndDigits();
-                int index;
-                if ((AppSettings.UseAllDBFilesForOnlineTranslationForAll
-                   && TryGetNonEmptyValue(AppData.AllDBmerged, trimmed, out var cachedValueByTrimmed))
-                   || TryGetNonEmptyValue(Cache, trimmed, out cachedValueByTrimmed))
-                {
-                    index = key.IndexOf(trimmed); //sometimes index is -1 of 'え' in 'え゛？' for example
-                    if(index != -1)
-                    {
-                        return key.Remove(index, trimmed.Length).Insert(index, cachedValueByTrimmed);
-                    }
-                }
-
-                return string.Empty;
             }
         }
 
@@ -102,7 +77,7 @@ namespace TranslationHelper.Functions
         {
             value = null;
 
-            if(string.IsNullOrWhiteSpace(keyString)
+            if (string.IsNullOrWhiteSpace(keyString)
                || dictionary == null
                || !dictionary.TryGetValue(keyString, out string s)
                || !string.IsNullOrWhiteSpace(s))
@@ -115,11 +90,7 @@ namespace TranslationHelper.Functions
             return true;
         }
 
-        public static void Write()
-        {
-            Write(Cache);
-        }
-        public static void Write(Dictionary<string, string> cache)
+        protected static void Write(Dictionary<string, string> cache)
         {
             if (cache == null || cache.Count == 0) return;
 
@@ -138,11 +109,11 @@ namespace TranslationHelper.Functions
             }
         }
 
-        public static void Read()
+        protected static void Read()
         {
             Read(Cache);
         }
-        public static void Read(Dictionary<string, string> cache)
+        protected static void Read(Dictionary<string, string> cache)
         {
             lock (_translationCacheLocker)
             {
@@ -174,15 +145,55 @@ namespace TranslationHelper.Functions
             }
         }
 
-        public static void TryAdd(string Original, string Translation)
+        public virtual void TryAdd(string key, string value)
         {
             if (!AppSettings.EnableTranslationCache || AppSettings.IsTranslationHelperWasClosed) return;
-            if (string.IsNullOrWhiteSpace(Translation)) return;
-            if (string.Equals(Original, Translation)) return;
-            if (Original.GetLinesCount() != Translation.GetLinesCount()) return;
-            if (Cache.ContainsKey(Original)) return;
+            if (string.IsNullOrWhiteSpace(value)) return;
+            if (string.Equals(key, value)) return;
+            if (key.GetLinesCount() != value.GetLinesCount()) return;
+            if (Cache.ContainsKey(key)) return;
 
-            Cache.Add(Original, Translation);
+            Cache.Add(key, value);
         }
+
+        static string TryGetValueByKey(string key)
+        {
+            if (!AppSettings.EnableTranslationCache) return string.Empty;
+
+            if (AppSettings.UseAllDBFilesForOnlineTranslationForAll
+                && TryGetNonEmptyValue(AppData.AllDBmerged, key, out var cachedValue)
+                || TryGetNonEmptyValue(Cache, key, out cachedValue))
+            {
+                return cachedValue;
+            }
+            else
+            {
+                var trimmed = key.TrimAllExceptLettersAndDigits();
+                int index;
+                if (AppSettings.UseAllDBFilesForOnlineTranslationForAll
+                   && TryGetNonEmptyValue(AppData.AllDBmerged, trimmed, out var cachedValueByTrimmed)
+                   || TryGetNonEmptyValue(Cache, trimmed, out cachedValueByTrimmed))
+                {
+                    index = key.IndexOf(trimmed); //sometimes index is -1 of 'え' in 'え゛？' for example
+                    if (index != -1)
+                    {
+                        return key.Remove(index, trimmed.Length).Insert(index, cachedValueByTrimmed);
+                    }
+                }
+
+                return string.Empty;
+            }
+        }
+
+        public virtual string TryGetValue(string key)
+        {
+            return TryGetValueByKey(key);
+        }
+        public virtual void Write()
+        {
+            Write(Cache);
+        }
+
+        public abstract void Dispose();
     }
 }

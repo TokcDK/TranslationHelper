@@ -1,6 +1,7 @@
 ﻿using System;
+using System.Collections.Generic;
 
-namespace TranslationHelper.Functions.FileElementsFunctions.Row
+namespace TranslationHelper.Functions.FileElementsFunctions.Row.OnlineTranslate
 {
     /// <summary>
     /// Defines the contract for translation caching.

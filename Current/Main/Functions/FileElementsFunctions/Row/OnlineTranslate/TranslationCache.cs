@@ -1,44 +1,23 @@
 ﻿using System;
 
-namespace TranslationHelper.Functions.FileElementsFunctions.Row
+namespace TranslationHelper.Functions.FileElementsFunctions.Row.OnlineTranslate
 {
-    public class TranslationCache : ITranslationCache
+    public class TranslationCache : TranslationCacheBase
     {
         bool _disposed = false;
 
         public TranslationCache()
         {
-            FunctionsOnlineCache.Init(this);
-            Read();
+            Init(this);
         }
 
-        public string TryGetValue(string key)
-        {
-            return FunctionsOnlineCache.TryGetValue(key);
-        }
-
-        public void TryAdd(string key, string value)
-        {
-            FunctionsOnlineCache.TryAdd(key, value);
-        }
-
-        public void Write()
-        {
-            FunctionsOnlineCache.Write();
-        }
-
-        static void Read()
-        {
-            FunctionsOnlineCache.Read();
-        }
-
-        public void Dispose()
+        public override void Dispose()
         {
             if (!_disposed)
             {
                 Write();
 
-                FunctionsOnlineCache.Unload(this);
+                Unload(this);
 
                 _disposed = true;
 

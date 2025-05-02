@@ -2,7 +2,7 @@
 using System.Net;
 using System.Net.Cache;
 
-namespace TranslationHelper.OnlineTranslators
+namespace TranslationHelper.Functions.FileElementsFunctions.Row.OnlineTranslate.OnlineTranslators
 {
     //https://stackoverflow.com/a/11523836
     public class WebClientEx : WebClient

@@ -5,15 +5,14 @@ using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
 using TranslationHelper.Data;
-using TranslationHelper.Extensions;
 using TranslationHelper.Formats;
 using TranslationHelper.Formats.RPGMMV;
 using TranslationHelper.Formats.RPGMMV.JS;
 using TranslationHelper.Formats.RPGMMV.JsonType;
 using TranslationHelper.Formats.RPGMMV.Other;
 using TranslationHelper.Formats.RPGMMV.PluginsCustom;
-using TranslationHelper.Functions;
 using TranslationHelper.Functions.FileElementsFunctions.Row.FillEmptyTablesLinesDict;
+using TranslationHelper.Functions.FileElementsFunctions.Row.OnlineTranslate;
 using TranslationHelper.Menus.FilesListMenus;
 using TranslationHelper.Projects.RPGMMV.Menus;
 
@@ -32,6 +31,7 @@ namespace TranslationHelper.Projects.RPGMMV
         public RPGMMVGame()
         {
             ListOfJS = JSBase.GetListOfJSTypes();
+            _cache = new TranslationCache();
         }
 
         /// <summary>
@@ -73,6 +73,8 @@ namespace TranslationHelper.Projects.RPGMMV
         /// The root directory path for the project's "www" folder or equivalent.
         /// </summary>
         protected static string WWWDir;
+
+        private ITranslationCache _cache;
 
         /// <summary>
         /// Opens the project by setting the directory and parsing files.
@@ -139,7 +141,7 @@ namespace TranslationHelper.Projects.RPGMMV
                 // Consider logging in a future enhancement: Logger.Log(ex);
             }
 
-            
+
             return hasAnyFileBeenProcessed;
         }
 
@@ -364,7 +366,7 @@ namespace TranslationHelper.Projects.RPGMMV
             if (!translation.StartsWith(@"\n<>")) return translation;
 
             var name = Regex.Replace(original, @"^\\n<(.+)>[\s\S]*$", "$1");
-            var translatedName = FunctionsOnlineCache.TryGetValue(name);
+            var translatedName = _cache.TryGetValue(name);
 
             if (translatedName.Length > 0)
                 return translation.Remove(3, name.Length).Insert(3, translatedName);

@@ -17,7 +17,7 @@ using TranslationHelper.Functions.StringChangers;
 using TranslationHelper.Functions.StringChangers.HardFixes;
 using TranslationHelper.Main.Functions;
 
-namespace TranslationHelper.Functions.FileElementsFunctions.Row
+namespace TranslationHelper.Functions.FileElementsFunctions.Row.OnlineTranslate
 {
     /// <summary>
     /// Handles online translation of rows, inheriting from RowBase.

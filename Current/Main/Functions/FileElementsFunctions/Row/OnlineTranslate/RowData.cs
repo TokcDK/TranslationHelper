@@ -1,4 +1,4 @@
-﻿namespace TranslationHelper.Functions.FileElementsFunctions.Row
+﻿namespace TranslationHelper.Functions.FileElementsFunctions.Row.OnlineTranslate
 {
     public class TranslatingRowData
     {

@@ -7,7 +7,7 @@ using TranslationHelper.Data;
 using TranslationHelper.Data.Interfaces;
 using TranslationHelper.Extensions;
 
-namespace TranslationHelper.Functions.FileElementsFunctions.Row
+namespace TranslationHelper.Functions.FileElementsFunctions.Row.OnlineTranslate
 {
     public enum TranslationRegexExtractType
     {

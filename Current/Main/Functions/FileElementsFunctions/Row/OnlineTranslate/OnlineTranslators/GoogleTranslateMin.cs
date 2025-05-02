@@ -2,17 +2,14 @@
 using System;
 using System.Collections.Generic;
 using System.Globalization;
-using System.Linq;
 using System.Net;
 using System.Text;
-using System.Text.RegularExpressions;
 using System.Threading;
 using System.Web;
 using System.Windows.Forms;
 using TranslationHelper.Data;
-using TranslationHelper.Functions;
 
-namespace TranslationHelper.OnlineTranslators
+namespace TranslationHelper.Functions.FileElementsFunctions.Row.OnlineTranslate.OnlineTranslators
 {
     internal class GoogleTranslateMin
     {

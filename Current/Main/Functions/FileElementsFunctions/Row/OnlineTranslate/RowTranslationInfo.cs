@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using static TranslationHelper.Functions.FileElementsFunctions.Row.OnlineTranslateNew;
 
-namespace TranslationHelper.Functions.FileElementsFunctions.Row
+namespace TranslationHelper.Functions.FileElementsFunctions.Row.OnlineTranslate
 {
     public class RowTranslationInfo
     {

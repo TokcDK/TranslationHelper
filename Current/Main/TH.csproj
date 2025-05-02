@@ -367,7 +367,7 @@
     <Compile Include="Functions\FunctionsStringExtensions.cs" />
     <Compile Include="Functions\FunctionsOpen.cs" />
     <Compile Include="Functions\FunctionsSave.cs" />
-    <Compile Include="Functions\FunctionsOnlineCache.cs" />
+    <Compile Include="Functions\FileElementsFunctions\Row\OnlineTranslate\TranslationCacheBase.cs" />
     <Compile Include="Functions\FunctionsSounds.cs" />
     <Compile Include="Functions\FunctionsStringsFixes.cs" />
     <Compile Include="appSettings\Sections\General\CheckBox\SAutotranslationForSimular.cs" />
