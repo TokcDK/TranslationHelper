@@ -20,38 +20,58 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row.OnlineTranslate
 
         readonly static object _translationCacheLocker = new object();
 
-        static Dictionary<string, string> Cache;
 
-        static List<ITranslationCache> CacheInstancesList;
+        static Dictionary<string, string> _cache;
+        static bool _cacheNeedReadByFirstUse = true;
+        static Dictionary<string, string> Cache
+        {
+            get
+            {
+                if (_cacheNeedReadByFirstUse)
+                {
+                    InitCacheAndRead();
+                }
+
+                return _cache;
+            }
+        }
+
+        private static void InitCacheAndRead()
+        {
+            _cacheNeedReadByFirstUse = false;
+
+            if (_cache == null)
+            {
+                _cache = new Dictionary<string, string>();
+            }
+
+            Read();
+        }
+
+        static List<ITranslationCache> CacheUserInstancesList;
 
         /// <summary>
         /// init cache and cache use instance
         /// </summary>
-        protected static void Init(TranslationCache cache)
+        protected static void Init(TranslationCache cacheUserInstance)
         {
             lock (_translationCacheLocker)
             {
-                if (cache == null)
+                if (cacheUserInstance == null)
                 {
                     throw new ArgumentNullException("Translation cache instance was null");
                 }
-                if (Cache == null)
+
+                if (CacheUserInstancesList == null)
                 {
-                    Cache = new Dictionary<string, string>();
+                    CacheUserInstancesList = new List<ITranslationCache>();
                 }
 
-                if (CacheInstancesList == null)
+                if (!CacheUserInstancesList.Contains(cacheUserInstance))
                 {
-                    CacheInstancesList = new List<ITranslationCache>();
-                }
-
-                if (!CacheInstancesList.Contains(cache))
-                {
-                    CacheInstancesList.Add(cache);
+                    CacheUserInstancesList.Add(cacheUserInstance);
                 }
             }
-
-            Read(); // moved out of locker because Read also using locker
         }
 
         /// <summary>
@@ -61,12 +81,12 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row.OnlineTranslate
         {
             lock (_translationCacheLocker)
             {
-                if (CacheInstancesList.Contains(translationCache))
+                if (CacheUserInstancesList.Contains(translationCache))
                 {
-                    CacheInstancesList.Remove(translationCache);
+                    CacheUserInstancesList.Remove(translationCache);
                 }
 
-                if (CacheInstancesList.Count == 0)
+                if (CacheUserInstancesList.Count == 0)
                 {
                     //Cache = null; // if not commented, it will reread it each time
                 }
