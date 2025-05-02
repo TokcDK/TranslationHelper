@@ -3,6 +3,7 @@ using System.Data;
 using System.Linq;
 using TranslationHelper.Data;
 using TranslationHelper.Functions.FileElementsFunctions.Row;
+using TranslationHelper.Functions.FileElementsFunctions.Row.OnlineTranslate;
 
 namespace TranslationHelper.Extensions
 {

@@ -1,10 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading;
-using TranslationHelper.Functions.FileElementsFunctions.Row;
+﻿using System.Threading;
+using TranslationHelper.Functions.FileElementsFunctions.Row.OnlineTranslate;
 using TranslationHelper.Menus.FileRowMenus;
 using TranslationHelper.Menus.FilesListMenus;
 

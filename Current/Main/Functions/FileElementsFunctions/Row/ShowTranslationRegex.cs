@@ -1,11 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
-using System.Windows.Shapes;
 using TranslationHelper.Extensions;
+using TranslationHelper.Functions.FileElementsFunctions.Row.OnlineTranslate;
 
 namespace TranslationHelper.Functions.FileElementsFunctions.Row
 {
@@ -34,7 +31,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
 
         protected override void ActionsFinalize()
         {
-            if(_found.Count > 0 )
+            if (_found.Count > 0)
             {
                 var lineString = T._("Line");
                 var patternString = T._("Pattern");
@@ -51,7 +48,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
 
                 MessageBox.Show(resultMessage + $"\r\n\r\n({T._("Copied to clipboard")})");
             }
-            else { MessageBox.Show(T._("No matching translation regex found.."));  }
+            else { MessageBox.Show(T._("No matching translation regex found..")); }
         }
     }
 }

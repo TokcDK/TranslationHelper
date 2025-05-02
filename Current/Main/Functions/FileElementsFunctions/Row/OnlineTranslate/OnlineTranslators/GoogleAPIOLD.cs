@@ -9,9 +9,6 @@ using System.Threading;
 using System.Web;
 using System.Windows.Forms;
 using TranslationHelper.Data;
-using TranslationHelper.Functions;
-using TranslationHelper.OnlineTranslators;
-using TranslationHelper.Translators;
 
 namespace TranslationHelper.Functions.FileElementsFunctions.Row.OnlineTranslate.OnlineTranslators
 {
@@ -277,7 +274,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row.OnlineTranslate.
             }
             token = Vi(token, key2);
             token ^= s;
-            if (token < 0) 
+            if (token < 0)
                 token = (2147483647 & token) + 2147483648;
 
             token %= 1000000;

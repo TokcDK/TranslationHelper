@@ -1,7 +1,7 @@
 ﻿using System.Diagnostics;
 using System.Globalization;
 using TranslationHelper.Data;
-using TranslationHelper.Translators;
+using TranslationHelper.Functions.FileElementsFunctions.Row.OnlineTranslate.OnlineTranslators;
 
 namespace TranslationHelper.Functions.FileElementsFunctions.Row
 {

@@ -6,7 +6,6 @@ using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
 using System.Web;
-using TranslationHelper.Translators;
 
 namespace TranslationHelper.Functions.FileElementsFunctions.Row.OnlineTranslate.OnlineTranslators
 {
@@ -25,7 +24,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row.OnlineTranslate.
         /// <param name="targetLang"></param>
         /// <returns></returns>
         public abstract Task<string> TranslateAsync(string text, string sourceLang = "auto", string targetLang = "en");
-        
+
         /// <summary>
         /// Translates an array of strings, optimizing by batching requests.
         /// </summary>

@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
-using TranslationHelper.Data;
-using TranslationHelper.Extensions;
+using TranslationHelper.Functions.FileElementsFunctions.Row.OnlineTranslate;
 
 namespace TranslationHelper.Functions.FileElementsFunctions.Row.ExtractedParser
 {

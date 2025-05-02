@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Threading;
 using TranslationHelper.Functions.FileElementsFunctions.Row;
+using TranslationHelper.Functions.FileElementsFunctions.Row.OnlineTranslate;
 using TranslationHelper.Menus.FileRowMenus;
 using TranslationHelper.Menus.FilesListMenus;
 

@@ -1,8 +1,5 @@
-﻿using System.Collections.Generic;
-using TranslationHelper.Data;
-using TranslationHelper.Functions;
-using TranslationHelper.Functions.DBSaveFormats;
-using TranslationHelper.Translators;
+﻿using TranslationHelper.Data;
+using TranslationHelper.Functions.FileElementsFunctions.Row.OnlineTranslate.OnlineTranslators;
 
 namespace TranslationHelper.INISettings
 {
@@ -25,7 +22,7 @@ namespace TranslationHelper.INISettings
         {
             if (!SetObject)
             {
-                AppSettings.OnlineTranslationSourceLanguage = AppData.Settings.SourceLanguageComboBox.SelectedItem.ToString();                
+                AppSettings.OnlineTranslationSourceLanguage = AppData.Settings.SourceLanguageComboBox.SelectedItem.ToString();
             }
             else
             {

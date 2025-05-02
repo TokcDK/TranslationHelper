@@ -1,4 +1,4 @@
-﻿using TranslationHelper.OnlineTranslators;
+﻿using TranslationHelper.Functions.FileElementsFunctions.Row.OnlineTranslate.OnlineTranslators;
 
 namespace TranslationHelper.Functions
 {

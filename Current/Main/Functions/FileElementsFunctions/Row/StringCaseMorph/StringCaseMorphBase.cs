@@ -4,6 +4,7 @@ using System.Runtime.CompilerServices;
 using System.Text.RegularExpressions;
 using TranslationHelper.Extensions;
 using TranslationHelper.Functions.FileElementsFunctions.Row.ExtractedParser;
+using TranslationHelper.Functions.FileElementsFunctions.Row.OnlineTranslate;
 
 namespace TranslationHelper.Functions.FileElementsFunctions.Row.StringCaseMorph
 {
