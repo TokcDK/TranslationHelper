@@ -48,6 +48,7 @@ namespace TranslationHelper.Functions
             if (string.IsNullOrWhiteSpace(filePath) || !File.Exists(filePath))
             {
                 FunctionsUI.IsOpeningInProcess = false;
+                Logger.Info(T._("Nothing to open"));
                 return;
             }
 
@@ -57,9 +58,7 @@ namespace TranslationHelper.Functions
 
             bool isProjectFound = false;
             //https://ru.stackoverflow.com/questions/222414/%d0%9a%d0%b0%d0%ba-%d0%bf%d1%80%d0%b0%d0%b2%d0%b8%d0%bb%d1%8c%d0%bd%d0%be-%d0%b2%d1%8b%d0%bf%d0%be%d0%bb%d0%bd%d0%b8%d1%82%d1%8c-%d0%bc%d0%b5%d1%82%d0%be%d0%b4-%d0%b2-%d0%be%d1%82%d0%b4%d0%b5%d0%bb%d1%8c%d0%bd%d0%be%d0%bc-%d0%bf%d0%be%d1%82%d0%be%d0%ba%d0%b5 
-            await Task.Run(() => isProjectFound = GetSourceType(AppData.SelectedProjectFilePath)).ConfigureAwait(true);
-
-            
+            await Task.Run(() => isProjectFound = GetSourceType(AppData.SelectedProjectFilePath)).ConfigureAwait(true);            
 
             if (!isProjectFound)
             {
@@ -67,7 +66,7 @@ namespace TranslationHelper.Functions
 
                 /*THMsg*/
                 FunctionsSounds.OpenProjectFailed();
-                MessageBox.Show(T._("Failed to open project"));
+                Logger.Info(T._("Nothing to open"));
             }
             else
             {
@@ -177,9 +176,16 @@ namespace TranslationHelper.Functions
                 //ProjectData.CurrentProject = null;
             }
 
-            if (foundTypes.Count == 0) return false; // nothing found
+            if (foundTypes.Count == 0)
+            {
+                Logger.Info(T._("No projects found to open with"));
+                return false; // nothing found
+            }
 
-            if (foundTypes.Count == 1) return TryOpenSelectedProject(foundTypes[0], sPath, dir); // try open with found project when only one found
+            if (foundTypes.Count == 1)
+            {
+                return TryOpenSelectedProject(foundTypes[0], sPath, dir); // try open with found project when only one found
+            }
 
             int selectedIndex = -1;
             var foundForm = new FoundTypesbyExtensionForm(); // use form from formats
@@ -203,13 +209,19 @@ namespace TranslationHelper.Functions
         private static bool TryOpenSelectedProject(Type type, string sPath, DirectoryInfo dir)
         {
             AppData.CurrentProject = (ProjectBase)Activator.CreateInstance(type);// create instance of project
+            Logger.Warn(T._("Open with {0}"), AppData.CurrentProject.Name);
+
             AppData.CurrentProject.OpenFileMode = true;
             AppData.SelectedProjectFilePath = sPath;
             AppData.CurrentProject.OpenedFilesDir = dir.FullName;
             AppData.CurrentProject.SelectedDir = dir.FullName;
             AppData.CurrentProject.SelectedGameDir = dir.FullName;
 
-            if (!TryOpenProject()) return false;
+            if (!TryOpenProject())
+            {
+                Logger.Warn(T._("Failed to open project"));
+                return false;
+            }
 
             return true;
         }
