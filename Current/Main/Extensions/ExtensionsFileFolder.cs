@@ -129,7 +129,6 @@ namespace TranslationHelper.Extensions
                 {
                     var array = crc32.ComputeHash(fs);
                     var arrayLength = array.Length;
-                    System.Windows.Forms.ProgressBarStyle oldpbstyle = System.Windows.Forms.ProgressBarStyle.Marquee;
                     for (int i = 0; i < arrayLength; i++)
                     {
                         hash += array[i].ToString("x2")/*.ToLowerInvariant()*/;
