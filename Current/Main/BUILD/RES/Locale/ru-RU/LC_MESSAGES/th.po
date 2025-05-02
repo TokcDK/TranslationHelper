@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "POT-Creation-Date: 2025-05-02 00:26+0500\n"
-"PO-Revision-Date: 2025-05-02 00:37+0500\n"
+"PO-Revision-Date: 2025-05-02 11:21+0500\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: ru\n"
@@ -587,7 +587,7 @@ msgstr "JP->EN"
 
 #: Menus/MainMenus/Edit/MainMenuFileSubItemFixJpMessagesTranslation.cs:24
 msgid "Corrects japanese state message translation by static translations list"
-msgstr ""
+msgstr "Установка перевода японских сообщений из статического перевода"
 
 #: Menus/MainMenus/Edit/MainMenuFileSubItemOriginalToTranslation.cs:18
 msgid "Original To Translation"
@@ -599,30 +599,30 @@ msgstr "Перевод=Оригинал"
 
 #: Menus/MainMenus/Edit/MainMenuFileSubItemOriginalToTranslation.cs:32
 msgid "Set rows translation equal to original"
-msgstr ""
+msgstr "Установить перевод строк равным оригиналу"
 
 #: Menus/MainMenus/Edit/MainMenuFileSubItemOriginalToTranslation.cs:53
 #: Menus/MainMenus/Edit/MainMenuFileSubItemOriginalToTranslation.cs:55
 msgid "All, if exists file/dir with name"
-msgstr ""
+msgstr "Все, если существует файл/папка с именем"
 
 #: Menus/MainMenus/Edit/MainMenuFileSubItemSplitLongLines.cs:15
 #: Menus/MainMenus/Edit/MainMenuFileSubItemSplitLongLines.cs:25
 msgid "Split Long Lines"
-msgstr ""
+msgstr "Разделение длинных строк"
 
 #: Menus/MainMenus/Edit/MainMenuFileSubItemSplitLongLines.cs:27
 msgid "Split row text lines if text is length is longer of linit"
-msgstr ""
+msgstr "Разделение строки текста, если длина текста больше лимита"
 
 #: Menus/MainMenus/Edit/MainMenuFileSubItemTrimEnd.cs:18
 #: Menus/MainMenus/Edit/MainMenuFileSubItemTrimEnd.cs:27
 msgid "Trim end"
-msgstr ""
+msgstr "Обрезка конечных пробелов"
 
 #: Menus/MainMenus/Edit/MainMenuFileSubItemTrimEnd.cs:29
 msgid "Trim end spaces of rows"
-msgstr ""
+msgstr "Обрезка конечных пробелов строки"
 
 #: Menus/MainMenus/Edit/MenuItemAddToCustomDb.cs:20
 #: Menus/MainMenus/Edit/MenuItemAddToCustomDb.cs:22
@@ -631,31 +631,35 @@ msgstr ""
 
 #: Menus/MainMenus/Edit/MenuItemCompleteRomajiotherLines.cs:20
 msgid "Complete Romajio/Other lines"
-msgstr ""
+msgstr "Завершение Romajii/других строк"
 
 #: Menus/MainMenus/Edit/MenuItemCompleteRomajiotherLines.cs:22
 msgid ""
 "For japanese language check if row have most of romajii or other chars and set it "
 "identical to original"
 msgstr ""
+"Для японского языка проверить, есть ли в строке большинство romajii или других символов, "
+"и установить их идентично оригиналу"
 
 #: Menus/MainMenus/Edit/MenuItemExtraFixesAll.cs:21
 msgid "Extra Fixes (All)"
-msgstr ""
+msgstr "Доп. файлы (Все)"
 
 #: Menus/MainMenus/Edit/MenuItemExtraFixesAll.cs:23
 msgid "Apply extra fixes to rows"
-msgstr ""
+msgstr "Применить дополнительные исправления к строкам"
 
 #: Menus/MainMenus/Edit/MenuItemForceSameTranslationForIdentical.cs:21
 msgid "Force same for similar"
-msgstr ""
+msgstr "Принудительно для похожих"
 
 #: Menus/MainMenus/Edit/MenuItemForceSameTranslationForIdentical.cs:23
 msgid ""
 "Forse set same translation for rows where original is almost same liks 'book1', 'book2' "
 "and kind of'"
 msgstr ""
+"Задать одинаковый перевод для строк, в которых оригиналы почти одинаковы, например "
+"'book1', 'book2' и типа того."
 
 #: Menus/MainMenus/Edit/MenuItemOpenInWeb.cs:21
 msgid "Open in Web"
@@ -663,11 +667,11 @@ msgstr "Открыть в Web"
 
 #: Menus/MainMenus/Edit/MenuItemOpenInWeb.cs:23
 msgid "Open selected rows in web service"
-msgstr ""
+msgstr "Открыть выбранные строки в веб-сервие"
 
 #: Menus/MainMenus/Edit/MenuItemReplaceIdenticalByOriginal.cs:21
 msgid "Set all identical to original"
-msgstr ""
+msgstr "Все такие же в оригинал"
 
 #: Menus/MainMenus/Edit/MenuItemReplaceIdenticalByOriginal.cs:23
 msgid "Set the all rows with the same translations to original value"
@@ -676,17 +680,19 @@ msgstr ""
 #: Menus/MainMenus/Edit/MenuItemRowFixNameInstance.cs:22
 #: Menus/MainMenus/Edit/MenuItemRowFixNameInstance.cs:24
 msgid "Fix instances of name"
-msgstr ""
+msgstr "Исправить маркеры имени"
 
 #: Menus/MainMenus/Edit/MenuItemRowMakeFileCopyWithTranslationName.cs:21
 msgid "Make translated filecopy for exist originals"
-msgstr ""
+msgstr "Создание переведенных копий файлов для существующих оригиналов"
 
 #: Menus/MainMenus/Edit/MenuItemRowMakeFileCopyWithTranslationName.cs:23
 msgid ""
 "Search file in game dir with name ofrow original value and create copy of it with name "
 "as translated"
 msgstr ""
+"Найти в папке с игрой файл с именем оригинального значения строки и создать его копию с "
+"переведенным именем"
 
 #: Menus/MainMenus/Edit/MenuItemRowSearch.cs:24
 msgid "Search"
@@ -694,12 +700,12 @@ msgstr "Поиск"
 
 #: Menus/MainMenus/Edit/MenuItemRowSearch.cs:26
 msgid "Open search Window"
-msgstr ""
+msgstr "Открыть окно поиска"
 
 #: Menus/MainMenus/Edit/MenuItemShowCharCategory.cs:21
 #: Menus/MainMenus/Edit/MenuItemShowCharCategory.cs:23
 msgid "ShowCharCategory"
-msgstr ""
+msgstr "Категория персонажа"
 
 #: ⁨Menus/MainMenus/Edit/Online Translate/MainMenuFileSubItemOnlineTranslateBase.cs⁩:5
 #: ⁨Menus/MainMenus/Edit/Online Translate/MainMenuFileSubItemOnlineTranslateCategory.cs⁩:10
@@ -738,11 +744,11 @@ msgstr "Выбраное"
 
 #: ⁨Menus/MainMenus/Edit/Online Translate/MenuItemOnlineTranslateSelected.cs⁩:16
 msgid "Translate selected rows"
-msgstr ""
+msgstr "Перевод выбранных строк"
 
 #: ⁨Menus/MainMenus/Edit/Online Translate/MenuItemOnlineTranslateTable.cs⁩:17
 msgid "Translate table rows"
-msgstr ""
+msgstr "Перевод строк таблицы"
 
 #: Menus/MainMenus/Edit/TextCutCopyPaste/MenuItemRowTextClearAll.cs:21
 #: Menus/MainMenus/Edit/TextCutCopyPaste/MenuItemRowTextClearSelected.cs:22
@@ -752,15 +758,15 @@ msgstr "Очистка"
 
 #: Menus/MainMenus/Edit/TextCutCopyPaste/MenuItemRowTextClearAll.cs:24
 msgid "Clear translation in all tables"
-msgstr ""
+msgstr "Очистка всех строк"
 
 #: Menus/MainMenus/Edit/TextCutCopyPaste/MenuItemRowTextClearSelected.cs:25
 msgid "Clear translation in selected rows"
-msgstr ""
+msgstr "Очистка выбранных строк"
 
 #: Menus/MainMenus/Edit/TextCutCopyPaste/MenuItemRowTextClearTable.cs:26
 msgid "Clear translation in selected tables"
-msgstr ""
+msgstr "Очистка выбранных таблиц"
 
 #: Menus/MainMenus/Edit/TextCutCopyPaste/MenuItemRowTextCopy.cs:23
 msgid "Copy"
@@ -768,7 +774,7 @@ msgstr "Копировать"
 
 #: Menus/MainMenus/Edit/TextCutCopyPaste/MenuItemRowTextCopy.cs:25
 msgid "Copy selected rows translation"
-msgstr ""
+msgstr "Копировать перевод выбранных ячеек"
 
 #: Menus/MainMenus/Edit/TextCutCopyPaste/MenuItemRowTextCopyOriginal.cs:21
 msgid "Copy original"
@@ -776,7 +782,7 @@ msgstr "Копировать оригинал"
 
 #: Menus/MainMenus/Edit/TextCutCopyPaste/MenuItemRowTextCopyOriginal.cs:23
 msgid "Copy selected rows original values"
-msgstr ""
+msgstr "Копировать оригиналы выбранных ячеек"
 
 #: Menus/MainMenus/Edit/TextCutCopyPaste/MenuItemRowTextCut.cs:21
 msgid "Cut"
@@ -784,11 +790,11 @@ msgstr "Вырезать"
 
 #: Menus/MainMenus/Edit/TextCutCopyPaste/MenuItemRowTextCut.cs:23
 msgid "Cut selected rows translation"
-msgstr ""
+msgstr "Вырезать перевод выбранных ячеек"
 
 #: Menus/MainMenus/Edit/TextCutCopyPaste/MenuItemRowTextPaste.cs:23
 msgid "Paste translation into selected rows"
-msgstr ""
+msgstr "Вставить перевод в выбранные ячейки"
 
 #: Menus/MainMenus/File/Export/MainMenuFileSubItemExportBase.cs:5
 msgid "Export"
@@ -796,11 +802,11 @@ msgstr "Экспорт"
 
 #: Menus/MainMenus/File/Export/MenuItemExportToExcel.cs:18
 msgid "Export translation to Excel tables"
-msgstr "Экпорт перевода в таблицы Exel"
+msgstr "Экспорт перевода в таблицы Excel"
 
 #: Menus/MainMenus/File/Export/MenuItemExportToRPGMakerTransPatch.cs:18
 msgid "Export translation to RPG Maker Trans patch"
-msgstr ""
+msgstr "Экспорт перевода в RPG Maker Trans патч"
 
 #: Menus/MainMenus/File/Import/MainMenuFileSubItemImportBase.cs:5
 msgid "Import"
@@ -808,7 +814,7 @@ msgstr "Импорт"
 
 #: Menus/MainMenus/File/Import/MenuItemImportFromPOfile.cs:21
 msgid "Import translation from PO file"
-msgstr ""
+msgstr "Импорт перевода из PO файла"
 
 #: Menus/MainMenus/File/MainMenuFileRootItem.cs:11
 #: Menus/MainMenus/File/MainMenuFileSubItemBase.cs:5
@@ -819,7 +825,7 @@ msgstr "Файл"
 
 #: Menus/MainMenus/File/MenuItemLoadDB.cs:22
 msgid "Load translated strings from database file if exist"
-msgstr ""
+msgstr "Загрузка перевода из файла БД, если есть"
 
 #: Menus/MainMenus/File/MenuItemLoadDBAs.cs:18
 msgid "Load DB as"
@@ -827,7 +833,7 @@ msgstr "Загрузка БД как"
 
 #: Menus/MainMenus/File/MenuItemLoadDBAs.cs:20
 msgid "Load translated strings from database file of selected locatin"
-msgstr ""
+msgstr "Загрузка перевода из выбранного файла БД"
 
 #: Menus/MainMenus/File/MenuItemLoadDBAsForced.cs:19
 msgid "Load DB as (forced)"
@@ -835,7 +841,7 @@ msgstr "Загрузка БД как (с перезаписью)"
 
 #: Menus/MainMenus/File/MenuItemLoadDBAsForced.cs:21
 msgid "Load translated strings from database file of selected location"
-msgstr ""
+msgstr "Загрузка перевода из выбранного файла БД"
 
 #: Menus/MainMenus/File/MenuItemOpen.cs:12
 #: Menus/MainMenus/View/OpenPathByExplorerMainMenuViewSubItemBase.cs:19
@@ -1142,15 +1148,15 @@ msgstr "Xml файлы"
 
 #: Projects/RimWorld/FileRowTryImportStringsFrom.cs:42
 msgid "Select an xml file in targett language folder where from need to import"
-msgstr ""
+msgstr "Выбрать xml-файл в папке с целевым языком, из которого нужно импортировать"
 
 #: Projects/RimWorld/MainMenuTryReadEnglishTranslations.cs:19
 msgid "Try read English language strings into translations"
-msgstr ""
+msgstr "Попробуйте преобразовать строки английского языка в переводы"
 
 #: Projects/RimWorld/MainMenuTryReadEnglishTranslations.cs:21
 msgid "Try read translation from same elements of English language if present"
-msgstr ""
+msgstr "Попытка прочитать перевод с тех же элементов английского языка, если они есть"
 
 #: Projects/WolfRPG/WolfRPGBase.cs:46 Projects/WolfRPG/WolfRPGGame.cs:59
 msgid "Create patch"
