@@ -110,9 +110,18 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row.OnlineTranslate
             return true;
         }
 
+        static Dictionary<string, string> lastWroteCache;
+
         protected static void Write(Dictionary<string, string> cache)
         {
             if (cache == null || cache.Count == 0) return;
+
+            if(ReferenceEquals(cache, lastWroteCache) && cache.Count == lastWroteCache.Count) // if the cache changed there must be more records
+            {
+                return;
+            }
+
+            lastWroteCache = cache;
 
             lock (_translationCacheLocker)
             {
