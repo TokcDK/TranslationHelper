@@ -235,7 +235,7 @@
     <Compile Include="Formats\LiveMaker\LiveMakerBase.cs" />
     <Compile Include="Formats\LiveMaker\LSBCSV.cs" />
     <Compile Include="Formats\LiveMaker\LSBLNS.cs" />
-    <Compile Include="Formats\LOFI\Kenshi\kensho-mod-strings.cs" />
+    <Compile Include="Formats\LOFI\Kenshi\KenshoModStrings.cs" />
     <Compile Include="Formats\LOFI\Kenshi\MOD.cs" />
     <Compile Include="Formats\NScriptGame\nscript.dat\NSCRIPT.cs" />
     <Compile Include="Formats\Other\PO.cs" />

@@ -2,14 +2,13 @@
 
 namespace TranslationHelper.Formats.LOFI.Kenshi
 {
-    internal class kensho_mod_strings : FormatStringBase
+    internal class KenshoModStrings : FormatStringBase
     {
         public override string Extension => ".kenshi-mod-strings";
 
-        bool reading = false;
         protected override KeywordActionAfter ParseStringFileLine()
         {
-            if (!reading && ParseData.Line.StartsWith("> BEGIN STRING"))
+            if (!OpenFileMode && ParseData.Line.StartsWith("> BEGIN STRING"))
             {
                 ReadLine();
                 List<string> str = new List<string>();
