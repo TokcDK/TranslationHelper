@@ -637,16 +637,19 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row.OnlineTranslate
         private readonly TimeSpan _delayBetweenRequests;
         private bool _disposed;
 
+        private const int Max429Retries = 5;
+        private const int DelayIncreaseMs = 2000;
+
         public GoogleTranslator(string sourceLanguage, string targetLanguage, int maxConcurrentRequests = 5, int delayMs = 1000)
         {
             _sourceLanguage = sourceLanguage ?? throw new ArgumentNullException(nameof(sourceLanguage));
             _targetLanguage = targetLanguage ?? throw new ArgumentNullException(nameof(targetLanguage));
             _userAgents = new List<string>
-        {
-            "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36",
-            "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/14.0 Safari/605.1.15",
-            "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/92.0.4515.107 Safari/537.36"
-        };
+            {
+                "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36",
+                "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/14.0 Safari/605.1.15",
+                "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/92.0.4515.107 Safari/537.36"
+            };
             _random = new Random();
             _semaphore = new SemaphoreSlim(maxConcurrentRequests);
             _delayBetweenRequests = TimeSpan.FromMilliseconds(delayMs);
@@ -680,24 +683,45 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row.OnlineTranslate
             await _semaphore.WaitAsync();
             try
             {
-                await Task.Delay(_delayBetweenRequests);
-                string userAgent = _userAgents[_random.Next(_userAgents.Count)];
-
-                string url = $"https://translate.google.com/m?hl=en&sl={_sourceLanguage}&tl={_targetLanguage}&ie=UTF-8&prev=_m&q={Uri.EscapeDataString(text)}";
-                var request = new HttpRequestMessage(HttpMethod.Get, url);
-                request.Headers.UserAgent.ParseAdd(userAgent);
-
-                HttpResponseMessage response = await _httpClient.SendAsync(request);
-
-                if (response.StatusCode == (HttpStatusCode)429)
+                int retryCount = 0;
+                int currentDelayMs = (int)_delayBetweenRequests.TotalMilliseconds;
+                while (true)
                 {
-                    throw new HttpRequestException("Rate limit exceeded (HTTP 429). Consider increasing delay or using proxies.");
-                }
+                    await Task.Delay(currentDelayMs);
+                    string userAgent = _userAgents[_random.Next(_userAgents.Count)];
 
-                response.EnsureSuccessStatusCode();
-                string html = await response.Content.ReadAsStringAsync();
-                string translation = ExtractTranslation(html);
-                return translation;
+                    string url = $"https://translate.google.com/m?hl=en&sl={_sourceLanguage}&tl={_targetLanguage}&ie=UTF-8&prev=_m&q={Uri.EscapeDataString(text)}";
+                    var request = new HttpRequestMessage(HttpMethod.Get, url);
+                    request.Headers.UserAgent.ParseAdd(userAgent);
+
+                    HttpResponseMessage response = null;
+                    try
+                    {
+                        response = await _httpClient.SendAsync(request);
+                    }
+                    catch (Exception ex)
+                    {
+                        if (retryCount > Max429Retries)
+                            throw;
+                        retryCount++;
+                        currentDelayMs += DelayIncreaseMs;
+                        continue;
+                    }
+
+                    if (response.StatusCode == (HttpStatusCode)429)
+                    {
+                        if (retryCount > Max429Retries)
+                            throw new HttpRequestException("Rate limit exceeded (HTTP 429) after several retries. Consider increasing delay or using proxies.");
+                        retryCount++;
+                        currentDelayMs += DelayIncreaseMs;
+                        continue;
+                    }
+
+                    response.EnsureSuccessStatusCode();
+                    string html = await response.Content.ReadAsStringAsync();
+                    string translation = ExtractTranslation(html);
+                    return translation;
+                }
             }
             finally
             {
