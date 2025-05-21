@@ -255,17 +255,27 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
 
             if (IsParallelRows)
             {
-                Parallel.For(0, count, i => ProcessRow(tableData, rowIndexes == null ? i : rowIndexes[i]));
+                Parallel.For(0, count, i => ProcessRowSafe(tableData, rowIndexes == null ? i : rowIndexes[i]));
             }
             else
             {
                 for (int i = 0; i < count; i++)
                 {
-                    ProcessRow(tableData, rowIndexes == null ? i : rowIndexes[i]);
+                    ProcessRowSafe(tableData, rowIndexes == null ? i : rowIndexes[i]);
                 }
             }
 
             ActionsPostRowsApply(tableData);
+        }
+
+        /// <summary>
+        /// Runs hooks and Apply() for a single row.
+        /// </summary>
+        private void ProcessRowSafe(TableData tableData, int rowIndex)
+        {
+            if (rowIndex < 0 || rowIndex >= tableData.SelectedTable.Rows.Count)
+                return;
+            ProcessRow(tableData, rowIndex);
         }
 
         /// <summary>
@@ -337,14 +347,31 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
 
         private int[] GetSelectedRowIndexes(TableData tableData)
         {
-            var selectedCells = WorkTableDatagridView.SelectedCells
-                .Cast<DataGridViewCell>()
-                .Select(c => c.RowIndex)
-                .Distinct()
-                .Select(r => FunctionsTable.GetRealRowIndex(tableData.SelectedTableIndex, r))
-                .OrderBy(i => i)
-                .ToArray();
-            return selectedCells;
+            int[] selectedCells;
+            if (WorkTableDatagridView.InvokeRequired)
+            {
+                selectedCells = null;
+                WorkTableDatagridView.Invoke((Action)(() =>
+                    selectedCells = WorkTableDatagridView.SelectedCells
+                        .Cast<DataGridViewCell>()
+                        .Select(c => c.RowIndex)
+                        .Distinct()
+                        .Select(r => FunctionsTable.GetRealRowIndex(tableData.SelectedTableIndex, r))
+                        .OrderBy(i => i)
+                        .ToArray()
+                ));
+            }
+            else
+            {
+                selectedCells = WorkTableDatagridView.SelectedCells
+                    .Cast<DataGridViewCell>()
+                    .Select(c => c.RowIndex)
+                    .Distinct()
+                    .Select(r => FunctionsTable.GetRealRowIndex(tableData.SelectedTableIndex, r))
+                    .OrderBy(i => i)
+                    .ToArray();
+            }
+            return selectedCells ?? Array.Empty<int>();
         }
 
         private void ResolveSingleContext(DataRow row, ref int tableIndex, ref int rowIndex,
@@ -366,6 +393,8 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
                 if (i < 0) return;
                 tableIndex = i;
             }
+            if (tableIndex < 0 || tableIndex >= AllFiles.Tables.Count)
+                return;
             var table = AllFiles.Tables[tableIndex];
             tableData = new TableData(table, tableIndex);
 
