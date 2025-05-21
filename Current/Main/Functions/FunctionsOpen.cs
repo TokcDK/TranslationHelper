@@ -20,7 +20,8 @@ namespace TranslationHelper.Functions
     class FunctionsOpen
     {
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
-        internal static async void OpenProject(string filePath = null)
+
+        internal static async Task OpenProject(string filePath = null)
         {
             if (filePath == null || !File.Exists(filePath))
             {
@@ -28,13 +29,8 @@ namespace TranslationHelper.Functions
                 {
                     THFOpen.InitialDirectory = AppData.Settings.THConfigINI.GetKey("Paths", "LastPath");
 
-                    //bool tempMode = AppData.CurrentProject.OpenFileMode;
-                    //AppData.CurrentProject.OpenFileMode = true;// temporary set open file mode to true if on save mode trying to open files to prevent errors in time of get extensions for filter
-
                     THFOpen.Filter = GetFilters();
-                    //THFOpen.Filter = string.Join(";", THFOpen.Filter.Split(';').Distinct());
 
-                    //AppData.CurrentProject.OpenFileMode = tempMode;
                     if (THFOpen.ShowDialog() != DialogResult.OK || THFOpen.FileName == null)
                     {
                         FunctionsUI.IsOpeningInProcess = false;
@@ -57,14 +53,11 @@ namespace TranslationHelper.Functions
             AppData.SelectedProjectFilePath = filePath;
 
             bool isProjectFound = false;
-            //https://ru.stackoverflow.com/questions/222414/%d0%9a%d0%b0%d0%ba-%d0%bf%d1%80%d0%b0%d0%b2%d0%b8%d0%bb%d1%8c%d0%bd%d0%be-%d0%b2%d1%8b%d0%bf%d0%be%d0%bb%d0%bd%d0%b8%d1%82%d1%8c-%d0%bc%d0%b5%d1%82%d0%be%d0%b4-%d0%b2-%d0%be%d1%82%d0%b4%d0%b5%d0%bb%d1%8c%d0%bd%d0%be%d0%bc-%d0%bf%d0%be%d1%82%d0%be%d0%ba%d0%b5 
-            await Task.Run(() => isProjectFound = GetSourceType(AppData.SelectedProjectFilePath)).ConfigureAwait(true);            
+            await Task.Run(() => isProjectFound = GetSourceType(AppData.SelectedProjectFilePath)).ConfigureAwait(true);
 
             if (!isProjectFound)
             {
                 AppData.Main.frmMainPanel.Visible = false;
-
-                /*THMsg*/
                 FunctionsSounds.OpenProjectFailed();
                 Logger.Info(T._("Nothing to open"));
             }
@@ -87,7 +80,7 @@ namespace TranslationHelper.Functions
                 //    }
                 //}
 
-                AfterOpenActions();
+                await AfterOpenActions();
             }
 
             FunctionsUI.IsOpeningInProcess = false;
@@ -145,7 +138,6 @@ namespace TranslationHelper.Functions
         {
             if (tHSelectedGameDir.Length == 0) tHSelectedGameDir = AppData.CurrentProject.SelectedDir;
 
-            //для rpgmaker mv. если была папка data, которая в папке www
             string pFolderName = Path.GetFileName(tHSelectedGameDir);
             if (string.Compare(pFolderName, "data", true, CultureInfo.InvariantCulture) == 0) return Path.GetDirectoryName(Path.GetDirectoryName(tHSelectedGameDir));
 
@@ -160,34 +152,31 @@ namespace TranslationHelper.Functions
 
             var foundTypes = new List<Type>();
 
-            //Try detect and open new type projects
-            foreach (Type Project in AppData.ProjectsList) // iterate projectbase types
+            foreach (Type Project in AppData.ProjectsList)
             {
-                AppData.CurrentProject = (ProjectBase)Activator.CreateInstance(Project);// create instance of project
+                AppData.CurrentProject = (ProjectBase)Activator.CreateInstance(Project);
                 AppData.CurrentProject.OpenFileMode = true;
                 AppData.SelectedProjectFilePath = sPath;
                 AppData.CurrentProject.OpenedFilesDir = dir.FullName;
                 AppData.CurrentProject.SelectedDir = dir.FullName;
                 AppData.CurrentProject.SelectedGameDir = dir.FullName;
 
-                if (TryDetectProject(AppData.CurrentProject)) foundTypes.Add(Project); // add all project which check returned true
-
-                //ProjectData.CurrentProject = null;
+                if (TryDetectProject(AppData.CurrentProject)) foundTypes.Add(Project);
             }
 
             if (foundTypes.Count == 0)
             {
                 Logger.Info(T._("No projects found to open with"));
-                return false; // nothing found
+                return false;
             }
 
             if (foundTypes.Count == 1)
             {
-                return TryOpenSelectedProject(foundTypes[0], sPath, dir); // try open with found project when only one found
+                return TryOpenSelectedProject(foundTypes[0], sPath, dir);
             }
 
             int selectedIndex = -1;
-            var foundForm = new FoundTypesbyExtensionForm(); // use form from formats
+            var foundForm = new FoundTypesbyExtensionForm();
             foreach (var type in foundTypes)
             {
                 var inst = (IProject)Activator.CreateInstance(type);
@@ -200,14 +189,14 @@ namespace TranslationHelper.Functions
 
             foundForm.Dispose();
 
-            if (selectedIndex > -1) return TryOpenSelectedProject(foundTypes[selectedIndex], sPath, dir); // try open with selected project
+            if (selectedIndex > -1) return TryOpenSelectedProject(foundTypes[selectedIndex], sPath, dir);
 
-            return TryOpenSelectedProject(foundTypes[0], sPath, dir); // try open with first of project if not selected
+            return TryOpenSelectedProject(foundTypes[0], sPath, dir);
         }
 
         private static bool TryOpenSelectedProject(Type type, string sPath, DirectoryInfo dir)
         {
-            AppData.CurrentProject = (ProjectBase)Activator.CreateInstance(type);// create instance of project
+            AppData.CurrentProject = (ProjectBase)Activator.CreateInstance(type);
             Logger.Info(T._("Open with {0}"), AppData.CurrentProject.Name);
 
             AppData.CurrentProject.OpenFileMode = true;
@@ -225,10 +214,6 @@ namespace TranslationHelper.Functions
             return true;
         }
 
-        /// <summary>
-        /// Try to open project and return project name if open is success
-        /// </summary>
-        /// <returns></returns>
         private static bool TryOpenProject()
         {
             AppData.CurrentProject.Init();
@@ -236,18 +221,12 @@ namespace TranslationHelper.Functions
             AppData.CurrentProject.OpenFileMode = true;
             if (AppData.CurrentProject.Open())
             {
-                MenusCreator.CreateMenus();//createmenus
-
+                MenusCreator.CreateMenus();
                 return true;
             }
             return false;
         }
 
-        /// <summary>
-        /// Try to detect project and if success<br/> then set it to current and return true
-        /// </summary>
-        /// <param name="Project"></param>
-        /// <returns></returns>
         private static bool TryDetectProject(ProjectBase Project)
         {
             if (Project.IsValid())
@@ -258,37 +237,21 @@ namespace TranslationHelper.Functions
             return false;
         }
 
-        internal static void AfterOpenActions()
+        internal static async Task AfterOpenActions()
         {
-            AppData.CurrentProject.SaveFileMode = true; // project opened. dont need to openfilemode
+            AppData.CurrentProject.SaveFileMode = true;
 
             if (!AppData.Main.THWorkSpaceSplitContainer.Visible) AppData.Main.THWorkSpaceSplitContainer.Visible = true;
 
             if (AppData.Main.THFilesList.GetItemsCount() == 0 && AppData.CurrentProject.FilesContent.Tables.Count > 0)
             {
-                //https://stackoverflow.com/questions/11099619/how-to-bind-dataset-to-datagridview-in-windows-application
-                //foreach (DataColumn col in ProjectData.THFilesElementsDataset.Tables[0].Columns)
-                //{
-                //    ProjectData.THFilesElementsDataset.Tables["[ALL]"].Columns.Add(col.ColumnName);
-                //}
-                //using (DataSet newdataset = new DataSet())
-                //{
-                //    newdataset.Tables.Add("[ALL]");
-                //    newdataset.Merge(ProjectData.THFilesElementsDataset);
-                //    ProjectData.THFilesElementsDataset.Clear();
-                //    ProjectData.THFilesElementsDataset.Merge(newdataset);
-                //}
-
-                //var sortedtables = ProjectData.CurrentProject.FilesContent.Tables.Cast<DataTable>().OrderBy(table => Path.GetExtension(table.TableName)).ToArray();
                 var sortedtables = Sort(AppData.CurrentProject.FilesContent.Tables);
                 AppData.CurrentProject.FilesContent.Tables.Clear();
                 AppData.CurrentProject.FilesContent.Tables.AddRange(sortedtables);
 
-                //var sortedtablesinfo = ProjectData.CurrentProject.FilesContentInfo.Tables.Cast<DataTable>().OrderBy(table => Path.GetExtension(table.TableName)).ToArray();
                 var sortedtablesinfo = Sort(AppData.CurrentProject.FilesContentInfo.Tables);
                 AppData.CurrentProject.FilesContentInfo.Tables.Clear();
                 AppData.CurrentProject.FilesContentInfo.Tables.AddRange(sortedtablesinfo);
-
 
                 foreach (DataTable table in AppData.CurrentProject.FilesContent.Tables)
                 {
@@ -316,14 +279,6 @@ namespace TranslationHelper.Functions
                     MessageBox.Show("An error occured:" + Environment.NewLine + ex);
                 }
             }
-            //_ = /*THMsg*/MessageBox.Show(ProjectData.CurrentProject.Name() + T._(" loaded") + "!");
-
-            //AppData.Main.EditToolStripMenuItem.Enabled = true;
-            //AppData.Main.ViewToolStripMenuItem.Enabled = true;
-            //AppData.Main.OpenProjectsDirToolStripMenuItem.Enabled = true;
-            //AppData.Main.OpenTranslationRulesFileToolStripMenuItem.Enabled = true;
-            //AppData.Main.OpenCellFixesFileToolStripMenuItem.Enabled = true;
-            //AppData.Main.ReloadRulesToolStripMenuItem.Enabled = true;
 
             if (AppData.Main.FVariant.Length == 0)
             {
@@ -341,10 +296,9 @@ namespace TranslationHelper.Functions
 
             MenuItemRecent.AfterOpenCleaning();
 
-            //AppSettings.ProjectIsOpened = true;
             FunctionsSounds.OpenProjectComplete();
 
-            FunctionsLoadTranslationDB.LoadTranslationIfNeed();
+            await FunctionsLoadTranslationDB.LoadTranslationIfNeed().ConfigureAwait(true);
         }
 
         static DataTable[] Sort(DataTableCollection tables)
