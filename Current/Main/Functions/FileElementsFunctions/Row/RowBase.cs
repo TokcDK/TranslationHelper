@@ -50,7 +50,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
         public string Translation
         {
             get => SelectedRow.Field<string>(ColumnIndexTranslation);
-            set => SelectedRow.SetValue(ColumnIndexTranslation, value);
+            set => SelectedRow.SetField(ColumnIndexTranslation, value);
         }
 
         public DataTable SelectedTable => TableData.SelectedTable;
@@ -324,19 +324,27 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
         private int[] GetSelectedTableIndexes()
         {
             int[] indexes = Array.Empty<int>();
-            FilesList.Invoke((Action)(() => indexes = FilesList.CopySelectedIndexes()));
+            if (FilesList.InvokeRequired)
+            {
+                FilesList.Invoke((Action)(() => indexes = FilesList.CopySelectedIndexes()));
+            }
+            else
+            {
+                indexes = FilesList.CopySelectedIndexes();
+            }
             return indexes;
         }
 
         private int[] GetSelectedRowIndexes(TableData tableData)
         {
-            return WorkTableDatagridView.SelectedCells
+            var selectedCells = WorkTableDatagridView.SelectedCells
                 .Cast<DataGridViewCell>()
                 .Select(c => c.RowIndex)
                 .Distinct()
                 .Select(r => FunctionsTable.GetRealRowIndex(tableData.SelectedTableIndex, r))
                 .OrderBy(i => i)
                 .ToArray();
+            return selectedCells;
         }
 
         private void ResolveSingleContext(DataRow row, ref int tableIndex, ref int rowIndex,
@@ -347,8 +355,15 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
             if (tableIndex < 0)
             {
                 int i = -1;
-                FilesList.Invoke((Action)(() => i = FilesList.SelectedIndex));
-                if (tableIndex < 0) return;
+                if (FilesList.InvokeRequired)
+                {
+                    FilesList.Invoke((Action)(() => i = FilesList.SelectedIndex));
+                }
+                else
+                {
+                    i = FilesList.SelectedIndex;
+                }
+                if (i < 0) return;
                 tableIndex = i;
             }
             var table = AllFiles.Tables[tableIndex];
@@ -356,8 +371,17 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
 
             if (rowIndex < 0)
             {
-                var selected = WorkTableDatagridView.GetSelectedRowsIndexes().ToArray();
-                if (selected.Length != 1) return;
+                int[] selected;
+                if (WorkTableDatagridView.InvokeRequired)
+                {
+                    selected = null;
+                    WorkTableDatagridView.Invoke((Action)(() => selected = WorkTableDatagridView.GetSelectedRowsIndexes().ToArray()));
+                }
+                else
+                {
+                    selected = WorkTableDatagridView.GetSelectedRowsIndexes().ToArray();
+                }
+                if (selected == null || selected.Length != 1) return;
                 rowIndex = selected[0];
             }
 
