@@ -170,6 +170,8 @@ namespace TranslationHelper.Functions
                 return false;
             }
 
+            Logger.Info(T._("Found {0} projects to open with."), foundTypes.Count);
+
             if (foundTypes.Count == 1)
             {
                 return TryOpenSelectedProject(foundTypes[0], sPath, dir);
