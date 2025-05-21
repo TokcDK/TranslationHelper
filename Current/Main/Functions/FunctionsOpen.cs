@@ -170,14 +170,18 @@ namespace TranslationHelper.Functions
                 return false;
             }
 
-            Logger.Info(T._("Found {0} projects to open with."), foundTypes.Count);
 
             if (foundTypes.Count == 1)
             {
+                Logger.Info(T._("Found one project. Trying to open with it.."));
                 return TryOpenSelectedProject(foundTypes[0], sPath, dir);
             }
+            else
+            {
+                Logger.Info(T._("Found {0} projects to open with."), foundTypes.Count);
+            }
 
-            int selectedIndex = -1;
+                int selectedIndex = -1;
             var foundForm = new FoundTypesbyExtensionForm();
             foreach (var type in foundTypes)
             {

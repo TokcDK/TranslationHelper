@@ -1,4 +1,5 @@
-﻿using System;
+﻿using NLog;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -12,9 +13,13 @@ namespace TranslationHelper.Projects.ZZZZFormats
 {
     public partial class FoundTypesbyExtensionForm : Form
     {
+        private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
+
         public FoundTypesbyExtensionForm()
         {
             InitializeComponent();
+
+            Logger.Info("Select project to try open with.");
         }
 
         public int SelectedTypeIndex = -1;
