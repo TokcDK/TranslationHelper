@@ -532,6 +532,8 @@ namespace TranslationHelper.Functions
             int rowIdx = FunctionsTable.GetRealRowIndex(AppData.Main.THFilesList.GetSelectedIndex(), e.RowIndex);//здесь получаю реальный индекс из Datatable
             //string rowIdx = (e.RowIndex + 1) + string.Empty;
 
+            if (grid.Rows.Count <= rowIdx) return;
+
             using (StringFormat centerFormat = new StringFormat()
             {
                 // right alignment might actually make more sense for numbers
