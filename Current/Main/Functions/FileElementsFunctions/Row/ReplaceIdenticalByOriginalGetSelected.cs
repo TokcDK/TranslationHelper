@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 using System.Windows.Documents;
 using TranslationHelper.Data;
 
@@ -37,9 +38,9 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
             return true;
         }
 
-        protected async override void ActionsFinalize()
+        protected async override Task ActionsFinalize()
         {
-            base.ActionsFinalize();
+            await base.ActionsFinalize();
 
             // run replacement by the list for all
             await new ReplaceIdenticalByOriginalALL(_listToReplace).AllT();

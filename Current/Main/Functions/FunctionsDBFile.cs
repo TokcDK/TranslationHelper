@@ -503,11 +503,11 @@ namespace TranslationHelper.Main.Functions
 
         readonly static object _dbDataSetToDictionaryAddLocker = new object();
 
-        internal static void MergeAllDBtoOne()
+        internal static Task MergeAllDBtoOne()
         {
             lock (_dbDataSetToDictionaryAddLocker)
             {
-                if (AppData.AllDBmerged != null && AppData.AllDBmerged.Count > 0) return;
+                if (AppData.AllDBmerged != null && AppData.AllDBmerged.Count > 0) return Task.CompletedTask;
 
                 if (AppData.AllDBmerged == null) AppData.AllDBmerged = new Dictionary<string, string>();
 
@@ -530,6 +530,8 @@ namespace TranslationHelper.Main.Functions
                     }
                 }
             }
+
+            return Task.CompletedTask;
         }
 
         private static List<KeyValuePair<string, FileInfo>> GetNewestFIlesList(string dbDir)
@@ -727,7 +729,7 @@ namespace TranslationHelper.Main.Functions
             if (UseAllDB)
             {
                 Logger.Info("Get all databases");
-                FunctionsDBFile.MergeAllDBtoOne();
+                await FunctionsDBFile.MergeAllDBtoOne();
                 FunctionsLoadTranslationDB.THLoadDBCompareFromDictionaryParallellTables(AppData.AllDBmerged);
             }
             else

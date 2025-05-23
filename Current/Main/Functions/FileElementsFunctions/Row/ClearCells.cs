@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Data;
+using System.Threading.Tasks;
 using TranslationHelper.Data;
 
 namespace TranslationHelper.Functions.FileElementsFunctions.Row
@@ -14,11 +15,11 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
         protected override bool IsParallelRows => true;
 
         bool _dataSourceClear = false;
-        protected override void ActionsPreTableApply(TableData tableData)
+        protected override Task ActionsPreTableApply(TableData tableData)
         {
             if (IsAll || IsTables || IsTable)
             {
-                if (AppData.Main.THFileElementsDataGridView.DataSource != tableData.SelectedTable) return;
+                if (AppData.Main.THFileElementsDataGridView.DataSource != tableData.SelectedTable) return Task.CompletedTask;
 
                 _dataSourceClear = true;
                 //отключение датасорса для убирания тормозов с параллельной прорисовкой
@@ -26,15 +27,19 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
                 AppData.Main.Invoke((Action)(() => AppData.Main.THFileElementsDataGridView.Update()));
                 AppData.Main.Invoke((Action)(() => AppData.Main.THFileElementsDataGridView.Refresh()));
             }
+
+            return Task.CompletedTask;
         }
 
-        protected override void ActionsPostTableApply(TableData tableData)
+        protected override Task ActionsPostTableApply(TableData tableData)
         {
             if ((IsAll || IsTables || IsTable) && _dataSourceClear)
             {
                 _dataSourceClear = false;
                 AppData.Main.Invoke((Action)(() => FunctionsUI.ActionsOnTHFIlesListElementSelected()));
             }
+
+            return Task.CompletedTask;
         }
 
         protected override bool IsValidRow(RowBaseRowData rowData)

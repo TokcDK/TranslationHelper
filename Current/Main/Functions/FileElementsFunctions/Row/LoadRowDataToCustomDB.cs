@@ -15,7 +15,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
 
         Dictionary<string, string> _dict = new Dictionary<string, string>();
         string _custom = THSettings.CustomDBPath;
-        protected override void ActionsInit()
+        protected override Task ActionsInit()
         {
             //load DB if need
             if (File.Exists(_custom))
@@ -34,9 +34,11 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
                     
                 }
             }
+
+            return Task.CompletedTask;
         }
 
-        protected override void ActionsFinalize()
+        protected override Task ActionsFinalize()
         {
             //save DB
             Logger.Info("Save custom DB");
@@ -46,7 +48,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
             loadcustom.Start();
             loadcustom.Wait();
 
-            
+            return Task.CompletedTask;
         }
 
         protected override bool Apply(RowBaseRowData rowData)

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Threading.Tasks;
 using TranslationHelper.Data;
 using TranslationHelper.Extensions;
 using TranslationHelper.ExternalAdditions;
@@ -16,7 +17,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
 
         bool _needToAddFilePaths = true;
         Dictionary<string, PathsForTheName> _gameFilesList;
-        protected override void ActionsPreRowsApply(TableData tableData)
+        protected override Task ActionsPreRowsApply(TableData tableData)
         {
             if (_needToAddFilePaths)
             {
@@ -32,6 +33,8 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
                 }
                 _needToAddFilePaths = false;
             }
+
+            return Task.CompletedTask;
         }
 
         class PathsForTheName

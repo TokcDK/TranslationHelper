@@ -97,27 +97,104 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
         #endregion
 
         #region Extension points (hooks)
-        protected virtual bool IsOkSelected(TableData tableData) => true;
-        protected virtual bool IsOkTable(TableData tableData) => true;
-        protected virtual bool IsOkAll() => true;
-        protected virtual void ActionsInit() { }
-        protected virtual void ActionsPreTablesApply() { }
-        protected virtual void ActionsPreTableApply(TableData tableData) { }
-        protected virtual void ActionsPreRowsApply(TableData tableData) { }
-        protected virtual void ActionsPreRowApply(RowBaseRowData rowData) { }
-        protected virtual bool IsValidRow(RowBaseRowData rowData) =>
-            !AppSettings.IgnoreOrigEqualTransLines || !Equals(rowData.Original, rowData.Translation);
-        protected abstract bool Apply(RowBaseRowData rowData);
-        protected virtual void ActionsPostRowApply() { }
-        protected virtual void ActionsPostRowsApply(TableData tableData) { }
-        protected virtual void ActionsPostTableApply(TableData tableData) { }
-        protected virtual void ActionsPostTablesApply() { }
-        protected virtual void ActionsFinalize()
+        // The following hooks have been changed to return Task to support asynchronous execution.
+        /// <summary>
+        /// Actions initialization hook.
+        /// </summary>
+        protected virtual async Task ActionsInit()
+        {
+            await Task.CompletedTask;
+        }
+
+        /// <summary>
+        /// Hook before applying actions on multiple tables.
+        /// </summary>
+        protected virtual async Task ActionsPreTablesApply()
+        {
+            await Task.CompletedTask;
+        }
+
+        /// <summary>
+        /// Hook before applying actions on a single table.
+        /// </summary>
+        protected virtual async Task ActionsPreTableApply(TableData tableData)
+        {
+            await Task.CompletedTask;
+        }
+
+        /// <summary>
+        /// Hook before applying actions on rows within a table.
+        /// </summary>
+        protected virtual async Task ActionsPreRowsApply(TableData tableData)
+        {
+            await Task.CompletedTask;
+        }
+
+        /// <summary>
+        /// Hook before applying actions on a single row.
+        /// </summary>
+        protected virtual async Task ActionsPreRowApply(RowBaseRowData rowData)
+        {
+            await Task.CompletedTask;
+        }
+
+        /// <summary>
+        /// Hook after applying actions on a single row.
+        /// </summary>
+        protected virtual async Task ActionsPostRowApply()
+        {
+            await Task.CompletedTask;
+        }
+
+        /// <summary>
+        /// Hook after applying actions on rows within a table.
+        /// </summary>
+        protected virtual async Task ActionsPostRowsApply(TableData tableData)
+        {
+            await Task.CompletedTask;
+        }
+
+        /// <summary>
+        /// Hook after applying actions on a single table.
+        /// </summary>
+        protected virtual async Task ActionsPostTableApply(TableData tableData)
+        {
+            await Task.CompletedTask;
+        }
+
+        /// <summary>
+        /// Hook after applying actions on multiple tables.
+        /// </summary>
+        protected virtual async Task ActionsPostTablesApply()
+        {
+            await Task.CompletedTask;
+        }
+
+        /// <summary>
+        /// Finalization hook.
+        /// </summary>
+        protected virtual async Task ActionsFinalize()
         {
             var name = string.IsNullOrWhiteSpace(Name) ? "!" : Name;
             Logger.Info(T._("{0}: parsed {1} values"), name, _parsedCount);
+            await Task.CompletedTask;
         }
-        protected virtual void CompleteSound() => System.Media.SystemSounds.Asterisk.Play();
+
+        /// <summary>
+        /// Plays completion sound.
+        /// </summary>
+        protected virtual async Task CompleteSound()
+        {
+            System.Media.SystemSounds.Asterisk.Play();
+            await Task.CompletedTask;
+        }
+
+        protected virtual bool IsOkSelected(TableData tableData) => true;
+        protected virtual bool IsOkTable(TableData tableData) => true;
+        protected virtual bool IsOkAll() => true;
+        protected virtual bool IsValidRow(RowBaseRowData rowData) =>
+            !AppSettings.IgnoreOrigEqualTransLines || !Equals(rowData.Original, rowData.Translation);
+        protected abstract bool Apply(RowBaseRowData rowData);
         #endregion
 
         #region Public/internal APIs
@@ -134,7 +211,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
             if (tableData == null || !IsOkSelected(tableData))
                 return false;
 
-            return ExecutePerTable(new[] { tableData }, new[] { realRowIdx });
+            return ExecutePerTableAsync(new[] { tableData }, new[] { realRowIdx }).GetAwaiter().GetResult();
         }
 
         /// <summary>
@@ -159,7 +236,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
             if (rowIndexes.Length == tableData.SelectedTable.Rows.Count)
                 rowIndexes = null;
 
-            return ExecutePerTable(new[] { tableData }, rowIndexes);
+            return ExecutePerTableAsync(new[] { tableData }, rowIndexes).GetAwaiter().GetResult();
         }
 
         /// <summary>
@@ -177,13 +254,16 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
             if (tables.Length == 0)
                 return false;
 
-            return ExecutePerTable(tables, null);
+            return ExecutePerTableAsync(tables, null).GetAwaiter().GetResult();
         }
 
         /// <summary>
         /// Async wrapper for Table().
         /// </summary>
-        internal async Task<bool> TableT() => await Task.Run(Table).ConfigureAwait(false);
+        internal async Task<bool> TableT() => await ExecutePerTableAsync(
+            GetSelectedTableIndexes()
+                .Select(idx => new TableData(AllFiles.Tables[idx], idx))
+                .ToArray(), null).ConfigureAwait(false);
 
         /// <summary>
         /// Process every table in the DataSet.
@@ -197,20 +277,23 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
             var all = Enumerable.Range(0, AllFiles.Tables.Count)
                 .Select(idx => new TableData(AllFiles.Tables[idx], idx))
                 .ToArray();
-            return ExecutePerTable(all, null);
+            return ExecutePerTableAsync(all, null).GetAwaiter().GetResult();
         }
 
         /// <summary>
         /// Async wrapper for All().
         /// </summary>
-        internal async Task<bool> AllT() => await Task.Run(All).ConfigureAwait(false);
+        internal async Task<bool> AllT() => await ExecutePerTableAsync(
+            Enumerable.Range(0, AllFiles.Tables.Count)
+                .Select(idx => new TableData(AllFiles.Tables[idx], idx))
+                .ToArray(), null).ConfigureAwait(false);
         #endregion
 
         #region Core execution
         /// <summary>
         /// Drives processing per table and per row.
         /// </summary>
-        private bool ExecutePerTable(TableData[] tables, int[] specificRowIndexes)
+        private async Task<bool> ExecutePerTableAsync(TableData[] tables, int[] specificRowIndexes)
         {
             Ret = false;
             ResetCounters(tables, specificRowIndexes);
@@ -219,26 +302,26 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
             IsTables = specificRowIndexes == null && tables.Length > 1;
             IsTable = specificRowIndexes == null && tables.Length == 1;
 
-            ActionsInit();
+            await ActionsInit().ConfigureAwait(false);
             if (IsTables)
-                ActionsPreTablesApply();
+                await ActionsPreTablesApply().ConfigureAwait(false);
 
             foreach (var tableData in tables)
             {
                 if (specificRowIndexes == null && !IsOkTable(tableData))
                     continue;
 
-                ActionsPreTableApply(tableData);
-                ExecuteRows(tableData, specificRowIndexes);
-                ActionsPostTableApply(tableData);
+                await ActionsPreTableApply(tableData).ConfigureAwait(false);
+                await ExecuteRowsAsync(tableData, specificRowIndexes).ConfigureAwait(false);
+                await ActionsPostTableApply(tableData).ConfigureAwait(false);
             }
 
             if (IsTables)
-                ActionsPostTablesApply();
+                await ActionsPostTablesApply().ConfigureAwait(false);
 
-            ActionsFinalize();
+            await ActionsFinalize().ConfigureAwait(false);
             if (IsTables || IsAll)
-                CompleteSound();
+                await CompleteSound().ConfigureAwait(false);
 
             return Ret;
         }
@@ -246,42 +329,49 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
         /// <summary>
         /// Iterate over specified or all rows in a table.
         /// </summary>
-        private void ExecuteRows(TableData tableData, int[] rowIndexes)
+        private async Task ExecuteRowsAsync(TableData tableData, int[] rowIndexes)
         {
             int count = rowIndexes?.Length ?? tableData.SelectedTable.Rows.Count;
             SelectedRowsCount = count;
             SelectedRowsCountRest = count;
-            ActionsPreRowsApply(tableData);
+            await ActionsPreRowsApply(tableData).ConfigureAwait(false);
 
             if (IsParallelRows)
             {
-                Parallel.For(0, count, i => ProcessRowSafe(tableData, rowIndexes == null ? i : rowIndexes[i]));
+                var tasks = new List<Task>();
+                for (int i = 0; i < count; i++)
+                {
+                    int index = rowIndexes == null ? i : rowIndexes[i];
+                    tasks.Add(Task.Run(() => ProcessRowSafeAsync(tableData, index)));
+                }
+                await Task.WhenAll(tasks).ConfigureAwait(false);
             }
             else
             {
                 for (int i = 0; i < count; i++)
                 {
-                    ProcessRowSafe(tableData, rowIndexes == null ? i : rowIndexes[i]);
+                    int index = rowIndexes == null ? i : rowIndexes[i];
+                    await ProcessRowSafeAsync(tableData, index).ConfigureAwait(false);
                 }
             }
 
-            ActionsPostRowsApply(tableData);
+            await ActionsPostRowsApply(tableData).ConfigureAwait(false);
         }
 
         /// <summary>
-        /// Runs hooks and Apply() for a single row.
+        /// Runs hooks and Apply() for a single row safely.
         /// </summary>
-        private void ProcessRowSafe(TableData tableData, int rowIndex)
+        private async Task ProcessRowSafeAsync(TableData tableData, int rowIndex)
         {
             if (rowIndex < 0 || rowIndex >= tableData.SelectedTable.Rows.Count)
                 return;
-            ProcessRow(tableData, rowIndex);
+            await ProcessRowAsync(tableData, rowIndex).ConfigureAwait(false);
         }
 
         /// <summary>
         /// Runs hooks and Apply() for a single row.
         /// </summary>
-        private void ProcessRow(TableData tableData, int rowIndex)
+        private async Task ProcessRowAsync(TableData tableData, int rowIndex)
         {
             SelectedTable = tableData.SelectedTable;
             SelectedTableIndex = tableData.SelectedTableIndex;
@@ -296,7 +386,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
             if (!IsValidRow(rowData))
                 return;
 
-            ActionsPreRowApply(rowData);
+            await ActionsPreRowApply(rowData).ConfigureAwait(false);
             try
             {
                 if (Apply(rowData))
@@ -309,7 +399,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
             {
                 Logger.Debug("Failed to parse row. Error: {0}", ex);
             }
-            ActionsPostRowApply();
+            await ActionsPostRowApply().ConfigureAwait(false);
         }
         #endregion
 

@@ -133,7 +133,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
         /// true if all DB was loaded
         /// </summary>
         bool _allDbLoaded4All;
-        protected async override void ActionsInit()
+        protected async override Task ActionsInit()
         {
             if (_allDbLoaded4All || !IsAll || !AppSettings.UseAllDBFilesForOnlineTranslationForAll) return;
 
@@ -152,11 +152,11 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
 
             Logger.Info(T._("Get all DB"));
 
-            await Task.Run(() => FunctionsDBFile.MergeAllDBtoOne()).ConfigureAwait(true);
+            await FunctionsDBFile.MergeAllDBtoOne().ConfigureAwait(false);
 
             _allDbLoaded4All = true;
         }
-        protected override void ActionsFinalize()
+        protected override Task ActionsFinalize()
         {
             if (_buffer.Count > 0) TranslateStrings();
 
@@ -172,6 +172,8 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
             {
                 Logger.Info(T._("Translation complete"));
             }
+
+            return Task.CompletedTask;
 
         }
 

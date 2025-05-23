@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 using TranslationHelper.Extensions;
 using TranslationHelper.Functions.FileElementsFunctions.Row.OnlineTranslate;
@@ -29,7 +30,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
             return true;
         }
 
-        protected override void ActionsFinalize()
+        protected override Task ActionsFinalize()
         {
             if (_found.Count > 0)
             {
@@ -49,6 +50,8 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
                 MessageBox.Show(resultMessage + $"\r\n\r\n({T._("Copied to clipboard")})");
             }
             else { MessageBox.Show(T._("No matching translation regex found..")); }
+
+            return Task.CompletedTask;
         }
     }
 }

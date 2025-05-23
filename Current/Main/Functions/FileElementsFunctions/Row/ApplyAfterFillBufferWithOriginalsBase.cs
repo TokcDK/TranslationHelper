@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace TranslationHelper.Functions.FileElementsFunctions.Row
 {
@@ -24,9 +25,11 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
 
         protected abstract bool ApplyToBuffered();
 
-        protected override void ActionsFinalize()
+        protected override Task ActionsFinalize()
         {
             ApplyToBuffered();
+
+            return Task.CompletedTask;
         }
     }
 }

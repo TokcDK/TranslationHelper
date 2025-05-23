@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text.RegularExpressions;
+using System.Threading.Tasks;
 using TranslationHelper.Extensions;
 using TranslationHelper.Functions.FileElementsFunctions.Row.ExtractedParser;
 using TranslationHelper.Functions.FileElementsFunctions.Row.OnlineTranslate;
@@ -26,17 +27,21 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row.StringCaseMorph
             _isAnimations = tableData.SelectedTable.TableName == Animations;
         }
 
-        protected override void ActionsPreRowsApply(TableData tableData)
+        protected override Task ActionsPreRowsApply(TableData tableData)
         {
             if (!IsAll && !IsTable)
             {
                 CheckAnims(tableData);
             }
+
+            return Task.CompletedTask;
         }
 
-        protected override void ActionsPreTableApply(TableData tableData)
+        protected override Task ActionsPreTableApply(TableData tableData)
         {
             CheckAnims(tableData);
+
+            return Task.CompletedTask;
         }
 
         /// <summary>

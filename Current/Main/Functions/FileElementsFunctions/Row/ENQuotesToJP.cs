@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Data;
 using System.Text.RegularExpressions;
+using System.Threading.Tasks;
 using TranslationHelper.Data;
 using TranslationHelper.Extensions;
 
@@ -43,13 +44,17 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
             return true;
         }
 
-        protected override void ActionsInit()
+        protected override Task ActionsInit()
         {
             PreLearn();
+
+            return Task.CompletedTask;
         }
-        protected override void ActionsFinalize()
+        protected override Task ActionsFinalize()
         {
             PostLearn();
+
+            return Task.CompletedTask;
         }
 
         static void PreLearn()

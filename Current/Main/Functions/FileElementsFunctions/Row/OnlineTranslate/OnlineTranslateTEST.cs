@@ -72,7 +72,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row.OnlineTranslate
         /// <summary>
         /// Initializes translation resources, such as loading DB files if needed.
         /// </summary>
-        protected async override void ActionsInit()
+        protected async override Task ActionsInit()
         {
             if (_allDbLoaded4All || !IsAll || !AppSettings.UseAllDBFilesForOnlineTranslationForAll) return;
 
@@ -90,19 +90,21 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row.OnlineTranslate
             }
 
             Logger.Info(T._("Get all DB"));
-            await Task.Run(() => FunctionsDBFile.MergeAllDBtoOne()).ConfigureAwait(true);
+            await FunctionsDBFile.MergeAllDBtoOne().ConfigureAwait(false);
             _allDbLoaded4All = true;
         }
 
         /// <summary>
         /// Finalizes translation by processing any remaining buffer and cleaning up.
         /// </summary>
-        protected override void ActionsFinalize()
+        protected override Task ActionsFinalize()
         {
             if (!_buffer.IsEmpty) TranslateStrings();
             _cache.Dispose();
             if (AppSettings.InterruptTtanslation) AppSettings.InterruptTtanslation = false;
             Logger.Info(T._("Translation complete"));
+
+            return Task.CompletedTask;
         }
 
         private string _lastTableName = string.Empty;
