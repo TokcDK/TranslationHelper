@@ -234,9 +234,9 @@ namespace TranslationHelper.Main.Functions
                     }
                 }
             }
-            catch
+            catch (Exception ex)
             {
-
+                Logger.Debug("Error in {0}. Error {1}", nameof(TheDataSetIsNotEmpty), ex);
             }
 
             return false;
