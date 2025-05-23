@@ -131,9 +131,10 @@ namespace TranslationHelper.Main.Functions
 
                 AppData.Main.THFileElementsDataGridView.CurrentCell = AppData.Main.THFileElementsDataGridView[columnName, rowIndex];
 
-                //scrool to selected cell
-                //https://stackoverflow.com/a/51399750
-                AppData.Main.THFileElementsDataGridView.FirstDisplayedScrollingRowIndex = rowIndex;
+                if (AppData.Main.THFileElementsDataGridView.Rows.Count > rowIndex && rowIndex >= 0)
+                {
+                    AppData.Main.THFileElementsDataGridView.FirstDisplayedScrollingRowIndex = rowIndex;
+                }
 
                 FunctionsUI.UpdateTextboxes();
             }
