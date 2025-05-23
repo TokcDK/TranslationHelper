@@ -566,7 +566,7 @@ namespace TranslationHelper.Functions
 
             if (!AppSettings.ProjectIsOpened) return;
 
-            await Task.Run(() => new AutoSameForSimular().Rows()).ConfigureAwait(true);
+            await new AutoSameForSimular().Rows().ConfigureAwait(true);
             //await Task.Run(() => FunctionAutoSave.Autosave()).ConfigureAwait(true);// save on each change is killing system..       
 
             FunctionsUI.UpdateTranslationTextBoxValue(sender, e);
