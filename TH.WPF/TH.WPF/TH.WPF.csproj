@@ -8,7 +8,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="DataGridExtensions" Version="2.5.13" />
+    <PackageReference Include="DataGridExtensions" Version="2.6.0" />
   </ItemGroup>
 
   <ItemGroup>
