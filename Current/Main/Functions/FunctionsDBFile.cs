@@ -538,7 +538,17 @@ namespace TranslationHelper.Main.Functions
             foreach (var dbFile in Directory.EnumerateFiles(dbDir, "*", SearchOption.AllDirectories))
             {
                 var ext = Path.GetExtension(dbFile);
-                if ((ext != ".xml" && ext != ".cmx" && ext != ".cmz") || dbFile.Contains("THTranslationCache") || dbFile.Contains("_autosave") || Path.GetFileName(Path.GetDirectoryName(dbFile)) == THSettings.DBAutoSavesDirName)
+                string dbFileName = Path.GetFileNameWithoutExtension(dbFile);
+                if ((ext != ".xml" && ext != ".cmx" && ext != ".cmz") 
+                    || dbFile.Contains("THTranslationCache") 
+                    || dbFile.Contains("_autosave")
+                    || Path.GetFileName(Path.GetDirectoryName(dbFile)) == THSettings.DBAutoSavesDirName)
+                {
+                    continue;
+                }
+
+                // skip when file name ends with '_bak#' or '_bak'
+                if (Regex.IsMatch(dbFileName, @"_bak\d*$"))
                 {
                     continue;
                 }
