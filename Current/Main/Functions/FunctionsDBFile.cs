@@ -44,9 +44,9 @@ namespace TranslationHelper.Main.Functions
         /// </summary>
         /// <param name="dataSet"></param>
         /// <param name="dbFilePath"></param>
-        public static void ReadDBFile(DataSet dataSet, string dbFilePath, bool useOriginaldbFilePath = false)
+        public static Task ReadDBFile(DataSet dataSet, string dbFilePath, bool useOriginaldbFilePath = false)
         {
-            ReadWriteDBFile(dataSet: dataSet, dbFilePath: dbFilePath, useOriginaldbFilePath: useOriginaldbFilePath);
+            return ReadWriteDBFile(dataSet: dataSet, dbFilePath: dbFilePath, useOriginaldbFilePath: useOriginaldbFilePath);
         }
 
         /// <summary>
@@ -66,9 +66,9 @@ namespace TranslationHelper.Main.Functions
         /// </summary>
         /// <param name="dataSet"></param>
         /// <param name="dbFilePath"></param>
-        public static void WriteDBFile(DataSet dataSet, string dbFilePath, bool useOriginaldbFilePath = false)
+        public static Task WriteDBFile(DataSet dataSet, string dbFilePath, bool useOriginaldbFilePath = false)
         {
-            ReadWriteDBFile(dataSet: dataSet, dbFilePath: dbFilePath, isRead: false, useOriginaldbFilePath: useOriginaldbFilePath);
+            return ReadWriteDBFile(dataSet: dataSet, dbFilePath: dbFilePath, isRead: false, useOriginaldbFilePath: useOriginaldbFilePath);
         }
 
         private static readonly ReaderWriterLockSlim _writeDBWriteLocker = new ReaderWriterLockSlim();
@@ -78,7 +78,7 @@ namespace TranslationHelper.Main.Functions
         /// <param name="dataSet"></param>
         /// <param name="dbFilePath"></param>
         /// <param name="isRead"></param>
-        internal static void ReadWriteDBFile(DataSet dataSet, string dbFilePath, bool isRead = true, bool useOriginaldbFilePath = false)
+        internal static Task ReadWriteDBFile(DataSet dataSet, string dbFilePath, bool isRead = true, bool useOriginaldbFilePath = false)
         {
             var dbFormat = FunctionsInterfaces.GetCurrentDBFormat(Path.GetExtension(dbFilePath));
             dbFilePath = useOriginaldbFilePath ? dbFilePath : Path.Combine(Path.GetDirectoryName(dbFilePath), Path.GetFileNameWithoutExtension(dbFilePath) + "." + dbFormat.Ext);
@@ -95,6 +95,8 @@ namespace TranslationHelper.Main.Functions
                     dbFormat.Write(dbFilePath, dataSet);
                 }
             }
+
+            return Task.CompletedTask;
         }
 
         /// <summary>
@@ -102,11 +104,11 @@ namespace TranslationHelper.Main.Functions
         /// </summary>
         /// <param name="dataSet"></param>
         /// <param name="dbFilePaths">list of paths to read save</param>
-        internal static void WriteDBFile(DataSet dataSet, string[] dbFilePaths, bool useOriginaldbFilePath = false)
+        internal static async Task WriteDBFile(DataSet dataSet, string[] dbFilePaths, bool useOriginaldbFilePath = false)
         {
-            foreach(var dbFilePath in dbFilePaths)
+            foreach (var dbFilePath in dbFilePaths)
             {
-                ReadWriteDBFile(dataSet, dbFilePath, false, useOriginaldbFilePath);
+                await ReadWriteDBFile(dataSet, dbFilePath, false, useOriginaldbFilePath);
             }
         }
 
@@ -513,7 +515,7 @@ namespace TranslationHelper.Main.Functions
 
                 var newestFilesList = GetNewestFIlesList(THSettings.DBDirPathByLanguage);
 
-                foreach(var dbFile in newestFilesList)
+                foreach (var dbFile in newestFilesList)
                 {
                     try
                     {
@@ -541,8 +543,8 @@ namespace TranslationHelper.Main.Functions
             {
                 var ext = Path.GetExtension(dbFile);
                 string dbFileName = Path.GetFileNameWithoutExtension(dbFile);
-                if ((ext != ".xml" && ext != ".cmx" && ext != ".cmz") 
-                    || dbFile.Contains("THTranslationCache") 
+                if ((ext != ".xml" && ext != ".cmx" && ext != ".cmz")
+                    || dbFile.Contains("THTranslationCache")
                     || dbFile.Contains("_autosave")
                     || Path.GetFileName(Path.GetDirectoryName(dbFile)) == THSettings.DBAutoSavesDirName)
                 {
@@ -616,7 +618,7 @@ namespace TranslationHelper.Main.Functions
                 foundDBFiles.Add(PathForFormat);
             }
 
-            if(foundDBFiles.Count==0) return inputDbPath;
+            if (foundDBFiles.Count == 0) return inputDbPath;
             if (foundDBFiles.Count == 1)
             {
                 return foundDBFiles[0];
@@ -626,7 +628,7 @@ namespace TranslationHelper.Main.Functions
 
             if (foundDBFiles.Count == 2) return newestDbPath;
 
-            for (int i = 2; i < foundDBFiles.Count; i++) 
+            for (int i = 2; i < foundDBFiles.Count; i++)
             {
                 newestDbPath = GetNewestDbPath(newestDbPath, foundDBFiles[i]);
             }
@@ -656,13 +658,13 @@ namespace TranslationHelper.Main.Functions
 
                     using (DataSet liteds = FunctionsTable.GetDataSetWithoutEmptyTableRows(ds))
                     {
-                        await Task.Run(() => FunctionsDBFile.WriteDBFile(liteds, fileName)).ConfigureAwait(true);
+                        await FunctionsDBFile.WriteDBFile(liteds, fileName).ConfigureAwait(false);
                     }
 
                     //AppData.Settings.THConfigINI.SetKey("Paths", "LastAutoSavePath", lastautosavepath);
                 }
-                catch
-                {
+                catch (Exception ex) {
+                    Logger.Warn("Error writing DB file: {0}", ex);
                 }
             }
         }
@@ -751,7 +753,7 @@ namespace TranslationHelper.Main.Functions
             _ = AppData.Main.THFilesList.Invoke((Action)(() => AppData.Main.THFilesList.Refresh()));
         }
 
-        public static Task ReadDBAndLoadDBCompare(DataSet dbDataSet, string sPath, bool forceOverwriteTranslations = false)
+        public static async Task ReadDBAndLoadDBCompare(DataSet dbDataSet, string sPath, bool forceOverwriteTranslations = false)
         {
             if (sPath.Length == 0)
             {
@@ -760,8 +762,7 @@ namespace TranslationHelper.Main.Functions
 
             if (!File.Exists(sPath))
             {
-                
-                return Task.CompletedTask;
+                return;
             }
 
             Logger.Info(T._("Reading DB File") + "...");
@@ -769,7 +770,7 @@ namespace TranslationHelper.Main.Functions
             try
             {
                 //load new data
-                FunctionsDBFile.ReadDBFile(dbDataSet, sPath);
+                await FunctionsDBFile.ReadDBFile(dbDataSet, sPath).ConfigureAwait(false);
 
                 //отключение DataSource для избежания проблем от изменений DataGridView
                 //bool tableSourceWasCleaned = false;
@@ -816,14 +817,10 @@ namespace TranslationHelper.Main.Functions
                 //new FunctionsLoadTranslationDB().THLoadDBCompareFromDictionary(FunctionsDBFile.ReadXMLDBToDictionary(sPath));
 
             }
-            catch
+            catch (Exception ex)
             {
-
+                Logger.Warn(ex, T._("Error") + " " + T._("Loading DB File") + ": " + sPath);
             }
-
-            
-
-            return Task.CompletedTask;
         }
     }
 }

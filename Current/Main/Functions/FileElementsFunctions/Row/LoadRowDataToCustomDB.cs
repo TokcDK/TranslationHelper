@@ -15,7 +15,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
 
         Dictionary<string, string> _dict = new Dictionary<string, string>();
         string _custom = THSettings.CustomDBPath;
-        protected override Task ActionsInit()
+        protected async override Task ActionsInit()
         {
             //load DB if need
             if (File.Exists(_custom))
@@ -24,31 +24,19 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
                 {
                     Logger.Info("Load custom DB");
 
-                    var loadcustom = new Task(() => FunctionsDBFile.ReadDBFile(dbDataSet, _custom));
-                    loadcustom.ConfigureAwait(true);
-                    loadcustom.Start();
-                    loadcustom.Wait();
+                    await FunctionsDBFile.ReadDBFile(dbDataSet, _custom).ConfigureAwait(false);
 
-                    _dict = dbDataSet.ToDictionary();
-
-                    
+                    _dict = dbDataSet.ToDictionary();                    
                 }
             }
-
-            return Task.CompletedTask;
         }
 
-        protected override Task ActionsFinalize()
+        protected override async Task ActionsFinalize()
         {
             //save DB
             Logger.Info("Save custom DB");
 
-            var loadcustom = new Task(() => FunctionsDBFile.WriteDBFile(_dict.ToDataSet(), _custom));
-            loadcustom.ConfigureAwait(true);
-            loadcustom.Start();
-            loadcustom.Wait();
-
-            return Task.CompletedTask;
+            await FunctionsDBFile.WriteDBFile(_dict.ToDataSet(), _custom).ConfigureAwait(false);
         }
 
         protected override bool Apply(RowBaseRowData rowData)
