@@ -25,6 +25,7 @@ namespace TranslationHelper.Data
 
         internal static string ApplicationLogName => AppSettings.ApplicationProductName + ".log";
 
+        internal static string TranslationFileSourceDirSuffix { get => "THTranslationDB"; }
 
         internal static string DBDirName => "DB";
 

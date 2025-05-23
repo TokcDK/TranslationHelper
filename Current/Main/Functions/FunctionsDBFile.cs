@@ -598,7 +598,7 @@ namespace TranslationHelper.Main.Functions
 
             var foundDBFiles = new List<string>();
 
-            var pathNextToSource = Path.Combine(AppData.CurrentProject.SelectedDir, Data.AppData.TranslationFileSourceDirSuffix);
+            var pathNextToSource = Path.Combine(AppData.CurrentProject.SelectedDir, Data.THSettings.TranslationFileSourceDirSuffix);
             foreach (var format in FunctionsInterfaces.GetDBSaveFormats()) // search in game dir
             {
                 var PathForFormat = pathNextToSource + "." + format.Ext;
