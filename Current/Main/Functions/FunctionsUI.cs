@@ -549,9 +549,10 @@ namespace TranslationHelper.Functions
         {
             if (AppData.CurrentProject == null) return;
             if (e.ColumnIndex != AppData.CurrentProject.TranslationColumnIndex) return;
+            if(!(sender is DataGridView dgv)) return;
 
             // Get the new value of the cell
-            DataGridViewCell cell = (sender as DataGridView).Rows[e.RowIndex].Cells[e.ColumnIndex];
+            DataGridViewCell cell = dgv.Rows[e.RowIndex].Cells[e.ColumnIndex];
             string newValue = cell.Value.ToString();
 
             // Get the old value of the cell
