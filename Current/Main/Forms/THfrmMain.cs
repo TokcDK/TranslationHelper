@@ -63,7 +63,7 @@ namespace TranslationHelper
         //http://qaru.site/questions/180337/show-row-number-in-row-header-of-a-datagridview
         private void THFileElementsDataGridView_RowPostPaint(object sender, DataGridViewRowPostPaintEventArgs e)
         {
-            FunctionsUI.PaintDigitInFrontOfRow(sender, e);
+            // FunctionsUI.PaintDigitInFrontOfRow(sender, e); // temp disabled to check crash app scrool related
         }
 
         //Пример виртуального режима
