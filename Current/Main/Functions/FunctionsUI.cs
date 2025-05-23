@@ -553,13 +553,13 @@ namespace TranslationHelper.Functions
 
             // Get the new value of the cell
             DataGridViewCell cell = dgv.Rows[e.RowIndex].Cells[e.ColumnIndex];
-            string newValue = cell.Value.ToString();
+            var newValue = cell.Value;
 
             // Get the old value of the cell
-            string oldValue = cell.Tag.ToString();
+            var oldValue = cell.Tag;
 
             // Compare the new value with the old value and return if new value is same
-            if (!newValue.Equals(oldValue) && !string.IsNullOrEmpty(newValue))
+            if (!string.Equals(newValue, oldValue) && !string.IsNullOrEmpty(newValue + ""))
             {
                 cell.Tag = newValue;
             }
