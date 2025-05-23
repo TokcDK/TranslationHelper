@@ -205,20 +205,20 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
         /// <param name="tableIndex">Index of table in DataSet; -1 to use UI selection.</param>
         /// <param name="rowIndex">Row index; -1 to use UI selection.</param>
         /// <returns>True if any Apply() succeeded.</returns>
-        internal bool Selected(DataRow row, int tableIndex = -1, int rowIndex = -1)
+        internal async Task<bool> Selected(DataRow row, int tableIndex = -1, int rowIndex = -1)
         {
             ResolveSingleContext(row, ref tableIndex, ref rowIndex, out var tableData, out var realRowIdx);
             if (tableData == null || !IsOkSelected(tableData))
                 return false;
 
-            return ExecutePerTableAsync(new[] { tableData }, new[] { realRowIdx }).GetAwaiter().GetResult();
+            return await ExecutePerTableAsync(new[] { tableData }, new[] { realRowIdx }).ConfigureAwait(false);
         }
 
         /// <summary>
         /// Process multiple selected rows in the currently selected table.
         /// </summary>
         /// <returns>True if any Apply() succeeded.</returns>
-        internal bool Rows()
+        internal async Task<bool> Rows()
         {
             var tableIndexes = GetSelectedTableIndexes();
             if (tableIndexes.Length != 1)
@@ -236,14 +236,14 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
             if (rowIndexes.Length == tableData.SelectedTable.Rows.Count)
                 rowIndexes = null;
 
-            return ExecutePerTableAsync(new[] { tableData }, rowIndexes).GetAwaiter().GetResult();
+            return await ExecutePerTableAsync(new[] { tableData }, rowIndexes).ConfigureAwait(false);
         }
 
         /// <summary>
         /// Process one or more user-selected tables fully.
         /// </summary>
         /// <returns>True if any Apply() succeeded.</returns>
-        internal bool Table()
+        internal async Task<bool> Table()
         {
             if (!IsOkAll())
                 return false;
@@ -254,7 +254,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
             if (tables.Length == 0)
                 return false;
 
-            return ExecutePerTableAsync(tables, null).GetAwaiter().GetResult();
+            return await ExecutePerTableAsync(tables, null).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -269,7 +269,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
         /// Process every table in the DataSet.
         /// </summary>
         /// <returns>True if any Apply() succeeded.</returns>
-        internal bool All()
+        internal async Task<bool> All()
         {
             if (!IsOkAll())
                 return false;
@@ -277,7 +277,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
             var all = Enumerable.Range(0, AllFiles.Tables.Count)
                 .Select(idx => new TableData(AllFiles.Tables[idx], idx))
                 .ToArray();
-            return ExecutePerTableAsync(all, null).GetAwaiter().GetResult();
+            return await ExecutePerTableAsync(all, null).ConfigureAwait(false);
         }
 
         /// <summary>
