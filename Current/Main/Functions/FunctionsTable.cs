@@ -1,4 +1,5 @@
 ﻿
+using NLog;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -15,6 +16,8 @@ namespace TranslationHelper.Main.Functions
 {
     static class FunctionsTable
     {
+        private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
+
         /// <summary>
         /// Will return array with real indexes of rows in dataset which currently selected in datagridview
         /// </summary>
@@ -137,8 +140,7 @@ namespace TranslationHelper.Main.Functions
             catch (Exception ex)
             {
                 string error = "Error:" + Environment.NewLine + ex + Environment.NewLine + "rowIndex=" + rowIndex + Environment.NewLine + "tableIndex=" + tableIndex + Environment.NewLine + "table rows count=" + RCount;
-                FileWriter.WriteData(Path.Combine(Application.StartupPath, Application.ProductName), error + Environment.NewLine + Environment.NewLine);
-                MessageBox.Show(error);
+                Logger.Error(error);
             }
         }
 
@@ -179,8 +181,7 @@ namespace TranslationHelper.Main.Functions
             catch (Exception ex)
             {
                 string error = "Error:" + Environment.NewLine + ex + Environment.NewLine + "rowIndex=" + rowIndex + Environment.NewLine + "tableIndex=" + tableIndex + Environment.NewLine + "table rows count=" + RCount;
-                FileWriter.WriteData(Path.Combine(Application.StartupPath, Application.ProductName), error + Environment.NewLine + Environment.NewLine);
-                MessageBox.Show(error);
+                Logger.Error(error);
             }
         }
 
