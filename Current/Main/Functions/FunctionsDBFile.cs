@@ -513,7 +513,7 @@ namespace TranslationHelper.Main.Functions
 
                 var newestFilesList = GetNewestFIlesList(THSettings.DBDirPathByLanguage);
 
-                Parallel.ForEach(newestFilesList, dbFile =>
+                foreach(var dbFile in newestFilesList)
                 {
                     try
                     {
@@ -528,7 +528,7 @@ namespace TranslationHelper.Main.Functions
                     catch
                     {
                     }
-                });
+                }
             }
         }
 
