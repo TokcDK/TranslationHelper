@@ -476,8 +476,9 @@ namespace TranslationHelper.Main.Functions
                     FunctionsTable.ShowSelectedRow(tableindex, columnName, realRowIndex);
                 }
             }
-            catch
+            catch (Exception ex)
             {
+                Logger.Debug("ResetTable error: {0}", ex);
             }
         }
 
