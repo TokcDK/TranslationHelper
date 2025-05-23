@@ -106,6 +106,28 @@ namespace TranslationHelper.Main.Functions
                 return;
             }
 
+            ShowSelectedRowCore(tableIndex, rowIndex, AppData.Main.THFileElementsDataGridView[columnName, rowIndex]);
+        }
+
+        /// <summary>
+        /// shows selected row in selected table
+        /// </summary>
+        /// <param name="projectData"></param>
+        /// <param name="tableIndex"></param>
+        /// <param name="columnIndex"></param>
+        /// <param name="rowIndex"></param>
+        internal static void ShowSelectedRow(int tableIndex, int columnIndex, int rowIndex)
+        {
+            if (tableIndex == -1 || tableIndex > AppData.CurrentProject.FilesContent.Tables.Count - 1 || columnIndex == -1 || columnIndex > AppData.CurrentProject.FilesContent.Tables[tableIndex].Columns.Count - 1)
+            {
+                return;
+            }
+
+            ShowSelectedRowCore(tableIndex, rowIndex, AppData.Main.THFileElementsDataGridView[columnIndex, rowIndex]);
+        }
+
+        private static void ShowSelectedRowCore(int tableIndex, int rowIndex, DataGridViewCell currentCell)
+        {
             int RCount = 0;//for debug purposes
             try
             {
@@ -129,7 +151,7 @@ namespace TranslationHelper.Main.Functions
                     AppData.Main.THFileElementsDataGridView.Refresh();
                 }
 
-                AppData.Main.THFileElementsDataGridView.CurrentCell = AppData.Main.THFileElementsDataGridView[columnName, rowIndex];
+                AppData.Main.THFileElementsDataGridView.CurrentCell = currentCell;
 
                 if (AppData.Main.THFileElementsDataGridView.Rows.Count > rowIndex && rowIndex >= 0)
                 {
@@ -137,48 +159,6 @@ namespace TranslationHelper.Main.Functions
                 }
 
                 FunctionsUI.UpdateTextboxes();
-            }
-            catch (Exception ex)
-            {
-                string error = "Error:" + Environment.NewLine + ex + Environment.NewLine + "rowIndex=" + rowIndex + Environment.NewLine + "tableIndex=" + tableIndex + Environment.NewLine + "table rows count=" + RCount;
-                Logger.Error(error);
-            }
-        }
-
-        /// <summary>
-        /// shows selected row in selected table
-        /// </summary>
-        /// <param name="projectData"></param>
-        /// <param name="tableIndex"></param>
-        /// <param name="columnIndex"></param>
-        /// <param name="rowIndex"></param>
-        internal static void ShowSelectedRow(int tableIndex, int columnIndex, int rowIndex)
-        {
-            if (tableIndex == -1 || tableIndex > AppData.CurrentProject.FilesContent.Tables.Count - 1 || columnIndex == -1 || columnIndex > AppData.CurrentProject.FilesContent.Tables[tableIndex].Columns.Count - 1)
-            {
-                return;
-            }
-
-            int RCount = 0;//for debug purposes
-            try
-            {
-                RCount = AppData.CurrentProject.FilesContent.Tables[tableIndex].Rows.Count;
-                if (tableIndex == AppData.Main.THFilesList.GetSelectedIndex() && RCount > 0 && AppData.Main.THFileElementsDataGridView.DataSource != null)
-                {
-                }
-                else
-                {
-                    AppData.Main.THFilesList.SetSelectedIndex(tableIndex);
-                    AppData.Main.THFileElementsDataGridView.DataSource = AppData.CurrentProject.FilesContent.Tables[tableIndex];
-
-                }
-
-                AppData.Main.THFileElementsDataGridView.CurrentCell = AppData.Main.THFileElementsDataGridView[columnIndex, rowIndex];
-
-                if (AppData.Main.THFileElementsDataGridView.Rows.Count > rowIndex && rowIndex >= 0)
-                {
-                    AppData.Main.THFileElementsDataGridView.FirstDisplayedScrollingRowIndex = rowIndex;
-                }
             }
             catch (Exception ex)
             {
