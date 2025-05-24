@@ -31,9 +31,7 @@ namespace TranslationHelper
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle7 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle8 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle9 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
             this.MainMenus = new System.Windows.Forms.MenuStrip();
             this.mainMenusHereToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.editToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -52,9 +50,8 @@ namespace TranslationHelper
             this.THFilesList = new System.Windows.Forms.ListBox();
             this.tlpFileElements = new System.Windows.Forms.TableLayoutPanel();
             this.tlpFileElementsFilterAndReset = new System.Windows.Forms.TableLayoutPanel();
-            this.THFiltersDataGridView = new System.Windows.Forms.DataGridView();
             this.THbtnMainResetTable = new System.Windows.Forms.Button();
-            this.THFileElementsDataGridView = new AdvancedDataGridView();
+            this.THFileElementsDataGridView = new Zuby.ADGV.AdvancedDataGridView();
             this.THTextInfoAndEditPanel = new System.Windows.Forms.Panel();
             this.THInfoEditSplitContainer = new System.Windows.Forms.SplitContainer();
             this.THInfoTextBox = new System.Windows.Forms.TextBox();
@@ -71,10 +68,10 @@ namespace TranslationHelper
             this.TargetTextBoxColumnPositionLabelData = new System.Windows.Forms.Label();
             this.TableCompleteInfoLabel = new System.Windows.Forms.Label();
             this.mainFormRootWorkspaceLogContainer = new System.Windows.Forms.SplitContainer();
-            this.rtbLog = new System.Windows.Forms.RichTextBox();
-            this.logSplitter = new System.Windows.Forms.Splitter();
             this.LogTableLayoutPanel = new System.Windows.Forms.TableLayoutPanel();
+            this.rtbLog = new System.Windows.Forms.RichTextBox();
             this.OpenCurrentLogFileButton = new System.Windows.Forms.Button();
+            this.logSplitter = new System.Windows.Forms.Splitter();
             this.MainMenus.SuspendLayout();
             this.frmMainPanel.SuspendLayout();
             this.tlpFrmMain.SuspendLayout();
@@ -90,7 +87,6 @@ namespace TranslationHelper
             this.THFilesListPanel.SuspendLayout();
             this.tlpFileElements.SuspendLayout();
             this.tlpFileElementsFilterAndReset.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.THFiltersDataGridView)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.THFileElementsDataGridView)).BeginInit();
             this.THTextInfoAndEditPanel.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.THInfoEditSplitContainer)).BeginInit();
@@ -287,7 +283,6 @@ namespace TranslationHelper
             this.tlpFileElementsFilterAndReset.ColumnCount = 2;
             this.tlpFileElementsFilterAndReset.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
             this.tlpFileElementsFilterAndReset.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 20F));
-            this.tlpFileElementsFilterAndReset.Controls.Add(this.THFiltersDataGridView, 0, 0);
             this.tlpFileElementsFilterAndReset.Controls.Add(this.THbtnMainResetTable, 1, 0);
             this.tlpFileElementsFilterAndReset.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tlpFileElementsFilterAndReset.Location = new System.Drawing.Point(1, 1);
@@ -297,47 +292,6 @@ namespace TranslationHelper
             this.tlpFileElementsFilterAndReset.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
             this.tlpFileElementsFilterAndReset.Size = new System.Drawing.Size(655, 23);
             this.tlpFileElementsFilterAndReset.TabIndex = 0;
-            // 
-            // THFiltersDataGridView
-            // 
-            this.THFiltersDataGridView.AllowUserToAddRows = false;
-            this.THFiltersDataGridView.AllowUserToDeleteRows = false;
-            this.THFiltersDataGridView.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
-            this.THFiltersDataGridView.AutoSizeRowsMode = System.Windows.Forms.DataGridViewAutoSizeRowsMode.DisplayedCellsExceptHeaders;
-            this.THFiltersDataGridView.BackgroundColor = System.Drawing.SystemColors.ButtonHighlight;
-            this.THFiltersDataGridView.BorderStyle = System.Windows.Forms.BorderStyle.None;
-            this.THFiltersDataGridView.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.THFiltersDataGridView.ColumnHeadersVisible = false;
-            dataGridViewCellStyle7.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle7.BackColor = System.Drawing.SystemColors.Window;
-            dataGridViewCellStyle7.Font = new System.Drawing.Font("Tahoma", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            dataGridViewCellStyle7.ForeColor = System.Drawing.SystemColors.ControlText;
-            dataGridViewCellStyle7.SelectionBackColor = System.Drawing.SystemColors.HighlightText;
-            dataGridViewCellStyle7.SelectionForeColor = System.Drawing.SystemColors.ControlText;
-            dataGridViewCellStyle7.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
-            this.THFiltersDataGridView.DefaultCellStyle = dataGridViewCellStyle7;
-            this.THFiltersDataGridView.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.THFiltersDataGridView.EditMode = System.Windows.Forms.DataGridViewEditMode.EditOnEnter;
-            this.THFiltersDataGridView.Enabled = false;
-            this.THFiltersDataGridView.Location = new System.Drawing.Point(1, 1);
-            this.THFiltersDataGridView.Margin = new System.Windows.Forms.Padding(1);
-            this.THFiltersDataGridView.Name = "THFiltersDataGridView";
-            dataGridViewCellStyle8.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle8.BackColor = System.Drawing.SystemColors.Control;
-            dataGridViewCellStyle8.Font = new System.Drawing.Font("Tahoma", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            dataGridViewCellStyle8.ForeColor = System.Drawing.SystemColors.WindowText;
-            dataGridViewCellStyle8.SelectionBackColor = System.Drawing.SystemColors.Control;
-            dataGridViewCellStyle8.SelectionForeColor = System.Drawing.SystemColors.Desktop;
-            dataGridViewCellStyle8.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
-            this.THFiltersDataGridView.RowHeadersDefaultCellStyle = dataGridViewCellStyle8;
-            this.THFiltersDataGridView.RowTemplate.Height = 23;
-            this.THFiltersDataGridView.Size = new System.Drawing.Size(633, 21);
-            this.THFiltersDataGridView.TabIndex = 3;
-            this.THFiltersDataGridView.CellClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.THFiltersDataGridView_CellClick);
-            this.THFiltersDataGridView.CellValueChanged += new System.Windows.Forms.DataGridViewCellEventHandler(this.THFiltersDataGridView_CellValueChanged);
-            this.THFiltersDataGridView.RowPostPaint += new System.Windows.Forms.DataGridViewRowPostPaintEventHandler(this.THFiltersDataGridView_RowPostPaint);
-            this.THFiltersDataGridView.MouseEnter += new System.EventHandler(this.THFiltersDataGridView_MouseEnter);
-            this.THFiltersDataGridView.MouseLeave += new System.EventHandler(this.THFiltersDataGridView_MouseLeave);
             // 
             // THbtnMainResetTable
             // 
@@ -363,13 +317,18 @@ namespace TranslationHelper
             this.THFileElementsDataGridView.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.THFileElementsDataGridView.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.THFileElementsDataGridView.EditMode = System.Windows.Forms.DataGridViewEditMode.EditOnKeystroke;
+            this.THFileElementsDataGridView.FilterAndSortEnabled = true;
+            this.THFileElementsDataGridView.FilterStringChangedInvokeBeforeDatasourceUpdate = true;
             this.THFileElementsDataGridView.Location = new System.Drawing.Point(1, 26);
             this.THFileElementsDataGridView.Margin = new System.Windows.Forms.Padding(1, 1, 3, 1);
+            this.THFileElementsDataGridView.MaxFilterButtonImageHeight = 23;
             this.THFileElementsDataGridView.Name = "THFileElementsDataGridView";
-            dataGridViewCellStyle9.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
-            this.THFileElementsDataGridView.RowsDefaultCellStyle = dataGridViewCellStyle9;
+            this.THFileElementsDataGridView.RightToLeft = System.Windows.Forms.RightToLeft.No;
+            dataGridViewCellStyle1.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
+            this.THFileElementsDataGridView.RowsDefaultCellStyle = dataGridViewCellStyle1;
             this.THFileElementsDataGridView.RowTemplate.Height = 23;
             this.THFileElementsDataGridView.Size = new System.Drawing.Size(653, 281);
+            this.THFileElementsDataGridView.SortStringChangedInvokeBeforeDatasourceUpdate = true;
             this.THFileElementsDataGridView.TabIndex = 2;
             this.THFileElementsDataGridView.CellBeginEdit += new System.Windows.Forms.DataGridViewCellCancelEventHandler(this.THFileElementsDataGridView_CellBeginEdit);
             this.THFileElementsDataGridView.CellClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.THFileElementsDataGridView_CellClick);
@@ -608,28 +567,6 @@ namespace TranslationHelper
             this.mainFormRootWorkspaceLogContainer.SplitterDistance = 425;
             this.mainFormRootWorkspaceLogContainer.TabIndex = 17;
             // 
-            // rtbLog
-            // 
-            this.rtbLog.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.rtbLog.Location = new System.Drawing.Point(0, 0);
-            this.rtbLog.Margin = new System.Windows.Forms.Padding(0);
-            this.rtbLog.Name = "rtbLog";
-            this.rtbLog.ReadOnly = true;
-            this.rtbLog.Size = new System.Drawing.Size(775, 53);
-            this.rtbLog.TabIndex = 1;
-            this.rtbLog.Text = "";
-            // 
-            // logSplitter
-            // 
-            this.logSplitter.BackColor = System.Drawing.SystemColors.ActiveBorder;
-            this.logSplitter.Dock = System.Windows.Forms.DockStyle.Top;
-            this.logSplitter.Location = new System.Drawing.Point(0, 0);
-            this.logSplitter.Margin = new System.Windows.Forms.Padding(1);
-            this.logSplitter.Name = "logSplitter";
-            this.logSplitter.Size = new System.Drawing.Size(790, 3);
-            this.logSplitter.TabIndex = 0;
-            this.logSplitter.TabStop = false;
-            // 
             // LogTableLayoutPanel
             // 
             this.LogTableLayoutPanel.ColumnCount = 2;
@@ -645,6 +582,17 @@ namespace TranslationHelper
             this.LogTableLayoutPanel.Size = new System.Drawing.Size(790, 53);
             this.LogTableLayoutPanel.TabIndex = 2;
             // 
+            // rtbLog
+            // 
+            this.rtbLog.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.rtbLog.Location = new System.Drawing.Point(0, 0);
+            this.rtbLog.Margin = new System.Windows.Forms.Padding(0);
+            this.rtbLog.Name = "rtbLog";
+            this.rtbLog.ReadOnly = true;
+            this.rtbLog.Size = new System.Drawing.Size(775, 53);
+            this.rtbLog.TabIndex = 1;
+            this.rtbLog.Text = "";
+            // 
             // OpenCurrentLogFileButton
             // 
             this.OpenCurrentLogFileButton.Dock = System.Windows.Forms.DockStyle.Fill;
@@ -656,6 +604,17 @@ namespace TranslationHelper
             this.OpenCurrentLogFileButton.Text = ">";
             this.OpenCurrentLogFileButton.UseVisualStyleBackColor = true;
             this.OpenCurrentLogFileButton.Click += new System.EventHandler(this.OpenCurrentLogFileButton_Click);
+            // 
+            // logSplitter
+            // 
+            this.logSplitter.BackColor = System.Drawing.SystemColors.ActiveBorder;
+            this.logSplitter.Dock = System.Windows.Forms.DockStyle.Top;
+            this.logSplitter.Location = new System.Drawing.Point(0, 0);
+            this.logSplitter.Margin = new System.Windows.Forms.Padding(1);
+            this.logSplitter.Name = "logSplitter";
+            this.logSplitter.Size = new System.Drawing.Size(790, 3);
+            this.logSplitter.TabIndex = 0;
+            this.logSplitter.TabStop = false;
             // 
             // FormMain
             // 
@@ -689,7 +648,6 @@ namespace TranslationHelper
             this.THFilesListPanel.ResumeLayout(false);
             this.tlpFileElements.ResumeLayout(false);
             this.tlpFileElementsFilterAndReset.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)(this.THFiltersDataGridView)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.THFileElementsDataGridView)).EndInit();
             this.THTextInfoAndEditPanel.ResumeLayout(false);
             this.THInfoEditSplitContainer.Panel1.ResumeLayout(false);
@@ -734,9 +692,7 @@ namespace TranslationHelper
         public System.Windows.Forms.ListBox THFilesList;
         private System.Windows.Forms.TableLayoutPanel tlpFileElements;
         private System.Windows.Forms.TableLayoutPanel tlpFileElementsFilterAndReset;
-        internal System.Windows.Forms.DataGridView THFiltersDataGridView;
         public System.Windows.Forms.Button THbtnMainResetTable;
-        public System.Windows.Forms.DataGridView THFileElementsDataGridView;
         private System.Windows.Forms.Panel THTextInfoAndEditPanel;
         private System.Windows.Forms.SplitContainer THInfoEditSplitContainer;
         internal System.Windows.Forms.TextBox THInfoTextBox;
@@ -757,6 +713,7 @@ namespace TranslationHelper
         public System.Windows.Forms.RichTextBox rtbLog;
         private System.Windows.Forms.TableLayoutPanel LogTableLayoutPanel;
         private System.Windows.Forms.Button OpenCurrentLogFileButton;
+        public AdvancedDataGridView THFileElementsDataGridView;
     }
 }
 

@@ -18,7 +18,6 @@ namespace TranslationHelper.Menus.MainMenus.Edit.TextCutCopyPaste
                 AppData.Main.THInfoTextBox,
                 AppData.Main.THSourceRichTextBox,
                 AppData.Main.THFileElementsDataGridView.EditingControl,
-                AppData.Main.THFiltersDataGridView.EditingControl,
             })
             {
                 if (!(control is TextBoxBase tb)) continue;

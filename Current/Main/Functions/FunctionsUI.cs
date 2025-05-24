@@ -357,11 +357,7 @@ namespace TranslationHelper.Functions
 
                 HideAllColumnsExceptOriginalAndTranslation();
 
-                SetFilterDGV(); //Init Filters datagridview
-
                 SetOnTHFileElementsDataGridViewWasLoaded(); //Additional actions when elements of file was loaded in datagridview
-
-                CheckFilterDGV(); //Apply filters if they is not empty
 
                 FunctionsUI.UpdateTextboxes();
 
@@ -447,78 +443,8 @@ namespace TranslationHelper.Functions
                 AppData.Main.THFileElementsDataGridView.Columns[THSettings.OriginalColumnName].HeaderText = T._(THSettings.OriginalColumnName);
                 AppData.Main.THFileElementsDataGridView.Columns[THSettings.TranslationColumnName].HeaderText = T._(THSettings.TranslationColumnName);
                 AppData.Main.THFileElementsDataGridView.Columns[THSettings.OriginalColumnName].ReadOnly = true;
-                AppData.Main.THFiltersDataGridView.Enabled = true;
                 AppData.Main.THSourceRichTextBox.Enabled = true;
                 AppData.Main.THTargetRichTextBox.Enabled = true;
-            }
-        }
-
-        private static void SetFilterDGV()
-        {
-            if (AppData.Main.THFiltersDataGridView.Columns.Count != AppData.Main.THFileElementsDataGridView.Columns.GetColumnCount(DataGridViewElementStates.Visible))
-            {
-                AppData.Main.THFiltersDataGridView.Columns.Clear();
-                AppData.Main.THFiltersDataGridView.Rows.Clear();
-                //int visibleindex = -1;
-                for (int cindx = 0; cindx < AppData.Main.THFileElementsDataGridView.Columns.Count; cindx++)
-                {
-                    if (AppData.Main.THFileElementsDataGridView.Columns[cindx].Visible)
-                    {
-                        _ = AppData.Main.THFiltersDataGridView.Columns.Add(AppData.Main.THFileElementsDataGridView.Columns[cindx].Name, AppData.Main.THFileElementsDataGridView.Columns[cindx].HeaderText);
-                    }
-                }
-                _ = AppData.Main.THFiltersDataGridView.Rows.Add(1);
-                AppData.Main.THFiltersDataGridView.CurrentRow.Selected = false;
-
-                //во время прокрутки DGV чернела полоса прокрутки и в результате было получено исключение
-                //добавил это для возможного фикса. возможно это этот dgv
-                //https://fooobar.com/questions/1404812/datagridview-scrollbar-throwing-argumentoutofrange-exception
-                AppData.Main.THFiltersDataGridView.PerformLayout();
-                //почернения прокрутки вроде больше не видел, но ошибка с аргументом вне диапазона была снова
-            }
-        }
-
-        internal static void CheckFilterDGV()
-        {
-            if (!AppSettings.ProjectIsOpened) return;
-
-            try
-            {
-                //private void DGVFilter()
-                string OverallFilter = string.Empty;
-                for (int c = 0; c < AppData.Main.THFiltersDataGridView.Columns.Count; c++)
-                {
-                    if ((AppData.Main.THFiltersDataGridView.Rows[0].Cells[c].Value + string.Empty).Length == 0)
-                    {
-
-                    }
-                    else
-                    {
-                        //об экранировании спецсимволов
-                        //http://skillcoding.com/Default.aspx?id=159
-                        //https://webcache.googleusercontent.com/search?q=cache:irqjhHKbiFMJ:https://www.syncfusion.com/kb/4492/how-to-filter-special-characters-like-by-typing-it-in-dynamic-filter+&cd=6&hl=ru&ct=clnk&gl=ru
-                        if (OverallFilter.Length == 0)
-                        {
-                            OverallFilter += "[" + AppData.Main.THFiltersDataGridView.Columns[c].Name + "] Like '%" + FunctionsTable.FixDataTableFilterStringValue(AppData.Main.THFiltersDataGridView.Rows[0].Cells[c].Value + string.Empty) + "%'";
-                        }
-                        else
-                        {
-                            OverallFilter += " AND ";
-                            OverallFilter += "[" + AppData.Main.THFiltersDataGridView.Columns[c].Name + "] Like '%" + FunctionsTable.FixDataTableFilterStringValue(AppData.Main.THFiltersDataGridView.Rows[0].Cells[c].Value + string.Empty) + "%'";
-                        }
-                    }
-                }
-                //also about sort:https://docs.microsoft.com/ru-ru/dotnet/api/system.data.dataview.rowfilter?view=netframework-4.8
-                //THFilesElementsDataset.Tables[THFilesListBox.SelectedIndex].DefaultView.Sort = String.Empty;
-                //THFilesElementsDataset.Tables[THFilesListBox.SelectedIndex].DefaultView.RowFilter = String.Empty;
-                //MessageBox.Show("\""+OverallFilter+ "\string.Empty);
-                //MessageBox.Show(string.Format("" + THFiltersDataGridView.Columns[e.ColumnIndex].Name + " LIKE '%{0}%'", THFiltersDataGridView.Rows[0].Cells[e.ColumnIndex].Value));
-                //https://10tec.com/articles/why-datagridview-slow.aspx
-                //THFilesElementsDataset.Tables[THFilesListBox.SelectedIndex].DefaultView.RowFilter = string.Format("" + THFiltersDataGridView.Columns[e.ColumnIndex].Name + " LIKE '%{0}%'", THFiltersDataGridView.Rows[0].Cells[e.ColumnIndex].Value);
-                AppData.CurrentProject.FilesContent.Tables[AppData.Main.THFilesList.GetSelectedIndex()].DefaultView.RowFilter = OverallFilter;
-            }
-            catch
-            {
             }
         }
 
@@ -620,7 +546,7 @@ namespace TranslationHelper.Functions
 
             //Main
             THToolTip.SetToolTip(AppData.Main.THbtnMainResetTable, T._("Resets filters and tab sorting"));
-            THToolTip.SetToolTip(AppData.Main.THFiltersDataGridView, T._("Filters for columns of main table"));
+            //THToolTip.SetToolTip(AppData.Main.THFiltersDataGridView, T._("Filters for columns of main table"));
             THToolTip.SetToolTip(AppData.Main.TableCompleteInfoLabel, T._("Shows overal number of completed lines.\nClick to show first untranslated."));
             ////////////////////////////
         }

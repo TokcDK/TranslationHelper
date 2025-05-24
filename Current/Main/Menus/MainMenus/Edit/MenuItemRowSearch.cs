@@ -33,7 +33,7 @@ namespace TranslationHelper.Menus.MainMenus.Edit
             {
                 if (AppData.Main.search == null || AppData.Main.search.IsDisposed)
                 {
-                    AppData.Main.search = new THfrmSearch(new object[4]{ AppData.Main.THFilesList, AppData.Main.THFileElementsDataGridView, AppData.Main.THTargetRichTextBox, AppData.Main.THFiltersDataGridView });
+                    AppData.Main.search = new THfrmSearch(new object[3]{ AppData.Main.THFilesList, AppData.Main.THFileElementsDataGridView, AppData.Main.THTargetRichTextBox });
                 }
 
                 if (AppData.Main.search.Visible)

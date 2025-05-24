@@ -30,7 +30,6 @@ namespace TranslationHelper
 
         private readonly ListBox _filesList;
         private readonly DataGridView _workFileDgv;
-        private readonly DataGridView _filtersDgv;
         private readonly DataTableCollection _tables;
         private readonly RichTextBox _translationTextBox;
         private readonly INIFileMan.INIFile _config;
@@ -112,7 +111,6 @@ namespace TranslationHelper
             _workFileDgv = args[1] as DataGridView;
             _tables = AppData.CurrentProject.FilesContent.Tables;
             _translationTextBox = args[2] as RichTextBox;
-            _filtersDgv = args[3] as DataGridView;
             _config = AppData.Settings.THConfigINI;
 
             InitializeTranslations();
@@ -548,12 +546,6 @@ namespace TranslationHelper
             {
                 var foundRowData = _foundRowsList[rowIndex];
                 (_selectedTableIndex, _selectedRowIndex) = (foundRowData.TableIndex, foundRowData.RowIndex);
-
-                int maxColumns = _filtersDgv.Columns.Count;
-                for (int c = 0; c < maxColumns; c++)
-                {
-                    _filtersDgv.Rows[0].Cells[c].Value = string.Empty;
-                }
 
                 var tableDefaultView = _tables[_selectedTableIndex].DefaultView;
                 tableDefaultView.RowFilter = string.Empty;

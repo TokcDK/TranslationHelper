@@ -57,7 +57,6 @@ namespace TranslationHelper
 
         private void THFiltersDataGridView_CellValueChanged(object sender, DataGridViewCellEventArgs e)
         {
-            FunctionsUI.CheckFilterDGV();
         }
 
         //http://qaru.site/questions/180337/show-row-number-in-row-header-of-a-datagridview
@@ -166,7 +165,7 @@ namespace TranslationHelper
 
         private void THMainResetTableButton_Click(object sender, EventArgs e)
         {
-            FunctionsTable.ResetTable(THFileElementsDataGridView, THFilesList, THFiltersDataGridView);
+            FunctionsTable.ResetTable(THFileElementsDataGridView, THFilesList);
         }
 
         private void TESTRegexToolStripMenuItem_Click(object sender, EventArgs e)

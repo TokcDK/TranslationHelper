@@ -142,10 +142,6 @@ namespace TranslationHelper.Main.Functions
                 var table = AppData.CurrentProject.FilesContent.Tables[tableIndex];
                 if (!string.IsNullOrEmpty(table.DefaultView.RowFilter))
                 {
-                    foreach (DataGridViewCell filterCell in AppData.Main.THFiltersDataGridView.Rows[0].Cells)
-                    {
-                        filterCell.Value = DBNull.Value;
-                    }
                     table.DefaultView.RowFilter = string.Empty;
                     table.DefaultView.Sort = string.Empty;
                     AppData.Main.THFileElementsDataGridView.Refresh();
@@ -435,16 +431,10 @@ namespace TranslationHelper.Main.Functions
                 .Replace("-QB[BQ-", "[[]");
         }
 
-        internal static void ResetTable(DataGridView thFileElementsDataGridView, ListBox thFilesList, DataGridView thFiltersDataGridView)
+        internal static void ResetTable(DataGridView thFileElementsDataGridView, ListBox thFilesList)
         {
-            if (thFiltersDataGridView.Columns.Count <= 0)
-            {
-                return;
-            }
-
             try
             {
-
                 int realRowIndex = -1;
                 string columnName = string.Empty;
 
@@ -459,11 +449,6 @@ namespace TranslationHelper.Main.Functions
                 {
                     columnName = thFileElementsDataGridView.Columns[cell.ColumnIndex].Name;
                     realRowIndex = FunctionsTable.GetRealRowIndex(tableindex, cell.RowIndex);
-                }
-
-                for (int c = 0; c < thFiltersDataGridView.Columns.Count; c++)
-                {
-                    thFiltersDataGridView.Rows[0].Cells[c].Value = string.Empty;
                 }
 
                 var tableDefaultView = AppData.CurrentProject.FilesContent.Tables[tableindex].DefaultView;
