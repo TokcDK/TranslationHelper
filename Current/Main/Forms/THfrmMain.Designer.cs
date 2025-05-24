@@ -1,4 +1,6 @@
-﻿namespace TranslationHelper
+﻿using Zuby.ADGV;
+
+namespace TranslationHelper
 {
     partial class FormMain
     {
@@ -52,7 +54,7 @@
             this.tlpFileElementsFilterAndReset = new System.Windows.Forms.TableLayoutPanel();
             this.THFiltersDataGridView = new System.Windows.Forms.DataGridView();
             this.THbtnMainResetTable = new System.Windows.Forms.Button();
-            this.THFileElementsDataGridView = new System.Windows.Forms.DataGridView();
+            this.THFileElementsDataGridView = new AdvancedDataGridView();
             this.THTextInfoAndEditPanel = new System.Windows.Forms.Panel();
             this.THInfoEditSplitContainer = new System.Windows.Forms.SplitContainer();
             this.THInfoTextBox = new System.Windows.Forms.TextBox();
