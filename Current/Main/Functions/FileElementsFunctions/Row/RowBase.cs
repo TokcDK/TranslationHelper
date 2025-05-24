@@ -36,7 +36,11 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
             SelectedRow = row;
             SelectedRowIndex = rowIndex;
             TableData = table;
+
+            _workTableDatagridView = AppData.Main.THFileElementsDataGridView;
         }
+
+        readonly DataGridView _workTableDatagridView;
 
         public TableData TableData { get; }
         public DataRow SelectedRow { get; }
@@ -50,7 +54,21 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
         public string Translation
         {
             get => SelectedRow.Field<string>(ColumnIndexTranslation);
-            set => SelectedRow.SetField(ColumnIndexTranslation, value);
+            set
+            {
+                if (_workTableDatagridView.InvokeRequired)
+                {
+                    // must fix winforms cross-thread access issue, app crash because of scrolling datagridview in time of rows are changing
+                    // but this only for the rowbase functions and same changes from other places can cause the error
+                    _workTableDatagridView.Invoke((MethodInvoker)delegate {
+                        SelectedRow.SetField(ColumnIndexTranslation, value);
+                    });
+                }
+                else
+                {
+                    SelectedRow.SetField(ColumnIndexTranslation, value);
+                }                
+            }
         }
 
         public DataTable SelectedTable => TableData.SelectedTable;
