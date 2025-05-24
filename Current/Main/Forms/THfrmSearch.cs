@@ -16,6 +16,7 @@ using TranslationHelper.Functions;
 using TranslationHelper.Functions.FileElementsFunctions.Row.SearchIssueCheckers;
 using TranslationHelper.Main.Functions;
 using System.IO;
+using Zuby.ADGV;
 
 namespace TranslationHelper
 {
@@ -29,7 +30,7 @@ namespace TranslationHelper
         private const string NothingFoundMessage = "Nothing Found.";
 
         private readonly ListBox _filesList;
-        private readonly DataGridView _workFileDgv;
+        private readonly AdvancedDataGridView _workFileDgv;
         private readonly DataTableCollection _tables;
         private readonly RichTextBox _translationTextBox;
         private readonly INIFileMan.INIFile _config;
@@ -108,7 +109,7 @@ namespace TranslationHelper
         {
             InitializeComponent();
             _filesList = args[0] as ListBox;
-            _workFileDgv = args[1] as DataGridView;
+            _workFileDgv = args[1] as AdvancedDataGridView;
             _tables = AppData.CurrentProject.FilesContent.Tables;
             _translationTextBox = args[2] as RichTextBox;
             _config = AppData.Settings.THConfigINI;
@@ -546,6 +547,8 @@ namespace TranslationHelper
             {
                 var foundRowData = _foundRowsList[rowIndex];
                 (_selectedTableIndex, _selectedRowIndex) = (foundRowData.TableIndex, foundRowData.RowIndex);
+
+                _workFileDgv.CleanFilter();
 
                 var tableDefaultView = _tables[_selectedTableIndex].DefaultView;
                 tableDefaultView.RowFilter = string.Empty;
