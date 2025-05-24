@@ -545,7 +545,7 @@ namespace TranslationHelper.Functions
             };
 
             //Main
-            THToolTip.SetToolTip(AppData.Main.THbtnMainResetTable, T._("Resets filters and tab sorting"));
+            //THToolTip.SetToolTip(AppData.Main.THbtnMainResetTable, T._("Resets filters and tab sorting"));
             //THToolTip.SetToolTip(AppData.Main.THFiltersDataGridView, T._("Filters for columns of main table"));
             THToolTip.SetToolTip(AppData.Main.TableCompleteInfoLabel, T._("Shows overal number of completed lines.\nClick to show first untranslated."));
             ////////////////////////////

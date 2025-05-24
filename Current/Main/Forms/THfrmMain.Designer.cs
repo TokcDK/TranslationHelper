@@ -49,8 +49,6 @@ namespace TranslationHelper
             this.THFilesListPanel = new System.Windows.Forms.Panel();
             this.THFilesList = new System.Windows.Forms.ListBox();
             this.tlpFileElements = new System.Windows.Forms.TableLayoutPanel();
-            this.tlpFileElementsFilterAndReset = new System.Windows.Forms.TableLayoutPanel();
-            this.THbtnMainResetTable = new System.Windows.Forms.Button();
             this.THFileElementsDataGridView = new Zuby.ADGV.AdvancedDataGridView();
             this.THTextInfoAndEditPanel = new System.Windows.Forms.Panel();
             this.THInfoEditSplitContainer = new System.Windows.Forms.SplitContainer();
@@ -86,7 +84,6 @@ namespace TranslationHelper
             this.THsplitContainerFilesElements.SuspendLayout();
             this.THFilesListPanel.SuspendLayout();
             this.tlpFileElements.SuspendLayout();
-            this.tlpFileElementsFilterAndReset.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.THFileElementsDataGridView)).BeginInit();
             this.THTextInfoAndEditPanel.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.THInfoEditSplitContainer)).BeginInit();
@@ -266,43 +263,16 @@ namespace TranslationHelper
             // 
             this.tlpFileElements.ColumnCount = 1;
             this.tlpFileElements.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tlpFileElements.Controls.Add(this.tlpFileElementsFilterAndReset, 0, 0);
-            this.tlpFileElements.Controls.Add(this.THFileElementsDataGridView, 0, 1);
+            this.tlpFileElements.Controls.Add(this.THFileElementsDataGridView, 0, 0);
             this.tlpFileElements.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tlpFileElements.Location = new System.Drawing.Point(0, 0);
             this.tlpFileElements.Margin = new System.Windows.Forms.Padding(0);
             this.tlpFileElements.Name = "tlpFileElements";
-            this.tlpFileElements.RowCount = 2;
-            this.tlpFileElements.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 25F));
+            this.tlpFileElements.RowCount = 1;
             this.tlpFileElements.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.tlpFileElements.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
             this.tlpFileElements.Size = new System.Drawing.Size(657, 308);
             this.tlpFileElements.TabIndex = 5;
-            // 
-            // tlpFileElementsFilterAndReset
-            // 
-            this.tlpFileElementsFilterAndReset.ColumnCount = 2;
-            this.tlpFileElementsFilterAndReset.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tlpFileElementsFilterAndReset.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 20F));
-            this.tlpFileElementsFilterAndReset.Controls.Add(this.THbtnMainResetTable, 1, 0);
-            this.tlpFileElementsFilterAndReset.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.tlpFileElementsFilterAndReset.Location = new System.Drawing.Point(1, 1);
-            this.tlpFileElementsFilterAndReset.Margin = new System.Windows.Forms.Padding(1);
-            this.tlpFileElementsFilterAndReset.Name = "tlpFileElementsFilterAndReset";
-            this.tlpFileElementsFilterAndReset.RowCount = 1;
-            this.tlpFileElementsFilterAndReset.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tlpFileElementsFilterAndReset.Size = new System.Drawing.Size(655, 23);
-            this.tlpFileElementsFilterAndReset.TabIndex = 0;
-            // 
-            // THbtnMainResetTable
-            // 
-            this.THbtnMainResetTable.Location = new System.Drawing.Point(636, 1);
-            this.THbtnMainResetTable.Margin = new System.Windows.Forms.Padding(1);
-            this.THbtnMainResetTable.Name = "THbtnMainResetTable";
-            this.THbtnMainResetTable.Size = new System.Drawing.Size(18, 21);
-            this.THbtnMainResetTable.TabIndex = 4;
-            this.THbtnMainResetTable.Text = "-";
-            this.THbtnMainResetTable.UseVisualStyleBackColor = true;
-            this.THbtnMainResetTable.Click += new System.EventHandler(this.THMainResetTableButton_Click);
             // 
             // THFileElementsDataGridView
             // 
@@ -319,7 +289,7 @@ namespace TranslationHelper
             this.THFileElementsDataGridView.EditMode = System.Windows.Forms.DataGridViewEditMode.EditOnKeystroke;
             this.THFileElementsDataGridView.FilterAndSortEnabled = true;
             this.THFileElementsDataGridView.FilterStringChangedInvokeBeforeDatasourceUpdate = true;
-            this.THFileElementsDataGridView.Location = new System.Drawing.Point(1, 26);
+            this.THFileElementsDataGridView.Location = new System.Drawing.Point(1, 1);
             this.THFileElementsDataGridView.Margin = new System.Windows.Forms.Padding(1, 1, 3, 1);
             this.THFileElementsDataGridView.MaxFilterButtonImageHeight = 23;
             this.THFileElementsDataGridView.Name = "THFileElementsDataGridView";
@@ -327,7 +297,7 @@ namespace TranslationHelper
             dataGridViewCellStyle1.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
             this.THFileElementsDataGridView.RowsDefaultCellStyle = dataGridViewCellStyle1;
             this.THFileElementsDataGridView.RowTemplate.Height = 23;
-            this.THFileElementsDataGridView.Size = new System.Drawing.Size(653, 281);
+            this.THFileElementsDataGridView.Size = new System.Drawing.Size(653, 306);
             this.THFileElementsDataGridView.SortStringChangedInvokeBeforeDatasourceUpdate = true;
             this.THFileElementsDataGridView.TabIndex = 2;
             this.THFileElementsDataGridView.CellBeginEdit += new System.Windows.Forms.DataGridViewCellCancelEventHandler(this.THFileElementsDataGridView_CellBeginEdit);
@@ -647,7 +617,6 @@ namespace TranslationHelper
             this.THsplitContainerFilesElements.ResumeLayout(false);
             this.THFilesListPanel.ResumeLayout(false);
             this.tlpFileElements.ResumeLayout(false);
-            this.tlpFileElementsFilterAndReset.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.THFileElementsDataGridView)).EndInit();
             this.THTextInfoAndEditPanel.ResumeLayout(false);
             this.THInfoEditSplitContainer.Panel1.ResumeLayout(false);
@@ -691,8 +660,6 @@ namespace TranslationHelper
         private System.Windows.Forms.Panel THFilesListPanel;
         public System.Windows.Forms.ListBox THFilesList;
         private System.Windows.Forms.TableLayoutPanel tlpFileElements;
-        private System.Windows.Forms.TableLayoutPanel tlpFileElementsFilterAndReset;
-        public System.Windows.Forms.Button THbtnMainResetTable;
         private System.Windows.Forms.Panel THTextInfoAndEditPanel;
         private System.Windows.Forms.SplitContainer THInfoEditSplitContainer;
         internal System.Windows.Forms.TextBox THInfoTextBox;

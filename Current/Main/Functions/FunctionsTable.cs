@@ -432,42 +432,6 @@ namespace TranslationHelper.Main.Functions
                 .Replace("-QB[BQ-", "[[]");
         }
 
-        internal static void ResetTable(DataGridView thFileElementsDataGridView, ListBox thFilesList)
-        {
-            try
-            {
-                int realRowIndex = -1;
-                string columnName = string.Empty;
-
-                if (thFilesList.GetSelectedIndex() == -1)
-                {
-                    return;
-                }
-                int tableindex = thFilesList.GetSelectedIndex();
-                var cell = thFileElementsDataGridView.CurrentCell;
-
-                if (tableindex > -1 && cell != null)
-                {
-                    columnName = thFileElementsDataGridView.Columns[cell.ColumnIndex].Name;
-                    realRowIndex = FunctionsTable.GetRealRowIndex(tableindex, cell.RowIndex);
-                }
-
-                var tableDefaultView = AppData.CurrentProject.FilesContent.Tables[tableindex].DefaultView;
-                tableDefaultView.RowFilter = string.Empty;
-                tableDefaultView.Sort = string.Empty;
-                thFileElementsDataGridView.Refresh();
-
-                if (realRowIndex > -1 && tableindex > -1 && columnName.Length > 0)
-                {
-                    FunctionsTable.ShowSelectedRow(tableindex, columnName, realRowIndex);
-                }
-            }
-            catch (Exception ex)
-            {
-                Logger.Debug("ResetTable error: {0}", ex);
-            }
-        }
-
         public static int SelectedRowRealIndex = -1;
 
         internal static void ReselectCellSelectedBeforeSorting(ListBox thFilesList, DataGridView thFileElementsDataGridView)

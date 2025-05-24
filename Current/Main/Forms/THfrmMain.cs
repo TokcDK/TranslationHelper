@@ -163,16 +163,6 @@ namespace TranslationHelper
 
         internal THfrmSearch search;
 
-        private void THMainResetTableButton_Click(object sender, EventArgs e)
-        {
-            FunctionsTable.ResetTable(THFileElementsDataGridView, THFilesList);
-        }
-
-        private void TESTRegexToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            FunctionTest.Test();
-        }
-
         internal static bool DGVCellInEditMode
         {
             get => AppSettings.DGVCellInEditMode;
