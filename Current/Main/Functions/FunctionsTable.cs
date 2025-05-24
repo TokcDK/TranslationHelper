@@ -142,6 +142,7 @@ namespace TranslationHelper.Main.Functions
                 var table = AppData.CurrentProject.FilesContent.Tables[tableIndex];
                 if (!string.IsNullOrEmpty(table.DefaultView.RowFilter))
                 {
+                    AppData.Main.THFileElementsDataGridView.CleanFilter();
                     table.DefaultView.RowFilter = string.Empty;
                     table.DefaultView.Sort = string.Empty;
                     AppData.Main.THFileElementsDataGridView.Refresh();
