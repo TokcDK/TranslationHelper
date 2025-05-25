@@ -64,11 +64,6 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row.OnlineTranslate
         private const int BufferMaxRows = 300;
 
         /// <summary>
-        /// Lock object for thread-safe buffer operations.
-        /// </summary>
-        private readonly object _bufferLock = new object();
-
-        /// <summary>
         /// Flag indicating that all DBs were loaded for all translations.
         /// </summary>
         private bool _allDbLoaded4All;
@@ -77,16 +72,6 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row.OnlineTranslate
         /// Name of the last processed table.
         /// </summary>
         private string _lastTableName = string.Empty;
-
-        /// <summary>
-        /// Index of the column with original text.
-        /// </summary>
-        private readonly int _originalColumnIndex = AppData.CurrentProject.OriginalColumnIndex;
-
-        /// <summary>
-        /// Index of the column with translation.
-        /// </summary>
-        private readonly int _translationColumnIndex = AppData.CurrentProject.TranslationColumnIndex;
 
         /// <summary>
         /// Class for applying "hard" fixes to strings.
