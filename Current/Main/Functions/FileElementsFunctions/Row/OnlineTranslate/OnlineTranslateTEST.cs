@@ -964,7 +964,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row.OnlineTranslate
         /// <param name="targetLanguage">Target language code.</param>
         /// <param name="maxConcurrentRequests">Maximum concurrent requests.</param>
         /// <param name="delayMs">Delay between requests (ms).</param>
-        public GoogleTranslator(string sourceLanguage, string targetLanguage, int maxConcurrentRequests = 5, int delayMs = 1000)
+        public GoogleTranslator(string sourceLanguage = "auto", string targetLanguage = "en", int maxConcurrentRequests = 5, int delayMs = 1000)
         {
             Logger.Debug("Initializing GoogleTranslator");
             _sourceLanguage = sourceLanguage ?? throw new ArgumentNullException(nameof(sourceLanguage));
