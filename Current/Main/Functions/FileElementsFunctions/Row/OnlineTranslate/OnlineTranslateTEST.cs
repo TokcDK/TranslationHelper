@@ -91,12 +91,12 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row.OnlineTranslate
         /// <summary>
         /// Class for applying "hard" fixes to strings.
         /// </summary>
-        private readonly StringChangerBase _hardFixes = new AllHardFixesChanger();
+        private readonly AllHardFixesChanger _hardFixes = new AllHardFixesChanger();
 
         /// <summary>
         /// Class for applying fixes to cells.
         /// </summary>
-        private readonly StringChangerBase _fixCells = new FixCellsChanger();
+        private readonly FixCellsChanger _fixCells = new FixCellsChanger();
 
         /// <summary>
         /// Regex for determining replacer list type.
