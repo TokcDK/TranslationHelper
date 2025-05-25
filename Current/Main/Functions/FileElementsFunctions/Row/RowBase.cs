@@ -121,7 +121,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
         /// </summary>
         protected virtual async Task ActionsInit()
         {
-            var name = string.IsNullOrWhiteSpace(Name) ? "!" : Name;
+            var name = string.IsNullOrWhiteSpace(Name) ? GetType().Name : Name;
             Logger.Info(T._("{0}: initializing actions..."), name);
 
             await Task.CompletedTask;
@@ -196,7 +196,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
         /// </summary>
         protected virtual async Task ActionsFinalize()
         {
-            var name = string.IsNullOrWhiteSpace(Name) ? "!" : Name;
+            var name = string.IsNullOrWhiteSpace(Name) ? GetType().Name : Name;
             Logger.Info(T._("{0}: parsed {1} values"), name, _parsedCount);
             await Task.CompletedTask;
         }
