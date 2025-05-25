@@ -25,11 +25,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row.OnlineTranslate
     /// </summary>
     partial class OnlineTranslateTEST : RowBase
     {
-        public override string Name => T._("TranslatorTEST");
-
-        protected override bool IsParallelTables => false;
-        protected override bool IsParallelRows => false;
-        protected virtual bool IsTranslateAll => true;
+        #region Fields
 
         // Full row string translation info
         public Dictionary<string, RowTranslationInfo> TranslationDataList = new Dictionary<string, RowTranslationInfo>();
@@ -41,6 +37,30 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row.OnlineTranslate
         private static int MaxTranslationTextLength => 1000;
         private const int BufferMaxRows = 300;
         private readonly object _bufferLock = new object();
+        private bool _allDbLoaded4All;
+        private string _lastTableName = string.Empty;
+        private readonly int _originalColumnIndex = AppData.CurrentProject.OriginalColumnIndex;
+        private readonly int _translationColumnIndex = AppData.CurrentProject.TranslationColumnIndex;
+        private readonly StringChangerBase _hardFixes = new AllHardFixesChanger();
+        private readonly StringChangerBase _fixCells = new FixCellsChanger();
+
+        private static readonly Regex _replacerListTypeRegex = new Regex(@"^\$[0-9]+(,\$[0-9]+)+$", RegexOptions.Compiled);
+        private static readonly Regex _oneMatchNeedInsertTextRegex = new Regex(@"^\$[0-9]+$", RegexOptions.Compiled);
+        private static readonly Regex _groupReplacerMarkerRegex = new Regex(@"\$[0-9]+", RegexOptions.Compiled);
+
+        #endregion
+
+        #region Properties
+
+        public override string Name => T._("TranslatorTEST");
+
+        protected override bool IsParallelTables => false;
+        protected override bool IsParallelRows => false;
+        protected virtual bool IsTranslateAll => true;
+
+        #endregion
+
+        #region Constructors
 
         /// <summary>
         /// Initializes a new instance with dependencies.
@@ -52,10 +72,9 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row.OnlineTranslate
             _buffer = new ConcurrentDictionary<int, TranslationData>();
         }
 
-        /// <summary>
-        /// Checks if the buffer or text length has reached its limit.
-        /// </summary>
-        private bool IsMax() => TranslationTextLength >= MaxTranslationTextLength || _buffer.Count >= BufferMaxRows;
+        #endregion
+
+        #region RowBase Overrides
 
         /// <summary>
         /// Validates if the row is suitable for translation.
@@ -66,8 +85,6 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row.OnlineTranslate
                 && (string.IsNullOrEmpty(rowData.Translation)
                 || rowData.Original.HasAnyTranslationLineValidAndEqualSameOrigLine(rowData.Translation));
         }
-
-        private bool _allDbLoaded4All;
 
         /// <summary>
         /// Initializes translation resources, such as loading DB files if needed.
@@ -109,8 +126,6 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row.OnlineTranslate
             Logger.Info(T._("Translation complete"));
         }
 
-        private string _lastTableName = string.Empty;
-
         /// <summary>
         /// Applies translation to the row by buffering its lines.
         /// </summary>
@@ -125,6 +140,15 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row.OnlineTranslate
             SetRowLinesToBuffer(rowData);
             return true;
         }
+
+        #endregion
+
+        #region Buffering Methods
+
+        /// <summary>
+        /// Checks if the buffer or text length has reached its limit.
+        /// </summary>
+        private bool IsMax() => TranslationTextLength >= MaxTranslationTextLength || _buffer.Count >= BufferMaxRows;
 
         /// <summary>
         /// Buffers row lines for batch translation.
@@ -218,6 +242,10 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row.OnlineTranslate
             }
         }
 
+        #endregion
+
+        #region Translation Methods
+
         /// <summary>
         /// Translates buffered strings and updates rows.
         /// </summary>
@@ -230,7 +258,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row.OnlineTranslate
             SetTranslationsToBuffer(originals, translated);
             SetBufferToRows();
             TranslationTextLength = 0;
-            if(originals.Length > 1) _cache.Write();
+            if (originals.Length > 1) _cache.Write();
         }
 
         /// <summary>
@@ -401,10 +429,9 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row.OnlineTranslate
                 _buffer.TryRemove(tableIndex, out _);
         }
 
-        private readonly int _originalColumnIndex = AppData.CurrentProject.OriginalColumnIndex;
-        private readonly int _translationColumnIndex = AppData.CurrentProject.TranslationColumnIndex;
-        private readonly StringChangerBase _hardFixes = new AllHardFixesChanger();
-        private readonly StringChangerBase _fixCells = new FixCellsChanger();
+        #endregion
+
+        #region Row Writing and Merging
 
         /// <summary>
         /// Writes translated data back to the row if complete.
@@ -448,10 +475,6 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row.OnlineTranslate
             var text = _hardFixes.Change(translation, original);
             return _fixCells.Change(text, original);
         }
-
-        private static readonly Regex _replacerListTypeRegex = new Regex(@"^\$[0-9]+(,\$[0-9]+)+$", RegexOptions.Compiled);
-        private static readonly Regex _oneMatchNeedInsertTextRegex = new Regex(@"^\$[0-9]+$", RegexOptions.Compiled);
-        private static readonly Regex _groupReplacerMarkerRegex = new Regex(@"\$[0-9]+", RegexOptions.Compiled);
 
         /// <summary>
         /// Merges extracted values back into the line text.
@@ -545,6 +568,10 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row.OnlineTranslate
             return sb.ToString();
         }
 
+        #endregion
+
+        #region Internal Classes
+
         /// <summary>
         /// Buffer for lines to be translated.
         /// </summary>
@@ -619,7 +646,11 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row.OnlineTranslate
                 }
             }
         }
+
+        #endregion
     }
+
+    #region Interfaces and External Classes
 
     /// <summary>
     /// Defines the contract for translation services.
@@ -632,6 +663,8 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row.OnlineTranslate
 
     public class GoogleTranslator : ITranslator, IDisposable
     {
+        #region Fields
+
         private readonly HttpClient _httpClient;
         private readonly string _sourceLanguage;
         private readonly string _targetLanguage;
@@ -644,16 +677,20 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row.OnlineTranslate
         private const int Max429Retries = 5;
         private const int DelayIncreaseMs = 2000;
 
+        #endregion
+
+        #region Constructors
+
         public GoogleTranslator(string sourceLanguage, string targetLanguage, int maxConcurrentRequests = 5, int delayMs = 1000)
         {
             _sourceLanguage = sourceLanguage ?? throw new ArgumentNullException(nameof(sourceLanguage));
             _targetLanguage = targetLanguage ?? throw new ArgumentNullException(nameof(targetLanguage));
             _userAgents = new List<string>
-            {
-                "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36",
-                "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/14.0 Safari/605.1.15",
-                "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/92.0.4515.107 Safari/537.36"
-            };
+                {
+                    "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36",
+                    "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/14.0 Safari/605.1.15",
+                    "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/92.0.4515.107 Safari/537.36"
+                };
             _random = new Random();
             _semaphore = new SemaphoreSlim(maxConcurrentRequests);
             _delayBetweenRequests = TimeSpan.FromMilliseconds(delayMs);
@@ -669,6 +706,10 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row.OnlineTranslate
             };
         }
 
+        #endregion
+
+        #region ITranslator Implementation
+
         public string Translate(string text)
         {
             return TranslateAsync(text).GetAwaiter().GetResult();
@@ -678,6 +719,10 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row.OnlineTranslate
         {
             return Task.WhenAll(texts.Select(TranslateAsync)).GetAwaiter().GetResult();
         }
+
+        #endregion
+
+        #region Private Methods
 
         private async Task<string> TranslateAsync(string text)
         {
@@ -745,6 +790,10 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row.OnlineTranslate
             return HttpUtility.HtmlDecode(match.Groups[1].Value);
         }
 
+        #endregion
+
+        #region IDisposable Implementation
+
         public void Dispose()
         {
             if (!_disposed)
@@ -757,5 +806,9 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row.OnlineTranslate
                 GC.SuppressFinalize(this);
             }
         }
+
+        #endregion
     }
+
+    #endregion
 }
