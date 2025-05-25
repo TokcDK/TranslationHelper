@@ -134,7 +134,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row.OnlineTranslate
         public OnlineTranslateTEST(ITranslator translator = null, ITranslationCache cache = null)
         {
             Logger.Debug("Initializing OnlineTranslateTEST");
-            _translator = translator ?? new GoogleTranslator(THSettings.SourceLanguageCode, THSettings.TargetLanguageCode);
+            _translator = translator ?? new GoogleTranslator(sourceLanguage: THSettings.SourceLanguageCode, targetLanguage: THSettings.TargetLanguageCode);
             _cache = cache ?? new TranslationCache();
             _buffer = new ConcurrentDictionary<int, TranslationData>();
         }
