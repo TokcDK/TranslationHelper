@@ -74,6 +74,8 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row.OnlineTranslate
         /// </summary>
         protected async override Task ActionsInit()
         {
+            await base.ActionsInit();
+
             if (_allDbLoaded4All || !IsAll || !AppSettings.UseAllDBFilesForOnlineTranslationForAll) return;
 
             if (!AppSettings.EnableTranslationCache)
@@ -97,14 +99,14 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row.OnlineTranslate
         /// <summary>
         /// Finalizes translation by processing any remaining buffer and cleaning up.
         /// </summary>
-        protected override Task ActionsFinalize()
+        protected override async Task ActionsFinalize()
         {
+            await base.ActionsFinalize();
+
             if (!_buffer.IsEmpty) TranslateStrings();
             _cache.Dispose();
             if (AppSettings.InterruptTtanslation) AppSettings.InterruptTtanslation = false;
             Logger.Info(T._("Translation complete"));
-
-            return Task.CompletedTask;
         }
 
         private string _lastTableName = string.Empty;
