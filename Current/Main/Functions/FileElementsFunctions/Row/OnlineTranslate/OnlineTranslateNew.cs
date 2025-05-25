@@ -135,6 +135,8 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
         bool _allDbLoaded4All;
         protected async override Task ActionsInit()
         {
+            await base.ActionsInit().ConfigureAwait(false);
+
             if (_allDbLoaded4All || !IsAll || !AppSettings.UseAllDBFilesForOnlineTranslationForAll) return;
 
             if (!AppSettings.EnableTranslationCache)

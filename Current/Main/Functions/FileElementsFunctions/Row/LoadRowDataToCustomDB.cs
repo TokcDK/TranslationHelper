@@ -17,6 +17,8 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
         string _custom = THSettings.CustomDBPath;
         protected async override Task ActionsInit()
         {
+            await base.ActionsInit().ConfigureAwait(false);
+
             //load DB if need
             if (File.Exists(_custom))
             {
@@ -33,6 +35,8 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
 
         protected override async Task ActionsFinalize()
         {
+            await base.ActionsFinalize().ConfigureAwait(false);
+
             //save DB
             Logger.Info("Save custom DB");
 

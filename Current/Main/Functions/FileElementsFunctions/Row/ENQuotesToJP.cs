@@ -44,17 +44,17 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
             return true;
         }
 
-        protected override Task ActionsInit()
+        protected override async Task ActionsInit()
         {
+            await base.ActionsInit();
+
             PreLearn();
-
-            return Task.CompletedTask;
         }
-        protected override Task ActionsFinalize()
+        protected override async Task ActionsFinalize()
         {
-            PostLearn();
+            await base.ActionsFinalize();
 
-            return Task.CompletedTask;
+            PostLearn();
         }
 
         static void PreLearn()
