@@ -121,6 +121,8 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
         /// </summary>
         protected virtual async Task ActionsInit()
         {
+            Logger.Info(T._("{0}: initializing actions..."), Name);
+
             await Task.CompletedTask;
         }
 
