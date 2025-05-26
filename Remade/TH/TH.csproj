@@ -84,11 +84,11 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\MenusBase\MenusCore.csproj">
+    <ProjectReference Include="..\Menus\MenusBase\MenusCore.csproj">
       <Project>{aabf637a-12d1-4fbd-9859-c417c2add40f}</Project>
       <Name>MenusCore</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\THCore\THCore.csproj">
+    <ProjectReference Include="..\THCore\THCore.csproj">
       <Project>{D457DD7C-028E-4A38-A2F3-3914FA66FB0E}</Project>
       <Name>THCore</Name>
     </ProjectReference>
