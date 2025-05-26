@@ -45,7 +45,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\MenusBase\MenusCore.csproj">
+    <ProjectReference Include="..\MenusBase\MenusCore.csproj">
       <Project>{AABF637A-12D1-4FBD-9859-C417C2ADD40F}</Project>
       <Name>MenusCore</Name>
     </ProjectReference>
