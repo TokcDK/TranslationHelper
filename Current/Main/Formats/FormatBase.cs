@@ -80,9 +80,9 @@ namespace TranslationHelper.Formats
             ReadToEnd = 1
         }
 
-        protected void AddString(string text, string info = "")
+        protected void AddString(string[] values, string info = "")
         {
-            Data.Rows.Add(text, string.Empty);
+            Data.Rows.Add(values);
             Info.Rows.Add(info);
         }
 
@@ -392,8 +392,7 @@ namespace TranslationHelper.Formats
 
             try
             {
-                Data.Rows.Add(rowData);
-                Info.Rows.Add(rowInfo?.Length > 500 ? rowInfo.Remove(500) : rowInfo);
+                AddString(rowData, rowInfo?.Length > 500 ? rowInfo.Remove(500) : rowInfo);
                 return true;
             }
             catch (Exception ex)
