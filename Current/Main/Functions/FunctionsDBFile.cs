@@ -836,8 +836,8 @@ namespace TranslationHelper.Main.Functions
 
             var pathNextToSource = Path.Combine(AppData.CurrentProject.SelectedDir, Data.THSettings.TranslationFileSourceDirSuffix + fileExtension);
 
-            await Task.Run(() => AppData.CurrentProject.PreSaveDB()).ConfigureAwait(false);
-            await Task.Run(() => FunctionsDBFile.WriteDBFileLite(AppData.CurrentProject.FilesContent, new[] { path, pathNextToSource })).ConfigureAwait(false);
+            await AppData.CurrentProject.PreSaveDB().ConfigureAwait(false);
+            await FunctionsDBFile.WriteDBFileLite(AppData.CurrentProject.FilesContent, new[] { path, pathNextToSource }).ConfigureAwait(false);
 
             Logger.Info(T._("DB saved!"));
 

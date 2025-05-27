@@ -3,6 +3,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
+using System.Threading.Tasks;
 using System.Windows;
 using TranslationHelper.Data;
 using TranslationHelper.Extensions;
@@ -35,9 +36,11 @@ namespace TranslationHelper.Projects.WolfRPG
             return b.Any(b1 => b1 == true);
         }
 
-        internal override void PreSaveDB()
+        internal override Task PreSaveDB()
         {
             //OpenSaveFiles();
+
+            return Task.CompletedTask;
         }
 
         public override bool Save()

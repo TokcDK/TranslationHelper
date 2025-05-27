@@ -2,6 +2,7 @@
 using System;
 using System.Diagnostics;
 using System.IO;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 using TranslationHelper.Data;
 using TranslationHelper.Extensions;
@@ -350,9 +351,11 @@ namespace TranslationHelper.Projects
             //return ProjectToolsOpenSave.OpenSaveFilesBase(this, patchdir, new TXT(), "*.txt") && Patching();
         }
 
-        internal override void PreSaveDB()
+        internal override Task PreSaveDB()
         {
-            ProjectToolsOpenSave.OpenSaveFilesBase(this, patchdir, typeof(TXTv3), "*.txt");
+            return Task.FromResult(
+                ProjectToolsOpenSave.OpenSaveFilesBase(this, patchdir, typeof(TXTv3), "*.txt")
+                );
         }
 
         internal override void AfterTranslationWriteActions()

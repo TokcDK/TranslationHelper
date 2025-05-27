@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Data;
 using System.IO;
 using System.Text.RegularExpressions;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 using TranslationHelper.Data;
 using TranslationHelper.Functions;
@@ -169,7 +170,7 @@ namespace TranslationHelper.Projects
         /// <summary>
         /// executed before DB will be saved
         /// </summary>
-        internal virtual void PreSaveDB() { }
+        internal virtual Task PreSaveDB() { return Task.CompletedTask; }
 
         /// <summary>
         /// Project's Title prefix
