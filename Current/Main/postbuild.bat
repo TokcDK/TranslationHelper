@@ -75,8 +75,8 @@ if "%configurationName%" == "Release" (
 	md "%targetReleaseDir%"
 	md "%targetReleaseResDir%"
 	
-	md "%targetReleaseDir%\DB
-	md "%targetReleaseDir%\Work
+	md "%targetReleaseDir%\DB"
+	md "%targetReleaseDir%\Work"
 
 	::make symlinks for dirs and files
 	for %%d in (locale,sounds,tools) do (
