@@ -241,11 +241,11 @@ namespace TranslationHelper.Functions
             return false;
         }
 
-        private static bool TryDetectProject(ProjectBase Project)
+        private static bool TryDetectProject(ProjectBase project)
         {
-            if (Project.IsValid())
+            if (project.IsValid())
             {
-                AppData.CurrentProject = Project;
+                AppData.CurrentProject = project;
                 return true;
             }
             return false;
