@@ -234,7 +234,6 @@
     <Compile Include="Formats\LiveMaker\LSBCSV.cs" />
     <Compile Include="Formats\LiveMaker\LSBLNS.cs" />
     <Compile Include="Formats\LOFI\Kenshi\KenshoModStrings.cs" />
-    <Compile Include="Formats\LOFI\Kenshi\MOD.cs" />
     <Compile Include="Formats\NScriptGame\nscript.dat\NSCRIPT.cs" />
     <Compile Include="Formats\Other\PO.cs" />
     <Compile Include="Formats\Raijin7\csv\CSV.cs" />
@@ -529,7 +528,6 @@
     <Compile Include="Projects\KiriKiri\TJSfile.cs" />
     <Compile Include="Projects\Liar-soft\LiarSoftGames.cs" />
     <Compile Include="Projects\LiveMaker\LiveMakerGame.cs" />
-    <Compile Include="Projects\LO-FI\KenshiMod.cs" />
     <Compile Include="Projects\NScript\NScriptBase.cs" />
     <Compile Include="Projects\NScript\NScriptGame.cs" />
     <Compile Include="Projects\ProjectBase.cs" />

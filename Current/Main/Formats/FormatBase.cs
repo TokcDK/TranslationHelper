@@ -132,12 +132,6 @@ namespace TranslationHelper.Formats
         }
 
         /// <summary>
-        /// Checks if the format can be parsed.
-        /// </summary>
-        /// <returns>True if the format can be parsed; otherwise, false.</returns>
-        public virtual bool Check() => false;
-
-        /// <summary>
         /// Gets the file extension(s) that can be parsed with this format (e.g., ".txt" or ".txt,.csv").
         /// </summary>
         public abstract string Extension { get; }
