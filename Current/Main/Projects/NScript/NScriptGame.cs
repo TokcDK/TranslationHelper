@@ -30,10 +30,7 @@ namespace TranslationHelper.Projects.NScript
 
         private bool OpenSaveNScript()
         {
-            Logger.Info((OpenFileMode ? T._("Opening") : T._("Saving")) + ": nscript.dat");
             var filePath = Path.Combine(AppData.CurrentProject.SelectedGameDir, "nscript.dat");
-            bool ret;
-            var format = new NSCRIPT();
 
             if (OpenFileMode)
             {
@@ -41,16 +38,9 @@ namespace TranslationHelper.Projects.NScript
                 {
                     File.Copy(filePath, filePath + ".orig");
                 }
-
-                ret = format.Open(filePath);
             }
-            else
-            {
-                ret = format.Save(filePath);
-            }
-
             
-            return ret;
+            return this.OpenSaveFilesBase(new FileInfo(filePath), typeof(NSCRIPT));
         }
 
         private static bool ExtractNScriptDAT()
