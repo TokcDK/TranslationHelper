@@ -20,7 +20,17 @@ namespace TranslationHelper.Formats.RPGMTransPatch
 
         protected override bool TryOpen()
         {
-            return new TXTv3().Open(this.FilePath);
+            var format = new TXTv3();
+            bool result = format.Open(this.FilePath);
+            if (!result)
+            {
+                return false;
+            }
+
+            this.Data = format.Data;
+            this.Info = format.Info;
+
+            return true;
         }
 
         protected override bool TrySave()
