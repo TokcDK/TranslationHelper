@@ -52,10 +52,10 @@ namespace TranslationHelper.Functions
 
             AppData.SelectedProjectFilePath = filePath;
 
-            bool isProjectFound = false;
-            await Task.Run(() => isProjectFound = GetSourceType(AppData.SelectedProjectFilePath)).ConfigureAwait(true);
+            ProjectBase project = null;
+            await Task.Run(() => project = TrySearchAndOpenProject(AppData.SelectedProjectFilePath)).ConfigureAwait(true);
 
-            if (!isProjectFound)
+            if (project == null)
             {
                 AppData.Main.frmMainPanel.Visible = false;
                 FunctionsSounds.OpenProjectFailed();
@@ -80,7 +80,7 @@ namespace TranslationHelper.Functions
                 //    }
                 //}
 
-                await AfterOpenActions();
+                await AfterOpenActions(project);
             }
 
             FunctionsUI.IsOpeningInProcess = false;
@@ -144,9 +144,9 @@ namespace TranslationHelper.Functions
             return tHSelectedGameDir;
         }
 
-        private static bool GetSourceType(string sPath)
+        private static ProjectBase TrySearchAndOpenProject(string projectPath)
         {
-            var dir = new DirectoryInfo(Path.GetDirectoryName(sPath));
+            var dir = new DirectoryInfo(Path.GetDirectoryName(projectPath));
 
             AppData.Main.frmMainPanel.Invoke((Action)(() => AppData.Main.frmMainPanel.Visible = true));
 
@@ -154,27 +154,30 @@ namespace TranslationHelper.Functions
 
             foreach (Type Project in AppData.ProjectsList)
             {
-                AppData.CurrentProject = (ProjectBase)Activator.CreateInstance(Project);
-                AppData.CurrentProject.OpenFileMode = true;
-                AppData.SelectedProjectFilePath = sPath;
-                AppData.CurrentProject.OpenedFilesDir = dir.FullName;
-                AppData.CurrentProject.SelectedDir = dir.FullName;
-                AppData.CurrentProject.SelectedGameDir = dir.FullName;
+                var project = (ProjectBase)Activator.CreateInstance(Project);
+                project.OpenFileMode = true;
+                project.OpenedFilesDir = dir.FullName;
+                project.SelectedDir = dir.FullName;
+                project.SelectedGameDir = dir.FullName;
+                AppData.SelectedProjectFilePath = projectPath;
 
-                if (TryDetectProject(AppData.CurrentProject)) foundTypes.Add(Project);
+                if (TryGetValidProject(project))
+                {
+                    foundTypes.Add(Project);
+                }
             }
 
             if (foundTypes.Count == 0)
             {
                 Logger.Info(T._("No projects found to open with"));
-                return false;
+                return null;
             }
 
 
             if (foundTypes.Count == 1)
             {
                 Logger.Info(T._("Found one project. Trying to open with it.."));
-                return TryOpenSelectedProject(foundTypes[0], sPath, dir);
+                return TryOpenSelectedProject(foundTypes[0], projectPath, dir);
             }
             else
             {
@@ -195,12 +198,12 @@ namespace TranslationHelper.Functions
 
             foundForm.Dispose();
 
-            if (selectedIndex > -1) return TryOpenSelectedProject(foundTypes[selectedIndex], sPath, dir);
+            if (selectedIndex > -1) return TryOpenSelectedProject(foundTypes[selectedIndex], projectPath, dir);
 
-            return TryOpenSelectedProject(foundTypes[0], sPath, dir);
+            return TryOpenSelectedProject(foundTypes[0], projectPath, dir);
         }
 
-        private static bool TryOpenSelectedProject(Type type, string sPath, DirectoryInfo dir)
+        private static ProjectBase TryOpenSelectedProject(Type type, string sPath, DirectoryInfo dir)
         {
             var project = (ProjectBase)Activator.CreateInstance(type);
             Logger.Info(T._("Open with {0}"), AppData.CurrentProject.Name);
@@ -216,10 +219,10 @@ namespace TranslationHelper.Functions
             if (!TryOpenProject(project))
             {
                 Logger.Warn(T._("Failed to open project"));
-                return false;
+                return null;
             }
 
-            return true;
+            return project;
         }
 
         private static bool TryOpenProject(ProjectBase project)
@@ -241,33 +244,32 @@ namespace TranslationHelper.Functions
             return false;
         }
 
-        private static bool TryDetectProject(ProjectBase project)
+        private static bool TryGetValidProject(ProjectBase project)
         {
             if (project.IsValid())
             {
-                AppData.CurrentProject = project;
                 return true;
             }
             return false;
         }
 
-        internal static async Task AfterOpenActions()
+        internal static async Task AfterOpenActions(ProjectBase project)
         {
-            AppData.CurrentProject.SaveFileMode = true;
+            project.SaveFileMode = true;
 
             if (!AppData.Main.THWorkSpaceSplitContainer.Visible) AppData.Main.THWorkSpaceSplitContainer.Visible = true;
 
-            if (AppData.Main.THFilesList.GetItemsCount() == 0 && AppData.CurrentProject.FilesContent.Tables.Count > 0)
+            if (AppData.Main.THFilesList.GetItemsCount() == 0 && project.FilesContent.Tables.Count > 0)
             {
                 var sortedtables = Sort(AppData.CurrentProject.FilesContent.Tables);
-                AppData.CurrentProject.FilesContent.Tables.Clear();
-                AppData.CurrentProject.FilesContent.Tables.AddRange(sortedtables);
+                project.FilesContent.Tables.Clear();
+                project.FilesContent.Tables.AddRange(sortedtables);
 
-                var sortedtablesinfo = Sort(AppData.CurrentProject.FilesContentInfo.Tables);
-                AppData.CurrentProject.FilesContentInfo.Tables.Clear();
-                AppData.CurrentProject.FilesContentInfo.Tables.AddRange(sortedtablesinfo);
+                var sortedtablesinfo = Sort(project.FilesContentInfo.Tables);
+                project.FilesContentInfo.Tables.Clear();
+                project.FilesContentInfo.Tables.AddRange(sortedtablesinfo);
 
-                foreach (DataTable table in AppData.CurrentProject.FilesContent.Tables)
+                foreach (DataTable table in project.FilesContent.Tables)
                 {
                     AppData.Main.THFilesList.AddItem(table.TableName);
                 }
@@ -276,17 +278,17 @@ namespace TranslationHelper.Functions
             FunctionsMenus.CreateMainMenus();
             FunctionsMenus.CreateFilesListMenus();
 
-            AppData.CurrentProject.SelectedGameDir = GetCorrectedGameDIr(AppData.CurrentProject.SelectedGameDir);
+            project.SelectedGameDir = GetCorrectedGameDIr(project.SelectedGameDir);
 
-            if (AppData.CurrentProject.Name.Contains("RPG Maker game with RPGMTransPatch") || AppData.CurrentProject.Name.Contains("KiriKiri game"))
+            if (project.Name.Contains("RPG Maker game with RPGMTransPatch") || project.Name.Contains("KiriKiri game"))
             {
-                AppData.Settings.THConfigINI.SetKey("Paths", "LastPath", AppData.CurrentProject.SelectedGameDir);
+                AppData.Settings.THConfigINI.SetKey("Paths", "LastPath", project.SelectedGameDir);
             }
             else
             {
                 try
                 {
-                    AppData.Settings.THConfigINI.SetKey("Paths", "LastPath", AppData.CurrentProject.SelectedDir);
+                    AppData.Settings.THConfigINI.SetKey("Paths", "LastPath", project.SelectedDir);
                 }
                 catch (Exception ex)
                 {
@@ -296,7 +298,7 @@ namespace TranslationHelper.Functions
 
             if (AppData.Main.FVariant.Length == 0)
             {
-                AppData.Main.FVariant = " * " + AppData.CurrentProject.Name;
+                AppData.Main.FVariant = " * " + project.Name;
             }
             try
             {
@@ -305,7 +307,7 @@ namespace TranslationHelper.Functions
             catch { }
 
             AppSettings.ProjectNewLineSymbol = (AppData.CurrentProject != null)
-                ? AppData.CurrentProject.NewlineSymbol
+                ? project.NewlineSymbol
                 : Environment.NewLine;
 
             MenuItemRecent.AfterOpenCleaning();
