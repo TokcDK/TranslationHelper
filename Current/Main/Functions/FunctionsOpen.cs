@@ -211,7 +211,7 @@ namespace TranslationHelper.Functions
             AppData.CurrentProject.SelectedDir = dir.FullName;
             AppData.CurrentProject.SelectedGameDir = dir.FullName;
 
-            if (!TryOpenProject())
+            if (!TryOpenProject(AppData.CurrentProject))
             {
                 Logger.Warn(T._("Failed to open project"));
                 return false;
@@ -220,12 +220,18 @@ namespace TranslationHelper.Functions
             return true;
         }
 
-        private static bool TryOpenProject()
+        private static bool TryOpenProject(ProjectBase project)
         {
-            AppData.CurrentProject.Init();
-            AppData.CurrentProject.BakRestore();
-            AppData.CurrentProject.OpenFileMode = true;
-            if (AppData.CurrentProject.TryOpen())
+            if (project == null)
+            {
+                Logger.Error(T._("Current project is null"));
+                return false;
+            }
+
+            project.Init();
+            project.BakRestore();
+            project.OpenFileMode = true;
+            if (project.TryOpen())
             {
                 MenusCreator.CreateMenus();
                 return true;
