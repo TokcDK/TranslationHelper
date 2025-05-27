@@ -164,8 +164,7 @@ namespace TranslationHelper.Projects
                     }
 
                     // Create format instance
-                    var format = Activator.CreateInstance(file.type) as FormatBase;
-                    if (format == null)
+                    if (!(Activator.CreateInstance(file.type) is FormatBase format))
                         return;
 
                     // Check file extension
