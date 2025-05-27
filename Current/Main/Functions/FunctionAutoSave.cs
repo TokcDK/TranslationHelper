@@ -13,7 +13,7 @@ namespace TranslationHelper.Functions
 {
     internal static class FunctionAutoSave
     {
-        internal static Task StartAutoSave(System.Timers.Timer autoSaveTimer, Func<Task> autosaveAction, int timeout = 300)
+        internal static Task StartAutoSave(ref System.Timers.Timer autoSaveTimer, Func<Task> autosaveAction, int timeout = 300)
         {
             if (timeout < 1 || autosaveAction == null)
             {
@@ -37,10 +37,10 @@ namespace TranslationHelper.Functions
             }
         }
 
-        internal static void RestartAutosave(System.Timers.Timer autoSaveTimer, Func<Task> autosave, int timeout = 300)
+        internal static void RestartAutosave(ref System.Timers.Timer autoSaveTimer, Func<Task> autosave, int timeout = 300)
         {
             StopAutoSave(autoSaveTimer);
-            StartAutoSave(autoSaveTimer, autosave, timeout);
+            StartAutoSave(ref autoSaveTimer, autosave, timeout);
         }        
     }
 }
