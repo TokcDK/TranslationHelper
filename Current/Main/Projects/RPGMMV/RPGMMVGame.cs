@@ -200,7 +200,11 @@ namespace TranslationHelper.Projects.RPGMMV
         /// <returns>True if any file was processed, otherwise false.</returns>
         private bool ParsePlugins(HashSet<string> hardcodedJS)
         {
-            bool hasAnyFileBeenProcessed = false;
+            return ProjectToolsOpenSave.OpenSaveFilesBase(this, GetHardcodedJSFiles(hardcodedJS));
+        }
+
+        private IEnumerable<(FileInfo info, Type type)> GetHardcodedJSFiles(HashSet<string> hardcodedJS)
+        {
             foreach (var jsType in ListOfJS)
             {
                 if (IsTypeExcluded(jsType)) continue;
@@ -210,23 +214,9 @@ namespace TranslationHelper.Projects.RPGMMV
 
                 if (!File.Exists(filePath)) continue;
 
-                try
-                {
-                    hardcodedJS.Add(js.JSName); //add js to exclude from parsing of other js
-                    var format = (FormatBase)Activator.CreateInstance(jsType);
-
-                    Logger.Info(ParseFileMessage + js.JSName);
-                    if ((OpenFileMode && format.Open(filePath)) || (SaveFileMode && format.Save(filePath)))
-                    {
-                        hasAnyFileBeenProcessed = true;
-                    }
-                }
-                catch
-                {
-                    // Exceptions are ignored per original functionality.
-                }
+                hardcodedJS.Add(js.JSName); //add js to exclude from parsing of other js
+                yield return (new FileInfo(filePath), jsType);
             }
-            return hasAnyFileBeenProcessed;
         }
 
         /// <summary>

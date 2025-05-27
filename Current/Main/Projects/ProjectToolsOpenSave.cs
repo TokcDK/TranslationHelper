@@ -123,9 +123,9 @@ namespace TranslationHelper.Projects
         /// open or save project files
         /// </summary>
         /// <returns></returns>
-        public static bool OpenSaveFilesBase(this ProjectBase project, (FileInfo info, Type type)[] filesList)
+        public static bool OpenSaveFilesBase(this ProjectBase project, IEnumerable<(FileInfo info, Type type)> filesList)
         {
-            if (filesList == null || filesList.Length == 0)
+            if (filesList == null)
                 return false;
 
             var ret = false;
