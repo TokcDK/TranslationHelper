@@ -822,5 +822,26 @@ namespace TranslationHelper.Main.Functions
                 Logger.Warn(ex, T._("Error") + " " + T._("Loading DB File") + ": " + sPath);
             }
         }
+
+        internal async static Task SaveDB()
+        {
+            var fileName = FunctionsDBFile.GetDBFileName();
+            var fileExtension = FunctionsDBFile.GetDBCompressionExt();
+            var path = Path.Combine(FunctionsDBFile.GetProjectDBFolder(), fileName + fileExtension);
+
+            if (System.IO.File.Exists(path))
+            {
+               FunctionsBackup.ShiftToBackups(path);
+            }
+
+            var pathNextToSource = Path.Combine(AppData.CurrentProject.SelectedDir, Data.THSettings.TranslationFileSourceDirSuffix + fileExtension);
+
+            await Task.Run(() => AppData.CurrentProject.PreSaveDB()).ConfigureAwait(false);
+            await Task.Run(() => FunctionsDBFile.WriteDBFileLite(AppData.CurrentProject.FilesContent, new[] { path, pathNextToSource })).ConfigureAwait(false);
+
+            Logger.Info(T._("DB saved!"));
+
+            FunctionsSounds.SaveDBComplete();
+        }
     }
 }

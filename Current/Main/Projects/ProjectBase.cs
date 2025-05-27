@@ -7,6 +7,7 @@ using System.IO;
 using System.Text.RegularExpressions;
 using System.Windows.Forms;
 using TranslationHelper.Data;
+using TranslationHelper.Functions;
 using TranslationHelper.Main.Functions;
 using TranslationHelper.Menus.FileRowMenus;
 using TranslationHelper.Menus.FilesListMenus;
@@ -22,17 +23,23 @@ namespace TranslationHelper.Projects
             // set value of the parameter for the project work session
             DontLoadDuplicates = AppSettings.DontLoadDuplicates;
 
+            AutosaveTimer = new System.Timers.Timer(AppSettings.DBAutoSaveTimeout);
+
+            FunctionAutoSave.StartAutoSave(AutosaveTimer, FunctionsDBFile.SaveDB, AppSettings.DBAutoSaveTimeout);
+
             if (AppData.CurrentProject == null) return;
 
             if (SaveFileMode && DontLoadDuplicates) TablesLinesDict = new ConcurrentDictionary<string, string>();
         }
+
+        private static System.Timers.Timer AutosaveTimer;
 
         // for the project work session
         // tables must store in the selected project
         // and binded to the selected table
         //internal virtual void BindFileContent(DataGridView visibleTable)
         //{
-            //// visibleTable.DataSource = TheProjectCurrentTable binding code with any way; 
+        //// visibleTable.DataSource = TheProjectCurrentTable binding code with any way; 
         //}
 
         /// <summary>

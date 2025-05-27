@@ -141,6 +141,7 @@
     <Compile Include="Functions\FileElementsFunctions\Row\OnlineTranslate\TranslationCache.cs" />
     <Compile Include="Functions\FileElementsFunctions\Row\ReplaceIdenticalByOriginalGetSelected.cs" />
     <Compile Include="Functions\FileElementsFunctions\Row\ReplaceIdenticalByOriginalALL.cs" />
+    <Compile Include="Functions\FunctionsBackup.cs" />
     <Compile Include="Functions\FunctionsUI.cs" />
     <Compile Include="Functions\DBSaveFormats\Xlsx.cs" />
     <Compile Include="Functions\DBSaveFormats\Bin.cs" />
