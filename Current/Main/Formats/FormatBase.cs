@@ -596,7 +596,15 @@ namespace TranslationHelper.Formats
         /// </summary>
         /// <param name="str">The string to fix.</param>
         /// <returns>The cleaned string.</returns>
-        protected virtual string FixInvalidSymbols(string str) => str.Replace("\u200b", string.Empty);
+        protected virtual string FixInvalidSymbols(string str)
+        {
+            if(str == null)
+            {
+                return str;
+            }
+
+           return str.Replace("\u200b", string.Empty);
+        }
 
 
         #region extra code

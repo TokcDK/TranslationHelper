@@ -187,7 +187,7 @@ namespace TranslationHelper.Formats.RPGMMV.JsonType
             }
             else
             {
-                var str = quotesExtractor.InputString;
+                string str = quotesExtractor.InputString;
                 if (AddRowData(ref str, GetInfo(command, info, commentInfo, i)) && SaveFileMode)
                 {
                     command.Parameters[i] = GetFinalString(str, command) + quotesExtractor.Comment;
