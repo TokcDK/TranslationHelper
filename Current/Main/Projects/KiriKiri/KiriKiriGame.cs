@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Windows.Forms;
 using TranslationHelper.Data;
 using TranslationHelper.Formats;
@@ -35,100 +36,43 @@ namespace TranslationHelper.Projects.KiriKiri
 
         protected override bool TryOpen()
         {
-            if (ExtractXP3files(AppData.SelectedProjectFilePath))
+            if (!ExtractXP3files(AppData.SelectedProjectFilePath))
             {
-                var KiriKiriFiles = new List<string>();
-                string DirName = Path.GetFileName(Path.GetDirectoryName(AppData.SelectedProjectFilePath));
-                string KiriKiriWorkFolder = Path.Combine(Application.StartupPath, "Work", "KiriKiri", DirName);
-
-                foreach (FileInfo file in (new DirectoryInfo(KiriKiriWorkFolder)).EnumerateFiles("*.scn", SearchOption.AllDirectories))
-                {
-                    KiriKiriFiles.Add(file.FullName);
-                }
-                foreach (FileInfo file in (new DirectoryInfo(KiriKiriWorkFolder)).EnumerateFiles("*.ks", SearchOption.AllDirectories))
-                {
-                    KiriKiriFiles.Add(file.FullName);
-                }
-                foreach (FileInfo file in (new DirectoryInfo(KiriKiriWorkFolder)).EnumerateFiles("*.csv", SearchOption.AllDirectories))
-                {
-                    KiriKiriFiles.Add(file.FullName);
-                }
-                foreach (FileInfo file in (new DirectoryInfo(KiriKiriWorkFolder)).EnumerateFiles("*.tsv", SearchOption.AllDirectories))
-                {
-                    KiriKiriFiles.Add(file.FullName);
-                }
-                foreach (FileInfo file in (new DirectoryInfo(KiriKiriWorkFolder)).EnumerateFiles("*.tjs", SearchOption.AllDirectories))
-                {
-                    KiriKiriFiles.Add(file.FullName);
-                }
-
-                if (KiriKiriGameOpen(KiriKiriFiles))
-                {
-                    return true;
-                }
+                return false;
             }
 
-            return false;
-        }
+            var KiriKiriFiles = new List<string>();
+            string DirName = Path.GetFileName(Path.GetDirectoryName(AppData.SelectedProjectFilePath));
+            string KiriKiriWorkFolder = Path.Combine(Application.StartupPath, "Work", "KiriKiri", DirName);
+            bool ret = false;
 
-        private static bool KiriKiriGameOpen(List<string> kiriKiriFiles)
-        {
-            string filename;
-
-            try
+            Type type = typeof(SCRIPT);
+            if (this.OpenSaveFilesBase(new DirectoryInfo(KiriKiriWorkFolder).EnumerateFiles("*.ks", SearchOption.AllDirectories).Select(f => (f, type))))
             {
-                bool ret = false;
-
-                for (int i = 0; i < kiriKiriFiles.Count; i++)
-                {
-                    filename = Path.GetFileName(kiriKiriFiles[i]);
-
-                    //ProjectData.FilePath = kiriKiriFiles[i];
-
-                    //_ = ProjectData.THFilesElementsDataset.Tables.Add(filename);
-                    //_ = ProjectData.THFilesElementsDataset.Tables[filename].Columns.Add(THSettings.OriginalColumnName);
-                    //_ = ProjectData.THFilesElementsDatasetInfo.Tables.Add(filename);
-                    //_ = ProjectData.THFilesElementsDatasetInfo.Tables[filename].Columns.Add(THSettings.OriginalColumnName);
-
-                    FormatBase format = null;
-                    if (filename.EndsWith(".ks") || filename.EndsWith(".scn") || filename.EndsWith(".tjs"))
-                    {
-                        format = new SCRIPT();
-                    }
-                    else if (filename.EndsWith(".csv"))
-                    {
-                        format = new CSV();
-                    }
-                    else if (filename.EndsWith(".tsv"))
-                    {
-                        format = new TSV();
-                    }
-
-                    if (format.Open(kiriKiriFiles[i]))
-                    {
-                        ret = true;
-                    }
-
-                    //if (DT == null || DT.Rows.Count == 0)
-                    //{
-                    //    ProjectData.THFilesElementsDataset.Tables.Remove(filename);
-                    //    ProjectData.THFilesElementsDatasetInfo.Tables.Remove(filename);
-                    //}
-                    //else
-                    //{
-                    //    THFilesList.Invoke((Action)(() => THFilesList.AddItem(filename)));
-                    //    _ = ProjectData.THFilesElementsDataset.Tables[filename].Columns.Add(THSettings.TranslationColumnName);
-                    //}
-                }
-
-                return ret;
+                ret = true;
             }
-            catch (Exception ex)
+            if (this.OpenSaveFilesBase(new DirectoryInfo(KiriKiriWorkFolder).EnumerateFiles("*.tjs", SearchOption.AllDirectories).Select(f => (f, type))))
             {
-                MessageBox.Show(ex.Message);
+                ret = true;
+            }
+            if (this.OpenSaveFilesBase(new DirectoryInfo(KiriKiriWorkFolder).EnumerateFiles("*.scn", SearchOption.AllDirectories).Select(f => (f, type))))
+            {
+                ret = true;
             }
 
-            return false;
+            type = typeof(CSV);
+            if (this.OpenSaveFilesBase(new DirectoryInfo(KiriKiriWorkFolder).EnumerateFiles("*.csv", SearchOption.AllDirectories).Select(f => (f, type))))
+            {
+                ret = true;
+            }
+
+            type = typeof(TSV);
+            if (this.OpenSaveFilesBase(new DirectoryInfo(KiriKiriWorkFolder).EnumerateFiles("*.tsv", SearchOption.AllDirectories).Select(f => (f, type))))
+            {
+                ret = true;
+            }
+
+            return ret;
         }
 
         public static bool ExtractXP3files(string sPath)
