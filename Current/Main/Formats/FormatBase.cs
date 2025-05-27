@@ -10,6 +10,7 @@ using TranslationHelper.Data;
 using TranslationHelper.Extensions;
 using TranslationHelper.Functions;
 using TranslationHelper.Menus.MainMenus.File;
+using TranslationHelper.Projects;
 using WolfTrans.Net.Parsers.Events.Map.Event;
 
 namespace TranslationHelper.Formats
@@ -18,21 +19,26 @@ namespace TranslationHelper.Formats
     {
         protected static readonly Logger Logger = LogManager.GetCurrentClassLogger();
 
+        internal ProjectBase ParentProject { get; }
+
         /// <summary>
         /// Initializes a new instance of the <see cref="FormatBase"/> class with no file path.
         /// </summary>
-        protected FormatBase()
+        protected FormatBase(ProjectBase parentProject)
         {
-            BaseInit(null);
-        }
+            ParentProject = parentProject;
 
-        /// <summary>
-        /// Initializes a new instance of the <see cref="FormatBase"/> class with a specified file path.
-        /// </summary>
-        /// <param name="filePath">The file path to set, or null if not provided.</param>
-        protected FormatBase(string filePath)
-        {
-            BaseInit(filePath);
+
+            if(ParentProject == null)
+            {
+                var ex = new ArgumentNullException(nameof(parentProject), "Parent project cannot be null.");
+
+                Logger.Error(ex, "Parent project is null in FormatBase constructor.");
+
+                throw ex;
+            }
+
+            BaseInit(null);
         }
 
         /// <summary>
@@ -92,21 +98,21 @@ namespace TranslationHelper.Formats
         /// <param name="filePath">The file path to set, or null if not provided.</param>
         private void BaseInit(string filePath)
         {
-            if (AppData.CurrentProject == null) return;
+            if (ParentProject == null) return;
 
             FilePath = string.IsNullOrWhiteSpace(filePath)
                 ? AppData.SelectedProjectFilePath
                 : filePath;
 
-            if (!AppData.CurrentProject.DontLoadDuplicates) return;
+            if (!ParentProject.DontLoadDuplicates) return;
 
             if (SaveFileMode)
             {
-                AppData.CurrentProject.TablesLinesDict = AppData.CurrentProject.TablesLinesDict ?? new ConcurrentDictionary<string, string>();
+                ParentProject.TablesLinesDict = ParentProject.TablesLinesDict ?? new ConcurrentDictionary<string, string>();
             }
             else
             {
-                AppData.CurrentProject.Hashes = AppData.CurrentProject.Hashes ?? new ConcurrentSet<string>();
+                ParentProject.Hashes = ParentProject.Hashes ?? new ConcurrentSet<string>();
             }
         }
 
@@ -174,8 +180,8 @@ namespace TranslationHelper.Formats
                     }
                 }
 
-                string tableName = AppData.CurrentProject.SubpathInTableName
-                    ? Path.GetDirectoryName(filePath).Replace(AppData.CurrentProject.OpenedFilesDir, string.Empty) + Path.DirectorySeparatorChar
+                string tableName = ParentProject.SubpathInTableName
+                    ? Path.GetDirectoryName(filePath).Replace(ParentProject.OpenedFilesDir, string.Empty) + Path.DirectorySeparatorChar
                     : string.Empty;
 
                 tableName += UseTableNameWithoutExtension
@@ -235,11 +241,11 @@ namespace TranslationHelper.Formats
 
         private bool IsAnyTranslated()
         {
-            if (!AppData.CurrentProject.FilesContent.Tables.Contains(FileName))
+            if (!ParentProject.FilesContent.Tables.Contains(FileName))
             {
                 return false;
             }
-            return AppData.CurrentProject.FilesContent.Tables[FileName].Rows.Cast<DataRow>()
+            return ParentProject.FilesContent.Tables[FileName].Rows.Cast<DataRow>()
                 .Any(row => !string.IsNullOrEmpty(GetRowTranslationText(row)));
         }
 
@@ -376,14 +382,14 @@ namespace TranslationHelper.Formats
             string original = AddRowDataPreAddOriginalStringMod(values[0]);
             if (isCheckInput && !IsValidString(original)) return false;
 
-            if (AppData.CurrentProject.DontLoadDuplicates)
+            if (ParentProject.DontLoadDuplicates)
             {
-                if (AppData.CurrentProject.Hashes?.Contains(original) ?? false) return false;
-                AppData.CurrentProject.Hashes?.TryAdd(original);
+                if (ParentProject.Hashes?.Contains(original) ?? false) return false;
+                ParentProject.Hashes?.TryAdd(original);
             }
             else
             {
-                var originals = AppData.CurrentProject.OriginalsTableRowCoordinates;
+                var originals = ParentProject.OriginalsTableRowCoordinates;
                 originals.TryAdd(original, new ConcurrentDictionary<string, ConcurrentSet<int>>());
                 originals[original].TryAdd(tablename, new ConcurrentSet<int>());
                 
@@ -467,8 +473,8 @@ namespace TranslationHelper.Formats
             }
             if (Data.Rows.Count > 0)
             {
-                AppData.CurrentProject.AddFileData(Data);
-                AppData.CurrentProject.AddFileInfo(Info);
+                ParentProject.AddFileData(Data);
+                ParentProject.AddFileInfo(Info);
                 return true;
             }
             return false;
@@ -495,7 +501,7 @@ namespace TranslationHelper.Formats
         /// <returns>True if valid; otherwise, false.</returns>
         internal virtual bool IsValidString(string inputString)
         {
-            inputString = AppData.CurrentProject.CleanStringForCheck(inputString);
+            inputString = ParentProject.CleanStringForCheck(inputString);
             return !string.IsNullOrWhiteSpace(inputString) && !inputString.ForJPLangHaveMostOfRomajiOtherChars();
         }
 
@@ -511,15 +517,15 @@ namespace TranslationHelper.Formats
 
             if (OpenFileMode || (isCheckInput && !IsValidString(valueToTranslate))) return false;
 
-            bool letDuplicates = !AppData.CurrentProject.DontLoadDuplicates;
+            bool letDuplicates = !ParentProject.DontLoadDuplicates;
             string original = valueToTranslate;
 
-            if (letDuplicates && AppData.CurrentProject.OriginalsTableRowCoordinates?.ContainsKey(original) == true)
+            if (letDuplicates && ParentProject.OriginalsTableRowCoordinates?.ContainsKey(original) == true)
             {
                 // any valid (even empty or equal original) added row in the table will be parsed then increment the row index
                 int rowIndex = RowIndex++;
 
-                var coordinates = AppData.CurrentProject.OriginalsTableRowCoordinates[original];
+                var coordinates = ParentProject.OriginalsTableRowCoordinates[original];
 
                 // standart get the translation by row index
                 string tableName = FileName;
@@ -548,7 +554,7 @@ namespace TranslationHelper.Formats
                     }
                 }
             }
-            else if (!letDuplicates && AppData.CurrentProject.TablesLinesDict?.ContainsKey(original) == true)
+            else if (!letDuplicates && ParentProject.TablesLinesDict?.ContainsKey(original) == true)
             {
                 return ApplyTranslation(null, -1, original, existsTranslation, ref valueToTranslate);
             }
@@ -569,8 +575,8 @@ namespace TranslationHelper.Formats
             try
             {
                 valueToTranslate = tableName == null
-                    ? AppData.CurrentProject.TablesLinesDict[original]
-                    :  GetRowTranslationText(AppData.CurrentProject.FilesContent.Tables[tableName].Rows[rowNumber]);
+                    ? ParentProject.TablesLinesDict[original]
+                    :  GetRowTranslationText(ParentProject.FilesContent.Tables[tableName].Rows[rowNumber]);
             }
             catch (Exception ex)
             {
@@ -621,17 +627,17 @@ namespace TranslationHelper.Formats
         /// <param name="onlyOneTable">Whether to process only the specified table.</param>
         internal void SplitTableCellValuesAndTheirLinesToDictionary(string tableName, bool makeLinesCountEqual = false, bool onlyOneTable = false)
         {
-            if (!AppData.CurrentProject.DontLoadDuplicates || !SaveFileMode) return;
+            if (!ParentProject.DontLoadDuplicates || !SaveFileMode) return;
 
-            var dict = AppData.CurrentProject.TablesLinesDict ?? new ConcurrentDictionary<string, string>();
-            if (onlyOneTable && !AppData.CurrentProject.FilesContent.Tables.Contains(tableName)) return;
+            var dict = ParentProject.TablesLinesDict ?? new ConcurrentDictionary<string, string>();
+            if (onlyOneTable && !ParentProject.FilesContent.Tables.Contains(tableName)) return;
 
             lock (SplitTableCellValuesAndTheirLinesToDictionaryThreadsLock)
             {
                 if (TablesLinesDictFilled && !onlyOneTable) return;
                 if (onlyOneTable) dict.Clear();
 
-                foreach (DataTable table in AppData.CurrentProject.FilesContent.Tables)
+                foreach (DataTable table in ParentProject.FilesContent.Tables)
                 {
                     if (onlyOneTable && table.TableName != tableName) continue;
 
@@ -676,9 +682,9 @@ namespace TranslationHelper.Formats
         /// <param name="original">The original multi-line string.</param>
         /// <param name="translation">The translation string.</param>
         /// <param name="makeLinesCountEqual">Whether to adjust line counts.</param>
-        private static void AddMultiLineTranslations(string original, string translation, bool makeLinesCountEqual)
+        private void AddMultiLineTranslations(string original, string translation, bool makeLinesCountEqual)
         {
-            var dict = AppData.CurrentProject.TablesLinesDict;
+            var dict = ParentProject.TablesLinesDict;
             string[] originalLines = original.GetAllLinesToArray();
             string[] translationLines = translation.GetAllLinesToArray();
             int originalCount = originalLines.Length;
@@ -732,13 +738,13 @@ namespace TranslationHelper.Formats
             }
         }
 
-        internal static string GetRowOriginalText(DataRow dataRow)
+        internal string GetRowOriginalText(DataRow dataRow)
         {
-            return dataRow.Field<string>(AppData.CurrentProject.OriginalColumnIndex);
+            return dataRow.Field<string>(ParentProject.OriginalColumnIndex);
         }
-        internal static string GetRowTranslationText(DataRow dataRow)
+        internal string GetRowTranslationText(DataRow dataRow)
         {
-            return dataRow.Field<string>(AppData.CurrentProject.TranslationColumnIndex);
+            return dataRow.Field<string>(ParentProject.TranslationColumnIndex);
         }
         #endregion
     }

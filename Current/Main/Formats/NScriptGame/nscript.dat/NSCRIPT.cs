@@ -4,12 +4,13 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using TranslationHelper.Data;
 using TranslationHelper.Extensions;
+using TranslationHelper.Projects;
 
 namespace TranslationHelper.Formats.NScriptGame.nscript.dat
 {
     internal class NSCRIPT : FormatStringBase
     {
-        public NSCRIPT()
+        public NSCRIPT(ProjectBase parentProject) : base(parentProject)
         {
         }
 

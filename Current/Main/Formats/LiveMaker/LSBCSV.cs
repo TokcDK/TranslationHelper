@@ -2,12 +2,13 @@
 using System.Text.RegularExpressions;
 using TranslationHelper.Data;
 using TranslationHelper.Main.Functions;
+using TranslationHelper.Projects;
 
 namespace TranslationHelper.Formats.LiveMaker
 {
     class LSBCSV : LiveMakerBase
     {
-        public LSBCSV()
+        public LSBCSV(ProjectBase parentProject) : base(parentProject)
         {
         }
 

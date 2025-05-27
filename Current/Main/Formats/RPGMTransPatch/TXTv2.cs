@@ -1,12 +1,13 @@
 ﻿using System.Collections.Generic;
 using System.IO;
 using TranslationHelper.Data;
+using TranslationHelper.Projects;
 
 namespace TranslationHelper.Formats.RPGMTransPatch
 {
     class TXTv2 : PatchTXTBase
     {
-        public TXTv2()
+        public TXTv2(ProjectBase parentProject) : base(parentProject)
         {
         }
 

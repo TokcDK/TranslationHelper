@@ -8,11 +8,16 @@ using System.Windows;
 using Newtonsoft.Json;
 using TranslationHelper.Formats.Glitch_Pitch.Idol_Manager.Mod;
 using TranslationHelper.Formats.RPGMMV;
+using TranslationHelper.Projects;
 
 namespace TranslationHelper.Formats.Glitch_Pitch.IdolManager.Mod
 {
     internal class Dialogues_json : IdolManagerModBase
     {
+        public Dialogues_json(ProjectBase parentProject) : base(parentProject)
+        {
+        }
+
         public override string Extension => ".json";
         protected override void ParseFileContent()
         {

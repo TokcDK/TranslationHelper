@@ -2,11 +2,16 @@
 using System.Linq;
 using System.Xml;
 using System.Xml.Linq;
+using TranslationHelper.Projects;
 
 namespace TranslationHelper.Formats.RimWorld
 {
     internal class RimWorldLanguageDataXML : FormatStringBase
     {
+        public RimWorldLanguageDataXML(ProjectBase parentProject) : base(parentProject)
+        {
+        }
+
         public override string Extension => ".xml";
 
         protected override void ParseFileContent()

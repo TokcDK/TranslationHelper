@@ -1,9 +1,14 @@
 ﻿using System;
+using TranslationHelper.Projects;
 
 namespace TranslationHelper.Formats.AI6WIN
 {
     internal class MESTXT : FormatTxtFileBase
     {
+        public MESTXT(ProjectBase parentProject) : base(parentProject)
+        {
+        }
+
         protected override KeywordActionAfter ParseStringFileLine()
         {
             if (ParseData.Line == "#1-STR_PRIMARY")

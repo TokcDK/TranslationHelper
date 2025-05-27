@@ -2,12 +2,13 @@
 using System.IO;
 using System.Text;
 using TranslationHelper.Data;
+using TranslationHelper.Projects;
 
 namespace TranslationHelper.Formats.Liar_soft
 {
     class GSCTXT : FormatStringBase
     {
-        public GSCTXT()
+        public GSCTXT(ProjectBase parentProject) : base(parentProject)
         {
         }
 

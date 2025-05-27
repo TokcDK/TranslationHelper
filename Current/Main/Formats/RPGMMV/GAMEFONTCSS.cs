@@ -3,6 +3,7 @@ using System.IO;
 using System.Text.RegularExpressions;
 using System.Windows;
 using TranslationHelper.Data;
+using TranslationHelper.Projects;
 
 namespace TranslationHelper.Formats.RPGMMV
 {
@@ -10,7 +11,7 @@ namespace TranslationHelper.Formats.RPGMMV
     {
         public override string Extension => ".css";
 
-        public GAMEFONTCSS()
+        public GAMEFONTCSS(ProjectBase parentProject) : base(parentProject)
         {
         }
 

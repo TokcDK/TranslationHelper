@@ -1,10 +1,15 @@
 ﻿using System;
 using System.Web.UI.WebControls.WebParts;
+using TranslationHelper.Projects;
 
 namespace TranslationHelper.Formats.RPGMMV.Other
 {
     internal class DobbyPluginDBCSV : FormatStringBase
     {
+        public DobbyPluginDBCSV(ProjectBase parentProject) : base(parentProject)
+        {
+        }
+
         public override string Extension => ".csv";
 
         protected override void ParseFileContent()

@@ -1,11 +1,12 @@
 ﻿using System.Collections.Generic;
 using TranslationHelper.Formats.RPGMTransPatch;
+using TranslationHelper.Projects;
 
 namespace TranslationHelper.Formats.WolfRPG.WolfTrans
 {
     class TXT : PatchTXTBase
     {
-        public TXT()
+        public TXT(ProjectBase parentProject) : base(parentProject)
         {
         }
 

@@ -5,6 +5,7 @@ using System.Windows.Forms;
 using TranslationHelper.Data;
 using TranslationHelper.Extensions;
 using TranslationHelper.Main.Functions;
+using TranslationHelper.Projects;
 
 namespace TranslationHelper.Formats.KiriKiri
 {
@@ -12,7 +13,7 @@ namespace TranslationHelper.Formats.KiriKiri
     {
         public override string Extension => ".csv";
 
-        public CSV()
+        public CSV(ProjectBase parentProject) : base(parentProject)
         {
         }
 

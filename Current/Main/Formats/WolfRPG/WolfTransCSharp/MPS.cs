@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using TranslationHelper.Data;
+using TranslationHelper.Projects;
 using WolfTrans.Net.Parsers;
 using WolfTrans.Net.Parsers.Events;
 
@@ -8,6 +9,10 @@ namespace TranslationHelper.Formats.WolfRPG.WolfTransCSharp
 {
     internal class MPS : CommandUserBase
     {
+        public MPS(ProjectBase parentProject) : base(parentProject)
+        {
+        }
+
         public override string Extension => ".mps";
 
         protected override void FileOpen()

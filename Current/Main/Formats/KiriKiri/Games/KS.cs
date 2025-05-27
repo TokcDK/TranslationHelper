@@ -1,11 +1,12 @@
 ﻿using System.Text;
 using TranslationHelper.Formats.TyranoBuilder.Extracted;
+using TranslationHelper.Projects;
 
 namespace TranslationHelper.Formats.KiriKiri.Games
 {
     class KS : KSParserBase//KSOther//
     {
-        public KS()
+        public KS(ProjectBase parentProject) : base(parentProject)
         {
         }
 

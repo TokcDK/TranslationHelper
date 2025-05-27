@@ -1,5 +1,6 @@
 ﻿using RPGMVJsonParser;
 using System.IO;
+using TranslationHelper.Projects;
 
 namespace TranslationHelper.Formats.RPGMMV.JsonType
 {
@@ -28,6 +29,10 @@ namespace TranslationHelper.Formats.RPGMMV.JsonType
         }
 
         object JsonObject;
+
+        public JsonTypeBase(ProjectBase parentProject) : base(parentProject)
+        {
+        }
 
         protected override bool WriteFileData(string filePath = "")
         {

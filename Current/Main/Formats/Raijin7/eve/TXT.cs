@@ -1,11 +1,12 @@
 ﻿using System;
 using TranslationHelper.Data;
+using TranslationHelper.Projects;
 
 namespace TranslationHelper.Formats.Raijin7.eve
 {
     class TXT : Rajiin7Base
     {
-        public TXT()
+        public TXT(ProjectBase parentProject) : base(parentProject)
         {
         }
 

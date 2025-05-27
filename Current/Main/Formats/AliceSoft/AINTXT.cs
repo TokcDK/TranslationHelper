@@ -1,11 +1,12 @@
 ﻿using System.Text.RegularExpressions;
 using TranslationHelper.Data;
+using TranslationHelper.Projects;
 
 namespace TranslationHelper.Formats.AliceSoft
 {
     class AINTXT : AliceSoftBase
     {
-        public AINTXT()
+        public AINTXT(ProjectBase parentProject) : base(parentProject)
         {
         }
 

@@ -2,12 +2,13 @@
 using System.Text.RegularExpressions;
 using TranslationHelper.Data;
 using TranslationHelper.Functions;
+using TranslationHelper.Projects;
 
 namespace TranslationHelper.Formats.RPGMMV.JS
 {
     abstract class JSQuotedStringsBase : JSBase
     {
-        protected JSQuotedStringsBase()
+        protected JSQuotedStringsBase(ProjectBase parentProject) : base(parentProject)
         {
         }
 

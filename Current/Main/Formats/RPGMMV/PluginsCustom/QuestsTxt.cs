@@ -2,11 +2,16 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
+using TranslationHelper.Projects;
 
 namespace TranslationHelper.Formats.RPGMMV.PluginsCustom
 {
     internal class QuestsTxt : FormatTxtFileBase
     {
+        public QuestsTxt(ProjectBase parentProject) : base(parentProject)
+        {
+        }
+
         protected override KeywordActionAfter ParseStringFileLine()
         {
             if (ParseData.Line.StartsWith("<quest"))

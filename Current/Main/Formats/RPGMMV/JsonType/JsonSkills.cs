@@ -6,11 +6,16 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using TranslationHelper.Data;
+using TranslationHelper.Projects;
 
 namespace TranslationHelper.Formats.RPGMMV.JsonType
 {
     internal class JsonSkills :JsonTypeBase
     {
+        public JsonSkills(ProjectBase parentProject) : base(parentProject)
+        {
+        }
+
         protected override object ParseJson(string path)
         {
             var data = Helper.LoadSkills(path);

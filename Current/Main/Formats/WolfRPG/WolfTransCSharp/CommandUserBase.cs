@@ -4,12 +4,17 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using TranslationHelper.Data;
+using TranslationHelper.Projects;
 using WolfTrans.Net.Parsers.Events;
 
 namespace TranslationHelper.Formats.WolfRPG.WolfTransCSharp
 {
     internal abstract class CommandUserBase: WolftransCSharpBase
     {
+        protected CommandUserBase(ProjectBase parentProject) : base(parentProject)
+        {
+        }
+
         protected void ParseCommandStrings(List<Command> commands, string info)
         {
             var commandsCount = commands.Count;

@@ -2,6 +2,7 @@
 using System.Text;
 using TranslationHelper.Data;
 using TranslationHelper.Main.Functions;
+using TranslationHelper.Projects;
 
 namespace TranslationHelper.Formats.KiriKiri
 {
@@ -11,7 +12,7 @@ namespace TranslationHelper.Formats.KiriKiri
         /// overall kirikiri environment for all formats
         /// </summary>
         /// <param name="projectData"></param>
-        protected KiriKiriBase()
+        protected KiriKiriBase(ProjectBase parentProject) : base(parentProject)
         {
         }
 

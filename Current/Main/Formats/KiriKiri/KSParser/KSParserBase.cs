@@ -7,12 +7,13 @@ using TranslationHelper.Data;
 using TranslationHelper.Extensions;
 using TranslationHelper.Formats.KiriKiri;
 using TranslationHelper.Formats.KiriKiri.Games.KSSyntax;
+using TranslationHelper.Projects;
 
 namespace TranslationHelper.Formats.TyranoBuilder.Extracted
 {
     abstract class KSParserBase : KiriKiriBase
     {
-        public KSParserBase()
+        public KSParserBase(ProjectBase parentProject) : base(parentProject)
         {
             scriptMark = new Script();
             Tag = new TAG();

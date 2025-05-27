@@ -7,11 +7,16 @@ using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using MesArcLibCSharp;
 using MesScriptDissAssLib;
+using TranslationHelper.Projects;
 
 namespace TranslationHelper.Formats.AI6WIN
 {
     internal class AI6Arc : FormatBinaryBase
     {
+        public AI6Arc(ProjectBase parentProject) : base(parentProject)
+        {
+        }
+
         public override string Extension => ".arc";
 
         protected override void FileOpen()

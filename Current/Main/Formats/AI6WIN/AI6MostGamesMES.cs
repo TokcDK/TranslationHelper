@@ -5,11 +5,16 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using MesScriptDissAssLib;
+using TranslationHelper.Projects;
 
 namespace TranslationHelper.Formats.AI6WIN
 {
     internal class AI6MostGamesMES : FormatBinaryBase
     {
+        public AI6MostGamesMES(ProjectBase parentProject) : base(parentProject)
+        {
+        }
+
         public override string Extension => ".mes";
 
         protected override void FileOpen()

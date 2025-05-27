@@ -4,12 +4,13 @@ using System.Collections.Generic;
 using System.IO;
 using System.Text.RegularExpressions;
 using TranslationHelper.Data;
+using TranslationHelper.Projects;
 
 namespace TranslationHelper.Formats.RPGMMV.JS
 {
     class PluginsByType : JSBase
     {
-        public PluginsByType()
+        public PluginsByType(ProjectBase parentProject) : base(parentProject)
         {
         }
 

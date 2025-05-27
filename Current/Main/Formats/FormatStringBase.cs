@@ -5,12 +5,13 @@ using System.Text;
 using System.Text.RegularExpressions;
 using TranslationHelper.Data;
 using TranslationHelper.Main.Functions;
+using TranslationHelper.Projects;
 
 namespace TranslationHelper.Formats
 {
     abstract class FormatStringBase : FormatBase
     {
-        protected FormatStringBase()
+        protected FormatStringBase(ProjectBase parentProject) : base(parentProject)
         {
             RowIndex = 0;
         }

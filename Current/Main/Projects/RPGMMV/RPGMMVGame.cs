@@ -209,7 +209,7 @@ namespace TranslationHelper.Projects.RPGMMV
             {
                 if (IsTypeExcluded(jsType)) continue;
 
-                var js = (IUseJSLocationInfo)Activator.CreateInstance(jsType);
+                var js = (IUseJSLocationInfo)Activator.CreateInstance(jsType, this);
                 var filePath = Path.Combine(WWWDir, "js", js.JSSubfolder, js.JSName);
 
                 if (!File.Exists(filePath)) continue;

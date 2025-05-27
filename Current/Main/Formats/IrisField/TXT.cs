@@ -5,13 +5,14 @@ using System.Text;
 using System.Text.RegularExpressions;
 using TranslationHelper.Data;
 using TranslationHelper.Extensions;
+using TranslationHelper.Projects;
 using TranslationHelper.Projects.IrisField;
 
 namespace TranslationHelper.Formats.IrisField
 {
     class TXT : FormatStringBase
     {
-        public TXT()
+        public TXT(ProjectBase parentProject) : base(parentProject)
         {
             if (SaveFileMode)
             {

@@ -2,11 +2,16 @@
 using System.Collections.Generic;
 using TranslationHelper.Data;
 using TranslationHelper.Formats.RPGMMV.JsonParser;
+using TranslationHelper.Projects;
 
 namespace TranslationHelper.Formats.RPGMMV
 {
     abstract class RPGMMVBase : FormatStringBase
     {
+        protected RPGMMVBase(ProjectBase parentProject) : base(parentProject)
+        {
+        }
+
         protected bool ParseList(ref string s, string info)
         {
             bool RET = false;

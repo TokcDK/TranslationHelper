@@ -1,6 +1,7 @@
 ﻿using System.Text;
 using System.Text.RegularExpressions;
 using TranslationHelper.Data;
+using TranslationHelper.Projects;
 
 namespace TranslationHelper.Formats.Other
 {
@@ -9,6 +10,11 @@ namespace TranslationHelper.Formats.Other
         public override string Extension => ".po";
 
         readonly StringBuilder Info = new StringBuilder();
+
+        public PO(ProjectBase parentProject) : base(parentProject)
+        {
+        }
+
         protected override KeywordActionAfter ParseStringFileLine()
         {
             if (OpenFileMode && ParseData.Line.StartsWith("#"))

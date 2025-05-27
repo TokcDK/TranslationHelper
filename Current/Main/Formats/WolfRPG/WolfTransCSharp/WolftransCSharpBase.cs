@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using TranslationHelper.Projects;
 using WolfTrans.Net.Parsers;
 
 namespace TranslationHelper.Formats.WolfRPG.WolfTransCSharp
@@ -16,6 +17,10 @@ namespace TranslationHelper.Formats.WolfRPG.WolfTransCSharp
         }
 
         protected ParserBase WolfParserBase = null;
+
+        protected WolftransCSharpBase(ProjectBase parentProject) : base(parentProject)
+        {
+        }
 
         protected override bool WriteFileData(string filePath = "")
         {

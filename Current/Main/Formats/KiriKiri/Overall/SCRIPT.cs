@@ -4,12 +4,13 @@ using System.Text;
 using System.Text.RegularExpressions;
 using TranslationHelper.Data;
 using TranslationHelper.Extensions;
+using TranslationHelper.Projects;
 
 namespace TranslationHelper.Formats.KiriKiri
 {
     class SCRIPT : FormatStringBase
     {
-        public SCRIPT()
+        public SCRIPT(ProjectBase parentProject) : base(parentProject)
         {
         }
 

@@ -3,6 +3,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using TranslationHelper.Data;
 using TranslationHelper.Functions;
+using TranslationHelper.Projects;
 
 namespace TranslationHelper.Formats.EAGLS.SCPACK
 {
@@ -13,7 +14,7 @@ namespace TranslationHelper.Formats.EAGLS.SCPACK
         //#　花　=w0003f
         private const string StringPatternNames = @"#([^\=\r\n]+)(\=w[0-9]{4}[a-z])?";//#さくら=w0629a
 
-        public SC_TXT()
+        public SC_TXT(ProjectBase parentProject) : base(parentProject)
         {
         }
 

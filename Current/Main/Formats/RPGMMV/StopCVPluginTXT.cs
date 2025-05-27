@@ -1,9 +1,14 @@
 ﻿using System.Collections.Generic;
+using TranslationHelper.Projects;
 
 namespace TranslationHelper.Formats.RPGMMV
 {
     internal class StopCVPluginTXT : FormatStringBase
     {
+        public StopCVPluginTXT(ProjectBase parentProject) : base(parentProject)
+        {
+        }
+
         public override string Extension => ".txt";
 
         protected override KeywordActionAfter ParseStringFileLine()

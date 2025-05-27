@@ -1,11 +1,12 @@
 ﻿using System.Text.RegularExpressions;
 using TranslationHelper.Data;
+using TranslationHelper.Projects;
 
 namespace TranslationHelper.Formats.LiveMaker
 {
     class LSBLNS : LiveMakerBase
     {
-        public LSBLNS()
+        public LSBLNS(ProjectBase parentProject) : base(parentProject)
         {
         }
 

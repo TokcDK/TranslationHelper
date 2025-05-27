@@ -5,14 +5,16 @@ using System.IO;
 using TranslationHelper.Data;
 using TranslationHelper.Extensions;
 using TranslationHelper.Formats.RPGMTrans;
+using TranslationHelper.Projects;
 
 namespace TranslationHelper.Formats.RPGMTransPatch
 {
     class RPGMKTRANSPATCH : RPGMTransPatchBase
     {
-        public RPGMKTRANSPATCH()
+        public RPGMKTRANSPATCH(ProjectBase parentProject) : base(parentProject)
         {
         }
+
         protected override string PatchFileID() // using for write rpgmaker trans patch v3
         {
             return "> RPGMAKER TRANS PATCH FILE VERSION 3.2";
@@ -20,7 +22,7 @@ namespace TranslationHelper.Formats.RPGMTransPatch
 
         protected override bool TryOpen()
         {
-            var format = new TXTv3();
+            var format = new TXTv3(ParentProject);
             bool result = format.Open(this.FilePath);
             if (!result)
             {

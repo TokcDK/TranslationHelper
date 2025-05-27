@@ -1,10 +1,11 @@
 ﻿using TranslationHelper.Formats.RPGMMV.JsonParser;
+using TranslationHelper.Projects;
 
 namespace TranslationHelper.Formats.RPGMMV
 {
     class JSON : RPGMMVBase, IUseJsonParser
     {
-        public JSON()
+        public JSON(ProjectBase parentProject) : base(parentProject)
         {
             JsonParser = new RPGMVZJsonParser(this);
         }

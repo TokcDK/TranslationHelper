@@ -56,7 +56,7 @@ namespace TranslationHelper.Formats.KiriKiri.Games
         private readonly ProjectHideRestoreVarsInstance _projectHideRestoreVarsInstance = new ProjectHideRestoreVarsInstance(null);
         private bool _isScript;
 
-        protected KSBase()
+        protected KSBase(ProjectBase parentProject) : base(parentProject)
         {
         }
 

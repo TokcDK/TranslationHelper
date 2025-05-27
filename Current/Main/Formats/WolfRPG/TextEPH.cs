@@ -1,9 +1,14 @@
 ﻿using System.Collections.Generic;
+using TranslationHelper.Projects;
 
 namespace TranslationHelper.Formats.WolfRPG
 {
     internal class TextEPH : FormatTxtFileBase
     {
+        public TextEPH(ProjectBase parentProject) : base(parentProject)
+        {
+        }
+
         protected override KeywordActionAfter ParseStringFileLine()
         {
             if (!string.IsNullOrEmpty(ParseData.Line))

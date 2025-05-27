@@ -1,10 +1,11 @@
 ﻿using TranslationHelper.Data;
+using TranslationHelper.Projects;
 
 namespace TranslationHelper.Formats.RPGMMV.JS
 {
     class pk_CommonMenuEvents : JSQuotedStringsBase
     {
-        public pk_CommonMenuEvents()
+        public pk_CommonMenuEvents(ProjectBase parentProject) : base(parentProject)
         {
         }
 

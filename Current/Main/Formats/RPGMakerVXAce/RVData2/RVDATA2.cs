@@ -9,6 +9,7 @@ using TranslationHelper.Data;
 using TranslationHelper.Extensions;
 using TranslationHelper.Formats.RPGMMV;
 using TranslationHelper.Main.Functions;
+using TranslationHelper.Projects;
 using static System.Net.Mime.MediaTypeNames;
 
 namespace TranslationHelper.Formats.RPGMakerVX.RVData2
@@ -235,6 +236,11 @@ namespace TranslationHelper.Formats.RPGMakerVX.RVData2
         }
 
         const string _codeInfoText = "Command code: ";
+
+        public RVDATA2(ProjectBase parentProject) : base(parentProject)
+        {
+        }
+
         private static bool IsSkipCode(string info)
         {
             var codeIndex = info.IndexOf(_codeInfoText);

@@ -5,11 +5,16 @@ using System.Text;
 using System.Threading.Tasks;
 using RPGMVJsonParser;
 using TranslationHelper.Data;
+using TranslationHelper.Projects;
 
 namespace TranslationHelper.Formats.RPGMMV.JsonType
 {
     internal abstract class JsonItemTypeBase : JsonTypeBase
     {
+        protected JsonItemTypeBase(ProjectBase parentProject) : base(parentProject)
+        {
+        }
+
         protected virtual string ItemTypeName { get => "Item"; }
 
         protected abstract IItemType[] GetJsonData(string path);

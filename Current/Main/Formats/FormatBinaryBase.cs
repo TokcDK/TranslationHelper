@@ -3,19 +3,20 @@ using System.IO;
 using System.Text;
 using TranslationHelper.Data;
 using TranslationHelper.Main.Functions;
+using TranslationHelper.Projects;
 
 namespace TranslationHelper.Formats
 {
     abstract class FormatBinaryBase : FormatBase
     {
-        protected FormatBinaryBase()
-        {
-        }
-
         /// <summary>
         /// Parse Data
         /// </summary>
         internal ParseFileData ParseData;
+
+        protected FormatBinaryBase(ProjectBase parentProject) : base(parentProject)
+        {
+        }
 
         /// <summary>
         /// Open file actions

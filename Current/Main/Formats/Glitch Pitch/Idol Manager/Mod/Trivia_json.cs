@@ -9,11 +9,16 @@ using System.Windows;
 using Newtonsoft.Json;
 using TranslationHelper.Data;
 using TranslationHelper.Formats.Glitch_Pitch.Idol_Manager.Mod;
+using TranslationHelper.Projects;
 
 namespace TranslationHelper.Formats.Glitch_Pitch.IdolManager.Mod
 {
     internal class Trivia_json : IdolManagerModBase
     {
+        public Trivia_json(ProjectBase parentProject) : base(parentProject)
+        {
+        }
+
         public override string Extension => ".json";
 
         protected override KeywordActionAfter ParseStringFileLine()

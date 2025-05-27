@@ -1,16 +1,13 @@
 ﻿using System.Collections.Generic;
 using System.IO;
 using TranslationHelper.Data;
+using TranslationHelper.Projects;
 using TranslationHelper.Projects.WolfRPG.Menus;
 
 namespace TranslationHelper.Formats.WolfRPG
 {
     abstract class RPGMWolfTransPatchBase : FormatStringBase
     {
-        protected RPGMWolfTransPatchBase()
-        {
-        }
-
         public override string Extension => ".txt";
 
         protected override void PreOpenExtraActions()
@@ -367,6 +364,11 @@ namespace TranslationHelper.Formats.WolfRPG
 
         bool _useContext = false;
         Dictionary<string, HashSet<string>> _contextSplitInfo;
+
+        protected RPGMWolfTransPatchBase(ProjectBase parentProject) : base(parentProject)
+        {
+        }
+
         private string CheckContextAndSplit(bool translated, List<string> contextLines, string advice, string original, string translation)
         {
             // skip if there is no context info

@@ -1,8 +1,10 @@
-﻿namespace TranslationHelper.Formats.RPGMMV.JS
+﻿using TranslationHelper.Projects;
+
+namespace TranslationHelper.Formats.RPGMMV.JS
 {
     class ZZZOtherJS : JSQuotedStringsBase
     {
-        public ZZZOtherJS()
+        public ZZZOtherJS(ProjectBase parentProject) : base(parentProject)
         {
         }
 

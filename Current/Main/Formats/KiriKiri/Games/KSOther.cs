@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Text.RegularExpressions;
 using TranslationHelper.Data;
 using TranslationHelper.Formats.TyranoBuilder.Extracted;
+using TranslationHelper.Projects;
 
 namespace TranslationHelper.Formats.KiriKiri.Games
 {
@@ -13,6 +14,11 @@ namespace TranslationHelper.Formats.KiriKiri.Games
         public override string Extension => ".ks";
 
         bool IsScript = false;
+
+        protected KSOther(ProjectBase parentProject) : base(parentProject)
+        {
+        }
+
         protected override KeywordActionAfter ParseStringFileLine()
         {
             if (SaveFileMode) return base.ParseStringFileLine(); // temp

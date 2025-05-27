@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
 using TranslationHelper.Data;
+using TranslationHelper.Projects;
 
 namespace TranslationHelper.Formats.zzzOtherFormat
 {
@@ -144,6 +145,10 @@ namespace TranslationHelper.Formats.zzzOtherFormat
                 //{ ' ', '_' }
                 { ' ', '・' }
             };
+
+        public JsonDictionary(ProjectBase parentProject) : base(parentProject)
+        {
+        }
     }
 
 }

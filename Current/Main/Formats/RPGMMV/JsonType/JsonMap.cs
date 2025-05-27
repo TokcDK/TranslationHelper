@@ -2,11 +2,16 @@
 using System.IO;
 using System.Text.RegularExpressions;
 using TranslationHelper.Data;
+using TranslationHelper.Projects;
 
 namespace TranslationHelper.Formats.RPGMMV.JsonType
 {
     internal class JsonMap : EventCommandParseBase
     {
+        public JsonMap(ProjectBase parentProject) : base(parentProject)
+        {
+        }
+
         protected override object ParseJson(string path)
         {
             if (!Regex.IsMatch(Path.GetFileName(path).ToLowerInvariant(),@"map[0-9]+\.json")) return null;

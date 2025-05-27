@@ -6,11 +6,16 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using TranslationHelper.Data;
+using TranslationHelper.Projects;
 
 namespace TranslationHelper.Formats.RPGMMV.JsonType
 {
     internal class JsonCommonEvents : EventCommandParseBase
     {
+        public JsonCommonEvents(ProjectBase parentProject) : base(parentProject)
+        {
+        }
+
         //internal override int ExtIdentifier()
         //{
         //    return Path.GetFileName(FilePath).ToLowerInvariant()=="commonevents.json";

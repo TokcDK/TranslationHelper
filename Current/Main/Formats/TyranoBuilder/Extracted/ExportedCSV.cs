@@ -1,10 +1,11 @@
 ﻿using TranslationHelper.Data;
+using TranslationHelper.Projects;
 
 namespace TranslationHelper.Formats.TyranoBuilder.Extracted
 {
     class ExportedCSV : FormatStringBase
     {
-        public ExportedCSV()
+        public ExportedCSV(ProjectBase parentProject) : base(parentProject)
         {
         }
 

@@ -1,10 +1,15 @@
 ﻿using RPGMVJsonParser;
 using TranslationHelper.Data;
+using TranslationHelper.Projects;
 
 namespace TranslationHelper.Formats.RPGMMV.JsonType
 {
     internal class JsonClasses : JsonTypeBase
     {
+        public JsonClasses(ProjectBase parentProject) : base(parentProject)
+        {
+        }
+
         protected override object ParseJson(string path)
         {
             var data = Helper.LoadClasses(path);

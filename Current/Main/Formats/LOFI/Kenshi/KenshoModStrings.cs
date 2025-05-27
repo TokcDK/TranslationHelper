@@ -1,9 +1,14 @@
 ﻿using System.Collections.Generic;
+using TranslationHelper.Projects;
 
 namespace TranslationHelper.Formats.LOFI.Kenshi
 {
     internal class KenshoModStrings : FormatStringBase
     {
+        public KenshoModStrings(ProjectBase parentProject) : base(parentProject)
+        {
+        }
+
         public override string Extension => ".kenshi-mod-strings";
 
         protected override KeywordActionAfter ParseStringFileLine()

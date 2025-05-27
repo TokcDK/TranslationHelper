@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using RPGMVJsonParser;
+using TranslationHelper.Projects;
 
 namespace TranslationHelper.Formats.RPGMMV.JsonType
 {
@@ -17,6 +18,10 @@ namespace TranslationHelper.Formats.RPGMMV.JsonType
 
     internal class JsonSystem : JsonTypeBase
     {
+        public JsonSystem(ProjectBase parentProject) : base(parentProject)
+        {
+        }
+
         protected override object ParseJson(string path)
         {
             var data = Helper.LoadSystem(path);

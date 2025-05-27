@@ -9,6 +9,7 @@ using Newtonsoft.Json.Linq;
 using TranslationHelper.Data;
 using TranslationHelper.Extensions;
 using TranslationHelper.Functions;
+using TranslationHelper.Projects;
 using Command = RPGMVJsonParser.Command;
 
 namespace TranslationHelper.Formats.RPGMMV.JsonType
@@ -70,7 +71,7 @@ namespace TranslationHelper.Formats.RPGMMV.JsonType
         static Dictionary<int, string> SkipCodes { get => RPGMVLists.ExcludedCodes; set => RPGMVLists.ExcludedCodes = value; }
 
         static int SkipCodesCount = -1;
-        public EventCommandParseBase()
+        public EventCommandParseBase(ProjectBase parentProject) : base(parentProject)
         {
             if (AppData.CurrentProject == null) return;
 

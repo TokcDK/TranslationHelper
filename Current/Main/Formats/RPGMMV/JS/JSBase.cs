@@ -4,12 +4,13 @@ using System.Collections.Generic;
 using TranslationHelper.Data;
 using TranslationHelper.Extensions;
 using TranslationHelper.Formats.RPGMMV.JsonParser;
+using TranslationHelper.Projects;
 
 namespace TranslationHelper.Formats.RPGMMV.JS
 {
     abstract class JSBase : RPGMMVBase, IUseJSLocationInfo, IUseJsonParser
     {
-        protected JSBase()
+        protected JSBase(ProjectBase parentProject) : base(parentProject)
         {
             JsonParser = new JSJsonParser(this);
         }

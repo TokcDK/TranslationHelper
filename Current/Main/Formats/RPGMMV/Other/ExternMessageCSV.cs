@@ -1,11 +1,16 @@
 ﻿using System;
 using System.Text;
 using System.Text.RegularExpressions;
+using TranslationHelper.Projects;
 
 namespace TranslationHelper.Formats.RPGMMV.Other
 {
     internal class ExternMessageCSV : RPGMMVBase
     {
+        public ExternMessageCSV(ProjectBase parentProject) : base(parentProject)
+        {
+        }
+
         public override string Extension => ".csv";
 
         protected override void ParseFileContent()

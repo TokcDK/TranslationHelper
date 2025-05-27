@@ -8,11 +8,16 @@ using WolfTrans.Net.Parsers;
 using WolfTrans.Net.Parsers.CommonEvents;
 using WolfTrans.Net.Parsers.Events;
 using TranslationHelper.Data;
+using TranslationHelper.Projects;
 
 namespace TranslationHelper.Formats.WolfRPG.WolfTransCSharp
 {
     internal class CommonEvents: CommandUserBase
     {
+        public CommonEvents(ProjectBase parentProject) : base(parentProject)
+        {
+        }
+
         public override string Extension => "";
 
         protected override void FileOpen()
