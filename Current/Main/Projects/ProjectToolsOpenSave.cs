@@ -130,6 +130,7 @@ namespace TranslationHelper.Projects
 
             var ret = false;
             bool isOpenMode = project.OpenFileMode;
+            var bakPaths = project.BakPaths;
 
             Parallel.ForEach(filesList, file =>
             {
@@ -139,27 +140,36 @@ namespace TranslationHelper.Projects
 
                 string fullName = fileInfo.FullName;
 
-                // Skip files marked with .skipme or .skip
-                if (File.Exists($"{fullName}.skipme") || File.Exists($"{fullName}.skip"))
+                // Skip files with .skipme or .skip extensions
+                if (File.Exists(fullName + ".skipme") || File.Exists(fullName + ".skip"))
                     return;
 
                 try
                 {
-                    // Handle backups
-                    if (isOpenMode && File.Exists($"{fullName}.bak"))
-                        ProjectToolsBackup.RestoreFile(fullName);
-                    else if (!isOpenMode
-                        && !File.Exists($"{fullName}.bak")
-                        && !fileInfo.DirectoryName.IsAnyParentPathInTheList(project.BakPaths))
-                        ProjectToolsBackup.BackupFile(fullName);
+                    // Handle backup files
+                    if (isOpenMode)
+                    {
+                        if (File.Exists(fullName + ".bak"))
+                        {
+                            ProjectToolsBackup.RestoreFile(fullName);
+                        }
+                    }
+                    else
+                    {
+                        if (!File.Exists(fullName + ".bak") &&
+                            !(fileInfo.DirectoryName?.IsAnyParentPathInTheList(bakPaths) ?? false))
+                        {
+                            ProjectToolsBackup.BackupFile(fullName);
+                        }
+                    }
 
                     // Create format instance
-                    var format = (FormatBase)Activator.CreateInstance(file.type);
+                    var format = Activator.CreateInstance(file.type) as FormatBase;
                     if (format == null)
                         return;
 
-                    // Check extension compatibility
-                    if (!string.IsNullOrWhiteSpace(format.Extension) && fileInfo.Extension != format.Extension)
+                    // Check file extension
+                    if (!string.IsNullOrWhiteSpace(format.Extension) && !fileInfo.Extension.Equals(format.Extension, StringComparison.OrdinalIgnoreCase))
                         return;
 
                     string operationName = isOpenMode ? T._("Opening") : T._("Saving");
@@ -180,12 +190,13 @@ namespace TranslationHelper.Projects
 
                     // Add to backup paths list if needed
                     if (isOpenMode && isOpenSuccess
-                        && !project.BakPaths.Contains(fullName)
-                        && !fullName.IsAnyParentPathInTheList(project.BakPaths))
+                        && !bakPaths.Contains(fullName)
+                        && !fullName.IsAnyParentPathInTheList(bakPaths))
                     {
-                        lock (project.BakPaths)
+                        lock (bakPaths)
                         {
-                            project.BakPaths.Add(fullName);
+                            if (!bakPaths.Contains(fullName))
+                                bakPaths.Add(fullName);
                         }
                     }
                 }
