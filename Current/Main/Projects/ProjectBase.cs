@@ -430,5 +430,10 @@ namespace TranslationHelper.Projects
         /// Row menus cache for project to not search them each time
         /// </summary>
         public IFileRowMenuItem[] RowMenusCache { get; internal set; } = null;
+
+        /// <summary>
+        /// Path to the project file which was selected for the project
+        /// </summary>
+        public string ProjectPath { get; internal set; } = "";
     }
 }

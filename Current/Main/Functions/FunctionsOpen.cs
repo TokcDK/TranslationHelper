@@ -155,6 +155,7 @@ namespace TranslationHelper.Functions
             foreach (Type Project in AppData.ProjectsList)
             {
                 var project = (ProjectBase)Activator.CreateInstance(Project);
+                project.ProjectPath = projectPath;
                 project.OpenFileMode = true;
                 project.OpenedFilesDir = dir.FullName;
                 project.SelectedDir = dir.FullName;

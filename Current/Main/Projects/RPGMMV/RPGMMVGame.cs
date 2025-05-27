@@ -45,8 +45,8 @@ namespace TranslationHelper.Projects.RPGMMV
         /// <returns>True if valid, otherwise false.</returns>
         internal override bool IsValid()
         {
-            return ProjectTools.IsExe(AppData.SelectedProjectFilePath) &&
-                   File.Exists(Path.Combine(AppData.CurrentProject.SelectedDir, HasWWWDir ? "www" : "", "data", "system.json"));
+            return ProjectTools.IsExe(ProjectPath) &&
+                   File.Exists(Path.Combine(SelectedDir, HasWWWDir ? "www" : "", "data", "system.json"));
         }
 
         /// <summary>
