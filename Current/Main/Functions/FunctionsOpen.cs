@@ -202,16 +202,18 @@ namespace TranslationHelper.Functions
 
         private static bool TryOpenSelectedProject(Type type, string sPath, DirectoryInfo dir)
         {
-            AppData.CurrentProject = (ProjectBase)Activator.CreateInstance(type);
+            var project = (ProjectBase)Activator.CreateInstance(type);
             Logger.Info(T._("Open with {0}"), AppData.CurrentProject.Name);
 
-            AppData.CurrentProject.OpenFileMode = true;
-            AppData.SelectedProjectFilePath = sPath;
-            AppData.CurrentProject.OpenedFilesDir = dir.FullName;
-            AppData.CurrentProject.SelectedDir = dir.FullName;
-            AppData.CurrentProject.SelectedGameDir = dir.FullName;
+            project.OpenFileMode = true;
+            project.OpenedFilesDir = dir.FullName;
+            project.SelectedDir = dir.FullName;
+            project.SelectedGameDir = dir.FullName;
 
-            if (!TryOpenProject(AppData.CurrentProject))
+            AppData.CurrentProject = project;
+            AppData.SelectedProjectFilePath = sPath;
+
+            if (!TryOpenProject(project))
             {
                 Logger.Warn(T._("Failed to open project"));
                 return false;
