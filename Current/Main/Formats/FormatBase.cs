@@ -38,7 +38,7 @@ namespace TranslationHelper.Formats
                 throw ex;
             }
 
-            BaseInit(null);
+            BaseInit();
         }
 
         /// <summary>
@@ -96,14 +96,13 @@ namespace TranslationHelper.Formats
         /// Initializes base properties and settings for the format.
         /// </summary>
         /// <param name="filePath">The file path to set, or null if not provided.</param>
-        private void BaseInit(string filePath)
+        private void BaseInit()
         {
-            if (ParentProject == null) return;
+            SetupWhenDontLoadDuplicates();
+        }
 
-            FilePath = string.IsNullOrWhiteSpace(filePath)
-                ? AppData.SelectedProjectFilePath
-                : filePath;
-
+        private void SetupWhenDontLoadDuplicates()
+        {
             if (!ParentProject.DontLoadDuplicates) return;
 
             if (SaveFileMode)
@@ -422,7 +421,7 @@ namespace TranslationHelper.Formats
         protected virtual bool FilePreOpenActions()
         {
             if (!string.IsNullOrWhiteSpace(Extension) && Path.GetExtension(GetFilePath()) != Extension) return false;
-            if (SaveFileMode && !AppData.THFilesList.Items.Contains(FileName)) return false;
+            if (SaveFileMode && !ParentProject.FilesContent.Tables.Contains(FileName)) return false;
             if (OpenFileMode) InitTableContent();
             if (SaveFileMode) SplitTableCellValuesAndTheirLinesToDictionary(FileName, false, false);
             PreOpenExtraActions();
