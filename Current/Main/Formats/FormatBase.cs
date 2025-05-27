@@ -80,6 +80,12 @@ namespace TranslationHelper.Formats
             ReadToEnd = 1
         }
 
+        protected void AddString(string text, string info = "")
+        {
+            Data.Rows.Add(text, string.Empty);
+            Info.Rows.Add(info);
+        }
+
         /// <summary>
         /// Initializes base properties and settings for the format.
         /// </summary>
