@@ -232,29 +232,17 @@ namespace TranslationHelper.Projects.RPGMMV
         /// <returns>True if any file was processed, otherwise false.</returns>
         private bool ParseOtherQuotedJsPlugins(HashSet<string> hardcodedJS, HashSet<string> skipJSList)
         {
-            bool hasAnyFileBeenProcessed = false;
-            foreach (var jsFileInfo in Directory.EnumerateFiles(Path.Combine(WWWDir, "js", "plugins"), "*.js"))
-            {
-                string jsName = Path.GetFileName(jsFileInfo);
-                if (hardcodedJS.Contains(jsName) || skipJSList.Contains(jsName)) continue;
-                if (!File.Exists(jsFileInfo)) continue;
-
-                var format = new ZZZOtherJS();
-                Logger.Info(ParseFileMessage + jsName);
-
-                try
+            var pluginsDir = Path.Combine(WWWDir, "js", "plugins");
+            var filesList = Directory.EnumerateFiles(pluginsDir, "*.js")
+                .Select(jsFileInfo => new FileInfo(jsFileInfo))
+                .Where(fileInfo =>
                 {
-                    if ((OpenFileMode && format.Open(jsFileInfo)) || (SaveFileMode && format.Save(jsFileInfo)))
-                    {
-                        hasAnyFileBeenProcessed = true;
-                    }
-                }
-                catch
-                {
-                    // Exceptions are ignored per original functionality.
-                }
-            }
-            return hasAnyFileBeenProcessed;
+                    var jsName = fileInfo.Name;
+                    return !hardcodedJS.Contains(jsName) && !skipJSList.Contains(jsName) && fileInfo.Exists;
+                })
+                .Select(fileInfo => (info: fileInfo, type: typeof(ZZZOtherJS)));
+
+            return ProjectToolsOpenSave.OpenSaveFilesBase(this, filesList);
         }
 
         /// <summary>
