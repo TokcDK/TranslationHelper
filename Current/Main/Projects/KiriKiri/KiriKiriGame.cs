@@ -34,6 +34,15 @@ namespace TranslationHelper.Projects.KiriKiri
 
         internal override string ProjectDBFolderName => "KiriKiri";
 
+        readonly (string Pattern, Type FileType)[] _fileTypes = new (string Pattern, Type FileType)[]
+        {
+                ("*.ks", typeof(SCRIPT)),
+                ("*.tjs", typeof(SCRIPT)),
+                ("*.scn", typeof(SCRIPT)),
+                ("*.csv", typeof(CSV)),
+                ("*.tsv", typeof(TSV))
+        };
+
         protected override bool TryOpen()
         {
             if (!ExtractXP3files(AppData.SelectedProjectFilePath))
@@ -41,38 +50,21 @@ namespace TranslationHelper.Projects.KiriKiri
                 return false;
             }
 
-            var KiriKiriFiles = new List<string>();
-            string DirName = Path.GetFileName(Path.GetDirectoryName(AppData.SelectedProjectFilePath));
-            string KiriKiriWorkFolder = Path.Combine(Application.StartupPath, "Work", "KiriKiri", DirName);
-            bool ret = false;
+            string dirName = Path.GetFileName(Path.GetDirectoryName(AppData.SelectedProjectFilePath));
+            string workFolder = Path.Combine(Application.StartupPath, "Work", "KiriKiri", dirName);
+            var dirInfo = new DirectoryInfo(workFolder);
+            bool result = false;
 
-            Type type = typeof(SCRIPT);
-            if (this.OpenSaveFilesBase(new DirectoryInfo(KiriKiriWorkFolder).EnumerateFiles("*.ks", SearchOption.AllDirectories).Select(f => (f, type))))
+            foreach (var (pattern, fileType) in _fileTypes)
             {
-                ret = true;
-            }
-            if (this.OpenSaveFilesBase(new DirectoryInfo(KiriKiriWorkFolder).EnumerateFiles("*.tjs", SearchOption.AllDirectories).Select(f => (f, type))))
-            {
-                ret = true;
-            }
-            if (this.OpenSaveFilesBase(new DirectoryInfo(KiriKiriWorkFolder).EnumerateFiles("*.scn", SearchOption.AllDirectories).Select(f => (f, type))))
-            {
-                ret = true;
+                var files = dirInfo.EnumerateFiles(pattern, SearchOption.AllDirectories);
+                if (files.Any() && this.OpenSaveFilesBase(files.Select(f => (f, fileType))))
+                {
+                    result = true;
+                }
             }
 
-            type = typeof(CSV);
-            if (this.OpenSaveFilesBase(new DirectoryInfo(KiriKiriWorkFolder).EnumerateFiles("*.csv", SearchOption.AllDirectories).Select(f => (f, type))))
-            {
-                ret = true;
-            }
-
-            type = typeof(TSV);
-            if (this.OpenSaveFilesBase(new DirectoryInfo(KiriKiriWorkFolder).EnumerateFiles("*.tsv", SearchOption.AllDirectories).Select(f => (f, type))))
-            {
-                ret = true;
-            }
-
-            return ret;
+            return result;
         }
 
         public static bool ExtractXP3files(string sPath)
