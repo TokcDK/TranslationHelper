@@ -118,6 +118,10 @@ namespace TranslationHelper.Projects
             // Delegate to the second overload to process the files
             return filteredFiles.Length > 0 && project.OpenSaveFilesBase(filteredFiles);
         }
+        public static bool OpenSaveFilesBase(this ProjectBase project, FileInfo info, Type type)
+        {
+            return project.OpenSaveFilesBase(new[] { (info, type) });
+        }
 
         /// <summary>
         /// open or save project files

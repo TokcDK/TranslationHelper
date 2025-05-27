@@ -251,28 +251,15 @@ namespace TranslationHelper.Projects.RPGMMV
         /// <returns>True if the file was processed, otherwise false.</returns>
         private bool ParseFontsCS()
         {
-            var filePath = Path.Combine(WWWDir, "fonts", "gamefont.css");
-            if (!File.Exists(filePath)) return false;
-
-            var format = new GAMEFONTCSS ();
-            Logger.Info(ParseFileMessage + "gamefont.css");
-
-            try
-            {
-                return (OpenFileMode && format.Open(filePath)) || (SaveFileMode && format.Save(filePath));
-            }
-            catch
-            {
-                // Exceptions are ignored per original functionality.
-                return false;
-            }
+            var info = new FileInfo(Path.Combine(WWWDir, "fonts", "gamefont.css"));
+            return ProjectToolsOpenSave.OpenSaveFilesBase(this, info, typeof(GAMEFONTCSS));
         }
 
         /// <summary>
         /// Populates the skip list with JS file names from predefined rule files.
         /// </summary>
         /// <param name="skipJSList">Set to store JS files to skip.</param>
-        private void SetSkipJSLists(HashSet<string> skipJSList)
+        private static void SetSkipJSLists(HashSet<string> skipJSList)
         {
             foreach (var skipJsFilePath in THSettings.RPGMakerMVSkipjsRulesFilesList)
             {
