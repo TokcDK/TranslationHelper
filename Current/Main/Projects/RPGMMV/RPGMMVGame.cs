@@ -287,11 +287,11 @@ namespace TranslationHelper.Projects.RPGMMV
         /// Gets or sets the list of paths to back up.
         /// </summary>
         public override List<string> BakPaths { get; set; } = new List<string>
-    {
-        @".\www\data",
-        @".\www\fonts",
-        @".\www\js"
-    };
+        {
+            @".\www\data",
+            @".\www\fonts",
+            @".\www\js"
+        };
 
         /// <summary>
         /// Creates a backup of the specified project directories.
@@ -338,7 +338,7 @@ namespace TranslationHelper.Projects.RPGMMV
             if (_filler == null)
             {
                 _filler = new FillEmptyTablesLinesDictForce();
-                _filler.All();
+                _ = _filler.All();
             }
 
             return _filler.Translations.TryGetValue(name, out var value)
