@@ -566,7 +566,6 @@
     <Compile Include="Projects\WolfRPG\WolfRPGGame.cs" />
     <Compile Include="Projects\WolfRPG\WolfRPGBase.cs" />
     <Compile Include="Projects\WolfRPG\WolfTransTest.cs" />
-    <Compile Include="Projects\WolfRPG\WRPGOLDOpen.cs" />
     <Compile Include="Functions\FileElementsFunctions\Row\OnlineTranslate\OnlineTranslators\DeepL.cs" />
     <Compile Include="Functions\FileElementsFunctions\Row\OnlineTranslate\OnlineTranslators\TranslatorsBase.cs" />
     <Compile Include="Functions\FileElementsFunctions\Row\OnlineTranslate\OnlineTranslators\GoogleAPIOLD.cs" />
