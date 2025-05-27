@@ -38,11 +38,11 @@ namespace TranslationHelper.Projects.RPGMVXAce
                 File.Move(gameRgss3aPath, gameRgss3aPath + ".orig");
             }
 
-            return ProjectToolsOpenSave
-                .OpenSaveFilesBase(this,
+            return this.OpenSaveFilesBase(
                 dataDirPath,
                 typeof(RVDATA2),
-                "*.rvdata2");
+                "*.rvdata2"
+                );
         }
 
         internal override bool IsValid()
