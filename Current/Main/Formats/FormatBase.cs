@@ -206,9 +206,21 @@ namespace TranslationHelper.Formats
         /// <returns>True if the operation succeeds; otherwise, false.</returns>
         public bool Save(string filePath = null)
         {
-            FilePath = !IsValidFilePath(filePath) ? filePath : FilePath; // setup same path that was set on open when input is null
+            if (IsValidFilePath(filePath))
+            {
+                Logger.Debug($"{this.GetType().Name}: using input {nameof(filePath)}");
+                FilePath = filePath;
+            }
+            else
+            {
+                Logger.Debug($"{this.GetType().Name}: {nameof(filePath)} is invalid, using internal {nameof(FilePath)}");
+            }
 
-            if (!IsValidFilePath(FilePath)) return false;
+            if (!IsValidFilePath(FilePath))
+            {
+                Logger.Debug($"{this.GetType().Name}: Invalid file path: {FilePath}. Exit.");
+                return false;
+            }
 
             OpenFileMode = false;
             // Note: Assuming FilesContent.Tables[FileName].HasAnyTranslated() exists elsewhere.
