@@ -7,6 +7,7 @@ namespace TranslationHelper.Formats.RPGMMV
     {
         public override string Description => "RPGMV www/valueLocationPreset.txt";
         public override string Extension => ".txt";
+        internal static readonly string[] separator = new[] { "\\n" };
 
         //public bool Check()
         //{
@@ -17,7 +18,7 @@ namespace TranslationHelper.Formats.RPGMMV
         {
             if (!ParseData.Line.StartsWith("\"") || !ParseData.Line.EndsWith("\"")) return KeywordActionAfter.Continue;
 
-            var strings = ParseData.Line.Trim('"').Split(new[] { "\\n" }, StringSplitOptions.None);
+            var strings = ParseData.Line.Trim('"').Split(separator, StringSplitOptions.None);
 
             bool changed = false;
             int stringsCount = strings.Length;
