@@ -24,7 +24,7 @@ namespace TranslationHelper.Projects.Liar_soft
             return OpenSaveXFL();
         }
 
-        protected override bool TrySaveProject()
+        protected override bool TrySave()
         {
             return OpenSaveXFL();
         }

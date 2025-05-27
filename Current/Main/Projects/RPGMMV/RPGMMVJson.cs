@@ -90,7 +90,7 @@ namespace TranslationHelper.Projects.RPGMMV
             }
         }
 
-        protected override bool TrySaveProject()
+        protected override bool TrySave()
         {
             return ParseProjectFiles(true);
         }

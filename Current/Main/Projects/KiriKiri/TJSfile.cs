@@ -31,7 +31,7 @@ namespace TranslationHelper.Projects.KiriKiri
             //return format.Open();
         }
 
-        protected override bool TrySaveProject()
+        protected override bool TrySave()
         {
             return false;
             //        var format = new TJSOld

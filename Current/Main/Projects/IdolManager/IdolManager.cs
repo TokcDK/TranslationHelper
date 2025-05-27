@@ -43,7 +43,7 @@ namespace TranslationHelper.Projects.IdolManager.Mod
             }
         }
 
-        protected override bool TrySaveProject() { return ParseFiles(); }
+        protected override bool TrySave() { return ParseFiles(); }
 
         internal override bool IsValid()
         {

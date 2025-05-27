@@ -312,7 +312,7 @@ namespace TranslationHelper.Projects.RPGMMV
         /// Saves the project by parsing files in save mode.
         /// </summary>
         /// <returns>True if successful, otherwise false.</returns>
-        protected override bool TrySaveProject()
+        protected override bool TrySave()
         {
             if (string.IsNullOrWhiteSpace(WWWDir))
                 WWWDir = Path.Combine(AppData.CurrentProject.SelectedDir, HasWWWDir ? "www" : "");

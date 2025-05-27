@@ -43,7 +43,7 @@ namespace TranslationHelper.Projects.WolfRPG
             return Task.CompletedTask;
         }
 
-        protected override bool TrySaveProject()
+        protected override bool TrySave()
         {
             return OpenSaveFiles() && Patch();
         }

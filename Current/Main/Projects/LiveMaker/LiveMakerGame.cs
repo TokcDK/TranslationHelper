@@ -155,7 +155,7 @@ namespace TranslationHelper.Projects.LiveMaker
             return false;
         }
 
-        protected override bool TrySaveProject()
+        protected override bool TrySave()
         {
             return ProjectToolsOpenSave.OpenSaveFilesBase(this, Path.Combine(AppData.CurrentProject.ProjectWorkDir, "Extracted"), Format(), Mask())
                 && WriteTranslation();

@@ -130,7 +130,7 @@ namespace TranslationHelper.Projects.NScript
             return ret;
         }
 
-        protected override bool TrySaveProject()
+        protected override bool TrySave()
         {
             return OpenSaveNScript();
         }

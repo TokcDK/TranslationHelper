@@ -185,7 +185,7 @@ namespace TranslationHelper.Projects.KiriKiri
             return ret;
         }
 
-        protected override bool TrySaveProject()
+        protected override bool TrySave()
         {
             throw new NotImplementedException();
         }

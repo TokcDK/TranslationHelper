@@ -117,7 +117,7 @@ namespace TranslationHelper.Projects.AliceSoft
             return ret;
         }
 
-        protected override bool TrySaveProject()
+        protected override bool TrySave()
         {
             OpenFileMode = true;
             PackUnpack();//restore original txt before each writing because it will be writed with translated strings while 1st write and will be need to restore it

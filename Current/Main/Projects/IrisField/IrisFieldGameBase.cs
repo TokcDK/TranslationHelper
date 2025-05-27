@@ -75,7 +75,7 @@ namespace TranslationHelper.Projects.IrisField
             return ret;
         }
 
-        protected override bool TrySaveProject()
+        protected override bool TrySave()
         {
             return SaveFiles();
         }

@@ -213,9 +213,9 @@ namespace TranslationHelper.Projects
         /// <returns></returns>
         public bool Save()
         {
-            return TrySaveProject();
+            return TrySave();
         }
-        protected abstract bool TrySaveProject();
+        protected abstract bool TrySave();
 
         /// <summary>
         /// Project folder name to locate files in DB and Work folders

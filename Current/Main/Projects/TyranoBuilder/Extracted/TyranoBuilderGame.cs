@@ -36,7 +36,7 @@ namespace TranslationHelper.Projects.TyranoBuilder.Extracted
             }
         }
 
-        protected override bool TrySaveProject()
+        protected override bool TrySave()
         {
             var export = new DirectoryInfo(Path.Combine(Path.GetDirectoryName(AppData.SelectedProjectFilePath), "export"));
 
