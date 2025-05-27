@@ -196,7 +196,11 @@ namespace TranslationHelper.Projects
 
             if (result == true)
             {
-                FunctionAutoSave.StartAutoSave(ref AutosaveTimer, FunctionsDBFile.SaveDB, AppSettings.DBAutoSaveTimeout);
+                FunctionAutoSave.StartAutoSave(
+                    AutosaveTimer = new System.Timers.Timer(), 
+                    FunctionsDBFile.SaveDB, 
+                    AppSettings.DBAutoSaveTimeout
+                    );
             }
 
             return result;
