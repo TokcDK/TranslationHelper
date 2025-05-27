@@ -102,61 +102,21 @@ namespace TranslationHelper.Projects
         /// <returns></returns>
         public static bool OpenSaveFilesBase(this ProjectBase project, DirectoryInfo DirForSearch, Type formatType, string mask = "*", bool getNewestFiles = false, string[] exclusions = null, SearchOption searchOption = SearchOption.AllDirectories)
         {
-            //if (mask == "*")
-            //{
-            //    mask += format.Ext();
-            //}
-
             if (!DirForSearch.Exists) return false;
 
             exclusions = exclusions ?? new[] { ".bak" };//set to skip bat if exclusions is null
 
-            var ret = false;
-            var existsTables = project.FilesContent.Tables;
+            // Get the list of files based on the parameters
             var filesList = getNewestFiles ? GetNewestFilesList(DirForSearch, mask) : DirForSearch.EnumerateFiles(mask, searchOption);
-            Parallel.ForEach(filesList, file =>
-            {
-                if (File.Exists(file.FullName + ".skipme") || File.Exists(file.FullName + ".skip")) return;
 
-                if (project.OpenFileMode && File.Exists(file.FullName + ".bak")) ProjectToolsBackup.RestoreFile(file.FullName);
-                if (project.SaveFileMode
-                && !File.Exists(file.FullName + ".bak")
-                && !file.DirectoryName.IsAnyParentPathInTheList(project.BakPaths)) // maybe parent was backed up
-                    ProjectToolsBackup.BackupFile(file.FullName);
+            // Filter out exclusions first to avoid unnecessary processing
+            var filteredFiles = filesList
+                .Where(file => !file.FullName.ContainsAnyFromArray(exclusions))
+                .Select(file => (info: file, type: formatType))
+                .ToArray();
 
-                //skip exclusions
-                if (/*exclusions != null &&*/ file.FullName.ContainsAnyFromArray(exclusions)) return;
-
-                //ProjectData.FilePath = file.FullName;
-
-                var format = (FormatBase)Activator.CreateInstance(formatType); // create instance of format
-
-                // check extension for case im mask was "*.*" or kind of
-                if (!string.IsNullOrWhiteSpace(format.Extension) && file.Extension != format.Extension) return;
-
-                Logger.Info((project.OpenFileMode ? T._("Opening") : T._("Saving")) + " " + file.Name);
-
-                bool isOpenSuccess = false;
-                try
-                {
-                    if (project.OpenFileMode ? (isOpenSuccess = format.Open(file.FullName)) : format.Save(file.FullName)) ret = true;
-                }
-                catch(Exception ex)
-                {
-                    Logger.Warn(ex, "Error while opening/saving file: " + file.FullName);
-                    return; // skip this file
-                }
-
-                // add to bak paths for default backup
-                if (project.OpenFileMode && isOpenSuccess
-                && !project.BakPaths.Contains(file.FullName)
-                && !file.FullName.IsAnyParentPathInTheList(project.BakPaths))
-                    project.BakPaths.Add(file.FullName);
-            });
-
-            
-
-            return ret;
+            // Delegate to the second overload to process the files
+            return filteredFiles.Length > 0 && project.OpenSaveFilesBase(filteredFiles);
         }
 
         /// <summary>
