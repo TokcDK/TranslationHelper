@@ -343,7 +343,7 @@ namespace TranslationHelper.Projects
             return Path.Combine(patchdir, "patch").ContainsFiles("*.txt");
         }
 
-        public override bool Save()
+        protected override bool Save()
         {
             ProjectToolsOpenSave.OpenSaveFilesBase(this, patchdir, typeof(TXTv3), "*.txt");//not need to check return value here
 

@@ -207,7 +207,11 @@ namespace TranslationHelper.Projects
         /// Save project files
         /// </summary>        
         /// <returns></returns>
-        public abstract bool Save();
+        public bool TrySave()
+        {
+            return Save();
+        }
+        protected abstract bool Save();
 
         /// <summary>
         /// Project folder name to locate files in DB and Work folders

@@ -40,7 +40,7 @@ namespace TranslationHelper.Projects
             return OpenSave();
         }
 
-        public override bool Save()
+        protected override bool Save()
         {
             return OpenSave();
         }

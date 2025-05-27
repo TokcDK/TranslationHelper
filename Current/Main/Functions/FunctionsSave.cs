@@ -40,7 +40,7 @@ namespace TranslationHelper.Functions
             if (AppData.CurrentProject != null)
             {
                 AppData.CurrentProject.BakCreate();
-                await Task.Run(() => AppData.CurrentProject.Save()).ConfigureAwait(true);
+                await Task.Run(() => AppData.CurrentProject.TrySave()).ConfigureAwait(true);
             }
             else
             {

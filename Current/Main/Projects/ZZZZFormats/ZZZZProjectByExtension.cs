@@ -69,7 +69,7 @@ namespace TranslationHelper.Projects.ZZZZFormats
             return OpenSave();
         }
 
-        public override bool Save() => OpenSave();
+        protected override bool Save() => OpenSave();
 
         bool GetAll = false;
         bool IsRecursive = false;

@@ -22,7 +22,7 @@ namespace TranslationHelper.Projects.RimWorld
 
         protected override bool Open() => OpenSave();
 
-        public override bool Save() => OpenSave();
+        protected override bool Save() => OpenSave();
 
         /// <summary>
         /// Opens or saves language files within the RimWorld mod's language directory structure.

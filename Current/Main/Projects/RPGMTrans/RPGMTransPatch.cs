@@ -27,7 +27,7 @@ namespace TranslationHelper.Projects
             return ProjectToolsOpenSave.OpenSaveFilesBase(this, Path.GetDirectoryName(AppData.SelectedProjectFilePath), typeof(TXTv3), "*.txt");
         }
 
-        public override bool Save()
+        protected override bool Save()
         {
             return ProjectToolsOpenSave.OpenSaveFilesBase(this, Path.GetDirectoryName(AppData.SelectedProjectFilePath), typeof(TXTv3), "*.txt");
         }

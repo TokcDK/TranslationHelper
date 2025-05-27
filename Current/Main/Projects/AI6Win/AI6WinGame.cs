@@ -19,7 +19,7 @@ namespace TranslationHelper.Projects.AI6Win
             return OpenSave();
         }
 
-        public override bool Save()
+        protected override bool Save()
         {
             return OpenSave();
         }

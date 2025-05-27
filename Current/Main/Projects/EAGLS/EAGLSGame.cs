@@ -30,7 +30,7 @@ namespace TranslationHelper.Projects.EAGLS
 
         public override string Name => ProjectTitlePrefix+ Path.GetFileName(Path.GetDirectoryName(AppData.SelectedProjectFilePath));
 
-        public override bool Save()
+        protected override bool Save()
         {
             BakCreate();
             if (SaveFiles())

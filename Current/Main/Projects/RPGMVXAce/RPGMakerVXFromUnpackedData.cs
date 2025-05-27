@@ -12,7 +12,7 @@ namespace TranslationHelper.Projects.RPGMVXAce
 
         protected override bool Open() { return OpenSave(); }
 
-        public override bool Save() { return OpenSave(); }
+        protected override bool Save() { return OpenSave(); }
 
         bool OpenSave()
         {

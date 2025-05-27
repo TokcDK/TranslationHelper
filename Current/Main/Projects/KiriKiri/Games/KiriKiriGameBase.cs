@@ -122,7 +122,7 @@ namespace TranslationHelper.Projects.KiriKiri.Games
             return OpenSaveFiles();
         }
 
-        public override bool Save()
+        protected override bool Save()
         {
             return OpenSaveFiles();
         }

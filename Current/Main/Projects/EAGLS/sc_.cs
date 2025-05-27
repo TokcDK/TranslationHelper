@@ -34,7 +34,7 @@ namespace TranslationHelper.Projects.EAGLS
 
         internal override string ProjectDBFolderName => "EAGLS";
 
-        public override bool Save()
+        protected override bool Save()
         {
             throw new NotImplementedException();
         }
