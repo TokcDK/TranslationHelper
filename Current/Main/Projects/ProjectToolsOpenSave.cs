@@ -158,5 +158,56 @@ namespace TranslationHelper.Projects
 
             return ret;
         }
+
+        /// <summary>
+        /// open or save project files
+        /// </summary>
+        /// <returns></returns>
+        public static bool OpenSaveFilesBase(this ProjectBase project, (FileInfo info, Type type)[] filesList)
+        {
+            var ret = false;
+            var existsTables = project.FilesContent.Tables;
+            Parallel.ForEach(filesList, file =>
+            {
+                FileInfo fileInfo = file.info;
+                Type type = file.type;
+
+                if (File.Exists(file.info.FullName + ".skipme") || File.Exists(file.info.FullName + ".skip")) return;
+
+                if (project.OpenFileMode && File.Exists(file + ".bak")) ProjectToolsBackup.RestoreFile(file.info.FullName);
+                if (project.SaveFileMode
+                && !File.Exists(file.info.FullName + ".bak")
+                && !file.info.DirectoryName.IsAnyParentPathInTheList(project.BakPaths)) // maybe parent was backed up
+                    ProjectToolsBackup.BackupFile(file.info.FullName);
+
+                var format = (FormatBase)Activator.CreateInstance(file.type); // create instance of format
+
+                // check extension for case im mask was "*.*" or kind of
+                if (!string.IsNullOrWhiteSpace(format.Extension) && file.info.Extension != format.Extension) return;
+
+                Logger.Info((project.OpenFileMode ? T._("Opening") : T._("Saving")) + " " + file.info.Name);
+
+                bool isOpenSuccess = false;
+                try
+                {
+                    if (project.OpenFileMode ? (isOpenSuccess = format.Open(file.info.FullName)) : format.Save(file.info.FullName)) ret = true;
+                }
+                catch (Exception ex)
+                {
+                    Logger.Warn(ex, "Error while opening/saving file: " + file.info.FullName);
+                    return; // skip this file
+                }
+
+                // add to bak paths for default backup
+                if (project.OpenFileMode && isOpenSuccess
+                && !project.BakPaths.Contains(file.info.FullName)
+                && !file.info.FullName.IsAnyParentPathInTheList(project.BakPaths))
+                    project.BakPaths.Add(file.info.FullName);
+            });
+
+
+
+            return ret;
+        }
     }
 }
