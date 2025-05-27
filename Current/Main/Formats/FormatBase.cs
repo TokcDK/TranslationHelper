@@ -38,7 +38,7 @@ namespace TranslationHelper.Formats
         /// <summary>
         /// Current file path for opening or saving operations.
         /// </summary>
-        public string FilePath { get; internal set; }
+        public string FilePath { get; private set; }
 
         /// <summary>
         /// Indicates whether the format is in open mode.
