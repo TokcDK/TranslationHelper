@@ -49,7 +49,7 @@ namespace TranslationHelper.Projects
 
         string extractedpatchpath;
 
-        protected override bool Open()
+        protected override bool TryOpen()
         {
             extractedpatchpath = string.Empty;
 
@@ -343,7 +343,7 @@ namespace TranslationHelper.Projects
             return Path.Combine(patchdir, "patch").ContainsFiles("*.txt");
         }
 
-        protected override bool Save()
+        protected override bool TrySaveProject()
         {
             ProjectToolsOpenSave.OpenSaveFilesBase(this, patchdir, typeof(TXTv3), "*.txt");//not need to check return value here
 

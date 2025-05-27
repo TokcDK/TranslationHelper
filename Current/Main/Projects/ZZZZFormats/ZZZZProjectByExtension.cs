@@ -44,7 +44,7 @@ namespace TranslationHelper.Projects.ZZZZFormats
 
         public override string Name => Format == null ? T._("Try open file by extension") : string.IsNullOrWhiteSpace(Format.Description) ? Format.Extension : Format.Description;
 
-        protected override bool Open()
+        protected override bool TryOpen()
         {
             var fileExt = Path.GetExtension(AppData.SelectedProjectFilePath);
             var foundTypes = new List<Type>();
@@ -69,7 +69,7 @@ namespace TranslationHelper.Projects.ZZZZFormats
             return OpenSave();
         }
 
-        protected override bool Save() => OpenSave();
+        protected override bool TrySaveProject() => OpenSave();
 
         bool GetAll = false;
         bool IsRecursive = false;

@@ -190,9 +190,9 @@ namespace TranslationHelper.Projects
         /// Open project files
         /// </summary>        
         /// <returns></returns>
-        public bool TryOpen()
+        public bool Open()
         {
-            bool result = Open();
+            bool result = TryOpen();
 
             if (result == true)
             {
@@ -205,17 +205,17 @@ namespace TranslationHelper.Projects
 
             return result;
         }
-        protected abstract bool Open();
+        protected abstract bool TryOpen();
 
         /// <summary>
         /// Save project files
         /// </summary>        
         /// <returns></returns>
-        public bool TrySave()
+        public bool Save()
         {
-            return Save();
+            return TrySaveProject();
         }
-        protected abstract bool Save();
+        protected abstract bool TrySaveProject();
 
         /// <summary>
         /// Project folder name to locate files in DB and Work folders

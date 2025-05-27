@@ -20,7 +20,7 @@ namespace TranslationHelper.Projects.WolfRPG
 
         public override string Name => "Wolf RPG";
 
-        protected override bool Open()
+        protected override bool TryOpen()
         {
             return ExtractWolfFiles() && Patch() && OpenSaveFiles();
         }
@@ -43,7 +43,7 @@ namespace TranslationHelper.Projects.WolfRPG
             return Task.CompletedTask;
         }
 
-        protected override bool Save()
+        protected override bool TrySaveProject()
         {
             return OpenSaveFiles() && Patch();
         }

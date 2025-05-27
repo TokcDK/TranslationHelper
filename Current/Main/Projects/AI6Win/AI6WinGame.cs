@@ -14,12 +14,12 @@ namespace TranslationHelper.Projects.AI6Win
     {
         public override string Name => "AI6Win Game";
 
-        protected override bool Open()
+        protected override bool TryOpen()
         {
             return OpenSave();
         }
 
-        protected override bool Save()
+        protected override bool TrySaveProject()
         {
             return OpenSave();
         }

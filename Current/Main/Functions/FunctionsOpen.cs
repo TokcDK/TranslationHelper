@@ -237,7 +237,7 @@ namespace TranslationHelper.Functions
             project.Init();
             project.BakRestore();
             project.OpenFileMode = true;
-            if (project.TryOpen())
+            if (project.Open())
             {
                 MenusCreator.CreateMenus();
                 return true;

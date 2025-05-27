@@ -80,7 +80,7 @@ namespace TranslationHelper.Projects.RPGMMV
         /// Opens the project by setting the directory and parsing files.
         /// </summary>
         /// <returns>True if successful, otherwise false.</returns>
-        protected override bool Open()
+        protected override bool TryOpen()
         {
             WWWDir = Path.Combine(AppData.CurrentProject.SelectedDir, HasWWWDir ? "www" : "");
             return ParseProjectFiles();
@@ -312,7 +312,7 @@ namespace TranslationHelper.Projects.RPGMMV
         /// Saves the project by parsing files in save mode.
         /// </summary>
         /// <returns>True if successful, otherwise false.</returns>
-        protected override bool Save()
+        protected override bool TrySaveProject()
         {
             if (string.IsNullOrWhiteSpace(WWWDir))
                 WWWDir = Path.Combine(AppData.CurrentProject.SelectedDir, HasWWWDir ? "www" : "");

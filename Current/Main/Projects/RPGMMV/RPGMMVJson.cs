@@ -28,7 +28,7 @@ namespace TranslationHelper.Projects.RPGMMV
 
         internal override string ProjectDBFolderName => "RPGMakerMV";
 
-        protected override bool Open()
+        protected override bool TryOpen()
         {
             return ParseProjectFiles();
         }
@@ -90,7 +90,7 @@ namespace TranslationHelper.Projects.RPGMMV
             }
         }
 
-        protected override bool Save()
+        protected override bool TrySaveProject()
         {
             return ParseProjectFiles(true);
         }

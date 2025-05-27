@@ -17,12 +17,12 @@ namespace TranslationHelper.Projects
         /// Open project files
         /// </summary>        
         /// <returns></returns>
-        bool TryOpen();
+        bool Open();
 
         /// <summary>
         /// Save project files
         /// </summary>        
         /// <returns></returns>
-        bool TrySave();
+        bool Save();
     }
 }

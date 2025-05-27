@@ -33,7 +33,7 @@ namespace TranslationHelper.Projects.KiriKiri
 
         internal override string ProjectDBFolderName => "KiriKiri";
 
-        protected override bool Open()
+        protected override bool TryOpen()
         {
             if (ExtractXP3files(AppData.SelectedProjectFilePath))
             {
@@ -185,7 +185,7 @@ namespace TranslationHelper.Projects.KiriKiri
             return ret;
         }
 
-        protected override bool Save()
+        protected override bool TrySaveProject()
         {
             throw new NotImplementedException();
         }

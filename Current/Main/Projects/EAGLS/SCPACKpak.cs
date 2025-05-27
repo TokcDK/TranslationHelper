@@ -18,7 +18,7 @@ namespace TranslationHelper.Projects.EAGLS
 
         internal override string FileFilter => "EAGLS SCPACK|SCPACK.pak;SCPACK.idx";
 
-        protected override bool Open()
+        protected override bool TryOpen()
         {
             return UnpackSCPACK();
         }
@@ -32,7 +32,7 @@ namespace TranslationHelper.Projects.EAGLS
 
         public override string Name => ProjectTitlePrefix+ Path.GetFileName(Path.GetDirectoryName(AppData.SelectedProjectFilePath));
 
-        protected override bool Save()
+        protected override bool TrySaveProject()
         {
             BakCreate();
             if (SaveFiles())
