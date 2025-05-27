@@ -187,7 +187,7 @@ namespace TranslationHelper.Projects
                 var format = (FormatBase)Activator.CreateInstance(file.type); // create format instance
 
                 // check extension (case when mask is "*.*" or similar)
-                if (!string.IsNullOrWhiteSpace(format.Extension) && fileInfo.Extension != format.Extension)
+                if (string.IsNullOrWhiteSpace(format.Extension) || fileInfo.Extension != format.Extension)
                     return;
 
                 Logger.Info((isOpenMode ? T._("Opening") : T._("Saving")) + " " + fileInfo.Name);
