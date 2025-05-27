@@ -39,7 +39,7 @@ namespace TranslationHelper.Projects.IrisField
 
         internal override string FileFilter => ProjectTools.GameExeFilter;
 
-        public override bool Open()
+        protected override bool Open()
         {
             return OpenFiles();
         }

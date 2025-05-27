@@ -24,7 +24,7 @@ namespace TranslationHelper.Projects.AliceSoft
 
         public override string Name => "AliceSoft";
 
-        public override bool Open()
+        protected override bool Open()
         {
             return PackUnpack() && ProjectToolsOpenSave.OpenSaveFilesBase(this, AppData.CurrentProject.ProjectWorkDir, typeof(AINTXT), "*.ain.txt");
         }

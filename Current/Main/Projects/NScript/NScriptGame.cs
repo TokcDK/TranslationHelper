@@ -23,7 +23,7 @@ namespace TranslationHelper.Projects.NScript
 
         public override string Name => "NScript";
 
-        public override bool Open()
+        protected override bool Open()
         {
             return /*ExtractNScriptDAT() &&*/ OpenSaveNScript();
         }

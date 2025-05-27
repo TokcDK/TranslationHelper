@@ -35,7 +35,7 @@ namespace TranslationHelper.Projects
 
         public override string Name => "Raijin 7 & 8";
 
-        public override bool Open()
+        protected override bool Open()
         {
             return OpenSave();
         }

@@ -10,7 +10,7 @@ namespace TranslationHelper.Projects.RPGMVXAce
 
         internal override string ProjectDBFolderName => "RPGMakerVXAce";
 
-        public override bool Open() { return OpenSave(); }
+        protected override bool Open() { return OpenSave(); }
 
         public override bool Save() { return OpenSave(); }
 

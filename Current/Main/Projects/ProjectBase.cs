@@ -143,10 +143,6 @@ namespace TranslationHelper.Projects
             AppData.CurrentProject.SelectedGameDir = Path.GetDirectoryName(AppData.SelectedProjectFilePath);
             AppData.CurrentProject.SelectedDir = Path.GetDirectoryName(AppData.SelectedProjectFilePath);
             AppData.CurrentProject.ProjectWorkDir = Path.Combine(THSettings.WorkDirPath, ProjectDBFolderName, Name);
-
-            AutosaveTimer = new System.Timers.Timer(AppSettings.DBAutoSaveTimeout);
-
-            FunctionAutoSave.StartAutoSave(AutosaveTimer, FunctionsDBFile.SaveDB, AppSettings.DBAutoSaveTimeout);
         }
 
         /// <summary>
@@ -194,7 +190,18 @@ namespace TranslationHelper.Projects
         /// Open project files
         /// </summary>        
         /// <returns></returns>
-        public abstract bool Open();
+        public bool TryOpen()
+        {
+            bool result = Open();
+
+            if (result == true)
+            {
+                FunctionAutoSave.StartAutoSave(AutosaveTimer, FunctionsDBFile.SaveDB, AppSettings.DBAutoSaveTimeout);
+            }
+
+            return result;
+        }
+        protected abstract bool Open();
 
         /// <summary>
         /// Save project files

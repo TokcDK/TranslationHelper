@@ -26,7 +26,7 @@ namespace TranslationHelper.Projects.LiveMaker
 
         internal override string ProjectDBFolderName => Name;
 
-        public override bool Open()
+        protected override bool Open()
         {
             return ExtractRes() && ProjectToolsOpenSave.OpenSaveFilesBase(this, Path.Combine(AppData.CurrentProject.ProjectWorkDir, "Extracted"), Format(), Mask(), false);
         }

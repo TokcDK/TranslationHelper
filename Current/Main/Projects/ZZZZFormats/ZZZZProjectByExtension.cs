@@ -44,7 +44,7 @@ namespace TranslationHelper.Projects.ZZZZFormats
 
         public override string Name => Format == null ? T._("Try open file by extension") : string.IsNullOrWhiteSpace(Format.Description) ? Format.Extension : Format.Description;
 
-        public override bool Open()
+        protected override bool Open()
         {
             var fileExt = Path.GetExtension(AppData.SelectedProjectFilePath);
             var foundTypes = new List<Type>();

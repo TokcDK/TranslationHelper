@@ -80,7 +80,7 @@ namespace TranslationHelper.Projects.RPGMMV
         /// Opens the project by setting the directory and parsing files.
         /// </summary>
         /// <returns>True if successful, otherwise false.</returns>
-        public override bool Open()
+        protected override bool Open()
         {
             WWWDir = Path.Combine(AppData.CurrentProject.SelectedDir, HasWWWDir ? "www" : "");
             return ParseProjectFiles();

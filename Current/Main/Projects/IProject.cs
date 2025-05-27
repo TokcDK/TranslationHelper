@@ -17,7 +17,7 @@ namespace TranslationHelper.Projects
         /// Open project files
         /// </summary>        
         /// <returns></returns>
-        bool Open();
+        bool TryOpen();
 
         /// <summary>
         /// Save project files

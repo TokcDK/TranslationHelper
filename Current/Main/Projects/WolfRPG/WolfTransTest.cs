@@ -9,7 +9,7 @@ namespace TranslationHelper.Projects.WolfRPG
     {
         public override string Name => "Wolftrans new";
 
-        public override bool Open() => OpenSave();
+        protected override bool Open() => OpenSave();
         public override bool Save() => OpenSave();
 
         private bool OpenSave()

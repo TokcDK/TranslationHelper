@@ -17,7 +17,7 @@ namespace TranslationHelper.Projects.EAGLS
 
         internal override string FileFilter => ProjectTools.GameExeFilter;
 
-        public override bool Open()
+        protected override bool Open()
         {
             BakRestore();
             return UnpackSCPACK();

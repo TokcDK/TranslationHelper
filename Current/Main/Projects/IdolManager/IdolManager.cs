@@ -11,7 +11,7 @@ namespace TranslationHelper.Projects.IdolManager.Mod
         public override string Name => "Idol Manager Mod";
         internal override string FileFilter => $"Idol Manager Mod|*.json";
 
-        public override bool Open() { return ParseFiles(); }
+        protected override bool Open() { return ParseFiles(); }
 
         public override bool SubpathInTableName => true;
 

@@ -18,7 +18,7 @@ namespace TranslationHelper.Projects.EAGLS
 
         internal override string FileFilter => "EAGLS SCPACK|SCPACK.pak;SCPACK.idx";
 
-        public override bool Open()
+        protected override bool Open()
         {
             return UnpackSCPACK();
         }

@@ -19,7 +19,7 @@ namespace TranslationHelper.Projects.Liar_soft
         public override string Name => "Liar-Soft";
         internal override string ProjectDBFolderName => "Liar-Soft";
 
-        public override bool Open()
+        protected override bool Open()
         {
             return OpenSaveXFL();
         }

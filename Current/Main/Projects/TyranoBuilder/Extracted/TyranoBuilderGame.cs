@@ -18,7 +18,7 @@ namespace TranslationHelper.Projects.TyranoBuilder.Extracted
 
         public override string Name => "TyranoBuilder";
 
-        public override bool Open()
+        protected override bool Open()
         {
             var export = new DirectoryInfo(Path.Combine(Path.GetDirectoryName(AppData.SelectedProjectFilePath), "export"));
 

@@ -49,7 +49,7 @@ namespace TranslationHelper.Projects
 
         string extractedpatchpath;
 
-        public override bool Open()
+        protected override bool Open()
         {
             extractedpatchpath = string.Empty;
 

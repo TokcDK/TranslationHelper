@@ -20,7 +20,7 @@ namespace TranslationHelper.Projects.RimWorld
 
         public override string Name => "RimWorld mod language dir";
 
-        public override bool Open() => OpenSave();
+        protected override bool Open() => OpenSave();
 
         public override bool Save() => OpenSave();
 
