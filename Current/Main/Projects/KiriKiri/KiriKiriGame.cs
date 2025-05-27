@@ -77,11 +77,11 @@ namespace TranslationHelper.Projects.KiriKiri
 
             try
             {
+                bool ret = false;
+
                 for (int i = 0; i < kiriKiriFiles.Count; i++)
                 {
                     filename = Path.GetFileName(kiriKiriFiles[i]);
-
-                    bool ret = false;
 
                     //ProjectData.FilePath = kiriKiriFiles[i];
 
@@ -104,7 +104,10 @@ namespace TranslationHelper.Projects.KiriKiri
                         format = new TSV();
                     }
 
-                    ret = format.Open(kiriKiriFiles[i]);
+                    if (format.Open(kiriKiriFiles[i]))
+                    {
+                        ret = true;
+                    }
 
                     //if (DT == null || DT.Rows.Count == 0)
                     //{
@@ -118,7 +121,7 @@ namespace TranslationHelper.Projects.KiriKiri
                     //}
                 }
 
-                return true;
+                return ret;
             }
             catch (Exception ex)
             {
