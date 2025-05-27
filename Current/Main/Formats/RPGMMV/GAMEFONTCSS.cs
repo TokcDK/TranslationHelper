@@ -142,7 +142,6 @@ namespace TranslationHelper.Formats.RPGMMV
 
         protected override bool TrySave()
         {
-            SaveFileMode = true;
             return ParseFile();
         }
 

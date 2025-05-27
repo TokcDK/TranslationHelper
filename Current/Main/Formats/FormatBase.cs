@@ -43,12 +43,12 @@ namespace TranslationHelper.Formats
         /// <summary>
         /// Indicates whether the format is in open mode.
         /// </summary>
-        public bool OpenFileMode { get; set; } = true;
+        public bool OpenFileMode { get; private set; } = true;
 
         /// <summary>
         /// Indicates whether the format is in save mode; inversely tied to <see cref="OpenFileMode"/>.
         /// </summary>
-        public bool SaveFileMode { get => !OpenFileMode; set => OpenFileMode = !value; }
+        public bool SaveFileMode { get => !OpenFileMode; private set => OpenFileMode = !value; }
 
         /// <summary>
         /// Main table containing row data.
