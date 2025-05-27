@@ -141,7 +141,11 @@ namespace TranslationHelper.Projects
                 {
                     if (project.OpenFileMode ? (isOpenSuccess = format.Open(file.FullName)) : format.Save(file.FullName)) ret = true;
                 }
-                catch { }
+                catch(Exception ex)
+                {
+                    Logger.Warn(ex, "Error while opening/saving file: " + file.FullName);
+                    return; // skip this file
+                }
 
                 // add to bak paths for default backup
                 if (project.OpenFileMode && isOpenSuccess
