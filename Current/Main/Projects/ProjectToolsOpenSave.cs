@@ -167,45 +167,51 @@ namespace TranslationHelper.Projects
         {
             var ret = false;
             var existsTables = project.FilesContent.Tables;
+            bool isOpenMode = project.OpenFileMode;
             Parallel.ForEach(filesList, file =>
             {
-                FileInfo fileInfo = file.info;
-                Type type = file.type;
+                var fileInfo = file.info;
+                string fullName = fileInfo.FullName;
 
-                if (File.Exists(file.info.FullName + ".skipme") || File.Exists(file.info.FullName + ".skip")) return;
+                if (File.Exists(fullName + ".skipme") || File.Exists(fullName + ".skip"))
+                    return;
 
-                if (project.OpenFileMode && File.Exists(file + ".bak")) ProjectToolsBackup.RestoreFile(file.info.FullName);
-                if (project.SaveFileMode
-                && !File.Exists(file.info.FullName + ".bak")
-                && !file.info.DirectoryName.IsAnyParentPathInTheList(project.BakPaths)) // maybe parent was backed up
-                    ProjectToolsBackup.BackupFile(file.info.FullName);
+                if (isOpenMode && File.Exists(fullName + ".bak"))
+                    ProjectToolsBackup.RestoreFile(fullName);
 
-                var format = (FormatBase)Activator.CreateInstance(file.type); // create instance of format
+                if (!isOpenMode
+                    && !File.Exists(fullName + ".bak")
+                    && !fileInfo.DirectoryName.IsAnyParentPathInTheList(project.BakPaths)) // maybe parent was already backed up
+                    ProjectToolsBackup.BackupFile(fullName);
 
-                // check extension for case im mask was "*.*" or kind of
-                if (!string.IsNullOrWhiteSpace(format.Extension) && file.info.Extension != format.Extension) return;
+                var format = (FormatBase)Activator.CreateInstance(file.type); // create format instance
 
-                Logger.Info((project.OpenFileMode ? T._("Opening") : T._("Saving")) + " " + file.info.Name);
+                // check extension (case when mask is "*.*" or similar)
+                if (!string.IsNullOrWhiteSpace(format.Extension) && fileInfo.Extension != format.Extension)
+                    return;
+
+                Logger.Info((isOpenMode ? T._("Opening") : T._("Saving")) + " " + fileInfo.Name);
 
                 bool isOpenSuccess = false;
                 try
                 {
-                    if (project.OpenFileMode ? (isOpenSuccess = format.Open(file.info.FullName)) : format.Save(file.info.FullName)) ret = true;
+                    if (isOpenMode ? (isOpenSuccess = format.Open(fullName)) : format.Save(fullName))
+                        ret = true;
                 }
                 catch (Exception ex)
                 {
-                    Logger.Warn(ex, "Error while opening/saving file: " + file.info.FullName);
+                    Logger.Warn(ex, "Error while opening/saving file: " + fullName);
                     return; // skip this file
                 }
 
-                // add to bak paths for default backup
-                if (project.OpenFileMode && isOpenSuccess
-                && !project.BakPaths.Contains(file.info.FullName)
-                && !file.info.FullName.IsAnyParentPathInTheList(project.BakPaths))
-                    project.BakPaths.Add(file.info.FullName);
+                // add to backup list if successfully opened
+                if (isOpenMode && isOpenSuccess
+                    && !project.BakPaths.Contains(fullName)
+                    && !fullName.IsAnyParentPathInTheList(project.BakPaths))
+                {
+                    project.BakPaths.Add(fullName);
+                }
             });
-
-
 
             return ret;
         }
