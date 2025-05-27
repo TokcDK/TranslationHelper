@@ -165,51 +165,73 @@ namespace TranslationHelper.Projects
         /// <returns></returns>
         public static bool OpenSaveFilesBase(this ProjectBase project, (FileInfo info, Type type)[] filesList)
         {
+            if (filesList == null || filesList.Length == 0)
+                return false;
+
             var ret = false;
-            var existsTables = project.FilesContent.Tables;
             bool isOpenMode = project.OpenFileMode;
+
             Parallel.ForEach(filesList, file =>
             {
                 var fileInfo = file.info;
+                if (fileInfo == null)
+                    return;
+
                 string fullName = fileInfo.FullName;
 
-                if (File.Exists(fullName + ".skipme") || File.Exists(fullName + ".skip"))
+                // Skip files marked with .skipme or .skip
+                if (File.Exists($"{fullName}.skipme") || File.Exists($"{fullName}.skip"))
                     return;
 
-                if (isOpenMode && File.Exists(fullName + ".bak"))
-                    ProjectToolsBackup.RestoreFile(fullName);
-
-                if (!isOpenMode
-                    && !File.Exists(fullName + ".bak")
-                    && !fileInfo.DirectoryName.IsAnyParentPathInTheList(project.BakPaths)) // maybe parent was already backed up
-                    ProjectToolsBackup.BackupFile(fullName);
-
-                var format = (FormatBase)Activator.CreateInstance(file.type); // create format instance
-
-                // check extension (case when mask is "*.*" or similar)
-                if (string.IsNullOrWhiteSpace(format.Extension) || fileInfo.Extension != format.Extension)
-                    return;
-
-                Logger.Info((isOpenMode ? T._("Opening") : T._("Saving")) + " " + fileInfo.Name);
-
-                bool isOpenSuccess = false;
                 try
                 {
-                    if (isOpenMode ? (isOpenSuccess = format.Open(fullName)) : format.Save(fullName))
+                    // Handle backups
+                    if (isOpenMode && File.Exists($"{fullName}.bak"))
+                        ProjectToolsBackup.RestoreFile(fullName);
+                    else if (!isOpenMode
+                        && !File.Exists($"{fullName}.bak")
+                        && !fileInfo.DirectoryName.IsAnyParentPathInTheList(project.BakPaths))
+                        ProjectToolsBackup.BackupFile(fullName);
+
+                    // Create format instance
+                    var format = (FormatBase)Activator.CreateInstance(file.type);
+                    if (format == null)
+                        return;
+
+                    // Check extension compatibility
+                    if (!string.IsNullOrWhiteSpace(format.Extension) && fileInfo.Extension != format.Extension)
+                        return;
+
+                    string operationName = isOpenMode ? T._("Opening") : T._("Saving");
+                    Logger.Info($"{operationName} {fileInfo.Name}");
+
+                    // Process file
+                    bool isOpenSuccess = false;
+                    if (isOpenMode)
+                    {
+                        isOpenSuccess = format.Open(fullName);
+                        if (isOpenSuccess)
+                            ret = true;
+                    }
+                    else if (format.Save(fullName))
+                    {
                         ret = true;
+                    }
+
+                    // Add to backup paths list if needed
+                    if (isOpenMode && isOpenSuccess
+                        && !project.BakPaths.Contains(fullName)
+                        && !fullName.IsAnyParentPathInTheList(project.BakPaths))
+                    {
+                        lock (project.BakPaths)
+                        {
+                            project.BakPaths.Add(fullName);
+                        }
+                    }
                 }
                 catch (Exception ex)
                 {
-                    Logger.Warn(ex, "Error while opening/saving file: " + fullName);
-                    return; // skip this file
-                }
-
-                // add to backup list if successfully opened
-                if (isOpenMode && isOpenSuccess
-                    && !project.BakPaths.Contains(fullName)
-                    && !fullName.IsAnyParentPathInTheList(project.BakPaths))
-                {
-                    project.BakPaths.Add(fullName);
+                    Logger.Warn(ex, $"Error while {(isOpenMode ? "opening" : "saving")} file: {fullName}");
                 }
             });
 
