@@ -33,63 +33,19 @@ namespace TranslationHelper.Projects.RPGMMV
             return ParseProjectFiles();
         }
 
-        string ParseFileMessage;
         /// <summary>
         /// Parsing the Project files
         /// </summary>
         /// <param name="Write">Use Save() instead of Open()</param>
         /// <returns></returns>
-        private bool ParseProjectFiles(bool Write = false)
+        private bool ParseProjectFiles()
         {
-            if (!Write)
-            {
-                BakRestore();
-            }
-
-            ParseFileMessage = Write ? T._("write file: ") : T._("opening file: ");
-            try
-            {
-                if (ParseRPGMakerMVjson(AppData.SelectedProjectFilePath, Write))
-                {
-                    return true;
-                }
-            }
-            catch
-            {
-            }
-
-            
-            return false;
-        }
-
-        private bool ParseRPGMakerMVjson(string filePath, bool Write = false)
-        {
-            try
-            {
-                string Jsonname = Path.GetFileNameWithoutExtension(filePath); // get json file name
-
-                Logger.Info(ParseFileMessage + Jsonname + ".json");
-
-                //string jsondata = File.ReadAllText(FilePath); // get json data
-
-                bool ret = true;
-
-                //ret = ReadJson(Jsonname, sPath);
-                var format = new JSON();
-
-                ret = Write ? format.Save(filePath) : format.Open(filePath);
-
-                return ret;
-            }
-            catch
-            {
-                return false;
-            }
+            return this.OpenSaveFilesBase(new FileInfo(ProjectPath), typeof(JSON));
         }
 
         protected override bool TrySave()
         {
-            return ParseProjectFiles(true);
+            return ParseProjectFiles();
         }
 
         public override bool BakCreate()
