@@ -24,10 +24,6 @@ namespace TranslationHelper.Projects
             // set value of the parameter for the project work session
             DontLoadDuplicates = AppSettings.DontLoadDuplicates;
 
-            AutosaveTimer = new System.Timers.Timer(AppSettings.DBAutoSaveTimeout);
-
-            FunctionAutoSave.StartAutoSave(AutosaveTimer, FunctionsDBFile.SaveDB, AppSettings.DBAutoSaveTimeout);
-
             if (AppData.CurrentProject == null) return;
 
             if (SaveFileMode && DontLoadDuplicates) TablesLinesDict = new ConcurrentDictionary<string, string>();
@@ -147,6 +143,10 @@ namespace TranslationHelper.Projects
             AppData.CurrentProject.SelectedGameDir = Path.GetDirectoryName(AppData.SelectedProjectFilePath);
             AppData.CurrentProject.SelectedDir = Path.GetDirectoryName(AppData.SelectedProjectFilePath);
             AppData.CurrentProject.ProjectWorkDir = Path.Combine(THSettings.WorkDirPath, ProjectDBFolderName, Name);
+
+            AutosaveTimer = new System.Timers.Timer(AppSettings.DBAutoSaveTimeout);
+
+            FunctionAutoSave.StartAutoSave(AutosaveTimer, FunctionsDBFile.SaveDB, AppSettings.DBAutoSaveTimeout);
         }
 
         /// <summary>
