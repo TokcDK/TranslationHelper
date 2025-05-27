@@ -3,6 +3,7 @@ using System.Globalization;
 using System.IO;
 using TranslationHelper.Data;
 using TranslationHelper.Formats.EAGLS.SCPACK;
+using TranslationHelper.Formats.RPGMTransPatch;
 
 namespace TranslationHelper.Projects.EAGLS
 {
@@ -22,7 +23,7 @@ namespace TranslationHelper.Projects.EAGLS
 
         protected override bool TryOpen()
         {
-            return new SC_TXT().Open(AppData.SelectedProjectFilePath);
+            return this.OpenSaveFilesBase(new FileInfo(ProjectPath), typeof(SC_TXT));
         }
 
         public override string Name => "EAGLS scenario (" + Path.GetFileNameWithoutExtension(AppData.SelectedProjectFilePath) + ")";
