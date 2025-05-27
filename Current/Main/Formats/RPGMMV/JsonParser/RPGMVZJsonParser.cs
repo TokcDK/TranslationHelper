@@ -45,7 +45,7 @@ namespace TranslationHelper.Formats.RPGMMV.JsonParser
                 AddToStats();
 
                 bool HasCurCode = CurrentEventCode > -1;
-                Format.AddRowData(tablename: JsonName, rowData: tokenValue, rowInfo: "JsonPath: "
+                Format.AddRowData(tablename: JsonName, value: tokenValue, info: "JsonPath: "
                     + Environment.NewLine
                     + jsonValue.Path
                     + (HasCurCode ? Environment.NewLine + "Code=" + CurrentEventCode + RPGMUtils.GetCodeName(CurrentEventCode) : string.Empty)
@@ -196,7 +196,7 @@ namespace TranslationHelper.Formats.RPGMMV.JsonParser
                 if (Format.OpenFileMode)
                 {
                     bool HasCurCode = true; // message code parse
-                    Format.AddRowData(tablename: JsonName, rowData: fullmessage, rowInfo: "JsonPath: "
+                    Format.AddRowData(tablename: JsonName, value: fullmessage, info: "JsonPath: "
                         + Environment.NewLine
                         + jsonObject.Path
                         + (HasCurCode ? Environment.NewLine + "Code=" + CurrentEventCode + RPGMUtils.GetCodeName(CurrentEventCode) : string.Empty)

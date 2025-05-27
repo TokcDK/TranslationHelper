@@ -91,7 +91,7 @@ namespace TranslationHelper.Formats.IrisField
 
                     if (OpenFileMode)
                     {
-                        AddRowData(rowData: mergedMessage.TrimEnd(), rowInfo: LastMSGType, isCheckInput: true);
+                        AddRowData(value: mergedMessage.TrimEnd(), info: LastMSGType, isCheckInput: true);
                     }
                     else if (IsValidString(mergedMessage))
                     {
@@ -135,7 +135,7 @@ namespace TranslationHelper.Formats.IrisField
                 var choiceMatch = Regex.Match(choice, _choiceTextExtractionRegex);
                 var choiceText = choiceMatch.Groups[1].Value;
 
-                if (AddRowData(rowData: ref choiceText, rowInfo: "Choice: " + i) && SaveFileMode)
+                if (AddRowData(value: ref choiceText, info: "Choice: " + i) && SaveFileMode)
                 {
                     // only when translated
                     choiceText = choiceText.Replace(' ', '_'); // need to remove spaces in choice variants

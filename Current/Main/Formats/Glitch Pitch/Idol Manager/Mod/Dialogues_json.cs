@@ -44,7 +44,7 @@ namespace TranslationHelper.Formats.Glitch_Pitch.IdolManager.Mod
             if (string.IsNullOrWhiteSpace(script.Val)) return ret;
 
             var ot = new[] { script.Val, "" };
-            if (AddRowData(ref ot, rowInfo: script.Type, isCheckInput: false)) 
+            if (AddRowData(ref ot, info: script.Type, isCheckInput: false)) 
             {
                 ret = true;
 

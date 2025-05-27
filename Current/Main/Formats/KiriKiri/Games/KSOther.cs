@@ -42,7 +42,7 @@ namespace TranslationHelper.Formats.KiriKiri.Games
                     if (!match.Value.StartsWith("emb=")) continue;
 
                     var s = match.Groups[1].Value;
-                    AddRowData(rowData: s, rowInfo: ParseData.Line);
+                    AddRowData(value: s, info: ParseData.Line);
 
                     break;
                 }

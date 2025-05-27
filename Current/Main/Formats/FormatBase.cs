@@ -290,90 +290,90 @@ namespace TranslationHelper.Formats
         }
 
         /// <summary>
-        /// Adds a string to the table with options. In save mode, replaces <paramref name="rowData"/> with translation.
+        /// Adds a string to the table with options. In save mode, replaces <paramref name="value"/> with translation.
         /// </summary>
-        /// <param name="rowData">Reference to the original string.</param>
-        /// <param name="rowInfo">Info about the string.</param>
+        /// <param name="value">Reference to the original string.</param>
+        /// <param name="info">Info about the string.</param>
         /// <param name="isCheckInput">Whether to check the input string validity.</param>
         /// <param name="existsTranslation">Pre-existing translation, if any.</param>
         /// <returns>True if the operation succeeds; otherwise, false.</returns>
-        internal bool AddRowData(ref string rowData, string rowInfo = "", bool isCheckInput = true, string existsTranslation = null)
+        internal bool AddRowData(ref string value, string info = "", bool isCheckInput = true, string existsTranslation = null)
         {
             return OpenFileMode
-                ? AddRowData(FileName, rowData, rowInfo, isCheckInput)
-                : SetTranslation(ref rowData, existsTranslation, isCheckInput);
+                ? AddRowData(FileName, value, info, isCheckInput)
+                : SetTranslation(ref value, existsTranslation, isCheckInput);
         }
 
         /// <summary>
         /// Adds a string to the table with options.
         /// </summary>
-        /// <param name="rowData">Original string.</param>
-        /// <param name="rowInfo">Info about the string.</param>
+        /// <param name="value">Original string.</param>
+        /// <param name="info">Info about the string.</param>
         /// <param name="isCheckInput">Whether to check the input string validity.</param>
         /// <returns>True if added; otherwise, false.</returns>
-        internal bool AddRowData(string rowData, string rowInfo = "", bool isCheckInput = true)
+        internal bool AddRowData(string value, string info = "", bool isCheckInput = true)
         {
-            return AddRowData(FileName, rowData, rowInfo, isCheckInput);
+            return AddRowData(FileName, value, info, isCheckInput);
         }
 
         /// <summary>
-        /// Adds a string to the table with options. In save mode, replaces <paramref name="rowData"/>[0] with translation using <paramref name="rowData"/>[1] as default.
+        /// Adds a string to the table with options. In save mode, replaces <paramref name="values"/>[0] with translation using <paramref name="values"/>[1] as default.
         /// </summary>
-        /// <param name="rowData">Array where first value is original, second is translation.</param>
-        /// <param name="rowInfo">Info about the string.</param>
+        /// <param name="values">Array where first value is original, second is translation.</param>
+        /// <param name="info">Info about the string.</param>
         /// <param name="isCheckInput">Whether to check the input string validity.</param>
         /// <returns>True if added or translation set; otherwise, false.</returns>
-        internal bool AddRowData(ref string[] rowData, string rowInfo = "", bool isCheckInput = true)
+        internal bool AddRowData(ref string[] values, string info = "", bool isCheckInput = true)
         {
             if (OpenFileMode)
             {
-                return AddRowData(FileName, rowData, rowInfo, isCheckInput);
+                return AddRowData(FileName, values, info, isCheckInput);
             }
             else
             {
-                if (isCheckInput && !IsValidString(rowData[0])) return false;
-                return SetTranslation(ref rowData[0], rowData[1], isCheckInput);
+                if (isCheckInput && !IsValidString(values[0])) return false;
+                return SetTranslation(ref values[0], values[1], isCheckInput);
             }
         }
 
         /// <summary>
         /// Adds a string array to the table with options.
         /// </summary>
-        /// <param name="rowData">Original string array.</param>
-        /// <param name="rowInfo">Info about the string.</param>
+        /// <param name="values">Original string array.</param>
+        /// <param name="info">Info about the string.</param>
         /// <param name="isCheckInput">Whether to check the input string validity.</param>
         /// <returns>True if added; otherwise, false.</returns>
-        internal bool AddRowData(string[] rowData, string rowInfo = "", bool isCheckInput = true)
+        internal bool AddRowData(string[] values, string info = "", bool isCheckInput = true)
         {
-            return AddRowData(FileName, rowData, rowInfo, isCheckInput);
+            return AddRowData(FileName, values, info, isCheckInput);
         }
 
         /// <summary>
         /// Adds a string to the specified table with options.
         /// </summary>
         /// <param name="tablename">File/table name.</param>
-        /// <param name="rowData">Original string.</param>
-        /// <param name="rowInfo">Info about the string.</param>
+        /// <param name="value">Original string.</param>
+        /// <param name="info">Info about the string.</param>
         /// <param name="isCheckInput">Whether to check the input string validity.</param>
         /// <returns>True if added; otherwise, false.</returns>
-        internal bool AddRowData(string tablename, string rowData, string rowInfo = "", bool isCheckInput = true)
+        internal bool AddRowData(string tablename, string value, string info = "", bool isCheckInput = true)
         {
-            return AddRowData(tablename, new[] { rowData }, rowInfo, isCheckInput);
+            return AddRowData(tablename, new[] { value }, info, isCheckInput);
         }
 
         /// <summary>
         /// Adds a string array to the specified table with options.
         /// </summary>
         /// <param name="tablename">File/table name.</param>
-        /// <param name="rowData">Original string array.</param>
-        /// <param name="rowInfo">Info about the string.</param>
+        /// <param name="values">Original string array.</param>
+        /// <param name="info">Info about the string.</param>
         /// <param name="isCheckInput">Whether to check the input string validity.</param>
         /// <returns>True if added; otherwise, false.</returns>
-        internal bool AddRowData(string tablename, string[] rowData, string rowInfo, bool isCheckInput = true)
+        internal bool AddRowData(string tablename, string[] values, string info, bool isCheckInput = true)
         {
-            if (rowData?.Length == 0 || rowData[0] == null) return false;
+            if (values?.Length == 0 || values[0] == null) return false;
 
-            string original = AddRowDataPreAddOriginalStringMod(rowData[0]);
+            string original = AddRowDataPreAddOriginalStringMod(values[0]);
             if (isCheckInput && !IsValidString(original)) return false;
 
             if (AppData.CurrentProject.DontLoadDuplicates)
@@ -392,7 +392,7 @@ namespace TranslationHelper.Formats
 
             try
             {
-                AddString(rowData, rowInfo?.Length > 500 ? rowInfo.Remove(500) : rowInfo);
+                AddString(values, info?.Length > 500 ? info.Remove(500) : info);
                 return true;
             }
             catch (Exception ex)

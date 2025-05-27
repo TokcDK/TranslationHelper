@@ -36,7 +36,7 @@ namespace TranslationHelper.Formats.Glitch_Pitch.IdolManager.Mod
             if (string.IsNullOrEmpty(stringToTranslate)) return false;
 
             var ot = new[] { stringToTranslate, "" };
-            if (AddRowData(ref ot, rowInfo: info, isCheckInput: false))
+            if (AddRowData(ref ot, info: info, isCheckInput: false))
             {
                 if (SaveFileMode) stringToTranslate = ot[0]; // set to translated
 
