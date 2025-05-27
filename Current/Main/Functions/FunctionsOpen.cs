@@ -207,7 +207,7 @@ namespace TranslationHelper.Functions
         private static ProjectBase TryOpenSelectedProject(Type type, string sPath, DirectoryInfo dir)
         {
             var project = (ProjectBase)Activator.CreateInstance(type);
-            Logger.Info(T._("Open with {0}"), AppData.CurrentProject.Name);
+            Logger.Info(T._("Open with {0}"), project.Name);
 
             project.OpenFileMode = true;
             project.OpenedFilesDir = dir.FullName;
