@@ -10,7 +10,7 @@ namespace TranslationHelper.Formats
     {
         string Description { get; }
         string Extension { get; }
-        bool Open();
-        bool Save();
+        bool Open(string filePath);
+        bool Save(string jsFileInfo);
     }
 }

@@ -214,10 +214,9 @@ namespace TranslationHelper.Projects.RPGMMV
                 {
                     hardcodedJS.Add(js.JSName); //add js to exclude from parsing of other js
                     var format = (FormatBase)Activator.CreateInstance(jsType);
-                    format.FilePath = filePath;
 
                     Logger.Info(ParseFileMessage + js.JSName);
-                    if ((OpenFileMode && format.Open()) || (SaveFileMode && format.Save()))
+                    if ((OpenFileMode && format.Open(filePath)) || (SaveFileMode && format.Save(filePath)))
                     {
                         hasAnyFileBeenProcessed = true;
                     }
@@ -250,12 +249,12 @@ namespace TranslationHelper.Projects.RPGMMV
                 if (hardcodedJS.Contains(jsName) || skipJSList.Contains(jsName)) continue;
                 if (!File.Exists(jsFileInfo)) continue;
 
-                var format = new ZZZOtherJS { FilePath = jsFileInfo };
+                var format = new ZZZOtherJS();
                 Logger.Info(ParseFileMessage + jsName);
 
                 try
                 {
-                    if ((OpenFileMode && format.Open()) || (SaveFileMode && format.Save()))
+                    if ((OpenFileMode && format.Open(jsFileInfo)) || (SaveFileMode && format.Save(jsFileInfo)))
                     {
                         hasAnyFileBeenProcessed = true;
                     }
@@ -277,12 +276,12 @@ namespace TranslationHelper.Projects.RPGMMV
             var filePath = Path.Combine(WWWDir, "fonts", "gamefont.css");
             if (!File.Exists(filePath)) return false;
 
-            var format = new GAMEFONTCSS { FilePath = filePath };
+            var format = new GAMEFONTCSS ();
             Logger.Info(ParseFileMessage + "gamefont.css");
 
             try
             {
-                return (OpenFileMode && format.Open()) || (SaveFileMode && format.Save());
+                return (OpenFileMode && format.Open(filePath)) || (SaveFileMode && format.Save(filePath));
             }
             catch
             {

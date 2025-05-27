@@ -130,7 +130,6 @@ namespace TranslationHelper.Projects
                 //ProjectData.FilePath = file.FullName;
 
                 var format = (FormatBase)Activator.CreateInstance(formatType); // create instance of format
-                format.FilePath = file.FullName;
 
                 // check extension for case im mask was "*.*" or kind of
                 if (!string.IsNullOrWhiteSpace(format.Extension) && file.Extension != format.Extension) return;
@@ -140,7 +139,7 @@ namespace TranslationHelper.Projects
                 bool isOpenSuccess = false;
                 try
                 {
-                    if (project.OpenFileMode ? (isOpenSuccess = format.Open()) : format.Save()) ret = true;
+                    if (project.OpenFileMode ? (isOpenSuccess = format.Open(file.FullName)) : format.Save(file.FullName)) ret = true;
                 }
                 catch { }
 

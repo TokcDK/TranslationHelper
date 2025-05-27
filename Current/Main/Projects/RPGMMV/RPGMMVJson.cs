@@ -75,12 +75,9 @@ namespace TranslationHelper.Projects.RPGMMV
                 bool ret = true;
 
                 //ret = ReadJson(Jsonname, sPath);
-                var format = new JSON
-                {
-                    FilePath = filePath
-                };
+                var format = new JSON();
 
-                ret = Write ? format.Save() : format.Open();
+                ret = Write ? format.Save(filePath) : format.Open(filePath);
 
                 return ret;
             }

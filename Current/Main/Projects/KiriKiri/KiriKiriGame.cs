@@ -104,8 +104,7 @@ namespace TranslationHelper.Projects.KiriKiri
                         format = new TSV();
                     }
 
-                    format.FilePath = kiriKiriFiles[i];
-                    ret = format.Open();
+                    ret = format.Open(kiriKiriFiles[i]);
 
                     //if (DT == null || DT.Rows.Count == 0)
                     //{

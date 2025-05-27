@@ -38,7 +38,7 @@ namespace TranslationHelper.Formats
         /// <summary>
         /// Current file path for opening or saving operations.
         /// </summary>
-        internal string FilePath { get; set; }
+        public string FilePath { get; internal set; }
 
         /// <summary>
         /// Indicates whether the format is in open mode.
@@ -180,12 +180,22 @@ namespace TranslationHelper.Formats
             }
         }
 
+        protected bool IsValidFilePath(string filePath)
+        {
+            return !string.IsNullOrWhiteSpace(FilePath)
+                && File.Exists(FilePath);
+        }
+
         /// <summary>
         /// Opens the file in open mode.
         /// </summary>
         /// <returns>True if the operation succeeds; otherwise, false.</returns>
-        public bool Open()
+        public bool Open(string filePath)
         {
+            if (!IsValidFilePath(filePath)) return false;
+
+            FilePath = filePath;
+
             OpenFileMode = true;
             return TryOpen();
         }
@@ -194,8 +204,12 @@ namespace TranslationHelper.Formats
         /// Saves the file in save mode if there are translated entries.
         /// </summary>
         /// <returns>True if the operation succeeds; otherwise, false.</returns>
-        public bool Save()
+        public bool Save(string filePath = null)
         {
+            FilePath = !IsValidFilePath(filePath) ? filePath : FilePath; // setup same path that was set on open when input is null
+
+            if (!IsValidFilePath(FilePath)) return false;
+
             OpenFileMode = false;
             // Note: Assuming FilesContent.Tables[FileName].HasAnyTranslated() exists elsewhere.
             return IsAnyTranslated() && TrySave();

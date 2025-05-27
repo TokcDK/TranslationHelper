@@ -22,12 +22,7 @@ namespace TranslationHelper.Projects.EAGLS
 
         protected override bool TryOpen()
         {
-            var format = new SC_TXT
-            {
-                FilePath = AppData.SelectedProjectFilePath
-            };
-
-            return format.Open();
+            return new SC_TXT().Open(AppData.SelectedProjectFilePath);
         }
 
         public override string Name => "EAGLS scenario (" + Path.GetFileNameWithoutExtension(AppData.SelectedProjectFilePath) + ")";

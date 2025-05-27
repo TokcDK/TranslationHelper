@@ -20,11 +20,7 @@ namespace TranslationHelper.Formats.RPGMTransPatch
 
         protected override bool TryOpen()
         {
-            FormatBase format = new TXTv3
-            {
-                FilePath = this.FilePath
-            };
-            return format.Open();
+            return new TXTv3().Open(this.FilePath);
         }
 
         protected override bool TrySave()
