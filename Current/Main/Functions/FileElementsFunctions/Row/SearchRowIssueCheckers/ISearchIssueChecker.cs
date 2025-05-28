@@ -13,11 +13,11 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row.SearchIssueCheck
     {
         readonly bool origWasSet = false;
         readonly string original;
-        internal string Original { get => origWasSet ? original : Row.Field<string>(Project.OriginalColumnIndex); }
+        internal string Original { get => origWasSet ? original : Row.Field<string>(AppData.CurrentProject.OriginalColumnIndex); }
 
         readonly bool transWasSet = false;
         readonly string translation;
-        internal string Translation { get => transWasSet ? translation : Row.Field<string>(Project.OriginalColumnIndex); }
+        internal string Translation { get => transWasSet ? translation : Row.Field<string>(AppData.CurrentProject.OriginalColumnIndex); }
 
         internal DataRow Row;
 

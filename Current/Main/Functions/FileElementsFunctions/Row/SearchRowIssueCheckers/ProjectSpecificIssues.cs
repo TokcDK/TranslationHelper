@@ -15,7 +15,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row.SearchIssueCheck
         public bool IsHaveTheIssue(SearchIssueCheckerData data)
         {
             return AppSettings.SearchRowIssueOptionsCheckProjectSpecific 
-                && Project.CheckForRowIssue(data.Row);
+                && AppData.CurrentProject.CheckForRowIssue(data.Row);
         }
     }
 }
