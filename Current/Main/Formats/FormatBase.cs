@@ -519,52 +519,98 @@ namespace TranslationHelper.Formats
         /// <returns>True if a translation was set and differs from the original or existing translation; otherwise, false.</returns>
         internal bool SetTranslation(ref string valueToTranslate, string existsTranslation = null, bool isCheckInput = true)
         {
+            if (IsTranslationNotAllowed(valueToTranslate, isCheckInput))
+                return false;
 
-            if (OpenFileMode || (isCheckInput && !IsValidString(valueToTranslate))) return false;
-
-            bool letDuplicates = !ParentProject.DontLoadDuplicates;
             string original = valueToTranslate;
+            bool letDuplicates = !ParentProject.DontLoadDuplicates;
 
-            if (letDuplicates && ParentProject.OriginalsTableRowCoordinates?.ContainsKey(original) == true)
+            if (letDuplicates)
             {
-                // any valid (even empty or equal original) added row in the table will be parsed then increment the row index
-                int rowIndex = RowIndex++;
+                return TryApplyTranslationWithDuplicatesAllowed(ref valueToTranslate, original, existsTranslation);
+            }
+            else
+            {
+                return TryApplyTranslationWithNoDuplicates(ref valueToTranslate, original, existsTranslation);
+            }
+        }
 
-                var coordinates = ParentProject.OriginalsTableRowCoordinates[original];
+        /// <summary>
+        /// Checks if translation should not be attempted based on current mode and input validation.
+        /// </summary>
+        private bool IsTranslationNotAllowed(string value, bool isCheckInput)
+        {
+            return OpenFileMode || (isCheckInput && !IsValidString(value));
+        }
 
-                // standart get the translation by row index
-                string tableName = FileName;
-                if (coordinates.TryGetValue(tableName, out var rows) && rows.Contains(rowIndex))
+        /// <summary>
+        /// Attempts to find and apply a translation when duplicates are allowed in the project.
+        /// </summary>
+        private bool TryApplyTranslationWithDuplicatesAllowed(ref string valueToTranslate, string original, string existsTranslation)
+        {
+            if (!ParentProject.OriginalsTableRowCoordinates?.ContainsKey(original) == true)
+                return false;
+
+            // Any valid row in the table will be parsed, incrementing the row index
+            int rowIndex = RowIndex++;
+            var coordinates = ParentProject.OriginalsTableRowCoordinates[original];
+
+            // Try to get translation using the current row index in the current table
+            if (TryApplyTranslationFromCurrentTable(ref valueToTranslate, original, existsTranslation, coordinates, rowIndex))
+                return true;
+
+            // Try to get translation from any available table/row combination
+            return TryApplyTranslationFromAnyTable(ref valueToTranslate, original, existsTranslation, coordinates);
+        }
+
+        /// <summary>
+        /// Attempts to apply translation from the current table at the specified row index.
+        /// </summary>
+        private bool TryApplyTranslationFromCurrentTable(ref string valueToTranslate, string original, string existsTranslation,
+                                                       ConcurrentDictionary<string, ConcurrentSet<int>> coordinates, int rowIndex)
+        {
+            string tableName = FileName;
+            if (coordinates.TryGetValue(tableName, out var rows) && rows.Contains(rowIndex))
+            {
+                return ApplyTranslation(tableName, rowIndex, original, existsTranslation, ref valueToTranslate);
+            }
+            return false;
+        }
+
+        /// <summary>
+        /// Attempts to apply translation from any available table and row.
+        /// </summary>
+        private bool TryApplyTranslationFromAnyTable(ref string valueToTranslate, string original, string existsTranslation,
+                                                   ConcurrentDictionary<string, ConcurrentSet<int>> coordinates)
+        {
+            foreach (var tableRowsIndexes in coordinates)
+            {
+                string tableName = tableRowsIndexes.Key;
+                var rowIndexes = tableRowsIndexes.Value;
+
+                foreach (var rIndex in rowIndexes)
                 {
-                    if(ApplyTranslation(tableName, rowIndex, original, existsTranslation, ref valueToTranslate))
+                    if (ApplyTranslation(tableName, rIndex, original, existsTranslation, ref valueToTranslate))
                     {
                         return true;
                     }
                 }
-
-                // when row not found in current table, set first translation from available translations
-                // Logger.Info($"Warning! Row not found. Row: {RowIndex}, Table: {tableName}, Original:\r\n{original}\r\nExisting Translation:\r\n{existsTranslation}");
-                // iterate the table coordinates and try get first valid translation
-                foreach (var tableRowsIndexes in coordinates)
-                {
-                    tableName = tableRowsIndexes.Key;
-                    var rowIndexes = tableRowsIndexes.Value;
-
-                    foreach (var rIndex in rowIndexes)
-                    {
-                        if (ApplyTranslation(tableName, rIndex, original, existsTranslation, ref valueToTranslate))
-                        {
-                            return true;
-                        }
-                    }
-                }
             }
-            else if (!letDuplicates && ParentProject.TablesLinesDict?.ContainsKey(original) == true)
+            return false;
+        }
+
+        /// <summary>
+        /// Attempts to find and apply a translation when duplicates are not allowed in the project.
+        /// </summary>
+        private bool TryApplyTranslationWithNoDuplicates(ref string valueToTranslate, string original, string existsTranslation)
+        {
+            if (ParentProject.TablesLinesDict?.ContainsKey(original) == true)
             {
                 return ApplyTranslation(null, -1, original, existsTranslation, ref valueToTranslate);
             }
             return false;
         }
+
 
         /// <summary>
         /// Applies a translation to the provided string if available.
