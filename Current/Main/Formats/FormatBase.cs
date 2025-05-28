@@ -193,8 +193,8 @@ namespace TranslationHelper.Formats
 
         protected bool IsValidFilePath(string filePath)
         {
-            return !string.IsNullOrWhiteSpace(FilePath)
-                && File.Exists(FilePath);
+            return !string.IsNullOrWhiteSpace(filePath)
+                && File.Exists(filePath);
         }
 
         /// <summary>
