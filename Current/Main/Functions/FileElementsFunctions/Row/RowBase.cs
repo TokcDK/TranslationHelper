@@ -8,6 +8,7 @@ using System.Windows.Forms;
 using TranslationHelper.Data;
 using TranslationHelper.Extensions;
 using TranslationHelper.Main.Functions;
+using TranslationHelper.Projects;
 
 namespace TranslationHelper.Functions.FileElementsFunctions.Row
 {
@@ -83,6 +84,14 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
     {
         public virtual string Name { get; } = string.Empty;
         protected static readonly Logger Logger = LogManager.GetCurrentClassLogger();
+        protected ProjectBase Project { get; }
+
+        #region Constructor
+        internal RowBase()
+        {
+            Project = AppData.CurrentProject;
+        }
+        #endregion
 
         #region State fields
         protected bool NeedInit = true;
@@ -112,6 +121,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
         protected readonly ListBox FilesList = AppData.THFilesList;
         protected readonly DataSet AllFiles = AppData.CurrentProject.FilesContent;
         protected readonly DataGridView WorkTableDatagridView = AppData.Main.THFileElementsDataGridView;
+
         #endregion
 
         #region Extension points (hooks)
