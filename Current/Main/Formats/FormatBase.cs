@@ -208,7 +208,7 @@ namespace TranslationHelper.Formats
             FilePath = filePath;
 
             OpenFileMode = true;
-            return TryOpen();
+            return TryOpen() && CheckTablesContent(FileName);
         }
 
         /// <summary>
@@ -455,7 +455,7 @@ namespace TranslationHelper.Formats
         /// <returns>True if successful; otherwise, false.</returns>
         protected virtual bool FilePostOpen()
         {
-            return OpenFileMode ? CheckTablesContent(FileName) : WriteFileData();
+            return (!OpenFileMode && WriteFileData()) || OpenFileMode;
         }
 
         /// <summary>
