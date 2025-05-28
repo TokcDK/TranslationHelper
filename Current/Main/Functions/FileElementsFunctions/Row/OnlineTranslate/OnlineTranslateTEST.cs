@@ -494,13 +494,13 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row.OnlineTranslate
         /// </summary>
         /// <param name="originalLines">Original strings.</param>
         /// <returns>Strings after pre-processing.</returns>
-        private static string[] ApplyProjectPretranslationAction(string[] originalLines)
+        private string[] ApplyProjectPretranslationAction(string[] originalLines)
         {
             var preTranslated = new string[originalLines.Length];
             Array.Copy(originalLines, preTranslated, originalLines.Length);
             for (int i = 0; i < originalLines.Length; i++)
             {
-                var result = AppData.CurrentProject.OnlineTranslationProjectSpecificPretranslationAction(originalLines[i], null);
+                var result = Project.OnlineTranslationProjectSpecificPretranslationAction(originalLines[i], null);
                 if (!string.IsNullOrEmpty(result)) preTranslated[i] = result;
             }
             return preTranslated;
@@ -512,11 +512,11 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row.OnlineTranslate
         /// <param name="originalLines">Original strings.</param>
         /// <param name="translatedLines">Translated strings.</param>
         /// <returns>Strings after post-processing.</returns>
-        private static string[] ApplyProjectPostTranslationAction(string[] originalLines, string[] translatedLines)
+        private string[] ApplyProjectPostTranslationAction(string[] originalLines, string[] translatedLines)
         {
             for (int i = 0; i < translatedLines.Length; i++)
             {
-                var result = AppData.CurrentProject.OnlineTranslationProjectSpecificPostTranslationAction(originalLines[i], translatedLines[i]);
+                var result = Project.OnlineTranslationProjectSpecificPostTranslationAction(originalLines[i], translatedLines[i]);
                 if (!string.IsNullOrEmpty(result) && result != translatedLines[i]) translatedLines[i] = result;
             }
             return translatedLines;
@@ -582,7 +582,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row.OnlineTranslate
         {
             if (!rowData.IsAllLinesAdded) return false;
 
-            var row = AppData.CurrentProject.FilesContent.Tables[tableIndex].Rows[rowData.RowIndex];
+            var row = Project.FilesContent.Tables[tableIndex].Rows[rowData.RowIndex];
             var original = rowData.Row.Original;
             var translation = rowData.Row.Translation;
             var ignoreEqual = AppSettings.IgnoreOrigEqualTransLines;

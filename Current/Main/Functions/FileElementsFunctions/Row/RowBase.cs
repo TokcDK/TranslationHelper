@@ -32,8 +32,11 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
     /// </summary>
     public class RowBaseRowData
     {
-        public RowBaseRowData(DataRow row, int rowIndex, TableData table)
+        ProjectBase _project { get; }
+
+        public RowBaseRowData(ProjectBase project, DataRow row, int rowIndex, TableData table)
         {
+            _project = project ?? throw new ArgumentNullException(nameof(project));
             SelectedRow = row;
             SelectedRowIndex = rowIndex;
             TableData = table;
@@ -48,8 +51,8 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
         public int SelectedRowIndex { get; }
         public bool IsLastRow { get; set; }
 
-        public static int ColumnIndexOriginal => AppData.CurrentProject.OriginalColumnIndex;
-        public static int ColumnIndexTranslation => AppData.CurrentProject.TranslationColumnIndex;
+        public int ColumnIndexOriginal => _project.OriginalColumnIndex;
+        public int ColumnIndexTranslation => _project.TranslationColumnIndex;
 
         public string Original => SelectedRow.Field<string>(ColumnIndexOriginal);
         public string Translation
@@ -84,12 +87,11 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
     {
         public virtual string Name { get; } = string.Empty;
         protected static readonly Logger Logger = LogManager.GetCurrentClassLogger();
-        protected ProjectBase Project { get; }
+        protected ProjectBase Project { get; } = AppData.CurrentProject;
 
         #region Constructor
         internal RowBase()
         {
-            Project = AppData.CurrentProject;
         }
         #endregion
 
@@ -113,8 +115,8 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
         #endregion
 
         #region Cached static indices
-        protected static int ColumnIndexOriginal => AppData.CurrentProject.OriginalColumnIndex;
-        protected static int ColumnIndexTranslation => AppData.CurrentProject.TranslationColumnIndex;
+        protected int ColumnIndexOriginal => Project.OriginalColumnIndex;
+        protected int ColumnIndexTranslation => Project.TranslationColumnIndex;
         #endregion
 
         #region UI references
@@ -409,7 +411,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
             SelectedRowIndex = rowIndex;
             SelectedRow = tableData.SelectedTable.Rows[rowIndex];
 
-            var rowData = new RowBaseRowData(SelectedRow, rowIndex, tableData)
+            var rowData = new RowBaseRowData(Project, SelectedRow, rowIndex, tableData)
             {
                 IsLastRow = (--SelectedRowsCountRest == 0)
             };

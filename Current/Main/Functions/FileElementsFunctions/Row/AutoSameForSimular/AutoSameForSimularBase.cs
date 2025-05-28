@@ -27,8 +27,8 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
         protected virtual bool IsForce => false;
         protected override bool Apply(RowBaseRowData rowData)
         {
-            if (AppData.CurrentProject == null) return false;
-            if (AppData.CurrentProject.IsLoadingDB) return false;
+            if (Project == null) return false;
+            if (Project.IsLoadingDB) return false;
 
             Set(rowData);
 
@@ -64,7 +64,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
         public void Set(DataRow dataRow, bool inputForceSetValue = false)
         {
             var table = dataRow.Table;
-            Set(inputTableIndex: AppData.CurrentProject.FilesContent.Tables.IndexOf(table), inputRowIndex: table.Rows.IndexOf(dataRow), inputForceSetValue: inputForceSetValue);
+            Set(inputTableIndex: Project.FilesContent.Tables.IndexOf(table), inputRowIndex: table.Rows.IndexOf(dataRow), inputForceSetValue: inputForceSetValue);
         }
 
         public HashSet<string> _autoSame4SimilarStack = new HashSet<string>();
@@ -83,9 +83,9 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
             if (!AppSettings.ProjectIsOpened) return;
             if (inputTableIndex == -1) return;
             if (inputRowIndex == -1) return;
-            if (AppData.CurrentProject.FilesContent == null) return;
-            if (inputTableIndex > AppData.CurrentProject.FilesContent.Tables.Count - 1) return;
-            if (inputRowIndex > AppData.CurrentProject.FilesContent.Tables[inputTableIndex].Rows.Count - 1) return;
+            if (Project.FilesContent == null) return;
+            if (inputTableIndex > Project.FilesContent.Tables.Count - 1) return;
+            if (inputRowIndex > Project.FilesContent.Tables[inputTableIndex].Rows.Count - 1) return;
 
             var inputRowDataForStack = inputTableIndex + "|" + inputRowIndex + "|" + inputForceSetValue;
 
@@ -99,11 +99,11 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
         private void Set4Similar(int inputTableIndex, int inputRowIndex, bool inputForceSetValue, string inputRowDataForStack)
         {
             //присвоить значения для обработки
-            var inputTable = AppData.CurrentProject.FilesContent.Tables[inputTableIndex];
+            var inputTable = Project.FilesContent.Tables[inputTableIndex];
             var inputTableRow = inputTable.Rows[inputRowIndex];
-            var inputTableRowOriginalCellValue = inputTableRow.Field<string>(AppData.CurrentProject.OriginalColumnIndex);
+            var inputTableRowOriginalCellValue = inputTableRow.Field<string>(Project.OriginalColumnIndex);
 
-            int translationColumnIndex = AppData.CurrentProject.TranslationColumnIndex;
+            int translationColumnIndex = Project.TranslationColumnIndex;
             var inputTableRowTranslationCellValue = inputTableRow.Field<string>(translationColumnIndex);
             if (string.IsNullOrEmpty(inputTableRowTranslationCellValue) || inputTableRowTranslationCellValue.Equals(inputTableRowOriginalCellValue))
             {
@@ -124,7 +124,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
             bool weUseDuplicates = false;
             try
             {
-                weUseDuplicates = AppData.CurrentProject != null && !AppData.CurrentProject.DontLoadDuplicates && AppData.CurrentProject.OriginalsTableRowCoordinates != null;
+                weUseDuplicates = Project != null && !Project.DontLoadDuplicates && Project.OriginalsTableRowCoordinates != null;
             }
             catch { }
 
@@ -143,8 +143,8 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
             int inputOriginalAnyNumRegexMatchesCount = inputOriginalAnyNumRegexMatches.Count;
 
             // Standart rows scan
-            var coordinatesByInputOriginal = AppData.CurrentProject.OriginalsTableRowCoordinates[inputTableRowOriginalCellValue];
-            var tables = AppData.CurrentProject.FilesContent.Tables;
+            var coordinatesByInputOriginal = Project.OriginalsTableRowCoordinates[inputTableRowOriginalCellValue];
+            var tables = Project.FilesContent.Tables;
             int tablesCount = tables.Count;
 
             // scan all files
@@ -180,7 +180,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
                     }
 
                     var targetRow = targetTable.Rows[targetRowIndex];
-                    var targetOriginalCellValue = targetRow.Field<string>(AppData.CurrentProject.OriginalColumnIndex);
+                    var targetOriginalCellValue = targetRow.Field<string>(Project.OriginalColumnIndex);
                     var targetTranslationCellValue = targetRow.Field<string>(translationColumnIndex);
 
                     if (!inputForceSetValue && targetOriginalCellValue.Equals(targetTranslationCellValue))
@@ -261,16 +261,16 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
             _autoSame4SimilarStack.Remove(inputRowDataForStack);
         }
 
-        public static void SetSameIfUseDups(DataTable inputTable, string inputOriginalValue, int inputRowIndex, bool inputForceSetValue, string inputTranslationValue)
+        public void SetSameIfUseDups(DataTable inputTable, string inputOriginalValue, int inputRowIndex, bool inputForceSetValue, string inputTranslationValue)
         {
-            if (!AppData.CurrentProject.OriginalsTableRowCoordinates.TryGetValue(inputOriginalValue, out var storedTableNames)) return;
+            if (!Project.OriginalsTableRowCoordinates.TryGetValue(inputOriginalValue, out var storedTableNames)) return;
 
             var inputTableName = inputTable.TableName;
             foreach (var storedTableName in storedTableNames)
             {
-                if (!AppData.CurrentProject.FilesContent.Tables.Contains(storedTableName.Key)) continue;
+                if (!Project.FilesContent.Tables.Contains(storedTableName.Key)) continue;
 
-                var table = AppData.CurrentProject.FilesContent.Tables[storedTableName.Key];
+                var table = Project.FilesContent.Tables[storedTableName.Key];
 
                 var rowsCount = table.Rows.Count;
                 foreach (var storedRowIndex in storedTableName.Value)
@@ -287,7 +287,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
                         continue;
                     }
 
-                    AppData.Main.Invoke((Action)(() => row.SetField(AppData.CurrentProject.TranslationColumnIndex, inputTranslationValue)));
+                    AppData.Main.Invoke((Action)(() => row.SetField(Project.TranslationColumnIndex, inputTranslationValue)));
                 }
             }
         }
@@ -301,7 +301,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
         /// <param name="inputTranslationValue"></param>
         /// <param name="targetRow"></param>
         /// <returns></returns>
-        private static bool ParsedWithExtractMulti(string targetOriginallCellString, string targetTranslationCellString, string inputOriginalValue, string inputTranslationValue, DataRow targetRow)
+        private bool ParsedWithExtractMulti(string targetOriginallCellString, string targetTranslationCellString, string inputOriginalValue, string inputTranslationValue, DataRow targetRow)
         {
             var extractedTargetOriginalIndexses = new List<int>();
             var extractedTargetOriginal = targetOriginallCellString.ExtractMulty(outIndexes: extractedTargetOriginalIndexses);
@@ -343,7 +343,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
 
             if (parsedWithMultyExtract)
             {
-                targetRow[AppData.CurrentProject.TranslationColumnIndex] = targetTranslationCellString;
+                targetRow[Project.TranslationColumnIndex] = targetTranslationCellString;
                 return true; ;
             }
 

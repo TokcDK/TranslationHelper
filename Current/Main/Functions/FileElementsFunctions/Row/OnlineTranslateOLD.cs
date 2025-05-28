@@ -241,14 +241,14 @@
 //        /// <returns></returns>
 //        private string[] ApplyProjectPretranslationAction(string[] originalLines)
 //        {
-//            if (AppData.CurrentProject.HideVARSMatchCollectionsList != null
-//                && AppData.CurrentProject.HideVARSMatchCollectionsList.Count > 0) AppData.CurrentProject.HideVARSMatchCollectionsList.Clear();//clean of found maches collections
+//            if (Project.HideVARSMatchCollectionsList != null
+//                && Project.HideVARSMatchCollectionsList.Count > 0) Project.HideVARSMatchCollectionsList.Clear();//clean of found maches collections
 
 //            var newOriginalLines = new string[originalLines.Length];
 //            Array.Copy(originalLines, newOriginalLines, originalLines.Length);
 //            for (int i = 0; i < newOriginalLines.Length; i++)
 //            {
-//                var s = AppData.CurrentProject.OnlineTranslationProjectSpecificPretranslationAction(originalLines[i], string.Empty);
+//                var s = Project.OnlineTranslationProjectSpecificPretranslationAction(originalLines[i], string.Empty);
 //                if (!string.IsNullOrEmpty(s)) newOriginalLines[i] = s;
 //            }
 //            return newOriginalLines;
@@ -264,13 +264,13 @@
 //        {
 //            for (int i = 0; i < translatedLines.Length; i++)
 //            {
-//                var s = AppData.CurrentProject.OnlineTranslationProjectSpecificPostTranslationAction(originalLines[i], translatedLines[i]);
+//                var s = Project.OnlineTranslationProjectSpecificPostTranslationAction(originalLines[i], translatedLines[i]);
 //                if (!string.IsNullOrEmpty(s) && s != translatedLines[i]) translatedLines[i] = s;
 //            }
 
-//            if (AppData.CurrentProject.HideVARSMatchCollectionsList != null && AppData.CurrentProject.HideVARSMatchCollectionsList.Count > 0)
+//            if (Project.HideVARSMatchCollectionsList != null && Project.HideVARSMatchCollectionsList.Count > 0)
 //            {
-//                AppData.CurrentProject.HideVARSMatchCollectionsList.Clear();//clean of found maches collections
+//                Project.HideVARSMatchCollectionsList.Clear();//clean of found maches collections
 //            }
 
 //            return translatedLines;
@@ -356,7 +356,7 @@
 //                var tr = coordinate.Key.Split(',');
 //                var tindex = int.Parse(tr[0]);
 //                var rindex = int.Parse(tr[1]);
-//                var row = AppData.CurrentProject.FilesContent.Tables[tindex].Rows[rindex];
+//                var row = Project.FilesContent.Tables[tindex].Rows[rindex];
 
 //                var o = row[0] + "";
 //                var t = row[1] + "";

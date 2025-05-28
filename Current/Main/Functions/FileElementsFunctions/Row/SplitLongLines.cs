@@ -12,7 +12,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
 
         protected override bool IsOkTable(TableData tableData)
         {
-            return !AppData.CurrentProject.LineSplitProjectSpecificSkipForTable(tableData.SelectedTable);
+            return !Project.LineSplitProjectSpecificSkipForTable(tableData.SelectedTable);
         }
 
         protected override bool Apply(RowBaseRowData rowData)
@@ -23,7 +23,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
                 && transCellValue != origCellValue
                 && FunctionsString.GetLongestLineLength(transCellValue) > AppSettings.THOptionLineCharLimit
                 /*&& !FunctionsString.IsStringContainsSpecialSymbols(transCellValue)*/
-                && !AppData.CurrentProject.LineSplitProjectSpecificSkipForLine(origCellValue, transCellValue, rowData.SelectedTableIndex, rowData.SelectedRowIndex))
+                && !Project.LineSplitProjectSpecificSkipForLine(origCellValue, transCellValue, rowData.SelectedTableIndex, rowData.SelectedRowIndex))
             {
                 rowData.Translation = transCellValue.SplitMultiLineIfBeyondOfLimit(AppSettings.THOptionLineCharLimit);
                 //row[1] = transCellValue.Wrap(AppSettings.THOptionLineCharLimit);

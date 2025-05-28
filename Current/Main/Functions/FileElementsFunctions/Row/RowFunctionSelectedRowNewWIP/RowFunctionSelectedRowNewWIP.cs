@@ -35,7 +35,7 @@
 //                if (IsOriginalNeedInit)
 //                {
 //                    IsOriginalNeedInit = false;
-//                    return original = Row[AppData.CurrentProject.OriginalColumnIndex] as string;
+//                    return original = Row[Project.OriginalColumnIndex] as string;
 //                }
 //                else return original;
 //            }
@@ -45,14 +45,14 @@
 //        {
 //            get
 //            {
-//                return Row.Field<string>(AppData.CurrentProject.TranslationColumnIndex);
+//                return Row.Field<string>(Project.TranslationColumnIndex);
 //            }
 //            set
 //            {
 //#if DEBUG
-//                AppData.Main.Invoke((Action)(() => Row.SetField(AppData.CurrentProject.TranslationColumnIndex, value)));
+//                AppData.Main.Invoke((Action)(() => Row.SetField(Project.TranslationColumnIndex, value)));
 //#else
-//                Row.SetField(AppData.CurrentProject.TranslationColumnIndex, value);
+//                Row.SetField(Project.TranslationColumnIndex, value);
 //#endif
 //            }
 //        }
@@ -87,10 +87,10 @@
 //#endif
 //            DataTable[] tables = null;
 //#if DEBUG
-//            AppData.Main.Invoke((Action)(() => tables = AppData.CurrentProject.FilesContent.GetTablesByIndexes(tableindexes)));
+//            AppData.Main.Invoke((Action)(() => tables = Project.FilesContent.GetTablesByIndexes(tableindexes)));
 //            return tables;
 //#else
-//            return AppData.CurrentProject.FilesContent.GetTablesByIndexes(tableindexes);
+//            return Project.FilesContent.GetTablesByIndexes(tableindexes);
 //#endif
 //        }
 //    }

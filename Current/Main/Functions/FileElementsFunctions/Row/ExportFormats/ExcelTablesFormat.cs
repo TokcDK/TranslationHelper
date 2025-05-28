@@ -16,7 +16,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row.ExportFormats
 
         protected override bool WriteFile(string fileName)
         {
-            MiniExcel.SaveAs(fileName, Data.AppData.CurrentProject.FilesContent);
+            MiniExcel.SaveAs(fileName, Project.FilesContent);
 
             return true;
         }
