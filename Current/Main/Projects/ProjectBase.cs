@@ -86,36 +86,23 @@ namespace TranslationHelper.Projects
         /// </summary>
         internal ConcurrentDictionary<string, ConcurrentDictionary<string, ConcurrentSet<int>>> OriginalsTableRowCoordinates { get; set; } = new ConcurrentDictionary<string, ConcurrentDictionary<string, ConcurrentSet<int>>>();
 
-        readonly object TableDataAddLocker = new object();
+
+        readonly object AddTableLocker = new object();
         /// <summary>
         /// add new <paramref name="tableData"/> in tables list
         /// </summary>
         /// <param name="tableData"></param>
-        internal void AddFileData(DataTable tableData)
+        internal void AddTable(DataTable dataTable, DataTable infoTable)
         {
-            lock (TableDataAddLocker)
+            lock (AddTableLocker)
             {
-                if (FilesContent.Tables.Contains(tableData.TableName)) return;
+                if (dataTable == null || dataTable.Rows.Count == 0) return;
+                if (FilesContent.Tables.Contains(dataTable.TableName)) return;
 
-                FilesContent.Tables.Add(tableData);
+                FilesContent.Tables.Add(dataTable);
+                FilesContentInfo.Tables.Add(infoTable);
             }
         }
-
-        readonly object TableInfoAddLocker = new object();
-        /// <summary>
-        /// add new <paramref name="tableInfo"/> in tables list
-        /// </summary>
-        /// <param name="tableInfo"></param>
-        internal void AddFileInfo(DataTable tableInfo)
-        {
-            lock (TableInfoAddLocker)
-            {
-                if (FilesContentInfo.Tables.Contains(tableInfo.TableName)) return;
-
-                FilesContentInfo.Tables.Add(tableInfo);
-            }
-        }
-
 
         /// <summary>
         /// Set on project open and will be used for all project's session.

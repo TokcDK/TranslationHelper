@@ -472,8 +472,7 @@ namespace TranslationHelper.Formats
             }
             if (Data.Rows.Count > 0)
             {
-                ParentProject.AddFileData(Data);
-                ParentProject.AddFileInfo(Info);
+                ParentProject.AddTable(Data, Info);
                 return true;
             }
             return false;
