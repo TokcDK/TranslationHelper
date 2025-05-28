@@ -73,8 +73,6 @@ namespace TranslationHelper.Formats.RPGMMV.JsonType
         static int SkipCodesCount = -1;
         public EventCommandParseBase(ProjectBase parentProject) : base(parentProject)
         {
-            if (AppData.CurrentProject == null) return;
-
             var excludedCodesCount = SkipCodes.Count;
             if (SkipCodesCount != excludedCodesCount)
             {

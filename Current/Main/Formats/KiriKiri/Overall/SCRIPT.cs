@@ -114,8 +114,8 @@ namespace TranslationHelper.Formats.KiriKiri
                                     }
                                     else
                                     {
-                                        _ = AppData.CurrentProject.FilesContent.Tables[fileName].Rows.Add(line);
-                                        _ = AppData.CurrentProject.FilesContentInfo.Tables[fileName].Rows.Add("Teeching feeling cs");
+                                        _ = ParentProject.FilesContent.Tables[fileName].Rows.Add(line);
+                                        _ = ParentProject.FilesContentInfo.Tables[fileName].Rows.Add("Teeching feeling cs");
                                     }
                                 }
                             }
@@ -134,8 +134,8 @@ namespace TranslationHelper.Formats.KiriKiri
                                         line += file.ReadLine();
                                     }
                                     line = line.Remove(line.Length - 4);//удаление последних четырех символов "[ll]" или "\r\n@s"
-                                    _ = AppData.CurrentProject.FilesContent.Tables[fileName].Rows.Add(line);
-                                    _ = AppData.CurrentProject.FilesContentInfo.Tables[fileName].Rows.Add(string.Empty);
+                                    _ = ParentProject.FilesContent.Tables[fileName].Rows.Add(line);
+                                    _ = ParentProject.FilesContentInfo.Tables[fileName].Rows.Add(string.Empty);
                                 }
                                 else if (line.EndsWith("[k]")) // text ;Magic Swordsman Rene
                                 {
@@ -145,8 +145,8 @@ namespace TranslationHelper.Formats.KiriKiri
                                     }
                                     else
                                     {
-                                        _ = AppData.CurrentProject.FilesContent.Tables[fileName].Rows.Add(line);
-                                        _ = AppData.CurrentProject.FilesContentInfo.Tables[fileName].Rows.Add("[k] = end of line");
+                                        _ = ParentProject.FilesContent.Tables[fileName].Rows.Add(line);
+                                        _ = ParentProject.FilesContentInfo.Tables[fileName].Rows.Add("[k] = end of line");
                                     }
                                 }
                                 else if (line.StartsWith("*")) // text ;Magic Swordsman Rene
@@ -157,8 +157,8 @@ namespace TranslationHelper.Formats.KiriKiri
                                     }
                                     else
                                     {
-                                        _ = AppData.CurrentProject.FilesContent.Tables[fileName].Rows.Add(line);
-                                        _ = AppData.CurrentProject.FilesContentInfo.Tables[fileName].Rows.Add(string.Empty);
+                                        _ = ParentProject.FilesContent.Tables[fileName].Rows.Add(line);
+                                        _ = ParentProject.FilesContentInfo.Tables[fileName].Rows.Add(string.Empty);
                                     }
                                 }
                                 else if (line.EndsWith("[r]")) //text, first line ;Magic Swordsman Rene
@@ -169,8 +169,8 @@ namespace TranslationHelper.Formats.KiriKiri
                                     }
                                     else
                                     {
-                                        _ = AppData.CurrentProject.FilesContent.Tables[fileName].Rows.Add(line);
-                                        _ = AppData.CurrentProject.FilesContentInfo.Tables[fileName].Rows.Add("[r] = carriage return");
+                                        _ = ParentProject.FilesContent.Tables[fileName].Rows.Add(line);
+                                        _ = ParentProject.FilesContentInfo.Tables[fileName].Rows.Add("[r] = carriage return");
                                     }
                                 }
                                 else if (line.StartsWith("o.") || Regex.IsMatch(line, KiriKiriVariableSearchRegexPattern)) //variable, which is using even for displaing and should be translated in all files ;Magic Swordsman Rene
@@ -180,8 +180,8 @@ namespace TranslationHelper.Formats.KiriKiri
                                     bool startswith = line.StartsWith("o.");
                                     for (int m = 0; m < matches.Count; m++)
                                     {
-                                        _ = AppData.CurrentProject.FilesContent.Tables[fileName].Rows.Add(matches[m].Value.Remove(0, startswith ? 2 : 3));
-                                        _ = AppData.CurrentProject.FilesContentInfo.Tables[fileName].Rows.Add(T._("Variable>Must be Identical in all files>Only A-Za-z0-9" + Environment.NewLine + "line: " + line));
+                                        _ = ParentProject.FilesContent.Tables[fileName].Rows.Add(matches[m].Value.Remove(0, startswith ? 2 : 3));
+                                        _ = ParentProject.FilesContentInfo.Tables[fileName].Rows.Add(T._("Variable>Must be Identical in all files>Only A-Za-z0-9" + Environment.NewLine + "line: " + line));
                                         if (startswith)
                                         {
                                             startswith = false;//o. в начале встречается только в первый раз
@@ -196,8 +196,8 @@ namespace TranslationHelper.Formats.KiriKiri
                                     }
                                     else
                                     {
-                                        _ = AppData.CurrentProject.FilesContent.Tables[fileName].Rows.Add(line);
-                                        _ = AppData.CurrentProject.FilesContentInfo.Tables[fileName].Rows.Add("@notice text=");
+                                        _ = ParentProject.FilesContent.Tables[fileName].Rows.Add(line);
+                                        _ = ParentProject.FilesContentInfo.Tables[fileName].Rows.Add("@notice text=");
                                     }
                                 }
                                 else if (line.StartsWith("Name = '"))// ; Magic Swordsman Rene
@@ -208,8 +208,8 @@ namespace TranslationHelper.Formats.KiriKiri
                                     }
                                     else
                                     {
-                                        _ = AppData.CurrentProject.FilesContent.Tables[fileName].Rows.Add(line);
-                                        _ = AppData.CurrentProject.FilesContentInfo.Tables[fileName].Rows.Add("Name = '");
+                                        _ = ParentProject.FilesContent.Tables[fileName].Rows.Add(line);
+                                        _ = ParentProject.FilesContentInfo.Tables[fileName].Rows.Add("Name = '");
                                     }
                                 }
                                 else if (Regex.IsMatch(line, "\\\"(.*?)\\\""))// ; Magic Swordsman Rene
@@ -225,8 +225,8 @@ namespace TranslationHelper.Formats.KiriKiri
                                         }
                                         else
                                         {
-                                            _ = AppData.CurrentProject.FilesContent.Tables[fileName].Rows.Add(subline.Remove(subline.Length - 1, 1).Remove(0, 1));
-                                            _ = AppData.CurrentProject.FilesContentInfo.Tables[fileName].Rows.Add(line);
+                                            _ = ParentProject.FilesContent.Tables[fileName].Rows.Add(subline.Remove(subline.Length - 1, 1).Remove(0, 1));
+                                            _ = ParentProject.FilesContentInfo.Tables[fileName].Rows.Add(line);
                                         }
                                     }
                                 }

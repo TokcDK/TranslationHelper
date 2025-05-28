@@ -16,7 +16,7 @@ namespace TranslationHelper.Formats.IrisField
         {
             if (SaveFileMode)
             {
-                MaxLineLength = (AppData.CurrentProject as IrisFieldGameBase).MaxLineLength;
+                MaxLineLength = (ParentProject as IrisFieldGameBase).MaxLineLength;
             }
         }
 

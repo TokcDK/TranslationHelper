@@ -279,7 +279,7 @@ namespace TranslationHelper.Projects.RPGMMV
         protected override bool TrySave()
         {
             if (string.IsNullOrWhiteSpace(WWWDir))
-                WWWDir = Path.Combine(AppData.CurrentProject.SelectedDir, HasWWWDir ? "www" : "");
+                WWWDir = Path.Combine(this.SelectedDir, HasWWWDir ? "www" : "");
             return ParseProjectFiles();
         }
 

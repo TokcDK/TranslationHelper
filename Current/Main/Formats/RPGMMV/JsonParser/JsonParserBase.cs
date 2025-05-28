@@ -13,7 +13,7 @@ namespace TranslationHelper.Formats.RPGMMV.JsonParser
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
         protected JsonParserBase(FormatBase format)
         {
-            if (AppData.CurrentProject == null) return;
+            if (format.ParentProject == null) return;
 
             Format = format;
 

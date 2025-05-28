@@ -306,8 +306,8 @@ namespace TranslationHelper.Formats
         {
             try
             {
-                filePath = filePath.Length > 0 ? filePath : AppData.CurrentProject.IsSaveToSourceFile ? base.GetOpenFilePath() : GetSaveFilePath();
-                if (!AppData.CurrentProject.IsSaveToSourceFile) Directory.CreateDirectory(Path.GetDirectoryName(filePath));
+                filePath = filePath.Length > 0 ? filePath : ParentProject.IsSaveToSourceFile ? base.GetOpenFilePath() : GetSaveFilePath();
+                if (!ParentProject.IsSaveToSourceFile) Directory.CreateDirectory(Path.GetDirectoryName(filePath));
                 var content = ParseData.ResultForWrite.ToString();
                 var encoding = WriteEncoding();
                 File.WriteAllText(filePath, content, encoding);

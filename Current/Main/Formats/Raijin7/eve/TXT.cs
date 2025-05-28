@@ -86,13 +86,13 @@ namespace TranslationHelper.Formats.Raijin7.eve
                     if (IsValid(values[1], ref trans))
                     {
                         ParseData.Ret = true;
-                        values[1] = FixInvalidSymbols(AppData.CurrentProject.TablesLinesDict[values[1]]);
+                        values[1] = FixInvalidSymbols(ParentProject.TablesLinesDict[values[1]]);
                     }
 
                     if (IsValid(restOfText, ref trans))
                     {
                         ParseData.Ret = true;
-                        restOfText = FixInvalidSymbols(AppData.CurrentProject.TablesLinesDict[restOfText]);
+                        restOfText = FixInvalidSymbols(ParentProject.TablesLinesDict[restOfText]);
                     }
 
                     ParseData.Line = string.Join(",", values) + Environment.NewLine + restOfText;

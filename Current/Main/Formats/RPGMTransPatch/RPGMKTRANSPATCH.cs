@@ -40,7 +40,7 @@ namespace TranslationHelper.Formats.RPGMTransPatch
             return WritePatchV3();
         }
 
-        private static bool WritePatchV3()
+        private bool WritePatchV3()
         {
             var ret = false;
             List<string> LinesToWrite = new List<string>
@@ -48,22 +48,22 @@ namespace TranslationHelper.Formats.RPGMTransPatch
                 "> RPGMAKER TRANS PATCH FILE VERSION 3.2"//v3
             };
 
-            var TablesCount = AppData.CurrentProject.FilesContent.Tables.Count;
+            var TablesCount = ParentProject.FilesContent.Tables.Count;
             for (int t = 0; t < TablesCount; t++)
             {
                 try
                 {
-                    var table = AppData.CurrentProject.FilesContent.Tables[t];
+                    var table = ParentProject.FilesContent.Tables[t];
                     var tableRowsCount = table.Rows.Count;
                     for (int r = 0; r < tableRowsCount; r++)
                     {
                         var row = table.Rows[r];
 
-                        var original = row.Field<string>(AppData.CurrentProject.OriginalColumnIndex);
-                        var translation = row.Field<string>(AppData.CurrentProject.TranslationColumnIndex);
+                        var original = row.Field<string>(ParentProject.OriginalColumnIndex);
+                        var translation = row.Field<string>(ParentProject.TranslationColumnIndex);
 
                         List<string> context = new List<string>();
-                        var infoRow = AppData.CurrentProject.FilesContentInfo.Tables[t].Rows[r] + string.Empty;
+                        var infoRow = ParentProject.FilesContentInfo.Tables[t].Rows[r] + string.Empty;
                         foreach (var line in infoRow.SplitToLines())
                         {
                             if (line.StartsWith("> CONTEXT"))
@@ -80,7 +80,7 @@ namespace TranslationHelper.Formats.RPGMTransPatch
                         LinesToWrite.Add("> END STRING");
                     }
 
-                    var path = Path.Combine(AppData.CurrentProject.ProjectWorkDir, Path.GetFileName(AppData.CurrentProject.ProjectWorkDir) + "_patch", "patch", table.TableName);
+                    var path = Path.Combine(ParentProject.ProjectWorkDir, Path.GetFileName(ParentProject.ProjectWorkDir) + "_patch", "patch", table.TableName);
                     File.WriteAllLines(path, LinesToWrite);
                     ret = true;
                 }

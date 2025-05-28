@@ -104,7 +104,7 @@ namespace TranslationHelper.Formats.RPGMMV
                 return false;
             }
 
-            var targetFontsDirPath = Path.Combine(AppData.CurrentProject.SelectedGameDir, "www", "Fonts");
+            var targetFontsDirPath = Path.Combine(ParentProject.SelectedGameDir, "www", "Fonts");
 
             if (!Directory.Exists(Path.GetDirectoryName(targetFontsDirPath))) return ParseData.Ret;
 

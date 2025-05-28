@@ -60,7 +60,7 @@ namespace TranslationHelper.Formats.KiriKiri
         protected override string GetSaveFilePath()
         {
             //write translated files to patch dir
-            return Path.Combine(AppData.CurrentProject.ProjectWorkDir, PatchDirName, Path.GetFileName(FilePath));
+            return Path.Combine(ParentProject.ProjectWorkDir, PatchDirName, Path.GetFileName(FilePath));
         }
         protected override Encoding DefaultEncoding()
         {
