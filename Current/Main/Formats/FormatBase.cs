@@ -724,7 +724,7 @@ namespace TranslationHelper.Formats
         }
 
         private readonly object SplitTableCellValuesAndTheirLinesToDictionaryThreadsLock = new object();
-        private bool TablesLinesDictFilled = false;
+        private volatile bool TablesLinesDictFilled = false;
         //private bool FirstPassOfDictionaryFilling = true;
 
         /// <summary>
