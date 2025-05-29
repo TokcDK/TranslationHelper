@@ -8,11 +8,11 @@ using TranslationHelper.Data;
 
 namespace TranslationHelper.Functions.FileElementsFunctions.Row.SearchIssueCheckers
 {
-    internal class CheckAnyLineLngerOfMaxLength : ISearchIssueChecker
+    internal class CheckAnyLineLngerOfMaxLength : SearchIssueCheckerBase
     {
-        public string Description => "Check any line longer Of max length";
+        public override string Description => "Check any line longer Of max length";
 
-        public bool IsHaveTheIssue(SearchIssueCheckerData data)
+        public override bool IsHaveTheIssue(SearchIssueCheckerData data)
         {
             //------------------------------
             //если длина любой из строк длиннее лимита

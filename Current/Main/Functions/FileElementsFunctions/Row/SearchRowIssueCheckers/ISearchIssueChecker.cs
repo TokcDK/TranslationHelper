@@ -1,5 +1,6 @@
 ﻿using System.Data;
 using TranslationHelper.Data;
+using TranslationHelper.Projects;
 
 namespace TranslationHelper.Functions.FileElementsFunctions.Row.SearchIssueCheckers
 {
@@ -7,6 +8,14 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row.SearchIssueCheck
     {
         string Description { get; }
         bool IsHaveTheIssue(SearchIssueCheckerData data);
+    }
+
+    internal abstract class SearchIssueCheckerBase : ISearchIssueChecker
+    {
+        protected ProjectBase Project { get; } = AppData.CurrentProject;
+
+        public abstract string Description { get; }
+        public abstract bool IsHaveTheIssue(SearchIssueCheckerData data);
     }
 
     internal class SearchIssueCheckerData

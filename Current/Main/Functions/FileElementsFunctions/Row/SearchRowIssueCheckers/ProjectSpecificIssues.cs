@@ -8,14 +8,14 @@ using TranslationHelper.Data;
 
 namespace TranslationHelper.Functions.FileElementsFunctions.Row.SearchIssueCheckers
 {
-    internal class ProjectSpecificIssues : ISearchIssueChecker
+    internal class ProjectSpecificIssues : SearchIssueCheckerBase
     {
-        public string Description => "Project specific issues";
+        public override string Description => "Project specific issues";
 
-        public bool IsHaveTheIssue(SearchIssueCheckerData data)
+        public override bool IsHaveTheIssue(SearchIssueCheckerData data)
         {
             return AppSettings.SearchRowIssueOptionsCheckProjectSpecific 
-                && AppData.CurrentProject.CheckForRowIssue(data.Row);
+                && Project.CheckForRowIssue(data.Row);
         }
     }
 }

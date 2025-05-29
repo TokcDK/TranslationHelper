@@ -2,11 +2,11 @@
 
 namespace TranslationHelper.Functions.FileElementsFunctions.Row.SearchIssueCheckers
 {
-    internal class CheckInternalQuoteUnescaped : ISearchIssueChecker
+    internal class CheckInternalQuoteUnescaped : SearchIssueCheckerBase
     {
-        public string Description => "Check internal quote unescaped";
+        public override string Description => "Check internal quote unescaped";
 
-        public bool IsHaveTheIssue(SearchIssueCheckerData data)
+        public override bool IsHaveTheIssue(SearchIssueCheckerData data)
         {
             return IsHaveInternalUnescapedQuote(data.Translation.Trim());
         }

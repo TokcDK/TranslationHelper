@@ -9,11 +9,11 @@ using TranslationHelper.Extensions;
 
 namespace TranslationHelper.Functions.FileElementsFunctions.Row.SearchIssueCheckers
 {
-    internal class CheckAnyLineTranslatable : ISearchIssueChecker
+    internal class CheckAnyLineTranslatable : SearchIssueCheckerBase
     {
-        public string Description => "Check if multiline and one of line equal to original and valide for translation";
+        public override string Description => "Check if multiline and one of line equal to original and valide for translation";
 
-        public bool IsHaveTheIssue(SearchIssueCheckerData data)
+        public override bool IsHaveTheIssue(SearchIssueCheckerData data)
         {
             return AppSettings.SearchRowIssueOptionsCheckAnyLineTranslatable
                 && data.Original.HasAnyTranslationLineValidAndEqualSameOrigLine(data.Translation);

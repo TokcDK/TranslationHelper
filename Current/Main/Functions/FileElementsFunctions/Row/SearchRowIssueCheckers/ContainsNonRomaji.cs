@@ -8,15 +8,11 @@ using TranslationHelper.Data;
 
 namespace TranslationHelper.Functions.FileElementsFunctions.Row.SearchIssueCheckers
 {
-    internal class ContainsNonRomaji : ISearchIssueChecker
+    internal class ContainsNonRomaji : SearchIssueCheckerBase
     {
-        public ContainsNonRomaji()
-        {
-        }
+        public override string Description => "Translation contains non romaji symbols";
 
-        public string Description => "Translation contains non romaji symbols";
-
-        public bool IsHaveTheIssue(SearchIssueCheckerData data)
+        public override bool IsHaveTheIssue(SearchIssueCheckerData data)
         {
             if (!AppSettings.SearchRowIssueOptionsCheckNonRomaji) return false;
 
