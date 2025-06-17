@@ -58,13 +58,7 @@ namespace TranslationHelper.Formats
         /// <param name="parentProject">The parent project.</param>
         protected FormatBase(ProjectBase parentProject)
         {
-            ParentProject = parentProject ?? throw new ArgumentNullException(nameof(parentProject), "Parent project cannot be null.");
-            if (ParentProject == null)
-            {
-                var ex = new ArgumentNullException(nameof(parentProject), "Parent project cannot be null.");
-                Logger.Error(ex, "Parent project is null in {0} constructor.", nameof(FormatBase));
-                throw ex;
-            }
+            ParentProject = parentProject;
             BaseInit();
         }
 
@@ -116,7 +110,6 @@ namespace TranslationHelper.Formats
             set             
             {
                 _parentProject = value;
-                BaseInit();
             }
         }
 
