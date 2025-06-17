@@ -16,7 +16,7 @@ namespace TranslationHelper.Data
         internal static string ApplicationStartupPath => AppSettings.ApplicationStartupPath;
 
 
-        internal static string RPGMakerMVSkipCodesFilePath => Path.Combine(AppData.CurrentProject.SelectedGameDir, "skipcodes.txt");
+        internal static string RPGMakerMVSkipCodesFilePath => AppData.CurrentProject != null ? Path.Combine(AppData.CurrentProject.SelectedGameDir, "skipcodes.txt") : "skipcodes.txt";
 
         /// <summary>
         /// Log name of the application
