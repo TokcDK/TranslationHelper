@@ -55,7 +55,7 @@ namespace TranslationHelper.Formats
         /// <summary>
         /// Initializes a new instance of the <see cref="FormatBase"/> class without a file path.
         /// </summary>
-        /// <param name="parentProject">The parent project.</param>
+        /// <param name="parentProject">The parent project. Must be open when will be using for open or save</param>
         protected FormatBase(ProjectBase parentProject)
         {
             ParentProject = parentProject;
