@@ -681,6 +681,10 @@
     </BootstrapperPackage>
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="M:\0GIT\[TokcDK]\LibsCollection\GetListOfSubClasses\GetListOfSubClasses.csproj">
+      <Project>{49929ce0-2c86-bd55-0f96-6ffcda1d29fd}</Project>
+      <Name>GetListOfSubClasses</Name>
+    </ProjectReference>
     <ProjectReference Include="M:\0GIT\[TokcDK]\TranslationHelperUsing\RGSS-Extractor\RGSS Extractor.csproj">
       <Project>{e6343190-3a80-4c26-9591-f22f65645ab9}</Project>
       <Name>RGSS Extractor</Name>
@@ -688,10 +692,6 @@
     <ProjectReference Include="M:\0GIT\[TokcDK]\LibsCollection\Net4\CheckForEmptyDir\CheckForEmptyDir.csproj">
       <Project>{a814378f-ea3c-42b0-ae0c-27b85fb22359}</Project>
       <Name>CheckForEmptyDir</Name>
-    </ProjectReference>
-    <ProjectReference Include="M:\0GIT\[TokcDK]\LibsCollection\Net4\GetListOfSubClasses\GetListOfSubClasses.csproj">
-      <Project>{f8dce92f-e831-4797-884f-38686e34dbee}</Project>
-      <Name>GetListOfSubClasses</Name>
     </ProjectReference>
     <ProjectReference Include="M:\0GIT\[TokcDK]\LibsCollection\Net4\INIFileMan\INIFileMan.csproj">
       <Project>{5bf94fa5-1aac-4cfd-a8da-cd523ffbb962}</Project>
