@@ -106,10 +106,19 @@ namespace TranslationHelper.Formats
 
         #region Internal Properties
 
+        private ProjectBase _parentProject;
         /// <summary>
         /// Gets the parent project.
         /// </summary>
-        internal ProjectBase ParentProject { get; }
+        internal ProjectBase ParentProject 
+        { 
+            get => _parentProject ?? throw new InvalidOperationException("Parent project is not set.");
+            set             
+            {
+                _parentProject = value;
+                BaseInit();
+            }
+        }
 
         /// <summary>
         /// Gets or sets the main data table with string data.
