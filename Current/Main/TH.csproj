@@ -596,6 +596,7 @@
       <DependentUpon>THfrmMain.cs</DependentUpon>
     </Compile>
     <Compile Include="Program.cs" />
+    <Compile Include="Projects\zzzOtherProject\DummyProject.cs" />
     <Compile Include="Projects\zzzOtherProject\OtherProjectBase.cs" />
     <Compile Include="Projects\ZZZZFormats\Form1.cs">
       <SubType>Form</SubType>

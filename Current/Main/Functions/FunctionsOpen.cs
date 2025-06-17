@@ -13,6 +13,7 @@ using TranslationHelper.Formats;
 using TranslationHelper.Menus;
 using TranslationHelper.Menus.MainMenus.File;
 using TranslationHelper.Projects;
+using TranslationHelper.Projects.zzzOtherProject;
 using TranslationHelper.Projects.ZZZZFormats;
 
 namespace TranslationHelper.Functions
@@ -94,13 +95,15 @@ namespace TranslationHelper.Functions
 
         static IEnumerable<FormatFilterData> GetFormatsData()
         {
-            foreach (var format in GetListOfSubClasses.Inherited.GetInterfaceImplimentations<IFormat>())
+            var dummyProject = new DummyProject();
+            foreach (var format in GetListOfSubClasses.Inherited.GetInterfaceImplimentations<IFormatMetadata>(assembly: null, dummyProject))
             {
                 if (string.IsNullOrWhiteSpace(format.Extension)) continue;
 
-                var formatData = new FormatFilterData();
-
-                formatData.Name = format.Description;
+                var formatData = new FormatFilterData
+                {
+                    Name = format.Description
+                };
                 if (string.IsNullOrWhiteSpace(formatData.Name))
                 {
                     formatData.Name = format
