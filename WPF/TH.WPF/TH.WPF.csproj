@@ -17,8 +17,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\TH.WPF.Core\TH.WPF.Core.csproj" />
-    <ProjectReference Include="K:\0GIT\[TokcDK]\LibsCollection\Net6\GetListOfSubClasses\GetListOfSubClasses.csproj" />
-    <ProjectReference Include="M:\0GIT\[TokcDK]\LibsCollection\Net6\GetListOfSubClasses\GetListOfSubClasses.csproj" />
+    <ProjectReference Include="M:\0GIT\[TokcDK]\LibsCollection\GetListOfSubClasses\GetListOfSubClasses.csproj" />
   </ItemGroup>
 
 </Project>
