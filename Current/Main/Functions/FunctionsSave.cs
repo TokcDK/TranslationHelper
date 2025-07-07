@@ -8,7 +8,7 @@ namespace TranslationHelper.Functions
 {
     class FunctionsSave
     {
-        internal async Task PrepareToWrite()
+        internal static async Task PrepareToWrite()
         {
             if (FunctionsUI.SaveInAction)
             {
