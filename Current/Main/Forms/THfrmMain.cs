@@ -70,7 +70,6 @@ namespace TranslationHelper
 
         private async void THFileElementsDataGridView_CellValueChanged(object sender, DataGridViewCellEventArgs e)
         {
-            Logger.Debug("THFileElementsDataGridView_CellValueChanged fired!");
             await FunctionsUI.THFileElementsDataGridView_CellValueChangedAsync(sender, e);
         }
 
@@ -109,7 +108,6 @@ namespace TranslationHelper
 
         private void THFileElementsDataGridView_CellMouseDown(object sender, DataGridViewCellMouseEventArgs e)
         {
-            Logger.Debug("THFileElementsDataGridView_CellMouseDown fired!");
             FunctionsTable.CellMouseDown(THFileElementsDataGridView, THFilesList, e, RowMenus);
         }
 
@@ -241,8 +239,6 @@ namespace TranslationHelper
             if (!AppSettings.ProjectIsOpened) return;
             if (FunctionsUI.ControlsSwitchActivated) return;
 
-            Logger.Debug("THFileElementsDataGridView_CellClick fired!");
-
             FunctionsUI.ControlsSwitch(true);//не включалось копирование в ячейку, при копировании с гугла назад
 
             FunctionsUI.ShowNonEmptyRowsCount(TableCompleteInfoLabel);//Show how many rows have translation
@@ -251,7 +247,6 @@ namespace TranslationHelper
         //int SelectedRowIndexWhenFilteredDGW = 0;
         private void THFileElementsDataGridView_CellMouseClick(object sender, DataGridViewCellMouseEventArgs e)
         {
-            Logger.Debug("THFileElementsDataGridView_CellMouseClick fired!");
             FunctionsUI.THFileElementsDataGridView_CellMouseClick(sender, e);
         }
 
@@ -274,7 +269,6 @@ namespace TranslationHelper
 
         private void THFileElementsDataGridView_SelectionChanged(object sender, EventArgs e)
         {
-            Logger.Debug("THFileElementsDataGridView_SelectionChanged fired!");
             FunctionsUI.UpdateTextboxes();
         }
 
@@ -289,7 +283,6 @@ namespace TranslationHelper
 
         private void THFileElementsDataGridView_Sorted(object sender, EventArgs e)
         {
-            Logger.Debug("THFileElementsDataGridView_Sorted fired!");
             ReselectCellSelectedBeforeSorting();
         }
 
