@@ -38,33 +38,33 @@ namespace TranslationHelper.Functions
                 AppData.RpgMVAddedCodesStat = AppData.RpgMVAddedCodesStat.OrderBy(o => o.Key).ToDictionary(o => o.Key, o => o.Value);
                 AppData.RpgMVSkippedCodesStat = AppData.RpgMVSkippedCodesStat.OrderBy(o => o.Key).ToDictionary(o => o.Key, o => o.Value);
 
-                foreach (var dict in new Dictionary<string, Dictionary<int, int>>()
+                foreach (var codesData in new Dictionary<string, Dictionary<int, int>>()
                     {
                         {"RPGMakerMV Added codes stats", AppData.RpgMVAddedCodesStat },
                         {"RPGMakerMV Skipped codes stats", AppData.RpgMVSkippedCodesStat }
                     }
                 )
                 {
-                    if (AppData.Settings.THConfigINI.SectionExistsAndNotEmpty(dict.Key))
+                    if (AppData.Settings.THConfigINI.SectionExistsAndNotEmpty(codesData.Key))
                     {
-                        foreach (var pair in AppData.Settings.THConfigINI.GetSectionKeyValuePairs(dict.Key))
+                        foreach (var pair in AppData.Settings.THConfigINI.GetSectionKeyValuePairs(codesData.Key))
                         {
-                            var key = int.Parse(pair.Key);
-                            var value = int.Parse(pair.Value);
-                            if (!dict.Value.ContainsKey(key))
+                            var intKey = int.Parse(pair.Key);
+                            var intValue = int.Parse(pair.Value);
+                            if (codesData.Value.TryGetValue(intKey, out int foundValue))
                             {
-                                dict.Value.Add(key, value);
+                                codesData.Value[intKey] = foundValue + intValue;
                             }
                             else
                             {
-                                dict.Value[key] = dict.Value[key] + value;
+                                codesData.Value.Add(intKey, intValue);
                             }
                         }
                     }
 
-                    foreach (var pair in dict.Value)
+                    foreach (var pair in codesData.Value)
                     {
-                        AppData.Settings.THConfigINI.SetKey(dict.Key, pair.Key + "", pair.Value + "");
+                        AppData.Settings.THConfigINI.SetKey(codesData.Key, pair.Key + "", pair.Value + "");
                     }
                 }
 
