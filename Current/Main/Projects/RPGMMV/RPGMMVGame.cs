@@ -106,11 +106,6 @@ namespace TranslationHelper.Projects.RPGMMV
         }
 
         /// <summary>
-        /// Message prefix used for progress updates during file parsing.
-        /// </summary>
-        protected string ParseFileMessage;
-
-        /// <summary>
         /// Parses project files, either opening or saving them based on the mode.
         /// </summary>
         /// <returns>True if any file was processed successfully, otherwise false.</returns>
@@ -118,7 +113,6 @@ namespace TranslationHelper.Projects.RPGMMV
         {
             if (OpenFileMode) BakRestore();
 
-            ParseFileMessage = SaveFileMode ? T._("write file: ") : T._("opening file: ");
             bool hasAnyFileBeenProcessed = false;
 
             try
