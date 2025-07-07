@@ -115,26 +115,17 @@ namespace TranslationHelper.Projects.RPGMMV
 
             bool hasAnyFileBeenProcessed = false;
 
-            try
-            {
-                if (ParseFontsCS()) hasAnyFileBeenProcessed = true;
+            if (ParseFontsCS()) hasAnyFileBeenProcessed = true;
 
-                var hardcodedJS = new HashSet<string>();
-                if (ParsePlugins(hardcodedJS)) hasAnyFileBeenProcessed = true;
+            var hardcodedJS = new HashSet<string>();
+            if (ParsePlugins(hardcodedJS)) hasAnyFileBeenProcessed = true;
 
-                var skipJSList = new HashSet<string>();
-                SetSkipJSLists(skipJSList);
+            var skipJSList = new HashSet<string>();
+            SetSkipJSLists(skipJSList);
 
-                if (ParseOtherQuotedJsPlugins(hardcodedJS, skipJSList)) hasAnyFileBeenProcessed = true;
-                if (ParseJsons()) hasAnyFileBeenProcessed = true;
-                if (ParsePluginsStrings()) hasAnyFileBeenProcessed = true;
-            }
-            catch (Exception ex)
-            {
-                // Exceptions are ignored per original functionality.
-                // Consider logging in a future enhancement: Logger.Log(ex);
-            }
-
+            if (ParseOtherQuotedJsPlugins(hardcodedJS, skipJSList)) hasAnyFileBeenProcessed = true;
+            if (ParseJsons()) hasAnyFileBeenProcessed = true;
+            if (ParsePluginsStrings()) hasAnyFileBeenProcessed = true;
 
             return hasAnyFileBeenProcessed;
         }
