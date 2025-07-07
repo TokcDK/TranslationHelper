@@ -206,6 +206,7 @@ namespace TranslationHelper.Projects
         /// <returns></returns>
         public bool Save(int fileIndexToSave = -1)
         {
+            // easy way maybe is to replace the FilesContent tables with fake tables where only tables to save will contain data and cotent of other tables will be empty
             _fileIndexToSave = fileIndexToSave < 0 
                 || fileIndexToSave >= FilesContent.Tables.Count ? -1 : fileIndexToSave;
 
