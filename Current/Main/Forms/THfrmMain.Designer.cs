@@ -69,7 +69,6 @@ namespace TranslationHelper
             this.LogTableLayoutPanel = new System.Windows.Forms.TableLayoutPanel();
             this.rtbLog = new System.Windows.Forms.RichTextBox();
             this.OpenCurrentLogFileButton = new System.Windows.Forms.Button();
-            this.logSplitter = new System.Windows.Forms.Splitter();
             this.MainMenus.SuspendLayout();
             this.frmMainPanel.SuspendLayout();
             this.tlpFrmMain.SuspendLayout();
@@ -532,7 +531,6 @@ namespace TranslationHelper
             // mainFormRootWorkspaceLogContainer.Panel2
             // 
             this.mainFormRootWorkspaceLogContainer.Panel2.Controls.Add(this.LogTableLayoutPanel);
-            this.mainFormRootWorkspaceLogContainer.Panel2.Controls.Add(this.logSplitter);
             this.mainFormRootWorkspaceLogContainer.Size = new System.Drawing.Size(790, 485);
             this.mainFormRootWorkspaceLogContainer.SplitterDistance = 425;
             this.mainFormRootWorkspaceLogContainer.TabIndex = 17;
@@ -574,17 +572,6 @@ namespace TranslationHelper
             this.OpenCurrentLogFileButton.Text = ">";
             this.OpenCurrentLogFileButton.UseVisualStyleBackColor = true;
             this.OpenCurrentLogFileButton.Click += new System.EventHandler(this.OpenCurrentLogFileButton_Click);
-            // 
-            // logSplitter
-            // 
-            this.logSplitter.BackColor = System.Drawing.SystemColors.ActiveBorder;
-            this.logSplitter.Dock = System.Windows.Forms.DockStyle.Top;
-            this.logSplitter.Location = new System.Drawing.Point(0, 0);
-            this.logSplitter.Margin = new System.Windows.Forms.Padding(1);
-            this.logSplitter.Name = "logSplitter";
-            this.logSplitter.Size = new System.Drawing.Size(790, 3);
-            this.logSplitter.TabIndex = 0;
-            this.logSplitter.TabStop = false;
             // 
             // FormMain
             // 
@@ -676,7 +663,6 @@ namespace TranslationHelper
         internal System.Windows.Forms.Label TargetTextBoxColumnPositionLabelData;
         internal System.Windows.Forms.Label TableCompleteInfoLabel;
         private System.Windows.Forms.SplitContainer mainFormRootWorkspaceLogContainer;
-        private System.Windows.Forms.Splitter logSplitter;
         public System.Windows.Forms.RichTextBox rtbLog;
         private System.Windows.Forms.TableLayoutPanel LogTableLayoutPanel;
         private System.Windows.Forms.Button OpenCurrentLogFileButton;
