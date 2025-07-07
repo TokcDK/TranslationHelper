@@ -33,43 +33,45 @@ namespace TranslationHelper.Functions
         /// </summary>
         public static void WriteRPGMakerMVStats()
         {
-            if (AppData.RpgMVAddedCodesStat.Count > 0 || AppData.RpgMVSkippedCodesStat.Count > 0)
+            if (AppData.RpgMVAddedCodesStat.Count == 0 && AppData.RpgMVSkippedCodesStat.Count == 0)
             {
-                AppData.RpgMVAddedCodesStat = AppData.RpgMVAddedCodesStat.OrderBy(o => o.Key).ToDictionary(o => o.Key, o => o.Value);
-                AppData.RpgMVSkippedCodesStat = AppData.RpgMVSkippedCodesStat.OrderBy(o => o.Key).ToDictionary(o => o.Key, o => o.Value);
+                return;
+            }
 
-                foreach (var codesData in new Dictionary<string, Dictionary<int, int>>()
+            AppData.RpgMVAddedCodesStat = AppData.RpgMVAddedCodesStat.OrderBy(o => o.Key).ToDictionary(o => o.Key, o => o.Value);
+            AppData.RpgMVSkippedCodesStat = AppData.RpgMVSkippedCodesStat.OrderBy(o => o.Key).ToDictionary(o => o.Key, o => o.Value);
+
+            foreach (var codesData in new Dictionary<string, Dictionary<int, int>>()
                     {
                         {"RPGMakerMV Added codes stats", AppData.RpgMVAddedCodesStat },
                         {"RPGMakerMV Skipped codes stats", AppData.RpgMVSkippedCodesStat }
                     }
-                )
+            )
+            {
+                if (AppData.Settings.THConfigINI.SectionExistsAndNotEmpty(codesData.Key))
                 {
-                    if (AppData.Settings.THConfigINI.SectionExistsAndNotEmpty(codesData.Key))
+                    foreach (var pair in AppData.Settings.THConfigINI.GetSectionKeyValuePairs(codesData.Key))
                     {
-                        foreach (var pair in AppData.Settings.THConfigINI.GetSectionKeyValuePairs(codesData.Key))
+                        var intKey = int.Parse(pair.Key);
+                        var intValue = int.Parse(pair.Value);
+                        if (codesData.Value.TryGetValue(intKey, out int foundValue))
                         {
-                            var intKey = int.Parse(pair.Key);
-                            var intValue = int.Parse(pair.Value);
-                            if (codesData.Value.TryGetValue(intKey, out int foundValue))
-                            {
-                                codesData.Value[intKey] = foundValue + intValue;
-                            }
-                            else
-                            {
-                                codesData.Value.Add(intKey, intValue);
-                            }
+                            codesData.Value[intKey] = foundValue + intValue;
                         }
-                    }
-
-                    foreach (var pair in codesData.Value)
-                    {
-                        AppData.Settings.THConfigINI.SetKey(codesData.Key, pair.Key + "", pair.Value + "");
+                        else
+                        {
+                            codesData.Value.Add(intKey, intValue);
+                        }
                     }
                 }
 
-                AppData.Settings.THConfigINI.WriteFile();
+                foreach (var pair in codesData.Value)
+                {
+                    AppData.Settings.THConfigINI.SetKey(codesData.Key, pair.Key + "", pair.Value + "");
+                }
             }
+
+            AppData.Settings.THConfigINI.WriteFile();
         }
     }
 }
