@@ -53,6 +53,12 @@ namespace TranslationHelper.Projects
         /// </summary>
         public bool SaveFileMode { get => !OpenFileMode; set => OpenFileMode = !value; }
 
+        private int _fileIndexToSave = -1;
+        /// <summary>
+        /// Index of file in files list to save
+        /// </summary>
+        public int FileIndexToSave { get => _fileIndexToSave; }
+
         /// <summary>
         /// Index of Original column
         /// </summary>
@@ -198,8 +204,11 @@ namespace TranslationHelper.Projects
         /// Save project files
         /// </summary>        
         /// <returns></returns>
-        public bool Save()
+        public bool Save(int fileIndexToSave = -1)
         {
+            _fileIndexToSave = fileIndexToSave < 0 
+                || fileIndexToSave >= FilesContent.Tables.Count ? -1 : fileIndexToSave;
+
             return TrySave();
         }
         protected abstract bool TrySave();
