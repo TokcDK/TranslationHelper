@@ -22,7 +22,7 @@ namespace TranslationHelper.Menus.MainMenus.File
             {
                 AppData.CurrentProject.TablesLinesDict.Clear();
             }
-            await Task.Run(() => new FunctionsSave().PrepareToWrite()).ConfigureAwait(true);
+            await Task.Run(() => FunctionsSave.PrepareToWrite()).ConfigureAwait(true);
             AppData.CurrentProject.AfterTranslationWriteActions();
 
             if (AppData.CurrentProject.DontLoadDuplicates) AppData.CurrentProject.TablesLinesDict = null;
