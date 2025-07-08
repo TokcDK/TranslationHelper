@@ -5,9 +5,7 @@ using System.Collections.Generic;
 using System.Data;
 using System.IO;
 using System.Linq;
-using System.Text.RegularExpressions;
 using System.Threading.Tasks;
-using System.Windows.Forms;
 using TranslationHelper.Data;
 using TranslationHelper.Functions;
 using TranslationHelper.Main.Functions;
@@ -74,11 +72,11 @@ namespace TranslationHelper.Projects
         /// <summary>
         /// main work table data
         /// </summary>
-        public DataSet FilesContent 
+        public DataSet FilesContent
         {
             get
             {
-                if(FileIndexesToSave != null)
+                if (FileIndexesToSave != null)
                 {
                     lock (_selectedFilesContentLocker)
                     {
@@ -112,7 +110,7 @@ namespace TranslationHelper.Projects
                 if (_filesContent == value) return;
 
                 _filesContent = value ?? new DataSet();
-            } 
+            }
         }
 
         /// <summary>
@@ -232,8 +230,8 @@ namespace TranslationHelper.Projects
             if (result == true)
             {
                 FunctionAutoSave.StartAutoSave(
-                    AutosaveTimer = new System.Timers.Timer(), 
-                    FunctionsDBFile.SaveDB, 
+                    AutosaveTimer = new System.Timers.Timer(),
+                    FunctionsDBFile.SaveDB,
                     AppSettings.DBAutoSaveTimeout
                     );
             }
@@ -253,9 +251,9 @@ namespace TranslationHelper.Projects
 
             if (fileIndexesToSave != null && fileIndexesToSave.Count > 0)
             {
-                fileIndexesToSave = fileIndexesToSave.Where(i=> i >= 0 && i < FilesContent.Tables.Count).ToHashSet();
+                fileIndexesToSave = fileIndexesToSave.Where(i => i >= 0 && i < FilesContent.Tables.Count).ToHashSet();
             }
-            
+
             FileIndexesToSave = fileIndexesToSave;
 
             bool result = false;
