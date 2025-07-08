@@ -68,10 +68,44 @@ namespace TranslationHelper.Projects
         /// </summary>
         internal int TranslationColumnIndex = 1;
 
+        private DataSet _filesContent = new DataSet();
         /// <summary>
         /// main work table data
         /// </summary>
-        public DataSet FilesContent { get; set; } = new DataSet();
+        public DataSet FilesContent 
+        {
+            get
+            {
+                if(_fileIndexToSave > -1)
+                {
+                    // copy only table which need to be saved
+                    var temporaryDataSet = new DataSet();
+                    foreach (DataTable table in _filesContent.Tables)
+                    {
+                        if (table.TableName == _filesContent.Tables[_fileIndexToSave].TableName)
+                        {
+                            temporaryDataSet.Tables.Add(table.Copy());
+                        }
+                        else
+                        {
+                            temporaryDataSet.Tables.Add(table.Clone());
+                        }
+                    }
+
+                    return temporaryDataSet;
+                }
+                else
+                {
+                    return _filesContent;
+                }
+            }
+            set
+            {
+                if (_filesContent == value) return;
+
+                _filesContent = value ?? new DataSet();
+            } 
+        }
 
         /// <summary>
         /// main work table infos
