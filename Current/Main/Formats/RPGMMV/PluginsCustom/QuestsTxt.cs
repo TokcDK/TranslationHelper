@@ -74,7 +74,7 @@ namespace TranslationHelper.Formats.RPGMMV.PluginsCustom
             return KeywordActionAfter.Continue;
         }
 
-        private void InvalidFormat()
+        private static void InvalidFormat()
         {
             throw new FormatException("Invalid file format!");
         }

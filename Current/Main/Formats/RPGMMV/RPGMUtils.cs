@@ -1,9 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using TranslationHelper.Data;
 using TranslationHelper.Extensions;
 
@@ -45,9 +41,8 @@ namespace TranslationHelper.Formats.RPGMMV
         /// <returns></returns>
         public static string GetCodeName(int currentEventCode)
         {
-            if (EventCommandCodes.ContainsKey(currentEventCode))
+            if (EventCommandCodes.TryGetValue(currentEventCode, out string eventName))
             {
-                var eventName = EventCommandCodes[currentEventCode];
                 if (eventName.Length > 0)
                 {
                     return "\r\nCommand action: \"" + eventName + "\"";

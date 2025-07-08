@@ -5,13 +5,10 @@ using System.Collections.Generic;
 using System.Data;
 using System.IO;
 using System.Linq;
-using System.Threading;
 using TranslationHelper.Data;
 using TranslationHelper.Extensions;
 using TranslationHelper.Functions;
-using TranslationHelper.Menus.MainMenus.File;
 using TranslationHelper.Projects;
-using WolfTrans.Net.Parsers.Events.Map.Event;
 
 namespace TranslationHelper.Formats
 {
@@ -104,10 +101,10 @@ namespace TranslationHelper.Formats
         /// <summary>
         /// Gets the parent project.
         /// </summary>
-        internal ProjectBase ParentProject 
-        { 
+        internal ProjectBase ParentProject
+        {
             get => _parentProject ?? throw new InvalidOperationException("Parent project is not set.");
-            set             
+            set
             {
                 _parentProject = value;
             }

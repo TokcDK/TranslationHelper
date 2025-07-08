@@ -8,16 +8,12 @@ namespace TranslationHelper.Formats.RPGMMV
     {
         public override string Description => "RPGMV www/valueLocationPreset.txt";
         public override string Extension => ".txt";
-        internal static readonly string[] separator = new[] { "\\n" };
 
         public ValueLocationPresetTxt(ProjectBase parentProject) : base(parentProject)
         {
         }
 
-        //public bool Check()
-        //{
-        //    return string.Equals(FileName, "valueLocationPreset.txt", StringComparison.InvariantCultureIgnoreCase);
-        //}
+        internal static readonly string[] separator = new[] { "\\n" };
 
         protected override KeywordActionAfter ParseStringFileLine()
         {
