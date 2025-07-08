@@ -443,6 +443,7 @@
     <Compile Include="Menus\MainMenus\File\MainMenuFileRootItem.cs" />
     <Compile Include="Menus\MainMenus\File\MainMenuFileSubItemBase.cs" />
     <Compile Include="Menus\MainMenus\File\MenuItemRecent.cs" />
+    <Compile Include="Menus\MainMenus\File\MenuItemWriteSelectedFilesTranslation.cs" />
     <Compile Include="Menus\MainMenus\File\Other\MenuItemTestGetXUATranslation.cs" />
     <Compile Include="Menus\MainMenus\File\Export\MenuItemExportToRPGMakerTransPatch.cs" />
     <Compile Include="Menus\MainMenus\File\Other\MenuItemXOREncript.cs" />

@@ -8,7 +8,7 @@ namespace TranslationHelper.Functions
 {
     class FunctionsSave
     {
-        internal static async Task PrepareToWrite()
+        internal static async Task PrepareToWrite(HashSet<int> fileIndexesToWrite = null)
         {
             if (FunctionsUI.SaveInAction)
             {
@@ -21,7 +21,7 @@ namespace TranslationHelper.Functions
             if (AppData.CurrentProject != null)
             {
                 AppData.CurrentProject.BakCreate();
-                await Task.Run(() => AppData.CurrentProject.Save()).ConfigureAwait(true);
+                await Task.Run(() => AppData.CurrentProject.Save(fileIndexesToWrite)).ConfigureAwait(true);
             }
 
             FunctionsUI.SaveInAction = false;

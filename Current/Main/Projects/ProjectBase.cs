@@ -68,6 +68,8 @@ namespace TranslationHelper.Projects
         /// </summary>
         internal int TranslationColumnIndex = 1;
 
+        private readonly object _selectedFilesContentLocker = new object();
+        private DataSet _selectedFilesContent = null;
         private DataSet _filesContent = new DataSet();
         /// <summary>
         /// main work table data
@@ -78,19 +80,27 @@ namespace TranslationHelper.Projects
             {
                 if(FileIndexesToSave != null)
                 {
-                    // copy only table which need to be saved
-                    var selectedFilesContent = new DataSet();
-                    int tableCount = FilesContent.Tables.Count;
-                    for (int i = 0; i < tableCount; i++)
+                    lock (_selectedFilesContentLocker)
                     {
-                        var table = FileIndexesToSave.Contains(i) 
-                            ? FilesContent.Tables[i].Copy()
-                            : FilesContent.Tables[i].Clone();
+                        if (this._selectedFilesContent != null)
+                        {
+                            return this._selectedFilesContent; // return selected files content if it was set
+                        }
 
-                        selectedFilesContent.Tables.Add(table);
+                        // copy only table which need to be saved
+                        _selectedFilesContent = new DataSet();
+                        int tableCount = _filesContent.Tables.Count;
+                        for (int i = 0; i < tableCount; i++)
+                        {
+                            var table = FileIndexesToSave.Contains(i)
+                                ? _filesContent.Tables[i].Copy()
+                                : _filesContent.Tables[i].Clone();
+
+                            _selectedFilesContent.Tables.Add(table);
+                        }
+
+                        return _selectedFilesContent;
                     }
-
-                    return selectedFilesContent;
                 }
                 else
                 {
@@ -258,6 +268,7 @@ namespace TranslationHelper.Projects
             finally
             {
                 FileIndexesToSave = null; // reset indexes after save
+                _selectedFilesContent = null; // reset selected files content
             }
 
             return result;

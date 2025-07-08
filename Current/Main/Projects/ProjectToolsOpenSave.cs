@@ -1,9 +1,13 @@
-﻿using NLog;
+﻿using Microsoft.Scripting.Utils;
+using NLog;
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using TranslationHelper.Data;
+using TranslationHelper.Extensions;
 using TranslationHelper.Formats;
 using TranslationHelper.Functions;
 
@@ -139,6 +143,11 @@ namespace TranslationHelper.Projects
                 if (fileInfo == null)
                     return;
 
+                if (!IsTheSaveModeFileTranslated(project, fileInfo.Name))
+                {
+                    return; // Skip files that are not translated
+                }
+
                 string fullName = fileInfo.FullName;
 
                 // Skip files with .skipme or .skip extensions
@@ -207,6 +216,32 @@ namespace TranslationHelper.Projects
             });
 
             return ret;
+        }
+
+        private static bool IsTheSaveModeFileTranslated(ProjectBase project, string tableName)
+        {
+            if (project.OpenFileMode)
+            {
+                return true;
+            }
+
+            if (!project.FilesContent.Tables.Contains(tableName))
+            {
+                // If the file is already loaded in the project, skip it
+                return false;
+            }
+            else
+            {
+                var table = project.FilesContent.Tables[tableName];
+
+                if (table == null || table.Rows.Count == 0 || !table.HasAnyTranslated())
+                {
+                    // If the file is already loaded in the project, skip it
+                    return false;
+                }
+            }
+
+            return true;
         }
     }
 }
