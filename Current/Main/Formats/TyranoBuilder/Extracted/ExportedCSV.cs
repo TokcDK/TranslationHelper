@@ -1,5 +1,4 @@
-﻿using TranslationHelper.Data;
-using TranslationHelper.Projects;
+﻿using TranslationHelper.Projects;
 
 namespace TranslationHelper.Formats.TyranoBuilder.Extracted
 {
@@ -23,7 +22,7 @@ namespace TranslationHelper.Formats.TyranoBuilder.Extracted
                 else
                 {
                     var trans = data[0];
-                    if(SetTranslation(ref trans))
+                    if (SetTranslation(ref trans))
                     {
                         data[1] = trans.Replace("\t", " ");//replace tabspace with common space because tab is splitter
                     }

@@ -1,6 +1,4 @@
-﻿using System.IO;
-using TranslationHelper.Data;
-using TranslationHelper.Projects;
+﻿using TranslationHelper.Projects;
 
 namespace TranslationHelper.Formats.RPGMTransPatch
 {

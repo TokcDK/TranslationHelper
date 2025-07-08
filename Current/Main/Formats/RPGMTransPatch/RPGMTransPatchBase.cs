@@ -8,7 +8,6 @@ namespace TranslationHelper.Formats.RPGMTrans
 {
     abstract class RPGMTransPatchBase : RPGMWolfTransPatchBase
     {
-        //protected StringBuilder buffer;
         protected RPGMTransPatchBase(ProjectBase parentProject) : base(parentProject)
         {
         }

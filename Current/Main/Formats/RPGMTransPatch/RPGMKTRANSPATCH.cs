@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Data;
 using System.IO;
-using TranslationHelper.Data;
 using TranslationHelper.Extensions;
 using TranslationHelper.Formats.RPGMTrans;
 using TranslationHelper.Projects;
