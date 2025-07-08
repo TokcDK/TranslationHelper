@@ -249,7 +249,9 @@ namespace TranslationHelper.Projects
         public bool Save(HashSet<int> fileIndexesToSave = null)
         {
             // easy way maybe is to replace the FilesContent tables with fake tables where only tables to save will contain data and cotent of other tables will be empty
-            if(fileIndexesToSave != null && fileIndexesToSave.Count > 0)
+            // TODO:better to make the selected files save using more correct way not to break the data integrity
+
+            if (fileIndexesToSave != null && fileIndexesToSave.Count > 0)
             {
                 fileIndexesToSave = fileIndexesToSave.Where(i=> i >= 0 && i < FilesContent.Tables.Count).ToHashSet();
             }
