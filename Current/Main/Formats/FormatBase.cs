@@ -701,7 +701,10 @@ namespace TranslationHelper.Formats
             if (TryApplyTranslationFromCurrentTable(ref valueToTranslate, original, existsTranslation, coordinates, rowIndex))
                 return true;
 
-            return TryApplyTranslationFromAnyTable(ref valueToTranslate, original, existsTranslation, coordinates);
+            return false;
+
+            // was added in case when there was issue with search of translation by row index
+            // return TryApplyTranslationFromAnyTable(ref valueToTranslate, original, existsTranslation, coordinates);
         }
 
         /// <summary>
