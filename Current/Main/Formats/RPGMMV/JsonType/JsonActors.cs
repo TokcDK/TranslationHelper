@@ -1,5 +1,4 @@
 ﻿using RPGMVJsonParser;
-using TranslationHelper.Data;
 using TranslationHelper.Projects;
 
 namespace TranslationHelper.Formats.RPGMMV.JsonType
@@ -13,23 +12,87 @@ namespace TranslationHelper.Formats.RPGMMV.JsonType
         protected override object ParseJson(string path)
         {
             var data = Helper.LoadActors(path);
-
             int count = data.Count;
+
             for (int e = 0; e < count; e++)
             {
                 var item = data[e];
-                if (item == null) continue;
+                if (item == null)
+                {
+                    continue;
+                }
 
-                var s = item.Name;
-                if (AddRowData(ref s, SaveFileMode ? "" : $"\r\ntype:Name\r\nID: {item.Id}\r\nbattlerName: \"{item.BattlerName}\"\r\nCharacterName: \"{item.CharacterName}\"\r\nNote: \"{item.Note}\"") && SaveFileMode) item.Name = s;
+                // Process Actor Name
+                string s = item.Name;
+                string nameInfo = SaveFileMode
+                    ? ""
+                    :
+                    $"\r\ntype:Name" +
+                    $"\r\nID: {item.Id}" +
+                    $"\r\nbattlerName: \"{item.BattlerName}\"" +
+                    $"\r\nCharacterName: \"{item.CharacterName}\"" +
+                    $"\r\nNote: \"{item.Note}\"";
+                if (AddRowData(ref s, nameInfo) && SaveFileMode)
+                {
+                    item.Name = s;
+                }
+
+                // Process Nickname
                 s = item.Nickname;
-                if (AddRowData(ref s, SaveFileMode ? "" : $"\r\ntype:NickName\r\nID: {item.Id}\r\nName: \"{item.Name}\"\r\nbattlerName: \"{item.BattlerName}\"") && SaveFileMode) item.Nickname = s;
+                string nickNameInfo = SaveFileMode
+                    ? ""
+                    :
+                    $"\r\ntype:NickName" +
+                    $"\r\nID: {item.Id}" +
+                    $"\r\nName: \"{item.Name}\"" +
+                    $"\r\nbattlerName: \"{item.BattlerName}\"";
+                if (AddRowData(ref s, nickNameInfo) && SaveFileMode)
+                {
+                    item.Nickname = s;
+                }
+
+                // Process CharacterName
                 s = item.CharacterName;
-                if (AddRowData(ref s, SaveFileMode ? "" : $"\r\ntype:CharacterName\r\nID: {item.Id}\r\nName: \"{item.Name}\"\r\nbattlerName: \"{item.BattlerName}\"") && SaveFileMode) item.CharacterName = s;
+                string characterNameInfo = SaveFileMode
+                    ? ""
+                    :
+                    $"\r\ntype:CharacterName" +
+                    $"\r\nID: {item.Id}" +
+                    $"\r\nName: \"{item.Name}\"" +
+                    $"\r\nbattlerName: \"{item.BattlerName}\"";
+                if (AddRowData(ref s, characterNameInfo) && SaveFileMode)
+                {
+                    item.CharacterName = s;
+                }
+
+                // Process Profile
                 s = item.Profile;
-                if (AddRowData(ref s, SaveFileMode ? "" : $"\r\ntype:Profile\r\nID: {item.Id}\r\nName: \"{item.Name}\"\r\nCharacterName: \"{item.CharacterName}\"\r\nbattlerName: \"{item.BattlerName}\"") && SaveFileMode) item.Profile = s;
+                string profileInfo = SaveFileMode
+                    ? ""
+                    :
+                    $"\r\ntype:Profile" +
+                    $"\r\nID: {item.Id}" +
+                    $"\r\nName: \"{item.Name}\"" +
+                    $"\r\nCharacterName: \"{item.CharacterName}\"" +
+                    $"\r\nbattlerName: \"{item.BattlerName}\"";
+                if (AddRowData(ref s, profileInfo) && SaveFileMode)
+                {
+                    item.Profile = s;
+                }
+
+                // Process Note
                 s = item.Note;
-                if (AddRowData(ref s, SaveFileMode ? "" : $"\r\ntype:Note\r\nID: {item.Id}\r\nName: \"{item.Name}\"\r\nCharacterName: \"{item.CharacterName}\"\r\nbattlerName: \"{item.BattlerName}") && SaveFileMode) item.Note = s;
+                string noteInfo = SaveFileMode
+                    ? ""
+                    :
+                    $"\r\ntype:Note" +
+                    $"\r\nID: {item.Id}\r\nName: \"{item.Name}\"" +
+                    $"\r\nCharacterName: \"{item.CharacterName}\"" +
+                    $"\r\nbattlerName: \"{item.BattlerName}\"";
+                if (AddRowData(ref s, noteInfo) && SaveFileMode)
+                {
+                    item.Note = s;
+                }
             }
 
             return data;
