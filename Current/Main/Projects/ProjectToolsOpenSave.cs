@@ -41,7 +41,7 @@ namespace TranslationHelper.Projects
         }
 
         /// <summary>
-        /// Check all parent dirst is exists in list of paths
+        /// Check all parent directories are present in the list of paths
         /// </summary>
         /// <param name="path"></param>
         /// <param name="listOfPaths"></param>
@@ -105,7 +105,7 @@ namespace TranslationHelper.Projects
         {
             if (!DirForSearch.Exists) return false;
 
-            exclusions = exclusions ?? new[] { ".bak" };//set to skip bat if exclusions is null
+            exclusions = exclusions ?? new[] { ".bak" };// set to skip .bak if exclusions is null
 
             // Get the list of files based on the parameters
             var filesList = getNewestFiles ? GetNewestFilesList(DirForSearch, mask) : DirForSearch.EnumerateFiles(mask, searchOption);
@@ -143,70 +143,70 @@ namespace TranslationHelper.Projects
                 if (fileInfo == null)
                     return;
 
+                // Check if the file is translated (for save mode only)
                 if (!IsTheSaveModeFileTranslated(project, fileInfo.Name))
-                {
-                    return; // Skip files that are not translated
-                }
+                    return;
 
                 string fullName = fileInfo.FullName;
+                string directoryName = fileInfo.DirectoryName;
 
-                // Skip files with .skipme or .skip extensions
+                // Skip files marked with .skipme or .skip
                 if (File.Exists(fullName + ".skipme") || File.Exists(fullName + ".skip"))
                     return;
 
                 try
                 {
-                    // Handle backup files
+                    // Handling backup files
                     if (isOpenMode)
                     {
+                        // In open mode, restore file from .bak if it exists
                         if (File.Exists(fullName + ".bak"))
-                        {
                             ProjectToolsBackup.RestoreFile(fullName);
-                        }
                     }
                     else
                     {
-                        if (!File.Exists(fullName + ".bak") &&
-                            !(fileInfo.DirectoryName?.IsAnyParentPathInTheList(bakPaths) ?? false))
-                        {
+                        // In save mode, create .bak if it does not exist and the directory is not among backup paths
+                        bool backupExists = File.Exists(fullName + ".bak");
+                        bool isInBackupPaths = directoryName != null && directoryName.IsAnyParentPathInTheList(bakPaths);
+
+                        if (!backupExists && !isInBackupPaths)
                             ProjectToolsBackup.BackupFile(fullName);
-                        }
                     }
 
-                    // Create format instance
+                    // Create instance of format
                     if (!(Activator.CreateInstance(file.type, project) is FormatBase format))
                         return;
 
                     // Check file extension
-                    if (!string.IsNullOrWhiteSpace(format.Extension) && !fileInfo.Extension.Equals(format.Extension, StringComparison.OrdinalIgnoreCase))
+                    if (!string.IsNullOrWhiteSpace(format.Extension) &&
+                        !fileInfo.Extension.Equals(format.Extension, StringComparison.OrdinalIgnoreCase))
                         return;
 
+                    // Logging operation
                     string operationName = isOpenMode ? T._("Opening") : T._("Saving");
                     Logger.Info($"{operationName} {fileInfo.Name}");
 
-                    // Process file
-                    bool isOpenSuccess = false;
+                    // Process file based on mode
+                    bool success = false;
                     if (isOpenMode)
                     {
-                        isOpenSuccess = format.Open(fullName);
-                        if (isOpenSuccess)
+                        success = format.Open(fullName);
+                        if (success)
                             ret = true;
+
+                        // Add path to backup list if the file is opened successfully
+                        if (success && !bakPaths.Contains(fullName) && !fullName.IsAnyParentPathInTheList(bakPaths))
+                        {
+                            lock (bakPaths)
+                            {
+                                if (!bakPaths.Contains(fullName))
+                                    bakPaths.Add(fullName);
+                            }
+                        }
                     }
                     else if (format.Save(fullName))
                     {
                         ret = true;
-                    }
-
-                    // Add to backup paths list if needed
-                    if (isOpenMode && isOpenSuccess
-                        && !bakPaths.Contains(fullName)
-                        && !fullName.IsAnyParentPathInTheList(bakPaths))
-                    {
-                        lock (bakPaths)
-                        {
-                            if (!bakPaths.Contains(fullName))
-                                bakPaths.Add(fullName);
-                        }
                     }
                 }
                 catch (Exception ex)
