@@ -23,6 +23,6 @@ namespace TranslationHelper.Projects
         /// Save project files
         /// </summary>        
         /// <returns></returns>
-        bool Save(int fileIndexToSave = -1);
+        bool Save(HashSet<int> fileIndexToSave = null);
     }
 }

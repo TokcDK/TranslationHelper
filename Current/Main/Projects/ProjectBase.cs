@@ -4,6 +4,7 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Data;
 using System.IO;
+using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -56,7 +57,7 @@ namespace TranslationHelper.Projects
         /// <summary>
         /// Index of file in files list to save
         /// </summary>
-        public int FileIndexToSave { get; private set; } = -1;
+        public HashSet<int> FileIndexesToSave { get; private set; } = null;
 
         /// <summary>
         /// Index of Original column
@@ -75,23 +76,21 @@ namespace TranslationHelper.Projects
         {
             get
             {
-                if(FileIndexToSave > -1)
+                if(FileIndexesToSave != null)
                 {
                     // copy only table which need to be saved
-                    var temporaryDataSet = new DataSet();
-                    foreach (DataTable table in _filesContent.Tables)
+                    var selectedFilesContent = new DataSet();
+                    int tableCount = FilesContent.Tables.Count;
+                    for (int i = 0; i < tableCount; i++)
                     {
-                        if (table.TableName == _filesContent.Tables[FileIndexToSave].TableName)
-                        {
-                            temporaryDataSet.Tables.Add(table.Copy());
-                        }
-                        else
-                        {
-                            temporaryDataSet.Tables.Add(table.Clone());
-                        }
+                        var table = FileIndexesToSave.Contains(i) 
+                            ? FilesContent.Tables[i].Copy()
+                            : FilesContent.Tables[i].Clone();
+
+                        selectedFilesContent.Tables.Add(table);
                     }
 
-                    return temporaryDataSet;
+                    return selectedFilesContent;
                 }
                 else
                 {
@@ -237,11 +236,15 @@ namespace TranslationHelper.Projects
         /// Save project files
         /// </summary>        
         /// <returns></returns>
-        public bool Save(int fileIndexToSave = -1)
+        public bool Save(HashSet<int> fileIndexesToSave = null)
         {
             // easy way maybe is to replace the FilesContent tables with fake tables where only tables to save will contain data and cotent of other tables will be empty
-            FileIndexToSave = fileIndexToSave < 0 
-                || fileIndexToSave >= FilesContent.Tables.Count ? -1 : fileIndexToSave;
+            if(fileIndexesToSave != null && fileIndexesToSave.Count > 0)
+            {
+                fileIndexesToSave = fileIndexesToSave.Where(i=> i >= 0 && i < FilesContent.Tables.Count).ToHashSet();
+            }
+            
+            FileIndexesToSave = fileIndexesToSave;
 
             bool result = false;
             try
@@ -254,7 +257,7 @@ namespace TranslationHelper.Projects
             }
             finally
             {
-                FileIndexToSave = -1; // reset index after save
+                FileIndexesToSave = null; // reset indexes after save
             }
 
             return result;
