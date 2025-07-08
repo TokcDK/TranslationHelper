@@ -53,11 +53,10 @@ namespace TranslationHelper.Projects
         /// </summary>
         public bool SaveFileMode { get => !OpenFileMode; set => OpenFileMode = !value; }
 
-        private int _fileIndexToSave = -1;
         /// <summary>
         /// Index of file in files list to save
         /// </summary>
-        public int FileIndexToSave { get => _fileIndexToSave; }
+        public int FileIndexToSave { get; private set; } = -1;
 
         /// <summary>
         /// Index of Original column
@@ -76,13 +75,13 @@ namespace TranslationHelper.Projects
         {
             get
             {
-                if(_fileIndexToSave > -1)
+                if(FileIndexToSave > -1)
                 {
                     // copy only table which need to be saved
                     var temporaryDataSet = new DataSet();
                     foreach (DataTable table in _filesContent.Tables)
                     {
-                        if (table.TableName == _filesContent.Tables[_fileIndexToSave].TableName)
+                        if (table.TableName == _filesContent.Tables[FileIndexToSave].TableName)
                         {
                             temporaryDataSet.Tables.Add(table.Copy());
                         }
@@ -241,10 +240,24 @@ namespace TranslationHelper.Projects
         public bool Save(int fileIndexToSave = -1)
         {
             // easy way maybe is to replace the FilesContent tables with fake tables where only tables to save will contain data and cotent of other tables will be empty
-            _fileIndexToSave = fileIndexToSave < 0 
+            FileIndexToSave = fileIndexToSave < 0 
                 || fileIndexToSave >= FilesContent.Tables.Count ? -1 : fileIndexToSave;
 
-            return TrySave();
+            bool result = false;
+            try
+            {
+                result = TrySave();
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Error while saving project files" + ": " + ex.Message, ex);
+            }
+            finally
+            {
+                FileIndexToSave = -1; // reset index after save
+            }
+
+            return result;
         }
         protected abstract bool TrySave();
 
