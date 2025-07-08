@@ -1,6 +1,5 @@
 ﻿using Newtonsoft.Json;
 using System.Text;
-using TranslationHelper.Data;
 using TranslationHelper.Projects;
 
 namespace TranslationHelper.Formats.RPGMMV.JS.JSSvar
@@ -9,7 +8,7 @@ namespace TranslationHelper.Formats.RPGMMV.JS.JSSvar
     {
 
         bool StartReadingSvar;
-        StringBuilder Svar = new StringBuilder();
+        readonly StringBuilder Svar = new StringBuilder();
 
         protected JSSVarBase(ProjectBase parentProject) : base(parentProject)
         {

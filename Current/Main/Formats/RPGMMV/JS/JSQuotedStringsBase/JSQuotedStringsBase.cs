@@ -1,7 +1,4 @@
-﻿//using System.Security.Cryptography.Pkcs;
-using System.Text.RegularExpressions;
-using TranslationHelper.Data;
-using TranslationHelper.Functions;
+﻿using TranslationHelper.Functions;
 using TranslationHelper.Projects;
 
 namespace TranslationHelper.Formats.RPGMMV.JS
@@ -51,8 +48,8 @@ namespace TranslationHelper.Formats.RPGMMV.JS
             return 0;
         }
 
-        readonly string _commentZoneStartMark = "/*";
-        readonly string _commentZoneEndMark = "*/";
+        private readonly string _commentZoneStartMark = "/*";
+        private readonly string _commentZoneEndMark = "*/";
         private bool IsEmptyOrComment()
         {
             if (!ParseData.IsComment && ParseData.Line.Contains(_commentZoneStartMark))

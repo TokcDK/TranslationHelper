@@ -1,8 +1,6 @@
 ﻿using System;
 using System.IO;
 using System.Text.RegularExpressions;
-using System.Windows;
-using TranslationHelper.Data;
 using TranslationHelper.Projects;
 
 namespace TranslationHelper.Formats.RPGMMV
@@ -127,7 +125,7 @@ namespace TranslationHelper.Formats.RPGMMV
                 fullPath = searchFontFilePath;
             }
 
-            if (!File.Exists(fullPath) || !string.Equals(Path.GetExtension(fullPath), ".ttf", StringComparison.InvariantCultureIgnoreCase)) 
+            if (!File.Exists(fullPath) || !string.Equals(Path.GetExtension(fullPath), ".ttf", StringComparison.InvariantCultureIgnoreCase))
                 return false;
 
             var fontFileName = Path.GetFileName(fullPath);
