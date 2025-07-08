@@ -231,14 +231,17 @@ namespace TranslationHelper.Projects
             {
                 FunctionAutoSave.StartAutoSave(
                     AutosaveTimer = new System.Timers.Timer(),
-                    FunctionsDBFile.SaveDB,
+                    () => FunctionAutoSave.SaveDBByAutosave(_saveLocker),
                     AppSettings.DBAutoSaveTimeout
-                    );
+                );
             }
 
             return result;
         }
         protected abstract bool TryOpen();
+
+
+        private readonly object _saveLocker = new object();
 
         /// <summary>
         /// Save project files
@@ -257,18 +260,22 @@ namespace TranslationHelper.Projects
             FileIndexesToSave = fileIndexesToSave;
 
             bool result = false;
-            try
+
+            lock (_saveLocker)
             {
-                result = TrySave();
-            }
-            catch (Exception ex)
-            {
-                throw new Exception("Error while saving project files" + ": " + ex.Message, ex);
-            }
-            finally
-            {
-                FileIndexesToSave = null; // reset indexes after save
-                _selectedFilesContent = null; // reset selected files content
+                try
+                {
+                    result = TrySave();
+                }
+                catch (Exception ex)
+                {
+                    throw new Exception("Error while saving project files" + ": " + ex.Message, ex);
+                }
+                finally
+                {
+                    FileIndexesToSave = null; // reset indexes after save
+                    _selectedFilesContent = null; // reset selected files content
+                }
             }
 
             return result;

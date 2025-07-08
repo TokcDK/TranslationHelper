@@ -8,6 +8,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using TranslationHelper.Data;
 using TranslationHelper.Main.Functions;
+using TranslationHelper.Projects;
 
 namespace TranslationHelper.Functions
 {
@@ -41,6 +42,14 @@ namespace TranslationHelper.Functions
         {
             StopAutoSave(autoSaveTimer);
             StartAutoSave(autoSaveTimer, autosave, timeout);
-        }        
+        }
+
+        internal static Task SaveDBByAutosave(object locker)
+        {
+            lock (locker)
+            {
+                return Task.FromResult(FunctionsDBFile.SaveDB());
+            }
+        }
     }
 }
