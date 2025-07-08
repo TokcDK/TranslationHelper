@@ -47,7 +47,10 @@ namespace TranslationHelper.Formats.RPGMMV.JS
                 }
             }
 
-            if (SaveFileMode && RET) ParseData.ResultForWrite.Append("var $plugins =\r\n" + Helper.Json2String(plugins, intended: true) + ";");
+            if (SaveFileMode && RET)
+            {
+                ParseData.ResultForWrite.Append(Helper.BuildJsonPluginsString(plugins));
+            }
         }
     }
 }
