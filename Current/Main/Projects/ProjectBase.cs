@@ -127,11 +127,6 @@ namespace TranslationHelper.Projects
         private static System.Timers.Timer AutosaveTimer;
 
         /// <summary>
-        /// Locker for selected files content.
-        /// </summary>
-        private readonly object _selectedFilesContentLocker = new object();
-
-        /// <summary>
         /// Cached selected files content.
         /// </summary>
         private DataSet _selectedFilesContent = null;
@@ -142,9 +137,14 @@ namespace TranslationHelper.Projects
         private DataSet _filesContent = new DataSet();
 
         /// <summary>
+        /// Locker for selected files content.
+        /// </summary>
+        private readonly object _selectedFilesContentLocker = new object();
+
+        /// <summary>
         /// Locker used in AddTable.
         /// </summary>
-        private readonly object AddTableLocker = new object();
+        private readonly object _addTableLocker = new object();
 
         /// <summary>
         /// Locker used during saving.
@@ -391,7 +391,7 @@ namespace TranslationHelper.Projects
         /// <param name="infoTable">The information table associated with the data.</param>
         internal void AddTable(DataTable dataTable, DataTable infoTable)
         {
-            lock (AddTableLocker)
+            lock (_addTableLocker)
             {
                 if (dataTable == null || dataTable.Rows.Count == 0)
                     return;
