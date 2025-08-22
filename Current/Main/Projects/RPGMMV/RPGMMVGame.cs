@@ -74,7 +74,7 @@ namespace TranslationHelper.Projects.RPGMMV
         /// </summary>
         protected static string WWWDir;
 
-        private ITranslationCache _cache;
+        private readonly TranslationCache _cache;
 
         /// <summary>
         /// Opens the project by setting the directory and parsing files.
