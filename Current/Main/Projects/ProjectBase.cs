@@ -284,15 +284,25 @@ namespace TranslationHelper.Projects
         /// </summary>
         internal virtual bool IsTestRunEnabled => false;
 
+        /// <summary>
+        /// add equal lines to TablesLinesDict while save translation
+        /// </summary>
+        internal virtual bool TablesLinesDictAddEqual => false;
+
+        /// <summary>
+        /// In some cases like opened file by extension it can be useful to detect when need to save file n place where it was opened
+        /// </summary>
+        public virtual bool IsSaveToSourceFile => false;
+
+        #endregion
+
+        #region Methods
+
         // Note: IsValid below is declared as abstract, retaining its original accessibility.
         /// <summary>
         /// Determines whether the project is valid to be opened.
         /// </summary>
         internal abstract bool IsValid();
-
-        #endregion
-
-        #region Methods
 
         // Public Methods
         /// <summary>
