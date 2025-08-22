@@ -223,7 +223,7 @@ namespace TranslationHelper.Projects.RPGMMV
                 .Where(fileInfo =>
                 {
                     var jsName = fileInfo.Name;
-                    return !hardcodedJS.Contains(jsName) && !skipJSList.Contains(jsName) && fileInfo.Exists;
+                    return fileInfo.Exists && !string.Equals(jsName, "plugins.js") && !hardcodedJS.Contains(jsName) && !skipJSList.Contains(jsName);
                 })
                 .Select(fileInfo => (info: fileInfo, type: typeof(ZZZOtherJS)));
 
