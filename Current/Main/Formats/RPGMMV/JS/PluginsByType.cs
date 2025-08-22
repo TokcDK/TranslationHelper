@@ -25,7 +25,7 @@ namespace TranslationHelper.Formats.RPGMMV.JS
         {
             var data = File.ReadAllText(FilePath);
 
-            var jsonString = Regex.Match(data, @"(var\s+\$plugins\s*\=)([\s\S]+);$");
+            var jsonString = Regex.Match(data, @"^([\s\S]*var\s+\$plugins\s*\=[^\[]*)([\s\S]+\]);\s*$");
 
             if (!jsonString.Success) return;
 
