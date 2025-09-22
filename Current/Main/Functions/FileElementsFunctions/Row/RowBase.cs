@@ -401,6 +401,8 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
             await ProcessRowAsync(tableData, rowIndex).ConfigureAwait(false);
         }
 
+        private readonly object _parsedCountChangeLocker = new object();
+
         /// <summary>
         /// Runs hooks and Apply() for a single row.
         /// </summary>
@@ -425,7 +427,11 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
                 if (Apply(rowData))
                 {
                     Ret = true;
-                    _parsedCount++;
+
+                    lock (_parsedCountChangeLocker)
+                    {
+                        _parsedCount++;
+                    }
                 }
             }
             catch (Exception ex)
