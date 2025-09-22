@@ -418,8 +418,16 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
                 IsLastRow = (--SelectedRowsCountRest == 0)
             };
 
-            if (!IsValidRow(rowData))
+            try
+            {
+                if (!IsValidRow(rowData))
+                    return;
+            }
+            catch
+            {
+                Logger.Warn("Error to check row valid");
                 return;
+            }
 
             await ActionsPreRowApply(rowData).ConfigureAwait(false);
             try
