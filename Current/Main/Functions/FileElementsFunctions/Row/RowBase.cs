@@ -3,7 +3,9 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
+using System.Windows.Automation.Provider;
 using System.Windows.Forms;
 using TranslationHelper.Data;
 using TranslationHelper.Extensions;
@@ -12,6 +14,76 @@ using TranslationHelper.Projects;
 
 namespace TranslationHelper.Functions.FileElementsFunctions.Row
 {
+    public interface ISelectionProvider
+    {
+        int[] GetSelectedTableIndexes();
+        int[] GetSelectedRowIndexes(TableData tableData);
+        int GetSelectedTableIndex(); // For single selection.
+    }
+
+    internal class WinFormsSelectionProvider : ISelectionProvider
+    {
+        private readonly ListBox _filesList;
+        private readonly DataGridView _dataGridView;
+
+        public WinFormsSelectionProvider(ListBox filesList, DataGridView dataGridView)
+        {
+            _filesList = filesList;
+            _dataGridView = dataGridView;
+        }
+
+        public int[] GetSelectedTableIndexes()
+        {
+            if (_filesList.InvokeRequired)
+            {
+                int[] indexes = Array.Empty<int>();
+                _filesList.Invoke((Action)(() => indexes = _filesList.CopySelectedIndexes()));
+                return indexes;
+            }
+            return _filesList.CopySelectedIndexes();
+        }
+
+        public int[] GetSelectedRowIndexes(TableData tableData)
+        {
+            int[] selectedCells;
+            if (_dataGridView.InvokeRequired)
+            {
+                selectedCells = null;
+                _dataGridView.Invoke((Action)(() =>
+                    selectedCells = _dataGridView.SelectedCells
+                        .Cast<DataGridViewCell>()
+                        .Select(c => c.RowIndex)
+                        .Distinct()
+                        .Select(r => FunctionsTable.GetRealRowIndex(tableData.SelectedTableIndex, r))
+                        .OrderBy(i => i)
+                        .ToArray()
+                ));
+            }
+            else
+            {
+                selectedCells = _dataGridView.SelectedCells
+                    .Cast<DataGridViewCell>()
+                    .Select(c => c.RowIndex)
+                    .Distinct()
+                    .Select(r => FunctionsTable.GetRealRowIndex(tableData.SelectedTableIndex, r))
+                    .OrderBy(i => i)
+                    .ToArray();
+            }
+            return selectedCells ?? Array.Empty<int>();
+        }
+
+        public int GetSelectedTableIndex()
+        {
+            if (_filesList.InvokeRequired)
+            {
+                int i = -1;
+                _filesList.Invoke((Action)(() => i = _filesList.SelectedIndex));
+                return i;
+            }
+            return _filesList.SelectedIndex;
+        }
+    }
+
     /// <summary>
     /// Represents a table and its index within the DataSet.
     /// </summary>
@@ -27,21 +99,55 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
         public int SelectedTableIndex { get; }
     }
 
+    public interface IUiUpdater
+    {
+        void SetTranslation(DataRow row, int columnIndex, string value);
+    }
+
+    internal class WinFormsUiUpdater : IUiUpdater
+    {
+        private readonly DataGridView _workTableDatagridView;
+
+        public WinFormsUiUpdater(DataGridView workTableDatagridView)
+        {
+            _workTableDatagridView = workTableDatagridView;
+        }
+
+        public void SetTranslation(DataRow row, int columnIndex, string value)
+        {
+            if (_workTableDatagridView.InvokeRequired)
+            {
+                _workTableDatagridView.Invoke((MethodInvoker)delegate
+                {
+                    row.SetField(columnIndex, value);
+                });
+            }
+            else
+            {
+                row.SetField(columnIndex, value);
+            }
+        }
+    }
+
     /// <summary>
     /// Encapsulates information about a single DataRow in context of a TableData.
     /// </summary>
     public class RowBaseRowData
     {
-        ProjectBase _project { get; }
+        ProjectBase Project { get; }
 
-        public RowBaseRowData(ProjectBase project, DataRow row, int rowIndex, TableData table)
+        IUiUpdater UiUpdater { get; }
+
+        public RowBaseRowData(ProjectBase project, DataRow row, int rowIndex, TableData table, IUiUpdater uiUpdater = null)
         {
-            _project = project ?? throw new ArgumentNullException(nameof(project));
+            Project = project ?? throw new ArgumentNullException(nameof(project));
             SelectedRow = row;
             SelectedRowIndex = rowIndex;
             TableData = table;
 
             _workTableDatagridView = AppData.Main.THFileElementsDataGridView;
+
+            UiUpdater = uiUpdater ?? new WinFormsUiUpdater(_workTableDatagridView);
         }
 
         readonly DataGridView _workTableDatagridView;
@@ -51,28 +157,14 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
         public int SelectedRowIndex { get; }
         public bool IsLastRow { get; set; }
 
-        public int ColumnIndexOriginal => _project.OriginalColumnIndex;
-        public int ColumnIndexTranslation => _project.TranslationColumnIndex;
+        public int ColumnIndexOriginal => Project.OriginalColumnIndex;
+        public int ColumnIndexTranslation => Project.TranslationColumnIndex;
 
         public string Original => SelectedRow.Field<string>(ColumnIndexOriginal);
         public string Translation
         {
             get => SelectedRow.Field<string>(ColumnIndexTranslation);
-            set
-            {
-                if (_workTableDatagridView.InvokeRequired)
-                {
-                    // must fix winforms cross-thread access issue, app crash because of scrolling datagridview in time of rows are changing
-                    // but this only for the rowbase functions and same changes from other places can cause the error
-                    _workTableDatagridView.Invoke((MethodInvoker)delegate {
-                        SelectedRow.SetField(ColumnIndexTranslation, value);
-                    });
-                }
-                else
-                {
-                    SelectedRow.SetField(ColumnIndexTranslation, value);
-                }                
-            }
+            set => UiUpdater.SetTranslation(SelectedRow, ColumnIndexTranslation, value);
         }
 
         public DataTable SelectedTable => TableData.SelectedTable;
@@ -85,13 +177,36 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
     /// </summary>
     internal abstract class RowBase
     {
+        public class ProcessingState
+        {
+            public int ParsedCount;
+            public int TablesCount { get; private set; }
+            public int SelectedRowsCount { get; set; }
+            public int SelectedRowsCountRest { get; set; }
+
+            public void Reset(TableData[] tables, int[] specificRows)
+            {
+                ParsedCount = 0;
+                TablesCount = tables.Length;
+                SelectedRowsCount = specificRows == null 
+                    ? tables.Sum(t => t.SelectedTable.Rows.Count) 
+                    : specificRows.Length * tables.Length;
+                SelectedRowsCountRest = SelectedRowsCount;
+            }
+
+            public void IncrementParsed() => Interlocked.Increment(ref ParsedCount); // Thread-safe for parallel.
+        }
+
         public virtual string Name { get; } = string.Empty;
         protected static readonly Logger Logger = LogManager.GetCurrentClassLogger();
         protected ProjectBase Project { get; } = AppData.CurrentProject;
+        protected readonly ISelectionProvider SelectionProvider;
+        protected ProcessingState State { get; } = new ProcessingState();
 
         #region Constructor
-        internal RowBase()
+        internal RowBase(ISelectionProvider selectionProvider = null)
         {
+            SelectionProvider = selectionProvider ?? new WinFormsSelectionProvider(AppData.THFilesList, AppData.Main.THFileElementsDataGridView);
         }
         #endregion
 
@@ -100,16 +215,16 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
         protected Dictionary<string, string> SessionData;
         protected bool Ret;
         protected int TablesCount;
-        protected int SelectedRowsCount;
-        protected int SelectedRowsCountRest;
-        private int _parsedCount;
+        protected int SelectedRowsCount => State.SelectedRowsCount;
+        protected int SelectedRowsCountRest => State.SelectedRowsCountRest;
+        //private int _parsedCount;
         #endregion
 
         #region Mode flags
         protected bool IsAll { get; private set; }
         protected bool IsTables { get; private set; }
         protected bool IsTable { get; private set; }
-        protected bool IsSelectedRows => !IsAll && !IsTables && !IsTable && SelectedRowsCount > 1;
+        protected bool IsSelectedRows => !IsAll && !IsTables && !IsTable && State.SelectedRowsCount > 1;
         protected virtual bool IsParallelRows => false;
         protected virtual bool IsParallelTables => false;
         #endregion
@@ -209,7 +324,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
         protected virtual async Task ActionsFinalize()
         {
             var name = string.IsNullOrWhiteSpace(Name) ? GetType().Name : Name;
-            Logger.Info(T._("{0}: parsed {1} values"), name, _parsedCount);
+            Logger.Info(T._("{0}: parsed {1} values"), name, State.ParsedCount);
             await Task.CompletedTask;
         }
 
@@ -365,8 +480,8 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
         private async Task ExecuteRowsAsync(TableData tableData, int[] rowIndexes)
         {
             int count = rowIndexes?.Length ?? tableData.SelectedTable.Rows.Count;
-            SelectedRowsCount = count;
-            SelectedRowsCountRest = count;
+            State.SelectedRowsCount = count;
+            State.SelectedRowsCountRest = count;
             await ActionsPreRowsApply(tableData).ConfigureAwait(false);
 
             if (IsParallelRows)
@@ -401,8 +516,6 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
             await ProcessRowAsync(tableData, rowIndex).ConfigureAwait(false);
         }
 
-        private readonly object _parsedCountChangeLocker = new object();
-
         /// <summary>
         /// Runs hooks and Apply() for a single row.
         /// </summary>
@@ -415,7 +528,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
 
             var rowData = new RowBaseRowData(Project, SelectedRow, rowIndex, tableData)
             {
-                IsLastRow = (--SelectedRowsCountRest == 0)
+                IsLastRow = (--State.SelectedRowsCountRest == 0)
             };
 
             try
@@ -436,10 +549,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
                 {
                     Ret = true;
 
-                    lock (_parsedCountChangeLocker)
-                    {
-                        _parsedCount++;
-                    }
+                    State.IncrementParsed();
                 }
             }
             catch (Exception ex)
@@ -460,56 +570,11 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
         #region Helpers
         private void ResetCounters(TableData[] tables, int[] specificRows)
         {
-            _parsedCount = 0;
-            TablesCount = tables.Length;
-            SelectedRowsCount = specificRows == null
-                ? tables.Sum(t => t.SelectedTable.Rows.Count)
-                : specificRows.Length * tables.Length;
-            SelectedRowsCountRest = SelectedRowsCount;
+            State.Reset(tables, specificRows);
         }
 
-        private int[] GetSelectedTableIndexes()
-        {
-            int[] indexes = Array.Empty<int>();
-            if (FilesList.InvokeRequired)
-            {
-                FilesList.Invoke((Action)(() => indexes = FilesList.CopySelectedIndexes()));
-            }
-            else
-            {
-                indexes = FilesList.CopySelectedIndexes();
-            }
-            return indexes;
-        }
-
-        private int[] GetSelectedRowIndexes(TableData tableData)
-        {
-            int[] selectedCells;
-            if (WorkTableDatagridView.InvokeRequired)
-            {
-                selectedCells = null;
-                WorkTableDatagridView.Invoke((Action)(() =>
-                    selectedCells = WorkTableDatagridView.SelectedCells
-                        .Cast<DataGridViewCell>()
-                        .Select(c => c.RowIndex)
-                        .Distinct()
-                        .Select(r => FunctionsTable.GetRealRowIndex(tableData.SelectedTableIndex, r))
-                        .OrderBy(i => i)
-                        .ToArray()
-                ));
-            }
-            else
-            {
-                selectedCells = WorkTableDatagridView.SelectedCells
-                    .Cast<DataGridViewCell>()
-                    .Select(c => c.RowIndex)
-                    .Distinct()
-                    .Select(r => FunctionsTable.GetRealRowIndex(tableData.SelectedTableIndex, r))
-                    .OrderBy(i => i)
-                    .ToArray();
-            }
-            return selectedCells ?? Array.Empty<int>();
-        }
+        private int[] GetSelectedTableIndexes() => SelectionProvider.GetSelectedTableIndexes();
+        private int[] GetSelectedRowIndexes(TableData tableData) => SelectionProvider.GetSelectedRowIndexes(tableData);
 
         private void ResolveSingleContext(DataRow row, ref int tableIndex, ref int rowIndex,
             out TableData tableData, out int realRowIdx)
