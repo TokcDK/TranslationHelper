@@ -21,7 +21,20 @@ namespace TH.WPF.ViewModels
 
         void AssociatedObjectSelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            SelectedItems = AssociatedObject.SelectedItems.Cast<object>().ToList();
+            // Reuse existing list if possible to avoid unnecessary allocations
+            if (SelectedItems == null)
+            {
+                SelectedItems = new List<object>(AssociatedObject.SelectedItems.Count);
+            }
+            else
+            {
+                SelectedItems.Clear();
+            }
+            
+            foreach (var item in AssociatedObject.SelectedItems)
+            {
+                SelectedItems.Add(item);
+            }
         }
         public IList<object> SelectedItems
         {

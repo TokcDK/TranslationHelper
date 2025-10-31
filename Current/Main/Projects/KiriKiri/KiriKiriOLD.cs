@@ -218,11 +218,7 @@ namespace TranslationHelper.Projects.KiriKiri
                                     {
                                         temp[i] += "]";
                                         string substring = temp[i];
-                                        if (lastMergeIndex > -1 && i >= startMergeIndex && i <= lastMergeIndex)
-                                        {
-                                            line += temp[i];
-                                        }
-                                        else if (temp[i].EndsWith("[lr_]") || temp[i].EndsWith("[p_]"))
+                                        if (temp[i].EndsWith("[lr_]") || temp[i].EndsWith("[p_]"))
                                         {
                                             lastMergeIndex = i;
                                             startMergeIndex = i;
@@ -233,16 +229,19 @@ namespace TranslationHelper.Projects.KiriKiri
                                         }
                                     }
 
-                                    //обнуление, для записи нового чистого значения
-                                    line = string.Empty;
-
                                     //запись значения из найденного диапазона
                                     if (lastMergeIndex > -1)
                                     {
+                                        var sb = new StringBuilder();
                                         for (int i = startMergeIndex; i <= lastMergeIndex; i++)
                                         {
-                                            line += temp[i];
+                                            sb.Append(temp[i]);
                                         }
+                                        line = sb.ToString();
+                                    }
+                                    else
+                                    {
+                                        line = string.Empty;
                                     }
 
                                     //убрать идентификатор окончания строки
@@ -263,16 +262,20 @@ namespace TranslationHelper.Projects.KiriKiri
                             {
                                 if (line == "@nanasi")//Life with daughter
                                 {
+                                    var sb = new StringBuilder();
                                     line = file.ReadLine();
+                                    sb.Append(line);
                                     while (!line.EndsWith("[ll]") && !line.EndsWith("@s"))
                                     {
                                         while (line.StartsWith("@"))
                                         {
                                             line = file.ReadLine();
                                         }
-                                        line += Environment.NewLine;
-                                        line += file.ReadLine();
+                                        sb.Append(Environment.NewLine);
+                                        line = file.ReadLine();
+                                        sb.Append(line);
                                     }
+                                    line = sb.ToString();
                                     line = line.Remove(line.Length - 4);//удаление последних четырех символов "[ll]" или "\r\n@s"
                                     _ = DT.Rows.Add(line);
                                     _ = DTInfo.Rows.Add(string.Empty);

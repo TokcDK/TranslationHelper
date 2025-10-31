@@ -229,25 +229,27 @@ namespace TranslationHelper.Formats.RPGMMV.JsonType
                 return stringWhereToEscape;
             }
 
-            // Convert the string to a character array
-            List<char> charArray = stringWhereToEscape.ToList();
+            // Use StringBuilder for efficient string manipulation
+            var sb = new StringBuilder(stringWhereToEscape.Length + 10); // Pre-allocate extra space for escape characters
+            sb.Append(stringWhereToEscape[0]); // Add first character
 
-            // Iterate through the characters in the array, excluding the first and last characters
-            for (int i = 1; i < charArray.Count - 1; i++)
+            // Iterate through the characters in the string, excluding the first and last characters
+            for (int i = 1; i < stringWhereToEscape.Length - 1; i++)
             {
-                // Check if the character is the quoteToEscape character
-                if (charArray[i] != quoteToEscape 
-                    || (i > 1 && charArray[i-1] == '\\') // if previous char is escape char
-                    )
+                char currentChar = stringWhereToEscape[i];
+                
+                // Check if the character is the quoteToEscape character and not already escaped
+                if (currentChar == quoteToEscape && (i == 1 || stringWhereToEscape[i - 1] != '\\'))
                 {
-                    continue;
+                    // Escape the quoteToEscape character by adding a backslash before it
+                    sb.Append('\\');
                 }
-
-                // Escape the quoteToEscape character by adding a backslash before it
-                charArray.Insert(i++, '\\');
+                
+                sb.Append(currentChar);
             }
 
-            return string.Join("", charArray);
+            sb.Append(stringWhereToEscape[stringWhereToEscape.Length - 1]); // Add last character
+            return sb.ToString();
         }
 
         internal void ParseJToken(JParameterData data)

@@ -21,16 +21,17 @@ namespace TH.WPF.Menus
             // Load Main menus
             var mainMenus = Inherited.GetInterfaceImplimentations<IMainMenuItem>();
 
+            // Create a dictionary for faster lookups during menu processing
+            var menusDict = new Dictionary<string, MenuItemData>(StringComparer.InvariantCultureIgnoreCase);
+
             foreach (var menu in mainMenus)
             {
                 MenuItemData? menu2add = null;
                 bool isNeedParent = !string.IsNullOrWhiteSpace(menu.ParentMenuName);
                 if (isNeedParent)
                 {
-                    // search main menu item
-                    var searchMenu = menus.FirstOrDefault(m=>string.Equals(m.Name, menu.ParentMenuName, StringComparison.InvariantCultureIgnoreCase));
-
-                    if (searchMenu != default) menu2add = searchMenu;
+                    // search main menu item using dictionary for O(1) lookup
+                    menusDict.TryGetValue(menu.ParentMenuName, out menu2add);
                 }
 
                 if(isNeedParent && menu2add == null)
@@ -76,8 +77,16 @@ namespace TH.WPF.Menus
                     };
                 }
 
-                // add main menu if missing
-                if (!menus.Contains(menu2add)) menus.Add(menu2add);
+                // add main menu if missing and update dictionary
+                if (!menus.Contains(menu2add))
+                {
+                    menus.Add(menu2add);
+                    // Add to dictionary for fast lookup, using menu name as key
+                    if (!string.IsNullOrWhiteSpace(menu2add.Name) && !menusDict.ContainsKey(menu2add.Name))
+                    {
+                        menusDict[menu2add.Name] = menu2add;
+                    }
+                }
             }
         }
     }
