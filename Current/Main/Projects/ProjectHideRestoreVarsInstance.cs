@@ -26,12 +26,39 @@ namespace TranslationHelper.Projects
         private Queue<List<string>> _matchCollectionsQueue;
 
         /// <summary>
+        /// Cached compiled regex for hiding variables - improves performance for repeated operations
+        /// </summary>
+        private Regex _hideRegex;
+
+        /// <summary>
+        /// Cached compiled regex for normalizing placeholders - improves performance for repeated operations
+        /// </summary>
+        private static readonly Regex _normalizePlaceholderRegex = new Regex(@"\{ ?VAR ?([0-9]{3}) ?\}", RegexOptions.Compiled | RegexOptions.IgnoreCase);
+
+        /// <summary>
+        /// Cached compiled regex for detecting placeholders - improves performance for repeated operations
+        /// </summary>
+        private static readonly Regex _detectPlaceholderRegex = new Regex(@"\{VAR\d{3}\}", RegexOptions.Compiled);
+
+        /// <summary>
+        /// Cached compiled regex for restoring placeholders - improves performance for repeated operations
+        /// </summary>
+        private static readonly Regex _restorePlaceholderRegex = new Regex(@"\{VAR(\d{3})\}", RegexOptions.Compiled);
+
+        /// <summary>
         /// Initializes a new instance of the class with the specified hide patterns.
         /// </summary>
         /// <param name="hidePatterns">Dictionary mapping variable identifiers to their regex patterns.</param>
         public ProjectHideRestoreVarsInstance(Dictionary<string, string> hidePatterns)
         {
             _hidePatterns = hidePatterns;
+            
+            // Pre-compile the combined regex pattern for better performance
+            if (hidePatterns != null && hidePatterns.Count > 0)
+            {
+                var pattern = "(" + string.Join(")|(", hidePatterns.Values) + ")";
+                _hideRegex = new Regex(pattern, RegexOptions.Compiled);
+            }
         }
 
         /// <summary>
@@ -43,7 +70,7 @@ namespace TranslationHelper.Projects
         internal string HideVARSBase(string str)
         {
             // Return unchanged if patterns are invalid or empty
-            if (_hidePatterns == null || _hidePatterns.Count == 0)
+            if (_hideRegex == null)
                 return str;
 
             // Optional optimization: check if any pattern key is present in the string
@@ -52,13 +79,11 @@ namespace TranslationHelper.Projects
             if (!keyFound)
                 return str;
 
-            // Combine all regex patterns into a single pattern for matching
-            var pattern = "(" + string.Join(")|(", _hidePatterns.Values) + ")";
             var matches = new List<string>();
             int counter = 0;
 
-            // Replace each match with a unique placeholder and store the matched value
-            str = Regex.Replace(str, pattern, match =>
+            // Replace each match with a unique placeholder and store the matched value using pre-compiled regex
+            str = _hideRegex.Replace(str, match =>
             {
                 matches.Add(match.Value);
                 return "{VAR" + (counter++).ToString("000") + "}";
@@ -87,7 +112,7 @@ namespace TranslationHelper.Projects
         {
             // Return unchanged if queue is empty or string contains no placeholders
             if (_matchCollectionsQueue == null || _matchCollectionsQueue.Count == 0 ||
-                !Regex.IsMatch(str, @"\{ ?VAR ?([0-9]{3}) ?\}", RegexOptions.IgnoreCase))
+                !_detectPlaceholderRegex.IsMatch(str))
             {
                 return str;
             }
@@ -95,11 +120,11 @@ namespace TranslationHelper.Projects
             // Dequeue the next set of matches
             var matches = _matchCollectionsQueue.Dequeue();
 
-            // Fix any malformed placeholders (e.g., "{ VAR 001 }" -> "{VAR001}")
-            str = Regex.Replace(str, @"\{ ?VAR ?([0-9]{3}) ?\}", "{VAR$1}", RegexOptions.IgnoreCase);
+            // Fix any malformed placeholders (e.g., "{ VAR 001 }" -> "{VAR001}") using cached regex
+            str = _normalizePlaceholderRegex.Replace(str, "{VAR$1}");
 
-            // Replace each placeholder with its corresponding original value
-            str = Regex.Replace(str, @"\{VAR(\d{3})\}", match =>
+            // Replace each placeholder with its corresponding original value using cached regex
+            str = _restorePlaceholderRegex.Replace(str, match =>
             {
                 int index = int.Parse(match.Groups[1].Value);
                 // Safety check to avoid index out of range, though should not occur in normal use
