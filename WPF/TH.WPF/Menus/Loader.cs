@@ -78,14 +78,11 @@ namespace TH.WPF.Menus
                 }
 
                 // add main menu if missing and update dictionary
-                if (!menus.Contains(menu2add))
+                if (!string.IsNullOrWhiteSpace(menu2add.Name) && !menus.Contains(menu2add))
                 {
                     menus.Add(menu2add);
-                    // Add to dictionary for fast lookup, using menu name as key
-                    if (!string.IsNullOrWhiteSpace(menu2add.Name))
-                    {
-                        menusDict[menu2add.Name] = menu2add;
-                    }
+                    // Add to dictionary for fast lookup
+                    menusDict[menu2add.Name] = menu2add;
                 }
             }
         }
