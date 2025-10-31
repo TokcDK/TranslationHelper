@@ -159,31 +159,35 @@ namespace TranslationHelper.Projects.RPGMTrans
                             invalidformat = 2; //если нашло строку
                             _string = _file.ReadLine();
 
+                            var originalBuilder = new StringBuilder();
                             int untranslines = 0; //счетчик количества проходов по строкам текста для перевода, для записи переносов, если строк больше одной                            
                             while (!_string.StartsWith("> CONTEXT:"))  //Ждем начало следующего блока
                             {
                                 if (untranslines > 0)
                                 {
-                                    _original += Environment.NewLine;
+                                    originalBuilder.Append(Environment.NewLine);
                                 }
-                                _original += _string;            //Пишем весь текст
+                                originalBuilder.Append(_string);            //Пишем весь текст
                                 _string = _file.ReadLine();
                                 untranslines++;
                             }
+                            _original = originalBuilder.ToString();
 
+                            var contextBuilder = new StringBuilder();
                             int contextlines = 0;
                             while (_string.StartsWith("> CONTEXT:"))
                             {
                                 if (contextlines > 0)
                                 {
-                                    _context += Environment.NewLine;
+                                    contextBuilder.Append(Environment.NewLine);
                                 }
 
-                                _context += _string.Replace("> CONTEXT: ", string.Empty).Replace(" < UNTRANSLATED", string.Empty);// +"\r\n";//Убрал символ переноса, так как он остается при сохранении //Сохраняем коментарий
+                                contextBuilder.Append(_string.Replace("> CONTEXT: ", string.Empty).Replace(" < UNTRANSLATED", string.Empty));// +"\r\n";//Убрал символ переноса, так как он остается при сохранении //Сохраняем коментарий
 
                                 _string = _file.ReadLine();
                                 contextlines++;
                             }
+                            _context = contextBuilder.ToString();
 
                             int translines = 0; //счетчик количества проходов по строкам текста для перевода, для записи переносов, если строк больше одной
                             while (!_string.StartsWith("> END"))      //Ждем конец блока

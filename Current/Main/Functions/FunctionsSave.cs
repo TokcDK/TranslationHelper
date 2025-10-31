@@ -41,33 +41,35 @@ namespace TranslationHelper.Functions
             AppData.RpgMVAddedCodesStat = AppData.RpgMVAddedCodesStat.OrderBy(o => o.Key).ToDictionary(o => o.Key, o => o.Value);
             AppData.RpgMVSkippedCodesStat = AppData.RpgMVSkippedCodesStat.OrderBy(o => o.Key).ToDictionary(o => o.Key, o => o.Value);
 
-            foreach (var codesData in new Dictionary<string, Dictionary<int, int>>()
-                    {
-                        {"RPGMakerMV Added codes stats", AppData.RpgMVAddedCodesStat },
-                        {"RPGMakerMV Skipped codes stats", AppData.RpgMVSkippedCodesStat }
-                    }
-            )
+            // Avoid creating dictionary on every call - use array of tuples instead
+            var codesDataArray = new[]
             {
-                if (AppData.Settings.THConfigINI.SectionExistsAndNotEmpty(codesData.Key))
+                ("RPGMakerMV Added codes stats", AppData.RpgMVAddedCodesStat),
+                ("RPGMakerMV Skipped codes stats", AppData.RpgMVSkippedCodesStat)
+            };
+
+            foreach (var (key, value) in codesDataArray)
+            {
+                if (AppData.Settings.THConfigINI.SectionExistsAndNotEmpty(key))
                 {
-                    foreach (var pair in AppData.Settings.THConfigINI.GetSectionKeyValuePairs(codesData.Key))
+                    foreach (var pair in AppData.Settings.THConfigINI.GetSectionKeyValuePairs(key))
                     {
                         var intKey = int.Parse(pair.Key);
                         var intValue = int.Parse(pair.Value);
-                        if (codesData.Value.TryGetValue(intKey, out int foundValue))
+                        if (value.TryGetValue(intKey, out int foundValue))
                         {
-                            codesData.Value[intKey] = foundValue + intValue;
+                            value[intKey] = foundValue + intValue;
                         }
                         else
                         {
-                            codesData.Value.Add(intKey, intValue);
+                            value.Add(intKey, intValue);
                         }
                     }
                 }
 
-                foreach (var pair in codesData.Value)
+                foreach (var pair in value)
                 {
-                    AppData.Settings.THConfigINI.SetKey(codesData.Key, pair.Key + "", pair.Value + "");
+                    AppData.Settings.THConfigINI.SetKey(key, pair.Key + "", pair.Value + "");
                 }
             }
 
