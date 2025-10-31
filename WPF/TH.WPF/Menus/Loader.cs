@@ -82,7 +82,7 @@ namespace TH.WPF.Menus
                 {
                     menus.Add(menu2add);
                     // Add to dictionary for fast lookup, using menu name as key
-                    if (!string.IsNullOrWhiteSpace(menu2add.Name) && !menusDict.ContainsKey(menu2add.Name))
+                    if (!string.IsNullOrWhiteSpace(menu2add.Name))
                     {
                         menusDict[menu2add.Name] = menu2add;
                     }

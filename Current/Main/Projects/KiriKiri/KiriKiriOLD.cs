@@ -264,17 +264,27 @@ namespace TranslationHelper.Projects.KiriKiri
                                 {
                                     var sb = new StringBuilder();
                                     line = file.ReadLine();
-                                    sb.Append(line);
                                     while (!line.EndsWith("[ll]") && !line.EndsWith("@s"))
                                     {
                                         while (line.StartsWith("@"))
                                         {
                                             line = file.ReadLine();
                                         }
-                                        sb.Append(Environment.NewLine);
-                                        line = file.ReadLine();
+                                        // At this point, line doesn't start with @ and doesn't end with [ll] or @s
+                                        // So we accumulate it
+                                        if (sb.Length > 0)
+                                        {
+                                            sb.Append(Environment.NewLine);
+                                        }
                                         sb.Append(line);
+                                        line = file.ReadLine();
                                     }
+                                    // Don't forget the final line that ends with [ll] or @s
+                                    if (sb.Length > 0)
+                                    {
+                                        sb.Append(Environment.NewLine);
+                                    }
+                                    sb.Append(line);
                                     line = sb.ToString();
                                     line = line.Remove(line.Length - 4);//удаление последних четырех символов "[ll]" или "\r\n@s"
                                     _ = DT.Rows.Add(line);
