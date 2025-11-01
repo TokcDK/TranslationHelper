@@ -37,7 +37,7 @@ namespace TranslationHelper.Projects
                 }
             }
 
-            return newestfiles.Values.ToList();
+            return new List<FileInfo>(newestfiles.Values);
         }
 
         /// <summary>
