@@ -135,6 +135,12 @@
     <Compile Include="Formats\RPGMMV\StopCVPluginTXT.cs" />
     <Compile Include="Formats\RPGMMV\ValueLocationPresetTxt.cs" />
     <Compile Include="Formats\WolfRPG\TextEPH.cs" />
+    <Compile Include="Forms\Search\ReplaceWhatWithUserControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Forms\Search\ReplaceWhatWithUserControl.Designer.cs">
+      <DependentUpon>ReplaceWhatWithUserControl.cs</DependentUpon>
+    </Compile>
     <Compile Include="Forms\Search\SearchConditionsUserControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -624,6 +630,9 @@
     <Compile Include="SimpleHelpers\FileEncoding.cs" />
     <Compile Include="tests\xorfornscript.cs" />
     <Compile Include="Functions\FunctionsWeb.cs" />
+    <EmbeddedResource Include="Forms\Search\ReplaceWhatWithUserControl.resx">
+      <DependentUpon>ReplaceWhatWithUserControl.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Forms\Search\SearchConditionsUserControl.resx">
       <DependentUpon>SearchConditionsUserControl.cs</DependentUpon>
     </EmbeddedResource>
