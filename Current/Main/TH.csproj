@@ -135,11 +135,17 @@
     <Compile Include="Formats\RPGMMV\StopCVPluginTXT.cs" />
     <Compile Include="Formats\RPGMMV\ValueLocationPresetTxt.cs" />
     <Compile Include="Formats\WolfRPG\TextEPH.cs" />
-    <Compile Include="Forms\Search\Search.cs">
+    <Compile Include="Forms\Search\SearchConditionsUserControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Forms\Search\SearchConditionsUserControl.Designer.cs">
+      <DependentUpon>SearchConditionsUserControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\Search\SearchForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Forms\Search\Search.Designer.cs">
-      <DependentUpon>Search.cs</DependentUpon>
+    <Compile Include="Forms\Search\SearchForm.Designer.cs">
+      <DependentUpon>SearchForm.cs</DependentUpon>
     </Compile>
     <Compile Include="Functions\FileElementsFunctions\Row\OnlineTranslate\ITranslationCache.cs" />
     <Compile Include="Functions\FileElementsFunctions\Row\OnlineTranslate\OnlineTranslateTEST.cs" />
@@ -618,8 +624,11 @@
     <Compile Include="SimpleHelpers\FileEncoding.cs" />
     <Compile Include="tests\xorfornscript.cs" />
     <Compile Include="Functions\FunctionsWeb.cs" />
-    <EmbeddedResource Include="Forms\Search\Search.resx">
-      <DependentUpon>Search.cs</DependentUpon>
+    <EmbeddedResource Include="Forms\Search\SearchConditionsUserControl.resx">
+      <DependentUpon>SearchConditionsUserControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\Search\SearchForm.resx">
+      <DependentUpon>SearchForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\THfrmSearch.resx">
       <DependentUpon>THfrmSearch.cs</DependentUpon>

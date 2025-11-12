@@ -1,6 +1,6 @@
 ﻿namespace TranslationHelper.Forms.Search
 {
-    partial class Search
+    partial class SearchForm
     {
         /// <summary>
         /// Required designer variable.

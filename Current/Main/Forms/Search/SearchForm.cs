@@ -10,9 +10,9 @@ using System.Windows.Forms;
 
 namespace TranslationHelper.Forms.Search
 {
-    public partial class Search : Form
+    public partial class SearchForm : Form
     {
-        public Search()
+        public SearchForm()
         {
             InitializeComponent();
         }
