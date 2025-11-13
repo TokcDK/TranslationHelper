@@ -18,39 +18,18 @@ namespace FormatTest1
                 {
                     line = reader.ReadLine();
 
-                    if (line!.StartsWith('@')) continue; // command
-                    if (line.StartsWith('#')) continue; // comment
+                    if (LineParsingHelper.IsCommandOrComment(line)) continue;
 
-                    lines.Add(new FileExtractedStringInfo(line,"",""));
+                    lines.Add(new FileExtractedStringInfo(line!,"",""));
                 }
             }
 
             return lines;
         }
 
-        public Stream? WriteStrings(List<FileExtractedStringInfo> fileExtractedStringInfos, Stream? fileContent = null)
+        public Stream WriteStrings(List<FileExtractedStringInfo> fileExtractedStringInfos)
         {
-            // when writing in target file need first read the file
-            if(fileContent== null) { return null; }
-
-            using (StreamReader reader = new StreamReader(fileContent))
-            using (StreamWriter writer = new StreamWriter(fileContent))
-            {
-                string? line;
-                while (reader.EndOfStream)
-                {
-                    line = reader.ReadLine();
-
-                    if (line!.StartsWith('@')|| line.StartsWith('#'))
-                    {
-                        writer.WriteLine(line);
-                    }
-
-                    writer.WriteLine(line);
-                }
-            }
-
-            return fileContent;
+            throw new NotImplementedException();
         }
     }
 }

@@ -9,13 +9,8 @@ namespace TH.WPF.Core.Data.Project
     /// <summary>
     /// Info about opened file
     /// </summary>
-    public class ProjectFileInfo : INotifyPropertyChanged
+    public class ProjectFileInfo : ObservableObject
     {
-        public event PropertyChangedEventHandler? PropertyChanged;
-        public void OnPropertyChanged([CallerMemberName] string prop = "")
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(prop));
-        }
 
         private List<object> selectedItems = new();
         public List<object> SelectedItems

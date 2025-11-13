@@ -9,13 +9,8 @@ namespace TH.WPF.Core.Data.Project
     /// <summary>
     /// ProjectInfo
     /// </summary>
-    public class ProjectInfo : INotifyPropertyChanged
+    public class ProjectInfo : ObservableObject
     {
-        public event PropertyChangedEventHandler? PropertyChanged;
-        public void OnPropertyChanged([CallerMemberName] string prop = "")
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(prop));
-        }
 
         public string? Name { get; set; }
 
@@ -42,13 +37,8 @@ namespace TH.WPF.Core.Data.Project
     /// <summary>
     /// ProjectInfo
     /// </summary>
-    public class ProjectsListInfo : INotifyPropertyChanged
+    public class ProjectsListInfo : ObservableObject
     {
-        public event PropertyChangedEventHandler? PropertyChanged;
-        public void OnPropertyChanged([CallerMemberName] string prop = "")
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(prop));
-        }
 
         public ObservableCollection<ProjectInfo>? Projects { get; set; }
 
