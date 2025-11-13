@@ -153,6 +153,7 @@
     <Compile Include="Forms\Search\SearchForm.Designer.cs">
       <DependentUpon>SearchForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="Forms\Search\SearchHelper.cs" />
     <Compile Include="Functions\FileElementsFunctions\Row\OnlineTranslate\ITranslationCache.cs" />
     <Compile Include="Functions\FileElementsFunctions\Row\OnlineTranslate\OnlineTranslateTEST.cs" />
     <Compile Include="Functions\FileElementsFunctions\Row\OnlineTranslate\StringsTranslatorGoogle.cs" />

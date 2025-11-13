@@ -97,6 +97,7 @@
             this.ReplaceAllButton.TabIndex = 3;
             this.ReplaceAllButton.Text = "Replace all";
             this.ReplaceAllButton.UseVisualStyleBackColor = true;
+            this.ReplaceAllButton.Click += new System.EventHandler(this.ReplaceAllButton_Click);
             // 
             // ReplaceButton
             // 
@@ -107,6 +108,7 @@
             this.ReplaceButton.TabIndex = 2;
             this.ReplaceButton.Text = "Replace";
             this.ReplaceButton.UseVisualStyleBackColor = true;
+            this.ReplaceButton.Click += new System.EventHandler(this.ReplaceButton_Click);
             // 
             // SearchAllButton
             // 
@@ -117,6 +119,7 @@
             this.SearchAllButton.TabIndex = 1;
             this.SearchAllButton.Text = "Search all";
             this.SearchAllButton.UseVisualStyleBackColor = true;
+            this.SearchAllButton.Click += new System.EventHandler(this.SearchAllButton_Click);
             // 
             // SearchButton
             // 
@@ -127,6 +130,7 @@
             this.SearchButton.TabIndex = 0;
             this.SearchButton.Text = "Search";
             this.SearchButton.UseVisualStyleBackColor = true;
+            this.SearchButton.Click += new System.EventHandler(this.SearchButton_Click);
             // 
             // SearchConditionsTabControl
             // 
