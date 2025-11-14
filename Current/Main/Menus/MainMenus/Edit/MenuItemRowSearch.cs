@@ -34,7 +34,7 @@ namespace TranslationHelper.Menus.MainMenus.Edit
             {
                 if (AppData.Main.searchformNew == null || AppData.Main.searchformNew.IsDisposed)
                 {
-                    AppData.Main.searchformNew = new SearchForm(AppData.CurrentProject.FilesContent);
+                    AppData.Main.searchformNew = new SearchForm(AppData.CurrentProject);
                     AppData.Main.searchformNew.Show();
                 }
 

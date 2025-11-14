@@ -31,8 +31,8 @@
             this.SearchRootPanel = new System.Windows.Forms.Panel();
             this.SearchRootTableLayoutPanel = new System.Windows.Forms.TableLayoutPanel();
             this.SearchButtonsTableLayoutPanel = new System.Windows.Forms.TableLayoutPanel();
-            this.ReplaceAllButton = new System.Windows.Forms.Button();
             this.SearchAllButton = new System.Windows.Forms.Button();
+            this.ReplaceAllButton = new System.Windows.Forms.Button();
             this.SearchConditionsTabControl = new System.Windows.Forms.TabControl();
             this.SearchRootPanel.SuspendLayout();
             this.SearchRootTableLayoutPanel.SuspendLayout();
@@ -82,17 +82,6 @@
             this.SearchButtonsTableLayoutPanel.Size = new System.Drawing.Size(244, 289);
             this.SearchButtonsTableLayoutPanel.TabIndex = 0;
             // 
-            // ReplaceAllButton
-            // 
-            this.ReplaceAllButton.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.ReplaceAllButton.Location = new System.Drawing.Point(3, 147);
-            this.ReplaceAllButton.Name = "ReplaceAllButton";
-            this.ReplaceAllButton.Size = new System.Drawing.Size(238, 139);
-            this.ReplaceAllButton.TabIndex = 3;
-            this.ReplaceAllButton.Text = "Replace all";
-            this.ReplaceAllButton.UseVisualStyleBackColor = true;
-            this.ReplaceAllButton.Click += new System.EventHandler(this.ReplaceAllButton_Click);
-            // 
             // SearchAllButton
             // 
             this.SearchAllButton.Dock = System.Windows.Forms.DockStyle.Fill;
@@ -103,6 +92,17 @@
             this.SearchAllButton.Text = "Search all";
             this.SearchAllButton.UseVisualStyleBackColor = true;
             this.SearchAllButton.Click += new System.EventHandler(this.SearchAllButton_Click);
+            // 
+            // ReplaceAllButton
+            // 
+            this.ReplaceAllButton.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.ReplaceAllButton.Location = new System.Drawing.Point(3, 147);
+            this.ReplaceAllButton.Name = "ReplaceAllButton";
+            this.ReplaceAllButton.Size = new System.Drawing.Size(238, 139);
+            this.ReplaceAllButton.TabIndex = 3;
+            this.ReplaceAllButton.Text = "Replace all";
+            this.ReplaceAllButton.UseVisualStyleBackColor = true;
+            this.ReplaceAllButton.Click += new System.EventHandler(this.ReplaceAllButton_Click);
             // 
             // SearchConditionsTabControl
             // 
@@ -135,6 +135,6 @@
         private System.Windows.Forms.TableLayoutPanel SearchButtonsTableLayoutPanel;
         private System.Windows.Forms.Button ReplaceAllButton;
         private System.Windows.Forms.Button SearchAllButton;
-        private System.Windows.Forms.TabControl SearchConditionsTabControl;
+        internal System.Windows.Forms.TabControl SearchConditionsTabControl;
     }
 }

@@ -7,20 +7,19 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using TranslationHelper.Projects;
 
 namespace TranslationHelper.Forms.Search
 {
     public partial class SearchForm : Form
     {
         private readonly DataSet _dataSet;
-        private readonly TabControl _searchConditionsTabControl;
 
-        public SearchForm(DataSet dataSet)
+        public SearchForm(ProjectBase project)
         {
-            _dataSet = dataSet ?? throw new ArgumentNullException(nameof(dataSet));
-            _searchConditionsTabControl = new TabControl();
+            _dataSet = project.FilesContent ?? throw new ArgumentNullException("input project");
+            
             InitializeComponent();
-
 
             AddSearchConditionTab();
         }
@@ -41,18 +40,18 @@ namespace TranslationHelper.Forms.Search
 
         public void AddSearchConditionTab()
         {
-            var tabPage = new TabPage($"Condition {(_searchConditionsTabControl.TabCount + 1)}");
+            var tabPage = new TabPage($"Condition {(SearchConditionsTabControl.TabCount + 1)}");
             var conditionUC = new SearchConditionUserControl();
             tabPage.Controls.Add(conditionUC);
             conditionUC.Dock = DockStyle.Fill;
-            _searchConditionsTabControl.TabPages.Add(tabPage);
+            SearchConditionsTabControl.TabPages.Add(tabPage);
         }
 
         public void RemoveSearchConditionTab(TabPage tabPage)
         {
-            if (_searchConditionsTabControl.TabCount > 1)
+            if (SearchConditionsTabControl.TabCount > 1)
             {
-                _searchConditionsTabControl.TabPages.Remove(tabPage);
+                SearchConditionsTabControl.TabPages.Remove(tabPage);
             }
         }
 
@@ -126,7 +125,7 @@ namespace TranslationHelper.Forms.Search
         private List<ISearchCondition> GetSearchConditions()
         {
             var conditions = new List<ISearchCondition>();
-            foreach (TabPage tabPage in _searchConditionsTabControl.TabPages)
+            foreach (TabPage tabPage in SearchConditionsTabControl.TabPages)
             {
                 if (tabPage.Controls.Count > 0)
                 {
