@@ -12,9 +12,18 @@ namespace TranslationHelper.Forms.Search
 {
     public partial class SearchForm : Form
     {
-        public SearchForm()
+        readonly SearchHelper searchData;
+
+        public SearchForm(object[] args)
         {
             InitializeComponent();
+
+            if(args.Length != 3)
+            {
+                throw new ArgumentException("Invalid number of arguments");
+            }
+
+            searchData = new SearchHelper();
         }
 
         private void SearchButton_Click(object sender, EventArgs e)

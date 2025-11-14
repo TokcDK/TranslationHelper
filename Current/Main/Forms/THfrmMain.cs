@@ -7,6 +7,7 @@ using System.Globalization;
 using System.Windows.Forms;
 using TranslationHelper.Data;
 using TranslationHelper.Extensions;
+using TranslationHelper.Forms.Search;
 using TranslationHelper.Functions;
 using TranslationHelper.Functions.FileElementsFunctions.Row;
 using TranslationHelper.Helpers;
@@ -160,6 +161,7 @@ namespace TranslationHelper
         }
 
         internal THfrmSearch search;
+        internal SearchForm searchformNew;
 
         internal static bool DGVCellInEditMode
         {

@@ -8,6 +8,7 @@ using System.Windows.Forms;
 using TranslationHelper.Data;
 using TranslationHelper.Extensions;
 using TranslationHelper.Formats.RPGMaker.Functions;
+using TranslationHelper.Forms.Search;
 using TranslationHelper.Functions;
 using TranslationHelper.Functions.FileElementsFunctions.Row;
 using TranslationHelper.Main.Functions;
@@ -31,24 +32,30 @@ namespace TranslationHelper.Menus.MainMenus.Edit
 
             try
             {
-                if (AppData.Main.search == null || AppData.Main.search.IsDisposed)
+                if (AppData.Main.searchformNew == null || AppData.Main.searchformNew.IsDisposed)
                 {
-                    AppData.Main.search = new THfrmSearch(new object[3]{ AppData.Main.THFilesList, AppData.Main.THFileElementsDataGridView, AppData.Main.THTargetRichTextBox });
+                    AppData.Main.searchformNew = new SearchForm(new object[3]{ AppData.Main.THFilesList, AppData.Main.THFileElementsDataGridView, AppData.Main.THTargetRichTextBox });
+                    AppData.Main.searchformNew.Show();
                 }
 
-                if (AppData.Main.search.Visible)
-                {
-                    AppData.Main.search.Activate();//помещает на передний план
-                    AppData.Main.search.GetSelectedText();
-                }
-                else
-                {
-                    AppData.Main.search.Show();
-                    AppData.Main.search.GetSelectedText();
-                    //поместить на передний план
-                    //search.TopMost = true;
-                    //search.TopMost = false;
-                }
+                //if (AppData.Main.search == null || AppData.Main.search.IsDisposed)
+                //{
+                //    AppData.Main.search = new THfrmSearch(new object[3]{ AppData.Main.THFilesList, AppData.Main.THFileElementsDataGridView, AppData.Main.THTargetRichTextBox });
+                //}
+
+                //if (AppData.Main.search.Visible)
+                //{
+                //    AppData.Main.search.Activate();//помещает на передний план
+                //    AppData.Main.search.GetSelectedText();
+                //}
+                //else
+                //{
+                //    AppData.Main.search.Show();
+                //    AppData.Main.search.GetSelectedText();
+                //    //поместить на передний план
+                //    //search.TopMost = true;
+                //    //search.TopMost = false;
+                //}
             }
             catch
             {
