@@ -13,6 +13,7 @@ namespace TranslationHelper.Forms.Search
     public partial class SearchForm : Form
     {
         readonly SearchHelper searchData;
+        int conditionTabIndex = 1;
 
         public SearchForm(object[] args)
         {
@@ -30,6 +31,11 @@ namespace TranslationHelper.Forms.Search
 
             var columns = dgv.Columns.Cast<DataGridViewColumn>().Select(c => c.HeaderText).ToArray();
             searchData = new SearchHelper(columns);
+            TabPage tabPage = new TabPage();
+            var searchCOndition = new SearchConditionsUserControl() { Dock = DockStyle.Fill };
+            tabPage.Controls.Add(searchCOndition);
+            tabPage.Text = $"Condition {conditionTabIndex++}";
+            SearchConditionsTabControl.Controls.Add(tabPage);
         }
 
         private void SearchButton_Click(object sender, EventArgs e)
