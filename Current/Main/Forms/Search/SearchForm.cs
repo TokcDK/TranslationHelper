@@ -23,7 +23,13 @@ namespace TranslationHelper.Forms.Search
                 throw new ArgumentException("Invalid number of arguments");
             }
 
-            searchData = new SearchHelper();
+            if(!(args[1] is DataGridView dgv))
+            {
+                throw new ArgumentException("Expect  the second argument to be DatagridView");
+            }
+
+            var columns = dgv.Columns.Cast<DataGridViewColumn>().Select(c => c.HeaderText).ToArray();
+            searchData = new SearchHelper(columns);
         }
 
         private void SearchButton_Click(object sender, EventArgs e)

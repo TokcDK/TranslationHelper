@@ -10,23 +10,40 @@ namespace TranslationHelper.Forms.Search
     {
         internal List<SearchCondition> SearchConditions { get; set; } = new List<SearchCondition>();
 
-        internal SearchHelper()
+        internal SearchHelper(string[] columns)
         {
+            SearchConditions.Add(new SearchCondition(columns));
         }
     }
 
     internal class SearchCondition
     {
+        public SearchCondition(string[] columns)
+        {
+            Options = new SearchOptions(columns);
+            Replacers.Add(new Replacer());
+        }
+
         internal string FindWhat { get; set; } = "";
 
-        internal SearchOptions Options { get; set; } = new SearchOptions();
+        internal SearchOptions Options { get; set; }
 
         internal List<Replacer> Replacers { get; set; } = new List<Replacer>();
     }
 
     internal class SearchOptions
     {
-        internal List<string> SearchColumn { get; set; }
+        public SearchOptions(string[] columns)
+        {
+            SearchColumns = columns;
+            if(SearchColumns.Length > 0)
+            {
+                SearchColumn = SearchColumns[0];
+            }
+        }
+
+        internal string[] SearchColumns { get; }
+        internal string SearchColumn { get; set; }
 
         internal bool IsCaseSensitive { get; set; } = false;
 
