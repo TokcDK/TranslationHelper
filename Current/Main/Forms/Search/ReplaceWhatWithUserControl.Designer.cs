@@ -28,9 +28,9 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.comboBox2 = new System.Windows.Forms.ComboBox();
+            this.ReplaceWithComboBox = new System.Windows.Forms.ComboBox();
             this.panel1 = new System.Windows.Forms.Panel();
-            this.comboBox1 = new System.Windows.Forms.ComboBox();
+            this.ReplaceWhatComboBox = new System.Windows.Forms.ComboBox();
             this.label1 = new System.Windows.Forms.Label();
             this.label3 = new System.Windows.Forms.Label();
             this.ReplaceWhatWithTableLayoutPanel = new System.Windows.Forms.TableLayoutPanel();
@@ -38,32 +38,32 @@
             this.ReplaceWhatWithTableLayoutPanel.SuspendLayout();
             this.SuspendLayout();
             // 
-            // comboBox2
+            // ReplaceWithComboBox
             // 
-            this.comboBox2.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.comboBox2.FormattingEnabled = true;
-            this.comboBox2.Location = new System.Drawing.Point(114, 35);
-            this.comboBox2.Name = "comboBox2";
-            this.comboBox2.Size = new System.Drawing.Size(549, 21);
-            this.comboBox2.TabIndex = 5;
+            this.ReplaceWithComboBox.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.ReplaceWithComboBox.FormattingEnabled = true;
+            this.ReplaceWithComboBox.Location = new System.Drawing.Point(114, 35);
+            this.ReplaceWithComboBox.Name = "ReplaceWithComboBox";
+            this.ReplaceWithComboBox.Size = new System.Drawing.Size(549, 21);
+            this.ReplaceWithComboBox.TabIndex = 5;
             // 
             // panel1
             // 
-            this.panel1.Controls.Add(this.comboBox1);
+            this.panel1.Controls.Add(this.ReplaceWhatComboBox);
             this.panel1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.panel1.Location = new System.Drawing.Point(114, 3);
             this.panel1.Name = "panel1";
             this.panel1.Size = new System.Drawing.Size(549, 26);
             this.panel1.TabIndex = 4;
             // 
-            // comboBox1
+            // ReplaceWhatComboBox
             // 
-            this.comboBox1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.comboBox1.FormattingEnabled = true;
-            this.comboBox1.Location = new System.Drawing.Point(0, 0);
-            this.comboBox1.Name = "comboBox1";
-            this.comboBox1.Size = new System.Drawing.Size(549, 21);
-            this.comboBox1.TabIndex = 0;
+            this.ReplaceWhatComboBox.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.ReplaceWhatComboBox.FormattingEnabled = true;
+            this.ReplaceWhatComboBox.Location = new System.Drawing.Point(0, 0);
+            this.ReplaceWhatComboBox.Name = "ReplaceWhatComboBox";
+            this.ReplaceWhatComboBox.Size = new System.Drawing.Size(549, 21);
+            this.ReplaceWhatComboBox.TabIndex = 0;
             // 
             // label1
             // 
@@ -95,7 +95,7 @@
             this.ReplaceWhatWithTableLayoutPanel.Controls.Add(this.label3, 0, 1);
             this.ReplaceWhatWithTableLayoutPanel.Controls.Add(this.label1, 0, 0);
             this.ReplaceWhatWithTableLayoutPanel.Controls.Add(this.panel1, 1, 0);
-            this.ReplaceWhatWithTableLayoutPanel.Controls.Add(this.comboBox2, 1, 1);
+            this.ReplaceWhatWithTableLayoutPanel.Controls.Add(this.ReplaceWithComboBox, 1, 1);
             this.ReplaceWhatWithTableLayoutPanel.Dock = System.Windows.Forms.DockStyle.Fill;
             this.ReplaceWhatWithTableLayoutPanel.Location = new System.Drawing.Point(0, 0);
             this.ReplaceWhatWithTableLayoutPanel.Name = "ReplaceWhatWithTableLayoutPanel";
@@ -120,12 +120,11 @@
         }
 
         #endregion
-
-        private System.Windows.Forms.ComboBox comboBox2;
         private System.Windows.Forms.Panel panel1;
-        private System.Windows.Forms.ComboBox comboBox1;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.TableLayoutPanel ReplaceWhatWithTableLayoutPanel;
+        internal System.Windows.Forms.ComboBox ReplaceWithComboBox;
+        internal System.Windows.Forms.ComboBox ReplaceWhatComboBox;
     }
 }
