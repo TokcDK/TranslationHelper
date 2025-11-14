@@ -1,6 +1,6 @@
 ﻿namespace TranslationHelper.Forms.Search
 {
-    partial class SearchConditionsUserControl
+    partial class SearchConditionUserControl
     {
         /// <summary> 
         /// Required designer variable.
@@ -31,15 +31,15 @@
             this.components = new System.ComponentModel.Container();
             this.SearchConditionsRootTableLayoutPanel = new System.Windows.Forms.TableLayoutPanel();
             this.SearchTextFieldsTableLayoutPanel = new System.Windows.Forms.TableLayoutPanel();
-            this.contextMenuStrip1 = new System.Windows.Forms.ContextMenuStrip(this.components);
-            this.ReplaceWhatWithTabControl = new System.Windows.Forms.TabControl();
             this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
             this.label1 = new System.Windows.Forms.Label();
+            this.FindWhatComboBox = new System.Windows.Forms.ComboBox();
             this.SearchOptionsFlowLayoutPanel = new System.Windows.Forms.FlowLayoutPanel();
+            this.SearchOptionSelectedColumnComboBox = new System.Windows.Forms.ComboBox();
             this.SearchOptionCaseSensitiveCheckBox = new System.Windows.Forms.CheckBox();
             this.SearchOptionRegexCheckBox = new System.Windows.Forms.CheckBox();
-            this.SearchOptionSelectedColumnComboBox = new System.Windows.Forms.ComboBox();
-            this.comboBox1 = new System.Windows.Forms.ComboBox();
+            this.ReplaceWhatWithTabControl = new System.Windows.Forms.TabControl();
+            this.contextMenuStrip1 = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.SearchConditionsRootTableLayoutPanel.SuspendLayout();
             this.SearchTextFieldsTableLayoutPanel.SuspendLayout();
             this.tableLayoutPanel1.SuspendLayout();
@@ -73,22 +73,8 @@
             this.SearchTextFieldsTableLayoutPanel.RowCount = 2;
             this.SearchTextFieldsTableLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 40.69767F));
             this.SearchTextFieldsTableLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 59.30233F));
-            this.SearchTextFieldsTableLayoutPanel.Size = new System.Drawing.Size(610, 83);
+            this.SearchTextFieldsTableLayoutPanel.Size = new System.Drawing.Size(610, 82);
             this.SearchTextFieldsTableLayoutPanel.TabIndex = 0;
-            // 
-            // contextMenuStrip1
-            // 
-            this.contextMenuStrip1.Name = "contextMenuStrip1";
-            this.contextMenuStrip1.Size = new System.Drawing.Size(61, 4);
-            // 
-            // ReplaceWhatWithTabControl
-            // 
-            this.ReplaceWhatWithTabControl.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.ReplaceWhatWithTabControl.Location = new System.Drawing.Point(3, 92);
-            this.ReplaceWhatWithTabControl.Name = "ReplaceWhatWithTabControl";
-            this.ReplaceWhatWithTabControl.SelectedIndex = 0;
-            this.ReplaceWhatWithTabControl.Size = new System.Drawing.Size(610, 117);
-            this.ReplaceWhatWithTabControl.TabIndex = 1;
             // 
             // tableLayoutPanel1
             // 
@@ -96,7 +82,7 @@
             this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 13.57616F));
             this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 86.42384F));
             this.tableLayoutPanel1.Controls.Add(this.label1, 0, 0);
-            this.tableLayoutPanel1.Controls.Add(this.comboBox1, 1, 0);
+            this.tableLayoutPanel1.Controls.Add(this.FindWhatComboBox, 1, 0);
             this.tableLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tableLayoutPanel1.Location = new System.Drawing.Point(3, 3);
             this.tableLayoutPanel1.Name = "tableLayoutPanel1";
@@ -117,6 +103,15 @@
             this.label1.Text = "Find:";
             this.label1.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
+            // FindWhatComboBox
+            // 
+            this.FindWhatComboBox.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.FindWhatComboBox.FormattingEnabled = true;
+            this.FindWhatComboBox.Location = new System.Drawing.Point(85, 3);
+            this.FindWhatComboBox.Name = "FindWhatComboBox";
+            this.FindWhatComboBox.Size = new System.Drawing.Size(516, 21);
+            this.FindWhatComboBox.TabIndex = 1;
+            // 
             // SearchOptionsFlowLayoutPanel
             // 
             this.SearchOptionsFlowLayoutPanel.Controls.Add(this.SearchOptionSelectedColumnComboBox);
@@ -125,8 +120,16 @@
             this.SearchOptionsFlowLayoutPanel.Dock = System.Windows.Forms.DockStyle.Fill;
             this.SearchOptionsFlowLayoutPanel.Location = new System.Drawing.Point(3, 36);
             this.SearchOptionsFlowLayoutPanel.Name = "SearchOptionsFlowLayoutPanel";
-            this.SearchOptionsFlowLayoutPanel.Size = new System.Drawing.Size(604, 44);
+            this.SearchOptionsFlowLayoutPanel.Size = new System.Drawing.Size(604, 43);
             this.SearchOptionsFlowLayoutPanel.TabIndex = 1;
+            // 
+            // SearchOptionSelectedColumnComboBox
+            // 
+            this.SearchOptionSelectedColumnComboBox.FormattingEnabled = true;
+            this.SearchOptionSelectedColumnComboBox.Location = new System.Drawing.Point(3, 3);
+            this.SearchOptionSelectedColumnComboBox.Name = "SearchOptionSelectedColumnComboBox";
+            this.SearchOptionSelectedColumnComboBox.Size = new System.Drawing.Size(153, 21);
+            this.SearchOptionSelectedColumnComboBox.TabIndex = 2;
             // 
             // SearchOptionCaseSensitiveCheckBox
             // 
@@ -148,29 +151,26 @@
             this.SearchOptionRegexCheckBox.Text = "Regex";
             this.SearchOptionRegexCheckBox.UseVisualStyleBackColor = true;
             // 
-            // SearchOptionSelectedColumnComboBox
+            // ReplaceWhatWithTabControl
             // 
-            this.SearchOptionSelectedColumnComboBox.FormattingEnabled = true;
-            this.SearchOptionSelectedColumnComboBox.Location = new System.Drawing.Point(3, 3);
-            this.SearchOptionSelectedColumnComboBox.Name = "SearchOptionSelectedColumnComboBox";
-            this.SearchOptionSelectedColumnComboBox.Size = new System.Drawing.Size(153, 21);
-            this.SearchOptionSelectedColumnComboBox.TabIndex = 2;
+            this.ReplaceWhatWithTabControl.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.ReplaceWhatWithTabControl.Location = new System.Drawing.Point(3, 91);
+            this.ReplaceWhatWithTabControl.Name = "ReplaceWhatWithTabControl";
+            this.ReplaceWhatWithTabControl.SelectedIndex = 0;
+            this.ReplaceWhatWithTabControl.Size = new System.Drawing.Size(610, 118);
+            this.ReplaceWhatWithTabControl.TabIndex = 1;
             // 
-            // comboBox1
+            // contextMenuStrip1
             // 
-            this.comboBox1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.comboBox1.FormattingEnabled = true;
-            this.comboBox1.Location = new System.Drawing.Point(85, 3);
-            this.comboBox1.Name = "comboBox1";
-            this.comboBox1.Size = new System.Drawing.Size(516, 21);
-            this.comboBox1.TabIndex = 1;
+            this.contextMenuStrip1.Name = "contextMenuStrip1";
+            this.contextMenuStrip1.Size = new System.Drawing.Size(61, 4);
             // 
-            // SearchConditionsUserControl
+            // SearchConditionUserControl
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.Controls.Add(this.SearchConditionsRootTableLayoutPanel);
-            this.Name = "SearchConditionsUserControl";
+            this.Name = "SearchConditionUserControl";
             this.Size = new System.Drawing.Size(616, 212);
             this.SearchConditionsRootTableLayoutPanel.ResumeLayout(false);
             this.SearchTextFieldsTableLayoutPanel.ResumeLayout(false);
@@ -186,14 +186,14 @@
 
         private System.Windows.Forms.TableLayoutPanel SearchConditionsRootTableLayoutPanel;
         private System.Windows.Forms.TableLayoutPanel SearchTextFieldsTableLayoutPanel;
-        private System.Windows.Forms.TabControl ReplaceWhatWithTabControl;
         private System.Windows.Forms.ContextMenuStrip contextMenuStrip1;
         private System.Windows.Forms.TableLayoutPanel tableLayoutPanel1;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.FlowLayoutPanel SearchOptionsFlowLayoutPanel;
-        private System.Windows.Forms.ComboBox SearchOptionSelectedColumnComboBox;
-        private System.Windows.Forms.CheckBox SearchOptionCaseSensitiveCheckBox;
-        private System.Windows.Forms.CheckBox SearchOptionRegexCheckBox;
-        private System.Windows.Forms.ComboBox comboBox1;
+        internal System.Windows.Forms.ComboBox SearchOptionSelectedColumnComboBox;
+        internal System.Windows.Forms.ComboBox FindWhatComboBox;
+        internal System.Windows.Forms.CheckBox SearchOptionCaseSensitiveCheckBox;
+        internal System.Windows.Forms.CheckBox SearchOptionRegexCheckBox;
+        internal System.Windows.Forms.TabControl ReplaceWhatWithTabControl;
     }
 }
