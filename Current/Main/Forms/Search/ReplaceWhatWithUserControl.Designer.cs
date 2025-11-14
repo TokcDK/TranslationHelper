@@ -42,7 +42,7 @@
             // 
             this.ReplaceWithComboBox.Dock = System.Windows.Forms.DockStyle.Fill;
             this.ReplaceWithComboBox.FormattingEnabled = true;
-            this.ReplaceWithComboBox.Location = new System.Drawing.Point(114, 35);
+            this.ReplaceWithComboBox.Location = new System.Drawing.Point(114, 34);
             this.ReplaceWithComboBox.Name = "ReplaceWithComboBox";
             this.ReplaceWithComboBox.Size = new System.Drawing.Size(549, 21);
             this.ReplaceWithComboBox.TabIndex = 5;
@@ -53,7 +53,7 @@
             this.panel1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.panel1.Location = new System.Drawing.Point(114, 3);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(549, 26);
+            this.panel1.Size = new System.Drawing.Size(549, 25);
             this.panel1.TabIndex = 4;
             // 
             // ReplaceWhatComboBox
@@ -71,7 +71,7 @@
             this.label1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.label1.Location = new System.Drawing.Point(3, 0);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(105, 32);
+            this.label1.Size = new System.Drawing.Size(105, 31);
             this.label1.TabIndex = 0;
             this.label1.Text = "Replace what:";
             this.label1.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
@@ -80,9 +80,9 @@
             // 
             this.label3.AutoSize = true;
             this.label3.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.label3.Location = new System.Drawing.Point(3, 32);
+            this.label3.Location = new System.Drawing.Point(3, 31);
             this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(105, 30);
+            this.label3.Size = new System.Drawing.Size(105, 31);
             this.label3.TabIndex = 3;
             this.label3.Text = "Replace with:";
             this.label3.TextAlign = System.Drawing.ContentAlignment.MiddleRight;

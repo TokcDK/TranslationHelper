@@ -14,6 +14,8 @@ namespace TranslationHelper.Forms.Search
     {
         public SearchConditionUserControl()
         {
+            ReplaceWhatWithTabControl = new TabControl();
+
             AddReplaceTab();
             InitializeComponent();
         }
