@@ -10,7 +10,7 @@ using System.Windows.Forms;
 
 namespace TranslationHelper.Forms.Search
 {
-    public partial class ReplaceWhatWithUserControl : UserControl
+    public partial class ReplaceWhatWithUserControl : UserControl, IReplaceTask
     {
         public ReplaceWhatWithUserControl()
         {
