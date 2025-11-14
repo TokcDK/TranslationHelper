@@ -38,17 +38,7 @@ namespace TranslationHelper.Forms.Search
             SearchConditionsTabControl.Controls.Add(tabPage);
         }
 
-        private void SearchButton_Click(object sender, EventArgs e)
-        {
-
-        }
-
         private void SearchAllButton_Click(object sender, EventArgs e)
-        {
-
-        }
-
-        private void ReplaceButton_Click(object sender, EventArgs e)
         {
 
         }
