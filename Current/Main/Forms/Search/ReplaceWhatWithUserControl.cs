@@ -17,7 +17,7 @@ namespace TranslationHelper.Forms.Search
             InitializeComponent();
         }
 
-        public string ReplaceWhat => ReplaceWhatComboBox.SelectedItem?.ToString() ?? string.Empty;
-        public string ReplaceWith => ReplaceWithComboBox.SelectedItem?.ToString() ?? string.Empty;
+        public string ReplaceWhat => ReplaceWhatComboBox.Text ?? string.Empty;
+        public string ReplaceWith => ReplaceWithComboBox.Text ?? string.Empty;
     }
 }

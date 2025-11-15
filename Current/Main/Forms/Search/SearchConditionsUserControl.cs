@@ -42,7 +42,7 @@ namespace TranslationHelper.Forms.Search
                 ReplaceWhatWithTabControl.TabPages.Remove(tabPage);
             }
         }
-        public string FindWhat => FindWhatComboBox.SelectedItem?.ToString() ?? string.Empty;
+        public string FindWhat => FindWhatComboBox.Text ?? string.Empty;
 
         public string SearchColumn => SearchOptionSelectedColumnComboBox.SelectedItem?.ToString() ?? string.Empty;
 
