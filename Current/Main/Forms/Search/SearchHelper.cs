@@ -24,15 +24,27 @@ namespace TranslationHelper.Forms.Search
     }
     public interface ISearchOption
     {
+    }
+    public interface ISearchOptionMatch
+    {
         bool IsMatch(string inputString, string pattern);
+    }
+    public interface ISearchOptionReplace
+    {
         string Replace(string inputString, string replaceWhat, string replaceWith);
     }
     public interface ISearchOptionUsingControl
     {
         Control Control { get; }
     }
+    public class SearchOptionSearchColumn : ISearchOption, ISearchOptionUsingControl
+    {
+        readonly ComboBox _control = new ComboBox();
 
-    public class SearchOptionCaseSensitive : ISearchOption, ISearchOptionUsingControl
+        public Control Control => _control;
+    }
+
+    public class SearchOptionCaseSensitive : ISearchOption, ISearchOptionMatch, ISearchOptionReplace, ISearchOptionUsingControl
     {
         readonly CheckBox _control = new CheckBox() { Checked = false };
 
