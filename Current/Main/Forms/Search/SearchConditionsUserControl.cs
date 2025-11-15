@@ -14,12 +14,11 @@ namespace TranslationHelper.Forms.Search
     {
         public SearchConditionUserControl(string[] columns)
         {
-            SearchOptionSelectedColumnComboBox = new ComboBox();
+            InitializeComponent();
+
             SearchOptionSelectedColumnComboBox.Items.AddRange(columns);
-            ReplaceWhatWithTabControl = new TabControl();
 
             AddReplaceTab();
-            InitializeComponent();
         }
 
         public void AddReplaceTab()
@@ -29,6 +28,7 @@ namespace TranslationHelper.Forms.Search
             tabPage.Controls.Add(replaceUC);
             replaceUC.Dock = DockStyle.Fill;
             ReplaceWhatWithTabControl.TabPages.Add(tabPage);
+            ReplaceWhatWithTabControl.Update();
         }
 
         public void RemoveReplaceTab(TabPage tabPage)

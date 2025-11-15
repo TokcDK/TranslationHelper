@@ -194,6 +194,6 @@
         internal System.Windows.Forms.ComboBox FindWhatComboBox;
         internal System.Windows.Forms.CheckBox SearchOptionCaseSensitiveCheckBox;
         internal System.Windows.Forms.CheckBox SearchOptionRegexCheckBox;
-        internal System.Windows.Forms.TabControl ReplaceWhatWithTabControl;
+        public System.Windows.Forms.TabControl ReplaceWhatWithTabControl;
     }
 }
