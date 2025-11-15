@@ -14,6 +14,9 @@ namespace TranslationHelper.Forms.Search
     {
         public ReplaceWhatWithUserControl()
         {
+            ReplaceWhatComboBox = new ComboBox();
+            ReplaceWithComboBox = new ComboBox();
+
             InitializeComponent();
         }
 

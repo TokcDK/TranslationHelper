@@ -12,10 +12,9 @@ namespace TranslationHelper.Forms.Search
 {
     public partial class SearchConditionUserControl : UserControl, ISearchCondition
     {
-        string[] _columns { get; }
-
         public SearchConditionUserControl(string[] columns)
         {
+            SearchOptionSelectedColumnComboBox = new ComboBox();
             SearchOptionSelectedColumnComboBox.DataSource = columns;
             ReplaceWhatWithTabControl = new TabControl();
 
