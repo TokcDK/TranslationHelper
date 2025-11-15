@@ -5,23 +5,55 @@ using System.Data;
 using System.Drawing;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using TranslationHelper.Data;
+using TranslationHelper.Main.Functions;
 using TranslationHelper.Projects;
+using Zuby.ADGV;
 
 namespace TranslationHelper.Forms.Search
 {
     public partial class SearchForm : Form
     {
+        private readonly ProjectBase _project;
         private readonly DataSet _dataSet;
 
         public SearchForm(ProjectBase project)
         {
+            _project = project;
             _dataSet = project.FilesContent ?? throw new ArgumentNullException(nameof(project)); 
 
             InitializeComponent();
             
             AddSearchConditionTab();
+        }
+        public class FoundRowData
+        {
+            private static readonly int _originalColumnIndex = AppData.CurrentProject.OriginalColumnIndex;
+            private static readonly int _translationColumnIndex = AppData.CurrentProject.TranslationColumnIndex;
+
+            public FoundRowData(DataRow row)
+            {
+                Row = row;
+                TableIndex = AppData.CurrentProject.FilesContent.Tables.IndexOf(row.Table);
+                RowIndex = row.Table.Rows.IndexOf(row);
+            }
+
+            [Browsable(false)]
+            public DataRow Row { get; }
+            public string Original => Row.Field<string>(_originalColumnIndex);
+            public string Translation
+            {
+                get => Row.Field<string>(_translationColumnIndex);
+                set => Row.SetField(_translationColumnIndex, value);
+            }
+
+            [Browsable(false)]
+            public int TableIndex { get; }
+            [Browsable(false)]
+            public int RowIndex { get; }
         }
 
         private void SearchAllButton_Click(object sender, EventArgs e)
@@ -46,9 +78,41 @@ namespace TranslationHelper.Forms.Search
             var foundRowsDatagridView = new DataGridView
             {
                 DataSource = foundRows,
-                Dock = DockStyle.Fill
+                Dock = DockStyle.Fill,
+                ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize,
+                ColumnHeadersVisible = false,
+                AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill,
+                AutoSizeRowsMode = DataGridViewAutoSizeRowsMode.DisplayedCellsExceptHeaders,
+            };
+            foundRowsDatagridView.CellClick += (sender, e) =>
+            {
+                ShowSelectedCellInMainTable(foundRows, e.RowIndex, e.ColumnIndex);
             };
             FoundRowsPanel.Controls.Add(foundRowsDatagridView);
+        }
+        private void ShowSelectedCellInMainTable(List<FoundRowData> _foundRowsList, int foundRowIndex, int columnIndex)
+        {
+            var _workFileDgv = AppData.Main.THFileElementsDataGridView;
+            try
+            {
+                var foundRowData = _foundRowsList[foundRowIndex];
+                var (_selectedTableIndex, _selectedRowIndex) = (foundRowData.TableIndex, foundRowData.RowIndex);
+
+                AppData.Main.THFileElementsDataGridView.CleanFilter();
+
+                var tableDefaultView = _project.FilesContent.Tables[_selectedTableIndex].DefaultView;
+                tableDefaultView.RowFilter = string.Empty;
+                tableDefaultView.Sort = string.Empty;
+                _workFileDgv.Refresh();
+
+                FunctionsTable.ShowSelectedRow(_selectedTableIndex, columnIndex, _selectedRowIndex, AppData.Main.THFileElementsDataGridView);
+                //if (_workFileDgv.CurrentCell != null)
+                //{
+                //    await Task.Run(() => SelectTextInTextBox(_workFileDgv.CurrentCell.Value.ToString())).ConfigureAwait(false);
+                //}
+            }
+            catch (ArgumentException) { }
+            catch (InvalidOperationException) { }
         }
 
         private void ReplaceAllButton_Click(object sender, EventArgs e)
@@ -74,15 +138,15 @@ namespace TranslationHelper.Forms.Search
             }
         }
 
-        private List<DataRow> PerformSearch(bool isReplace = false)
+        private List<FoundRowData> PerformSearch(bool isReplace = false)
         {
             var conditions = GetSearchConditions();
             var nonEmptyConditions = conditions.Where(c => !string.IsNullOrEmpty(c.FindWhat) 
             && (!isReplace || isReplace && c.ReplaceTasks.Any(t => !string.IsNullOrEmpty(t.ReplaceWhat))))
                 .ToArray();
-            if (nonEmptyConditions.Length == 0) return new List<DataRow>();
+            if (nonEmptyConditions.Length == 0) return new List<FoundRowData>();
 
-            var foundRows = new List<DataRow>();
+            var foundRows = new List<FoundRowData>();
 
             foreach (DataTable table in _dataSet.Tables)
             {
@@ -117,7 +181,7 @@ namespace TranslationHelper.Forms.Search
                                 }
                             }
 
-                            foundRows.Add(row);
+                            foundRows.Add(new FoundRowData(row));
                         }
                     }
                 }
