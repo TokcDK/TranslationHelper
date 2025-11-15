@@ -33,9 +33,11 @@ namespace TranslationHelper.Forms.Search
 
         private void ReplaceAllButton_Click(object sender, EventArgs e)
         {
-            PerformReplace();
+            var foundStrings = PerformSearch(true);
 
             MessageBox.Show("Replace operation completed.", "Replace Results");
+
+            MessageBox.Show($"Found {foundStrings.Count} matching strings.", "Search Results");
         }
 
         public void AddSearchConditionTab()
@@ -56,14 +58,15 @@ namespace TranslationHelper.Forms.Search
             }
         }
 
-        private List<string> PerformSearch()
+        private List<string> PerformSearch(bool isReplace = false)
         {
             var conditions = GetSearchConditions();
-            var nonEmptyConditions = conditions.Where(c => !string.IsNullOrEmpty(c.FindWhat)).ToList();
-            if (nonEmptyConditions.Count == 0)
-                return new List<string>();
+            var nonEmptyConditions = conditions.Where(c => !string.IsNullOrEmpty(c.FindWhat) 
+            && (!isReplace || isReplace && c.ReplaceTasks.Any(t => !string.IsNullOrEmpty(t.ReplaceWhat))))
+                .ToArray();
+            if (nonEmptyConditions.Length == 0) return new List<string>();
 
-            var foundStrings = new HashSet<string>(); // Use HashSet for uniqueness
+            var foundStrings = new HashSet<string>();
 
             foreach (DataTable table in _dataSet.Tables)
             {
@@ -73,8 +76,7 @@ namespace TranslationHelper.Forms.Search
 
                 var matchingRows = table.AsEnumerable()
                     .Where(row => nonEmptyConditions.All(cond =>
-                        SearchHelpers.Matches(row[cond.SearchColumn]?.ToString() ?? string.Empty, cond.FindWhat, cond.CaseSensitive, cond.UseRegex)))
-                    .ToList();
+                        SearchHelpers.Matches(row.Field<string>(cond.SearchColumn), cond.FindWhat, cond.CaseSensitive, cond.UseRegex)));
 
                 foreach (var row in matchingRows)
                 {
@@ -84,6 +86,12 @@ namespace TranslationHelper.Forms.Search
                         if (!string.IsNullOrEmpty(matchingValue))
                         {
                             foundStrings.Add(matchingValue);
+
+                            if (!isReplace) continue;
+
+                            var columnName = cond.SearchColumn;
+                            var currentValue = row.Field<string>(columnName);
+                            row[columnName] = SearchHelpers.ApplyReplaces(currentValue, cond.ReplaceTasks, cond.CaseSensitive, cond.UseRegex);
                         }
                     }
                 }
@@ -92,51 +100,12 @@ namespace TranslationHelper.Forms.Search
             return foundStrings.OrderBy(s => s).ToList();
         }
 
-        private void PerformReplace()
+        private IEnumerable<ISearchCondition> GetSearchConditions()
         {
-            var conditions = GetSearchConditions();
-            var nonEmptyConditions = conditions.Where(c => !string.IsNullOrEmpty(c.FindWhat)).ToList();
-            if (nonEmptyConditions.Count == 0)
-                return;
-
-            foreach (DataTable table in _dataSet.Tables)
-            {
-                // Skip tables missing required columns
-                if (!nonEmptyConditions.All(c => !string.IsNullOrEmpty(c.SearchColumn) && table.Columns.Contains(c.SearchColumn)))
-                    continue;
-
-                var matchingRows = table.AsEnumerable()
-                    .Where(row => nonEmptyConditions.All(cond =>
-                        SearchHelpers.Matches(row[cond.SearchColumn]?.ToString() ?? string.Empty, cond.FindWhat, cond.CaseSensitive, cond.UseRegex)))
-                    .ToList();
-
-                foreach (var row in matchingRows)
-                {
-                    foreach (var cond in nonEmptyConditions)
-                    {
-                        var columnName = cond.SearchColumn;
-                        var currentValue = row[columnName]?.ToString() ?? string.Empty;
-                        var newValue = SearchHelpers.ApplyReplaces(currentValue, cond.ReplaceTasks, cond.CaseSensitive, cond.UseRegex);
-                        row[columnName] = newValue;
-                    }
-                }
-            }
-        }
-
-        private List<ISearchCondition> GetSearchConditions()
-        {
-            var conditions = new List<ISearchCondition>();
             foreach (TabPage tabPage in SearchConditionsTabControl.TabPages)
             {
-                if (tabPage.Controls.Count > 0)
-                {
-                    if (tabPage.Controls[0] is ISearchCondition conditionUC)
-                    {
-                        conditions.Add(conditionUC);
-                    }
-                }
+                yield return tabPage.Controls[0] as ISearchCondition;
             }
-            return conditions;
         }
     }
 }

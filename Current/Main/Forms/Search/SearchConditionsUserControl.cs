@@ -50,22 +50,17 @@ namespace TranslationHelper.Forms.Search
 
         public bool UseRegex => SearchOptionRegexCheckBox.Checked;
 
-        public IReadOnlyList<IReplaceTask> ReplaceTasks
+        public List<IReplaceTask> ReplaceTasks
         {
             get
             {
                 var tasks = new List<IReplaceTask>();
                 foreach (TabPage tabPage in ReplaceWhatWithTabControl.TabPages)
                 {
-                    if (tabPage.Controls.Count > 0)
-                    {
-                        if (tabPage.Controls[0] is IReplaceTask replaceUC)
-                        {
-                            tasks.Add(replaceUC);
-                        }
-                    }
+                    tasks.Add(tabPage.Controls[0] as IReplaceTask);
                 }
-                return tasks.AsReadOnly();
+
+                return tasks;
             }
         }
     }

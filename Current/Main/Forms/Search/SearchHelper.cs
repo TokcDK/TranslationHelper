@@ -13,7 +13,7 @@ namespace TranslationHelper.Forms.Search
         string SearchColumn { get; }
         bool CaseSensitive { get; }
         bool UseRegex { get; }
-        IReadOnlyList<IReplaceTask> ReplaceTasks { get; }
+        List<IReplaceTask> ReplaceTasks { get; }
     }
 
     public interface IReplaceTask
@@ -41,11 +41,8 @@ namespace TranslationHelper.Forms.Search
             }
         }
 
-        public static string ApplyReplaces(string input, IReadOnlyList<IReplaceTask> tasks, bool caseSensitive, bool useRegex)
+        public static string ApplyReplaces(string input, List<IReplaceTask> tasks, bool caseSensitive, bool useRegex)
         {
-            if (tasks == null || !tasks.Any() || string.IsNullOrEmpty(input))
-                return input;
-
             var result = input;
             foreach (var task in tasks.Where(t => !string.IsNullOrEmpty(t.ReplaceWhat)))
             {

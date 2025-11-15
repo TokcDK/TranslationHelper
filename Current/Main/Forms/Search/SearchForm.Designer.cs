@@ -51,35 +51,35 @@
             // 
             // SearchRootTableLayoutPanel
             // 
-            this.SearchRootTableLayoutPanel.ColumnCount = 2;
+            this.SearchRootTableLayoutPanel.ColumnCount = 1;
             this.SearchRootTableLayoutPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 65.5F));
-            this.SearchRootTableLayoutPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 34.5F));
-            this.SearchRootTableLayoutPanel.Controls.Add(this.SearchButtonsTableLayoutPanel, 1, 0);
             this.SearchRootTableLayoutPanel.Controls.Add(this.SearchConditionsTabControl, 0, 0);
+            this.SearchRootTableLayoutPanel.Controls.Add(this.SearchButtonsTableLayoutPanel, 0, 1);
             this.SearchRootTableLayoutPanel.Dock = System.Windows.Forms.DockStyle.Fill;
             this.SearchRootTableLayoutPanel.Location = new System.Drawing.Point(0, 0);
             this.SearchRootTableLayoutPanel.Margin = new System.Windows.Forms.Padding(1);
             this.SearchRootTableLayoutPanel.Name = "SearchRootTableLayoutPanel";
-            this.SearchRootTableLayoutPanel.RowCount = 2;
-            this.SearchRootTableLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 74F));
-            this.SearchRootTableLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 26F));
+            this.SearchRootTableLayoutPanel.RowCount = 3;
+            this.SearchRootTableLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 68.88889F));
+            this.SearchRootTableLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 31.11111F));
+            this.SearchRootTableLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 153F));
             this.SearchRootTableLayoutPanel.Size = new System.Drawing.Size(765, 418);
             this.SearchRootTableLayoutPanel.TabIndex = 0;
             // 
             // SearchButtonsTableLayoutPanel
             // 
-            this.SearchButtonsTableLayoutPanel.ColumnCount = 1;
+            this.SearchButtonsTableLayoutPanel.ColumnCount = 2;
             this.SearchButtonsTableLayoutPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.SearchButtonsTableLayoutPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 388F));
             this.SearchButtonsTableLayoutPanel.Controls.Add(this.SearchAllButton, 0, 0);
-            this.SearchButtonsTableLayoutPanel.Controls.Add(this.ReplaceAllButton, 0, 1);
+            this.SearchButtonsTableLayoutPanel.Controls.Add(this.ReplaceAllButton, 1, 0);
             this.SearchButtonsTableLayoutPanel.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.SearchButtonsTableLayoutPanel.Location = new System.Drawing.Point(511, 10);
+            this.SearchButtonsTableLayoutPanel.Location = new System.Drawing.Point(10, 192);
             this.SearchButtonsTableLayoutPanel.Margin = new System.Windows.Forms.Padding(10);
             this.SearchButtonsTableLayoutPanel.Name = "SearchButtonsTableLayoutPanel";
-            this.SearchButtonsTableLayoutPanel.RowCount = 2;
-            this.SearchButtonsTableLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 25F));
-            this.SearchButtonsTableLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 25F));
-            this.SearchButtonsTableLayoutPanel.Size = new System.Drawing.Size(244, 289);
+            this.SearchButtonsTableLayoutPanel.RowCount = 1;
+            this.SearchButtonsTableLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.SearchButtonsTableLayoutPanel.Size = new System.Drawing.Size(745, 62);
             this.SearchButtonsTableLayoutPanel.TabIndex = 0;
             // 
             // SearchAllButton
@@ -87,7 +87,7 @@
             this.SearchAllButton.Dock = System.Windows.Forms.DockStyle.Fill;
             this.SearchAllButton.Location = new System.Drawing.Point(3, 3);
             this.SearchAllButton.Name = "SearchAllButton";
-            this.SearchAllButton.Size = new System.Drawing.Size(238, 138);
+            this.SearchAllButton.Size = new System.Drawing.Size(351, 56);
             this.SearchAllButton.TabIndex = 1;
             this.SearchAllButton.Text = "Search all";
             this.SearchAllButton.UseVisualStyleBackColor = true;
@@ -96,9 +96,9 @@
             // ReplaceAllButton
             // 
             this.ReplaceAllButton.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.ReplaceAllButton.Location = new System.Drawing.Point(3, 147);
+            this.ReplaceAllButton.Location = new System.Drawing.Point(360, 3);
             this.ReplaceAllButton.Name = "ReplaceAllButton";
-            this.ReplaceAllButton.Size = new System.Drawing.Size(238, 139);
+            this.ReplaceAllButton.Size = new System.Drawing.Size(382, 56);
             this.ReplaceAllButton.TabIndex = 3;
             this.ReplaceAllButton.Text = "Replace all";
             this.ReplaceAllButton.UseVisualStyleBackColor = true;
@@ -110,7 +110,7 @@
             this.SearchConditionsTabControl.Location = new System.Drawing.Point(3, 3);
             this.SearchConditionsTabControl.Name = "SearchConditionsTabControl";
             this.SearchConditionsTabControl.SelectedIndex = 0;
-            this.SearchConditionsTabControl.Size = new System.Drawing.Size(495, 303);
+            this.SearchConditionsTabControl.Size = new System.Drawing.Size(759, 176);
             this.SearchConditionsTabControl.TabIndex = 1;
             // 
             // SearchForm
