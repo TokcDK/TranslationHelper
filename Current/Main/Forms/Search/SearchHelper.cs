@@ -44,8 +44,10 @@ namespace TranslationHelper.Forms.Search
         public static string ApplyReplaces(string input, List<IReplaceTask> tasks, bool caseSensitive, bool useRegex)
         {
             var result = input;
-            foreach (var task in tasks.Where(t => !string.IsNullOrEmpty(t.ReplaceWhat)))
+            foreach (var task in tasks)
             {
+                if(string.IsNullOrEmpty(task.ReplaceWhat)) continue;
+
                 if (useRegex)
                 {
                     var options = caseSensitive ? RegexOptions.None : RegexOptions.IgnoreCase;

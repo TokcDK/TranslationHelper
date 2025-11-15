@@ -85,13 +85,23 @@ namespace TranslationHelper.Forms.Search
                         var matchingValue = row[cond.SearchColumn]?.ToString() ?? string.Empty;
                         if (!string.IsNullOrEmpty(matchingValue))
                         {
+                            if (isReplace)
+                            {
+                                var columnName = cond.SearchColumn;
+                                var currentValue = row.Field<string>(columnName);
+                                var newValue = SearchHelpers.ApplyReplaces(currentValue, cond.ReplaceTasks, cond.CaseSensitive, cond.UseRegex);
+
+                                if(!string.Equals(currentValue, newValue))
+                                {
+                                    row.SetField(columnName, newValue);
+                                }
+                                else
+                                {
+                                    continue;
+                                }
+                            }
+
                             foundStrings.Add(matchingValue);
-
-                            if (!isReplace) continue;
-
-                            var columnName = cond.SearchColumn;
-                            var currentValue = row.Field<string>(columnName);
-                            row[columnName] = SearchHelpers.ApplyReplaces(currentValue, cond.ReplaceTasks, cond.CaseSensitive, cond.UseRegex);
                         }
                     }
                 }
