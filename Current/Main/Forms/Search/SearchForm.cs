@@ -82,7 +82,7 @@ namespace TranslationHelper.Forms.Search
                 {
                     foreach (var cond in nonEmptyConditions)
                     {
-                        var matchingValue = row[cond.SearchColumn]?.ToString() ?? string.Empty;
+                        var matchingValue = row.Field<string>(cond.SearchColumn);
                         if (!string.IsNullOrEmpty(matchingValue))
                         {
                             if (isReplace)
