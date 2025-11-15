@@ -53,29 +53,9 @@ namespace TranslationHelper.Forms.Search
                 }
                 else
                 {
-                    if (caseSensitive)
-                    {
-                        result = result.Replace(task.ReplaceWhat, task.ReplaceWith ?? string.Empty);
-                    }
-                    else
-                    {
-                        result = ReplaceIgnoreCase(result, task.ReplaceWhat, task.ReplaceWith ?? string.Empty);
-                    }
+                    var options = caseSensitive ? StringComparison.InvariantCulture : StringComparison.InvariantCultureIgnoreCase;
+                    result = result.Replace(task.ReplaceWhat, task.ReplaceWith, options);
                 }
-            }
-            return result;
-        }
-
-        private static string ReplaceIgnoreCase(string input, string oldValue, string newValue)
-        {
-            if (string.IsNullOrEmpty(input) || string.IsNullOrEmpty(oldValue))
-                return input;
-
-            var result = input;
-            int index;
-            while ((index = result.IndexOf(oldValue, StringComparison.OrdinalIgnoreCase)) != -1)
-            {
-                result = result.Remove(index, oldValue.Length).Insert(index, newValue);
             }
             return result;
         }
