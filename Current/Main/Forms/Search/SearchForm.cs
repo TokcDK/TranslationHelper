@@ -107,7 +107,7 @@ namespace TranslationHelper.Forms.Search
                 }
             }
 
-            return foundStrings.OrderBy(s => s).ToList();
+            return foundStrings.ToList();
         }
 
         private IEnumerable<ISearchCondition> GetSearchConditions()
