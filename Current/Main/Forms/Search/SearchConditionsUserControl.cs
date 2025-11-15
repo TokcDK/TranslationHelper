@@ -38,11 +38,9 @@ namespace TranslationHelper.Forms.Search
                 ReplaceWhatWithTabControl.TabPages.Remove(tabPage);
             }
         }
-        public string FindWhat => !string.IsNullOrEmpty(FindWhatComboBox.SelectedValue?.ToString())
-            ? FindWhatComboBox.SelectedValue.ToString()
-            : string.Empty;
+        public string FindWhat => FindWhatComboBox.SelectedItem?.ToString() ?? string.Empty;
 
-        public string SearchColumn => SearchOptionSelectedColumnComboBox.SelectedValue?.ToString() ?? string.Empty;
+        public string SearchColumn => SearchOptionSelectedColumnComboBox.SelectedItem?.ToString() ?? string.Empty;
 
         public bool CaseSensitive => SearchOptionCaseSensitiveCheckBox.Checked;
 
