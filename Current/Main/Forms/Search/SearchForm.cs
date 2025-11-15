@@ -17,9 +17,9 @@ namespace TranslationHelper.Forms.Search
 
         public SearchForm(ProjectBase project)
         {
-            InitializeComponent();
+            _dataSet = project.FilesContent ?? throw new ArgumentNullException(nameof(project)); 
 
-            _dataSet = project.FilesContent ?? throw new ArgumentNullException("input project");
+            InitializeComponent();
             
             AddSearchConditionTab();
         }
