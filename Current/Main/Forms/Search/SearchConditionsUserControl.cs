@@ -17,6 +17,10 @@ namespace TranslationHelper.Forms.Search
             InitializeComponent();
 
             SearchOptionSelectedColumnComboBox.Items.AddRange(columns);
+            if (columns.Length > 0)
+            {
+                SearchOptionSelectedColumnComboBox.SelectedIndex = 0;
+            }
 
             AddReplaceTab();
         }
