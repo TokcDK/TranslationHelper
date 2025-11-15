@@ -26,18 +26,34 @@ namespace TranslationHelper.Forms.Search
 
         private void SearchAllButton_Click(object sender, EventArgs e)
         {
-            var foundStrings = PerformSearch();
+            GetSearchResults();
+        }
 
-            MessageBox.Show($"Found {foundStrings.Count} matching strings.", "Search Results");
+        private void GetSearchResults(bool isReplace = false)
+        {
+            var foundRows = PerformSearch();
+
+            var actionName = isReplace ?
+                "Replaced" :
+                "Found";
+            MessageBox.Show($"{actionName} {foundRows.Count} matching strings.", "Results");
+
+            if(foundRows.Count == 0) 
+            { 
+                return; 
+            }
+
+            var foundRowsDatagridView = new DataGridView
+            {
+                DataSource = foundRows,
+                Dock = DockStyle.Fill
+            };
+            FoundRowsPanel.Controls.Add(foundRowsDatagridView);
         }
 
         private void ReplaceAllButton_Click(object sender, EventArgs e)
         {
-            var foundStrings = PerformSearch(true);
-
-            MessageBox.Show("Replace operation completed.", "Replace Results");
-
-            MessageBox.Show($"Found {foundStrings.Count} matching strings.", "Search Results");
+            GetSearchResults(true);
         }
 
         public void AddSearchConditionTab()
@@ -58,15 +74,15 @@ namespace TranslationHelper.Forms.Search
             }
         }
 
-        private List<string> PerformSearch(bool isReplace = false)
+        private List<DataRow> PerformSearch(bool isReplace = false)
         {
             var conditions = GetSearchConditions();
             var nonEmptyConditions = conditions.Where(c => !string.IsNullOrEmpty(c.FindWhat) 
             && (!isReplace || isReplace && c.ReplaceTasks.Any(t => !string.IsNullOrEmpty(t.ReplaceWhat))))
                 .ToArray();
-            if (nonEmptyConditions.Length == 0) return new List<string>();
+            if (nonEmptyConditions.Length == 0) return new List<DataRow>();
 
-            var foundStrings = new HashSet<string>();
+            var foundRows = new List<DataRow>();
 
             foreach (DataTable table in _dataSet.Tables)
             {
@@ -101,13 +117,13 @@ namespace TranslationHelper.Forms.Search
                                 }
                             }
 
-                            foundStrings.Add(matchingValue);
+                            foundRows.Add(row);
                         }
                     }
                 }
             }
 
-            return foundStrings.ToList();
+            return foundRows;
         }
 
         private IEnumerable<ISearchCondition> GetSearchConditions()

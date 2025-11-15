@@ -34,6 +34,7 @@
             this.SearchAllButton = new System.Windows.Forms.Button();
             this.ReplaceAllButton = new System.Windows.Forms.Button();
             this.SearchConditionsTabControl = new System.Windows.Forms.TabControl();
+            this.FoundRowsPanel = new System.Windows.Forms.Panel();
             this.SearchRootPanel.SuspendLayout();
             this.SearchRootTableLayoutPanel.SuspendLayout();
             this.SearchButtonsTableLayoutPanel.SuspendLayout();
@@ -55,6 +56,7 @@
             this.SearchRootTableLayoutPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 65.5F));
             this.SearchRootTableLayoutPanel.Controls.Add(this.SearchConditionsTabControl, 0, 0);
             this.SearchRootTableLayoutPanel.Controls.Add(this.SearchButtonsTableLayoutPanel, 0, 1);
+            this.SearchRootTableLayoutPanel.Controls.Add(this.FoundRowsPanel, 0, 2);
             this.SearchRootTableLayoutPanel.Dock = System.Windows.Forms.DockStyle.Fill;
             this.SearchRootTableLayoutPanel.Location = new System.Drawing.Point(0, 0);
             this.SearchRootTableLayoutPanel.Margin = new System.Windows.Forms.Padding(1);
@@ -113,6 +115,14 @@
             this.SearchConditionsTabControl.Size = new System.Drawing.Size(759, 176);
             this.SearchConditionsTabControl.TabIndex = 1;
             // 
+            // FoundRowsPanel
+            // 
+            this.FoundRowsPanel.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.FoundRowsPanel.Location = new System.Drawing.Point(3, 267);
+            this.FoundRowsPanel.Name = "FoundRowsPanel";
+            this.FoundRowsPanel.Size = new System.Drawing.Size(759, 148);
+            this.FoundRowsPanel.TabIndex = 2;
+            // 
             // SearchForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -136,5 +146,6 @@
         private System.Windows.Forms.Button ReplaceAllButton;
         private System.Windows.Forms.Button SearchAllButton;
         internal System.Windows.Forms.TabControl SearchConditionsTabControl;
+        private System.Windows.Forms.Panel FoundRowsPanel;
     }
 }
