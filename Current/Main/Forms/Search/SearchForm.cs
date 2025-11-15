@@ -41,7 +41,8 @@ namespace TranslationHelper.Forms.Search
         public void AddSearchConditionTab()
         {
             var tabPage = new TabPage($"Condition {(SearchConditionsTabControl.TabCount + 1)}");
-            var conditionUC = new SearchConditionUserControl();
+            var columns = _dataSet.Tables.Count > 0 ? _dataSet.Tables[0].Columns.Cast<DataColumn>().Select(c => c.ColumnName).ToArray() : Array.Empty<string>();
+            var conditionUC = new SearchConditionUserControl(columns);
             tabPage.Controls.Add(conditionUC);
             conditionUC.Dock = DockStyle.Fill;
             SearchConditionsTabControl.TabPages.Add(tabPage);
