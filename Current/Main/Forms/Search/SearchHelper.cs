@@ -24,6 +24,7 @@ namespace TranslationHelper.Forms.Search
     }
     public interface ISearchOption
     {
+        int Priority { get; }
     }
     public interface ISearchOptionMatch
     {
@@ -42,6 +43,8 @@ namespace TranslationHelper.Forms.Search
         readonly ComboBox _control = new ComboBox();
 
         public Control Control => _control;
+
+        public int Priority => 999;
     }
 
     public class SearchOptionCaseSensitive : ISearchOption, ISearchOptionMatch, ISearchOptionReplace, ISearchOptionUsingControl
@@ -49,6 +52,8 @@ namespace TranslationHelper.Forms.Search
         readonly CheckBox _control = new CheckBox() { Checked = false };
 
         public Control Control => _control;
+
+        public int Priority => 10;
 
         protected bool CaseSensitive => _control.Checked;
 
@@ -77,6 +82,7 @@ namespace TranslationHelper.Forms.Search
             var options = CaseSensitive ? RegexOptions.None : RegexOptions.IgnoreCase;
             return Regex.Replace(inputString, replaceWhat, replaceWith, options);
         }
+        public new int Priority => 100;
     }
 
     public static class SearchHelpers
