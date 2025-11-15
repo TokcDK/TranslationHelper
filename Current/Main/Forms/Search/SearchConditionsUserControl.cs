@@ -15,7 +15,7 @@ namespace TranslationHelper.Forms.Search
         public SearchConditionUserControl(string[] columns)
         {
             SearchOptionSelectedColumnComboBox = new ComboBox();
-            SearchOptionSelectedColumnComboBox.DataSource = columns;
+            SearchOptionSelectedColumnComboBox.Items.AddRange(columns);
             ReplaceWhatWithTabControl = new TabControl();
 
             AddReplaceTab();
