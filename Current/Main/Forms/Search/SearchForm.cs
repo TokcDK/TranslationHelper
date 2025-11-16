@@ -26,7 +26,13 @@ namespace TranslationHelper.Forms.Search
             _dataSet = project.FilesContent ?? throw new ArgumentNullException(nameof(project)); 
 
             InitializeComponent();
-            
+
+            _searchConditionsTabControl = new TabControl
+            {
+                Dock = DockStyle.Fill
+            };
+            SearchConditionsPanel.Controls.Add(_searchConditionsTabControl);
+
             AddSearchConditionTab();
         }
         public class FoundRowData
@@ -122,12 +128,6 @@ namespace TranslationHelper.Forms.Search
 
         public void AddSearchConditionTab()
         {
-            _searchConditionsTabControl = new TabControl
-            {
-                Dock = DockStyle.Fill
-            };
-            SearchConditionsPanel.Controls.Add(_searchConditionsTabControl);
-
             var tabPage = new TabPage($"Condition {(_searchConditionsTabControl.TabCount + 1)}");
             var columns = _dataSet.Tables.Count > 0 ? _dataSet.Tables[0].Columns.Cast<DataColumn>().Select(c => c.ColumnName).ToArray() : Array.Empty<string>();
             var conditionUC = new SearchConditionUserControl(columns);
