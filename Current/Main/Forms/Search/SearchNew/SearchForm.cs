@@ -12,7 +12,7 @@ using Button = System.Windows.Forms.Button;
 using Tab = Manina.Windows.Forms.Tab;
 using TabControl = Manina.Windows.Forms.TabControl;
 
-namespace TranslationHelper.Forms.Search
+namespace TranslationHelper.Forms.Search.SearchNew
 {
     public partial class SearchForm : Form
     {

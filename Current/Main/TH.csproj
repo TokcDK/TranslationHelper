@@ -135,25 +135,26 @@
     <Compile Include="Formats\RPGMMV\StopCVPluginTXT.cs" />
     <Compile Include="Formats\RPGMMV\ValueLocationPresetTxt.cs" />
     <Compile Include="Formats\WolfRPG\TextEPH.cs" />
-    <Compile Include="Forms\Search\ReplaceWhatWithUserControl.cs">
+    <Compile Include="Forms\Search\SearchNew\ReplaceWhatWithUserControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="Forms\Search\ReplaceWhatWithUserControl.Designer.cs">
+    <Compile Include="Forms\Search\SearchNew\ReplaceWhatWithUserControl.Designer.cs">
       <DependentUpon>ReplaceWhatWithUserControl.cs</DependentUpon>
     </Compile>
-    <Compile Include="Forms\Search\SearchConditionsUserControl.cs">
+    <Compile Include="Forms\Search\SearchNew\SearchConditionsUserControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="Forms\Search\SearchConditionsUserControl.Designer.cs">
+    <Compile Include="Forms\Search\SearchNew\SearchConditionsUserControl.Designer.cs">
       <DependentUpon>SearchConditionsUserControl.cs</DependentUpon>
     </Compile>
-    <Compile Include="Forms\Search\SearchForm.cs">
+    <Compile Include="Forms\Search\SearchNew\SearchForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Forms\Search\SearchForm.Designer.cs">
+    <Compile Include="Forms\Search\SearchNew\SearchForm.Designer.cs">
       <DependentUpon>SearchForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="Forms\Search\SearchHelper.cs" />
+    <Compile Include="Forms\Search\SearchNew\SearchHelper.cs" />
+    <Compile Include="Forms\Search\SearchSharedHelpers.cs" />
     <Compile Include="Functions\FileElementsFunctions\Row\OnlineTranslate\ITranslationCache.cs" />
     <Compile Include="Functions\FileElementsFunctions\Row\OnlineTranslate\OnlineTranslateTEST.cs" />
     <Compile Include="Functions\FileElementsFunctions\Row\OnlineTranslate\StringsTranslatorGoogle.cs" />
@@ -588,10 +589,10 @@
     <Compile Include="ExternalAdditions\SimpleJSON.cs" />
     <Compile Include="ExternalAdditions\FileWriter.cs" />
     <Compile Include="ExternalAdditions\THCreateSymlink.cs" />
-    <Compile Include="Forms\THfrmSearch.cs">
+    <Compile Include="Forms\Search\SearchOld\THfrmSearch.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Forms\THfrmSearch.Designer.cs">
+    <Compile Include="Forms\Search\SearchOld\THfrmSearch.Designer.cs">
       <DependentUpon>THfrmSearch.cs</DependentUpon>
     </Compile>
     <Compile Include="Forms\THfrmSettings.cs">
@@ -632,16 +633,16 @@
     <Compile Include="SimpleHelpers\FileEncoding.cs" />
     <Compile Include="tests\xorfornscript.cs" />
     <Compile Include="Functions\FunctionsWeb.cs" />
-    <EmbeddedResource Include="Forms\Search\ReplaceWhatWithUserControl.resx">
+    <EmbeddedResource Include="Forms\Search\SearchNew\ReplaceWhatWithUserControl.resx">
       <DependentUpon>ReplaceWhatWithUserControl.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Forms\Search\SearchConditionsUserControl.resx">
+    <EmbeddedResource Include="Forms\Search\SearchNew\SearchConditionsUserControl.resx">
       <DependentUpon>SearchConditionsUserControl.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Forms\Search\SearchForm.resx">
+    <EmbeddedResource Include="Forms\Search\SearchNew\SearchForm.resx">
       <DependentUpon>SearchForm.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Forms\THfrmSearch.resx">
+    <EmbeddedResource Include="Forms\Search\SearchOld\THfrmSearch.resx">
       <DependentUpon>THfrmSearch.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\THfrmSettings.resx">

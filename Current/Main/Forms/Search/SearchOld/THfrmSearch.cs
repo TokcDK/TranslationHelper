@@ -1,21 +1,22 @@
-﻿using System;
+﻿using Microsoft.Scripting.Utils;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Drawing;
 using System.Globalization;
+using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using Microsoft.Scripting.Utils;
 using TranslationHelper.Data;
 using TranslationHelper.Extensions;
+using TranslationHelper.Forms.Search;
 using TranslationHelper.Functions;
 using TranslationHelper.Functions.FileElementsFunctions.Row.SearchIssueCheckers;
 using TranslationHelper.Main.Functions;
-using System.IO;
 using Zuby.ADGV;
 
 namespace TranslationHelper
@@ -195,8 +196,8 @@ namespace TranslationHelper
                 {
                     list.Clear();
                     list.AddRange(comboBox.Items.Cast<string>());
-                    AddQuotesToWritingSearchValues(list);
-                    UnEscapeSearchValues(list, false);
+                    SearchSharedHelpers.AddQuotesToWritingSearchValues(list);
+                    SearchSharedHelpers.UnEscapeSearchValues(list, false);
                     _config.SetArrayToSectionValues(iniName, list.ToArray());
                 }
             }
@@ -216,8 +217,8 @@ namespace TranslationHelper
                 {
                     list.Clear();
                     list.AddRange(savedQueries.Take(MaxSavedQueries));
-                    RemoveQuotesFromLoadedSearchValues(list);
-                    UnEscapeSearchValues(list);
+                    SearchSharedHelpers.RemoveQuotesFromLoadedSearchValues(list);
+                    SearchSharedHelpers.UnEscapeSearchValues(list);
                     comboBox.Items.Clear();
                     comboBox.Items.AddRange(list.ToArray());
                 }
@@ -226,37 +227,7 @@ namespace TranslationHelper
             {
                 //AppData.LogError("Failed to load search queries", ex);
             }
-        }
-
-        private static void UnEscapeSearchValues(List<string> arr, bool unescape = true)
-        {
-            int arrCount = arr.Count;
-            for (int i = 0; i < arrCount; i++)
-            {
-                try
-                {
-                    arr[i] = unescape ? Regex.Unescape(arr[i]) : Regex.Escape(arr[i]);
-                }
-                catch (ArgumentException) { /* Ignore invalid regex patterns */ }
-            }
-        }
-
-        private static void RemoveQuotesFromLoadedSearchValues(List<string> items)
-        {
-            int itemsCount = items.Count;
-            for (int i = 0; i < itemsCount; i++)
-            {
-                if (items[i].StartsWith("\"") && items[i].EndsWith("\""))
-                    items[i] = items[i].Substring(1, items[i].Length - 2);
-            }
-        }
-
-        private static void AddQuotesToWritingSearchValues(List<string> items)
-        {
-            int itemsCount = items.Count;
-            for (int i = 0; i < itemsCount; i++)
-                items[i] = $"\"{items[i]}\"";
-        }
+        }        
 
         private static bool IsSearchQueriesReplacersListChanged(List<string> oldList, ComboBox.ObjectCollection items)
             => oldList.Count != items.Count || !oldList.SequenceEqual(items.Cast<string>());

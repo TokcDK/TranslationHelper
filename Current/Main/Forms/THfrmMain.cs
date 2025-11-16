@@ -1,13 +1,10 @@
 ﻿using NLog;
-using NLog.Config;
-using NLog.Targets;
-using NLog.Windows.Forms;
 using System;
 using System.Globalization;
 using System.Windows.Forms;
 using TranslationHelper.Data;
 using TranslationHelper.Extensions;
-using TranslationHelper.Forms.Search;
+using TranslationHelper.Forms.Search.SearchNew;
 using TranslationHelper.Functions;
 using TranslationHelper.Functions.FileElementsFunctions.Row;
 using TranslationHelper.Helpers;

@@ -1,4 +1,4 @@
-﻿namespace TranslationHelper.Forms.Search
+﻿namespace TranslationHelper.Forms.Search.SearchNew
 {
     partial class SearchForm
     {

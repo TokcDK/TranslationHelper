@@ -115,7 +115,7 @@
             // 
             // SearchResultsPanel
             // 
-            this.SearchResultsPanel.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            this.SearchResultsPanel.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
             | System.Windows.Forms.AnchorStyles.Right)));
             this.SearchResultsPanel.Controls.Add(this.SearchResultsDatagridview);
             this.SearchResultsPanel.Location = new System.Drawing.Point(3, 310);
@@ -153,7 +153,7 @@
             // 
             // THSearchPanel
             // 
-            this.THSearchPanel.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            this.THSearchPanel.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
             | System.Windows.Forms.AnchorStyles.Right)));
             this.THSearchPanel.Controls.Add(this.tableLayoutPanel2);
             this.THSearchPanel.Controls.Add(this.tableLayoutPanel1);
