@@ -2,16 +2,11 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
-using System.Drawing;
 using System.Linq;
-using System.Text;
-using System.Text.RegularExpressions;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 using TranslationHelper.Data;
 using TranslationHelper.Main.Functions;
 using TranslationHelper.Projects;
-using Zuby.ADGV;
 
 namespace TranslationHelper.Forms.Search
 {
@@ -24,7 +19,7 @@ namespace TranslationHelper.Forms.Search
         public SearchForm(ProjectBase project)
         {
             _project = project;
-            _dataSet = project.FilesContent ?? throw new ArgumentNullException(nameof(project)); 
+            _dataSet = project.FilesContent ?? throw new ArgumentNullException(nameof(project));
 
             InitializeComponent();
 
@@ -77,12 +72,12 @@ namespace TranslationHelper.Forms.Search
                 "Found";
             SearchResultInfoLabel.Text = $"{actionName} {foundRows.Count} matching strings.";
 
-            if(foundRows.Count == 0) 
-            { 
-                return; 
+            if (foundRows.Count == 0)
+            {
+                return;
             }
 
-            var foundRowsDatagridView = new AdvancedDataGridView
+            var foundRowsDatagridView = new DataGridView
             {
                 DataSource = foundRows,
                 Dock = DockStyle.Fill,
@@ -148,7 +143,7 @@ namespace TranslationHelper.Forms.Search
         private List<FoundRowData> PerformSearch(bool isReplace = false)
         {
             var conditions = GetSearchConditions();
-            var nonEmptyConditions = conditions.Where(c => !string.IsNullOrEmpty(c.FindWhat) 
+            var nonEmptyConditions = conditions.Where(c => !string.IsNullOrEmpty(c.FindWhat)
             && (!isReplace || isReplace && c.ReplaceTasks.Any(t => !string.IsNullOrEmpty(t.ReplaceWhat))))
                 .ToArray();
             if (nonEmptyConditions.Length == 0) return new List<FoundRowData>();
@@ -178,7 +173,7 @@ namespace TranslationHelper.Forms.Search
                                 var currentValue = row.Field<string>(columnName);
                                 var newValue = SearchHelpers.ApplyReplaces(currentValue, cond.ReplaceTasks, cond.CaseSensitive, cond.UseRegex);
 
-                                if(!string.Equals(currentValue, newValue))
+                                if (!string.Equals(currentValue, newValue))
                                 {
                                     row.SetField(columnName, newValue);
                                 }
