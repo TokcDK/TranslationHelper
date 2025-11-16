@@ -58,6 +58,12 @@ namespace TranslationHelper.Forms.Search
             public int RowIndex { get; }
         }
 
+        public class SearchResultsData
+        {
+            public List<FoundRowData> FoundRows { get; set; } = new List<FoundRowData>();
+
+            public List<ISearchCondition> searchConditions { get; set; } = new List<ISearchCondition>();
+        }
         private void SearchAllButton_Click(object sender, EventArgs e)
         {
             GetSearchResults();
@@ -65,22 +71,24 @@ namespace TranslationHelper.Forms.Search
 
         private void GetSearchResults(bool isReplace = false)
         {
-            var foundRows = PerformSearch();
+            var searchResults = PerformSearch();
 
             var actionName = isReplace ?
                 "Replaced" :
                 "Found";
-            SearchResultInfoLabel.Text = $"{actionName} {foundRows.Count} matching strings.";
+            SearchResultInfoLabel.Text = $"{actionName} {searchResults.FoundRows.Count} matching strings.";
 
-            if (foundRows.Count == 0)
+            if (searchResults.FoundRows.Count == 0)
             {
                 return;
             }
 
+            SaveSearchResults(searchResults);
+
             FoundRowsPanel.Controls.Clear();
             var foundRowsDatagridView = new DataGridView
             {
-                DataSource = foundRows,
+                DataSource = searchResults,
                 Dock = DockStyle.Fill,
                 ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize,
                 ColumnHeadersVisible = false,
@@ -89,10 +97,16 @@ namespace TranslationHelper.Forms.Search
             };
             foundRowsDatagridView.CellClick += (sender, e) =>
             {
-                ShowSelectedCellInMainTable(foundRows, e.RowIndex, e.ColumnIndex);
+                ShowSelectedCellInMainTable(searchResults.FoundRows, e.RowIndex, e.ColumnIndex);
             };
             FoundRowsPanel.Controls.Add(foundRowsDatagridView);
         }
+
+        private void SaveSearchResults(SearchResultsData searchResults)
+        {
+            throw new NotImplementedException();
+        }
+
         private void ShowSelectedCellInMainTable(List<FoundRowData> _foundRowsList, int foundRowIndex, int columnIndex)
         {
             var _workFileDgv = AppData.Main.THFileElementsDataGridView;
@@ -168,15 +182,16 @@ namespace TranslationHelper.Forms.Search
             }
         }
 
-        private List<FoundRowData> PerformSearch(bool isReplace = false)
+        private SearchResultsData PerformSearch(bool isReplace = false)
         {
+            var searchResults = new SearchResultsData();
             var conditions = GetSearchConditions();
             var nonEmptyConditions = conditions.Where(c => c != null && !string.IsNullOrEmpty(c.FindWhat)
             && (!isReplace || isReplace && c.ReplaceTasks.Any(t => !string.IsNullOrEmpty(t.ReplaceWhat))))
                 .ToArray();
-            if (nonEmptyConditions.Length == 0) return new List<FoundRowData>();
+            if (nonEmptyConditions.Length == 0) return searchResults;
 
-            var foundRows = new List<FoundRowData>();
+            searchResults.searchConditions.AddRange(nonEmptyConditions);
 
             foreach (DataTable table in _dataSet.Tables)
             {
@@ -211,13 +226,13 @@ namespace TranslationHelper.Forms.Search
                                 }
                             }
 
-                            foundRows.Add(new FoundRowData(row));
+                            searchResults.FoundRows.Add(new FoundRowData(row));
                         }
                     }
                 }
             }
 
-            return foundRows;
+            return searchResults;
         }
 
         private IEnumerable<ISearchCondition> GetSearchConditions()
