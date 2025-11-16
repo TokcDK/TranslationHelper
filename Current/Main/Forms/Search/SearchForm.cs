@@ -208,26 +208,28 @@ namespace TranslationHelper.Forms.Search
                     foreach (var cond in nonEmptyConditions)
                     {
                         var matchingValue = row.Field<string>(cond.SearchColumn);
-                        if (!string.IsNullOrEmpty(matchingValue))
+                        if (string.IsNullOrEmpty(matchingValue))
                         {
-                            if (isReplace)
-                            {
-                                var columnName = cond.SearchColumn;
-                                var currentValue = row.Field<string>(columnName);
-                                var newValue = SearchHelpers.ApplyReplaces(currentValue, cond.ReplaceTasks, cond.CaseSensitive, cond.UseRegex);
-
-                                if (!string.Equals(currentValue, newValue))
-                                {
-                                    row.SetField(columnName, newValue);
-                                }
-                                else
-                                {
-                                    continue;
-                                }
-                            }
-
-                            searchResults.FoundRows.Add(new FoundRowData(row));
+                            continue;
                         }
+
+                        if (isReplace)
+                        {
+                            var columnName = cond.SearchColumn;
+                            var currentValue = row.Field<string>(columnName);
+                            var newValue = SearchHelpers.ApplyReplaces(currentValue, cond.ReplaceTasks, cond.CaseSensitive, cond.UseRegex);
+
+                            if (!string.Equals(currentValue, newValue))
+                            {
+                                row.SetField(columnName, newValue);
+                            }
+                            else
+                            {
+                                continue;
+                            }
+                        }
+
+                        searchResults.FoundRows.Add(new FoundRowData(row));
                     }
                 }
             }
