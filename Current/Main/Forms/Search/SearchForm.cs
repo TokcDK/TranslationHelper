@@ -11,6 +11,7 @@ using System.Windows.Forms;
 using TranslationHelper.Data;
 using TranslationHelper.Main.Functions;
 using TranslationHelper.Projects;
+using Zuby.ADGV;
 
 namespace TranslationHelper.Forms.Search
 {
@@ -81,7 +82,7 @@ namespace TranslationHelper.Forms.Search
                 return; 
             }
 
-            var foundRowsDatagridView = new DataGridView
+            var foundRowsDatagridView = new AdvancedDataGridView
             {
                 DataSource = foundRows,
                 Dock = DockStyle.Fill,
