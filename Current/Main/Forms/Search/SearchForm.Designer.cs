@@ -33,11 +33,16 @@
             this.SearchButtonsTableLayoutPanel = new System.Windows.Forms.TableLayoutPanel();
             this.SearchAllButton = new System.Windows.Forms.Button();
             this.ReplaceAllButton = new System.Windows.Forms.Button();
-            this.FoundRowsPanel = new System.Windows.Forms.Panel();
             this.SearchConditionsPanel = new System.Windows.Forms.Panel();
+            this.SearchResultsPanel = new System.Windows.Forms.Panel();
+            this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
+            this.FoundRowsPanel = new System.Windows.Forms.Panel();
+            this.SearchResultInfoLabel = new System.Windows.Forms.Label();
             this.SearchRootPanel.SuspendLayout();
             this.SearchRootTableLayoutPanel.SuspendLayout();
             this.SearchButtonsTableLayoutPanel.SuspendLayout();
+            this.SearchResultsPanel.SuspendLayout();
+            this.tableLayoutPanel1.SuspendLayout();
             this.SuspendLayout();
             // 
             // SearchRootPanel
@@ -55,8 +60,8 @@
             this.SearchRootTableLayoutPanel.ColumnCount = 1;
             this.SearchRootTableLayoutPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
             this.SearchRootTableLayoutPanel.Controls.Add(this.SearchButtonsTableLayoutPanel, 0, 1);
-            this.SearchRootTableLayoutPanel.Controls.Add(this.FoundRowsPanel, 0, 2);
             this.SearchRootTableLayoutPanel.Controls.Add(this.SearchConditionsPanel, 0, 0);
+            this.SearchRootTableLayoutPanel.Controls.Add(this.SearchResultsPanel, 0, 2);
             this.SearchRootTableLayoutPanel.Dock = System.Windows.Forms.DockStyle.Fill;
             this.SearchRootTableLayoutPanel.Location = new System.Drawing.Point(0, 0);
             this.SearchRootTableLayoutPanel.Margin = new System.Windows.Forms.Padding(1);
@@ -106,14 +111,6 @@
             this.ReplaceAllButton.UseVisualStyleBackColor = true;
             this.ReplaceAllButton.Click += new System.EventHandler(this.ReplaceAllButton_Click);
             // 
-            // FoundRowsPanel
-            // 
-            this.FoundRowsPanel.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.FoundRowsPanel.Location = new System.Drawing.Point(3, 271);
-            this.FoundRowsPanel.Name = "FoundRowsPanel";
-            this.FoundRowsPanel.Size = new System.Drawing.Size(759, 144);
-            this.FoundRowsPanel.TabIndex = 2;
-            // 
             // SearchConditionsPanel
             // 
             this.SearchConditionsPanel.Dock = System.Windows.Forms.DockStyle.Fill;
@@ -121,6 +118,47 @@
             this.SearchConditionsPanel.Name = "SearchConditionsPanel";
             this.SearchConditionsPanel.Size = new System.Drawing.Size(759, 195);
             this.SearchConditionsPanel.TabIndex = 3;
+            // 
+            // SearchResultsPanel
+            // 
+            this.SearchResultsPanel.Controls.Add(this.tableLayoutPanel1);
+            this.SearchResultsPanel.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.SearchResultsPanel.Location = new System.Drawing.Point(3, 271);
+            this.SearchResultsPanel.Name = "SearchResultsPanel";
+            this.SearchResultsPanel.Size = new System.Drawing.Size(759, 144);
+            this.SearchResultsPanel.TabIndex = 4;
+            // 
+            // tableLayoutPanel1
+            // 
+            this.tableLayoutPanel1.ColumnCount = 1;
+            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.tableLayoutPanel1.Controls.Add(this.FoundRowsPanel, 0, 1);
+            this.tableLayoutPanel1.Controls.Add(this.SearchResultInfoLabel, 0, 0);
+            this.tableLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.tableLayoutPanel1.Location = new System.Drawing.Point(0, 0);
+            this.tableLayoutPanel1.Name = "tableLayoutPanel1";
+            this.tableLayoutPanel1.RowCount = 2;
+            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 22F));
+            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tableLayoutPanel1.Size = new System.Drawing.Size(759, 144);
+            this.tableLayoutPanel1.TabIndex = 0;
+            // 
+            // FoundRowsPanel
+            // 
+            this.FoundRowsPanel.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.FoundRowsPanel.Location = new System.Drawing.Point(3, 25);
+            this.FoundRowsPanel.Name = "FoundRowsPanel";
+            this.FoundRowsPanel.Size = new System.Drawing.Size(753, 116);
+            this.FoundRowsPanel.TabIndex = 0;
+            // 
+            // SearchResultInfoLabel
+            // 
+            this.SearchResultInfoLabel.AutoSize = true;
+            this.SearchResultInfoLabel.Location = new System.Drawing.Point(3, 0);
+            this.SearchResultInfoLabel.Name = "SearchResultInfoLabel";
+            this.SearchResultInfoLabel.Size = new System.Drawing.Size(25, 13);
+            this.SearchResultInfoLabel.TabIndex = 1;
+            this.SearchResultInfoLabel.Text = "___";
             // 
             // SearchForm
             // 
@@ -133,6 +171,9 @@
             this.SearchRootPanel.ResumeLayout(false);
             this.SearchRootTableLayoutPanel.ResumeLayout(false);
             this.SearchButtonsTableLayoutPanel.ResumeLayout(false);
+            this.SearchResultsPanel.ResumeLayout(false);
+            this.tableLayoutPanel1.ResumeLayout(false);
+            this.tableLayoutPanel1.PerformLayout();
             this.ResumeLayout(false);
 
         }
@@ -144,7 +185,10 @@
         private System.Windows.Forms.TableLayoutPanel SearchButtonsTableLayoutPanel;
         private System.Windows.Forms.Button ReplaceAllButton;
         private System.Windows.Forms.Button SearchAllButton;
-        private System.Windows.Forms.Panel FoundRowsPanel;
         private System.Windows.Forms.Panel SearchConditionsPanel;
+        private System.Windows.Forms.Panel SearchResultsPanel;
+        private System.Windows.Forms.TableLayoutPanel tableLayoutPanel1;
+        private System.Windows.Forms.Panel FoundRowsPanel;
+        private System.Windows.Forms.Label SearchResultInfoLabel;
     }
 }

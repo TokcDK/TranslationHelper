@@ -75,7 +75,7 @@ namespace TranslationHelper.Forms.Search
             var actionName = isReplace ?
                 "Replaced" :
                 "Found";
-            MessageBox.Show($"{actionName} {foundRows.Count} matching strings.", "Results");
+            SearchResultInfoLabel.Text = $"{actionName} {foundRows.Count} matching strings.";
 
             if(foundRows.Count == 0) 
             { 
@@ -203,6 +203,11 @@ namespace TranslationHelper.Forms.Search
             {
                 yield return tabPage.Controls[0] as ISearchCondition;
             }
+        }
+
+        private void SearchRootTableLayoutPanel_Paint(object sender, PaintEventArgs e)
+        {
+
         }
     }
 }
