@@ -12,6 +12,8 @@ namespace TranslationHelper.Forms.Search
 {
     public partial class SearchConditionUserControl : UserControl, ISearchCondition
     {
+        private TabControl _replaceWhatWithTabControl;
+
         public SearchConditionUserControl(string[] columns)
         {
             InitializeComponent();
@@ -22,24 +24,30 @@ namespace TranslationHelper.Forms.Search
                 SearchOptionSelectedColumnComboBox.SelectedIndex = 0;
             }
 
+            _replaceWhatWithTabControl = new TabControl
+            {
+                Dock = DockStyle.Fill
+            };
+            ReplaceWhatWithPanel.Controls.Add(_replaceWhatWithTabControl);
+
             AddReplaceTab();
         }
 
         public void AddReplaceTab()
         {
-            var tabPage = new TabPage($"Replace {(ReplaceWhatWithTabControl.TabCount + 1)}");
+            var tabPage = new TabPage($"Replace {(_replaceWhatWithTabControl.TabCount + 1)}");
             var replaceUC = new ReplaceWhatWithUserControl();
             tabPage.Controls.Add(replaceUC);
             replaceUC.Dock = DockStyle.Fill;
-            ReplaceWhatWithTabControl.TabPages.Add(tabPage);
-            ReplaceWhatWithTabControl.Update();
+            _replaceWhatWithTabControl.TabPages.Add(tabPage);
+            _replaceWhatWithTabControl.Update();
         }
 
         public void RemoveReplaceTab(TabPage tabPage)
         {
-            if (ReplaceWhatWithTabControl.TabCount > 1)
+            if (_replaceWhatWithTabControl.TabCount > 1)
             {
-                ReplaceWhatWithTabControl.TabPages.Remove(tabPage);
+                _replaceWhatWithTabControl.TabPages.Remove(tabPage);
             }
         }
         public string FindWhat => FindWhatComboBox.Text ?? string.Empty;
@@ -55,7 +63,7 @@ namespace TranslationHelper.Forms.Search
             get
             {
                 var tasks = new List<IReplaceTask>();
-                foreach (TabPage tabPage in ReplaceWhatWithTabControl.TabPages)
+                foreach (TabPage tabPage in _replaceWhatWithTabControl.TabPages)
                 {
                     tasks.Add(tabPage.Controls[0] as IReplaceTask);
                 }

@@ -38,8 +38,8 @@
             this.SearchOptionSelectedColumnComboBox = new System.Windows.Forms.ComboBox();
             this.SearchOptionCaseSensitiveCheckBox = new System.Windows.Forms.CheckBox();
             this.SearchOptionRegexCheckBox = new System.Windows.Forms.CheckBox();
-            this.ReplaceWhatWithTabControl = new System.Windows.Forms.TabControl();
             this.contextMenuStrip1 = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.ReplaceWhatWithPanel = new System.Windows.Forms.Panel();
             this.SearchConditionsRootTableLayoutPanel.SuspendLayout();
             this.SearchTextFieldsTableLayoutPanel.SuspendLayout();
             this.tableLayoutPanel1.SuspendLayout();
@@ -51,7 +51,7 @@
             this.SearchConditionsRootTableLayoutPanel.ColumnCount = 1;
             this.SearchConditionsRootTableLayoutPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
             this.SearchConditionsRootTableLayoutPanel.Controls.Add(this.SearchTextFieldsTableLayoutPanel, 0, 0);
-            this.SearchConditionsRootTableLayoutPanel.Controls.Add(this.ReplaceWhatWithTabControl, 0, 1);
+            this.SearchConditionsRootTableLayoutPanel.Controls.Add(this.ReplaceWhatWithPanel, 0, 1);
             this.SearchConditionsRootTableLayoutPanel.Dock = System.Windows.Forms.DockStyle.Fill;
             this.SearchConditionsRootTableLayoutPanel.Location = new System.Drawing.Point(0, 0);
             this.SearchConditionsRootTableLayoutPanel.Name = "SearchConditionsRootTableLayoutPanel";
@@ -151,19 +151,18 @@
             this.SearchOptionRegexCheckBox.Text = "Regex";
             this.SearchOptionRegexCheckBox.UseVisualStyleBackColor = true;
             // 
-            // ReplaceWhatWithTabControl
-            // 
-            this.ReplaceWhatWithTabControl.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.ReplaceWhatWithTabControl.Location = new System.Drawing.Point(3, 91);
-            this.ReplaceWhatWithTabControl.Name = "ReplaceWhatWithTabControl";
-            this.ReplaceWhatWithTabControl.SelectedIndex = 0;
-            this.ReplaceWhatWithTabControl.Size = new System.Drawing.Size(610, 118);
-            this.ReplaceWhatWithTabControl.TabIndex = 1;
-            // 
             // contextMenuStrip1
             // 
             this.contextMenuStrip1.Name = "contextMenuStrip1";
             this.contextMenuStrip1.Size = new System.Drawing.Size(61, 4);
+            // 
+            // ReplaceWhatWithPanel
+            // 
+            this.ReplaceWhatWithPanel.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.ReplaceWhatWithPanel.Location = new System.Drawing.Point(3, 91);
+            this.ReplaceWhatWithPanel.Name = "ReplaceWhatWithPanel";
+            this.ReplaceWhatWithPanel.Size = new System.Drawing.Size(610, 118);
+            this.ReplaceWhatWithPanel.TabIndex = 1;
             // 
             // SearchConditionUserControl
             // 
@@ -194,6 +193,6 @@
         internal System.Windows.Forms.ComboBox FindWhatComboBox;
         internal System.Windows.Forms.CheckBox SearchOptionCaseSensitiveCheckBox;
         internal System.Windows.Forms.CheckBox SearchOptionRegexCheckBox;
-        public System.Windows.Forms.TabControl ReplaceWhatWithTabControl;
+        private System.Windows.Forms.Panel ReplaceWhatWithPanel;
     }
 }
