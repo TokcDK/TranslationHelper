@@ -215,12 +215,14 @@ namespace TranslationHelper.Forms.Search
 
                         if (isReplace)
                         {
+                            // replace all values in the target string
                             var columnName = cond.SearchColumn;
                             var currentValue = row.Field<string>(columnName);
                             var newValue = SearchHelpers.ApplyReplaces(currentValue, cond.ReplaceTasks, cond.CaseSensitive, cond.UseRegex);
 
                             if (!string.Equals(currentValue, newValue))
                             {
+                                // set result value to row when it was changed by any replacement
                                 row.SetField(columnName, newValue);
                             }
                             else
