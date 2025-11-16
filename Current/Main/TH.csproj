@@ -806,6 +806,9 @@
     <PackageReference Include="System.ValueTuple">
       <Version>4.6.1</Version>
     </PackageReference>
+    <PackageReference Include="TabControl">
+      <Version>2.1.2</Version>
+    </PackageReference>
     <PackageReference Include="Ude.NetStandard">
       <Version>1.2.0</Version>
     </PackageReference>

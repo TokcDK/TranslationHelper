@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Manina.Windows.Forms;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -7,6 +8,9 @@ using System.Windows.Forms;
 using TranslationHelper.Data;
 using TranslationHelper.Main.Functions;
 using TranslationHelper.Projects;
+using Button = System.Windows.Forms.Button;
+using Tab = Manina.Windows.Forms.Tab;
+using TabControl = Manina.Windows.Forms.TabControl;
 
 namespace TranslationHelper.Forms.Search
 {
@@ -14,7 +18,9 @@ namespace TranslationHelper.Forms.Search
     {
         private readonly ProjectBase _project;
         private readonly DataSet _dataSet;
-        private TabControl _searchConditionsTabControl;
+        private Manina.Windows.Forms.TabControl _searchConditionsTabControl;
+        private Tab _plusTab;
+        private const string PLUS_TAB_TEXT = "+";
 
         public SearchForm(ProjectBase project)
         {
@@ -23,13 +29,7 @@ namespace TranslationHelper.Forms.Search
 
             InitializeComponent();
 
-            _searchConditionsTabControl = new TabControl
-            {
-                Dock = DockStyle.Fill
-            };
-            SearchConditionsPanel.Controls.Add(_searchConditionsTabControl);
-
-            AddSearchConditionTab();
+            InitSearchConditionsTabControl();
         }
         public class FoundRowData
         {
@@ -77,6 +77,7 @@ namespace TranslationHelper.Forms.Search
                 return;
             }
 
+            FoundRowsPanel.Controls.Clear();
             var foundRowsDatagridView = new DataGridView
             {
                 DataSource = foundRows,
@@ -121,29 +122,56 @@ namespace TranslationHelper.Forms.Search
         {
             GetSearchResults(true);
         }
-
-        public void AddSearchConditionTab()
+        public void InitSearchConditionsTabControl()
         {
-            var tabPage = new TabPage($"Condition {(_searchConditionsTabControl.TabCount + 1)}");
+            _searchConditionsTabControl = new Manina.Windows.Forms.TabControl
+            {
+                Dock = DockStyle.Fill,
+                ShowCloseTabButtons = true,
+                AllowDrop = true
+            };
+            _searchConditionsTabControl.CloseTabButtonClick += (o, e) =>
+            {
+                RemoveSearchConditionTab(e.Tab);
+            };
+            SearchConditionTabsPanel.Controls.Add(_searchConditionsTabControl);
+
+            AddNewSearchConditionTabButton.Click += (o, e) => AddSearchConditionTab();
+
+            AddSearchConditionTab(); // always one default search condition tab by default
+
+        }
+
+        public Tab AddSearchConditionTab()
+        {
+            var tabPage = new Tab
+            {
+                Text = $"Condition {(_searchConditionsTabControl.Tabs.Count + 1)}"
+            };
             var columns = _dataSet.Tables.Count > 0 ? _dataSet.Tables[0].Columns.Cast<DataColumn>().Select(c => c.ColumnName).ToArray() : Array.Empty<string>();
             var conditionUC = new SearchConditionUserControl(columns);
             tabPage.Controls.Add(conditionUC);
             conditionUC.Dock = DockStyle.Fill;
-            _searchConditionsTabControl.TabPages.Add(tabPage);
+            _searchConditionsTabControl.Tabs.Add(tabPage);
+
+            _searchConditionsTabControl.SelectedTab = tabPage;
+
+            return tabPage;
         }
 
-        public void RemoveSearchConditionTab(TabPage tabPage)
+        public void RemoveSearchConditionTab(Tab tab)
         {
-            if (_searchConditionsTabControl.TabCount > 1)
+            _searchConditionsTabControl.Tabs.Remove(tab);
+            if (_searchConditionsTabControl.Tabs.Count == 0)
             {
-                _searchConditionsTabControl.TabPages.Remove(tabPage);
+                AddSearchConditionTab(); // always one default search condition tab by default
             }
         }
 
         private List<FoundRowData> PerformSearch(bool isReplace = false)
         {
             var conditions = GetSearchConditions();
-            var nonEmptyConditions = conditions.Where(c => !string.IsNullOrEmpty(c.FindWhat)
+            var nonEmptyConditions = conditions.Where(c => c != null && !string.IsNullOrEmpty(c.FindWhat)
             && (!isReplace || isReplace && c.ReplaceTasks.Any(t => !string.IsNullOrEmpty(t.ReplaceWhat))))
                 .ToArray();
             if (nonEmptyConditions.Length == 0) return new List<FoundRowData>();
@@ -194,9 +222,9 @@ namespace TranslationHelper.Forms.Search
 
         private IEnumerable<ISearchCondition> GetSearchConditions()
         {
-            foreach (TabPage tabPage in _searchConditionsTabControl.TabPages)
+            foreach (var tab in _searchConditionsTabControl.Tabs)
             {
-                yield return tabPage.Controls[0] as ISearchCondition;
+                yield return tab.Controls[0] as ISearchCondition;
             }
         }
 
