@@ -18,11 +18,11 @@ using TranslationHelper.Projects.RPGMTrans;
 
 namespace TranslationHelper.Menus.MainMenus.Edit
 {
-    internal class MenuItemRowSearch : MainMenuEditSubItemBase, IProjectMenuItem
+    internal class MenuItemRowSearchAlt : MainMenuEditSubItemBase, IProjectMenuItem
     {
         public override int Order => base.Order - 200;
 
-        public override string Text => T._("Search");
+        public override string Text => T._("Search (Alt)");
 
         public override string Description => T._("Open search Window");
 
@@ -32,30 +32,18 @@ namespace TranslationHelper.Menus.MainMenus.Edit
 
             try
             {
-                if (AppData.Main.search == null || AppData.Main.search.IsDisposed)
+                if (AppData.Main.searchformNew == null || AppData.Main.searchformNew.IsDisposed)
                 {
-                    AppData.Main.search = new THfrmSearch(new object[3] { AppData.Main.THFilesList, AppData.Main.THFileElementsDataGridView, AppData.Main.THTargetRichTextBox });
-                }
-
-                if (AppData.Main.search.Visible)
-                {
-                    AppData.Main.search.Activate();//помещает на передний план
-                    AppData.Main.search.GetSelectedText();
-                }
-                else
-                {
-                    AppData.Main.search.Show();
-                    AppData.Main.search.GetSelectedText();
-                    //поместить на передний план
-                    //search.TopMost = true;
-                    //search.TopMost = false;
+                    AppData.Main.searchformNew = new SearchForm(AppData.CurrentProject);
+                    AppData.Main.searchformNew.Show();
                 }
             }
-            catch
+            catch (Exception ex)
             {
+                Logger.Error(ex);
             }
         }
 
-        public override Keys ShortcutKeys => Keys.Control | Keys.F;
+        public override Keys ShortcutKeys => Keys.Control | Keys.Shift | Keys.F;
     }
 }
