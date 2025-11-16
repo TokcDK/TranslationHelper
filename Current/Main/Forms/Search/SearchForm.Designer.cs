@@ -33,8 +33,8 @@
             this.SearchButtonsTableLayoutPanel = new System.Windows.Forms.TableLayoutPanel();
             this.SearchAllButton = new System.Windows.Forms.Button();
             this.ReplaceAllButton = new System.Windows.Forms.Button();
-            this.SearchConditionsTabControl = new System.Windows.Forms.TabControl();
             this.FoundRowsPanel = new System.Windows.Forms.Panel();
+            this.SearchConditionsPanel = new System.Windows.Forms.Panel();
             this.SearchRootPanel.SuspendLayout();
             this.SearchRootTableLayoutPanel.SuspendLayout();
             this.SearchButtonsTableLayoutPanel.SuspendLayout();
@@ -54,9 +54,9 @@
             // 
             this.SearchRootTableLayoutPanel.ColumnCount = 1;
             this.SearchRootTableLayoutPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.SearchRootTableLayoutPanel.Controls.Add(this.SearchConditionsTabControl, 0, 0);
             this.SearchRootTableLayoutPanel.Controls.Add(this.SearchButtonsTableLayoutPanel, 0, 1);
             this.SearchRootTableLayoutPanel.Controls.Add(this.FoundRowsPanel, 0, 2);
+            this.SearchRootTableLayoutPanel.Controls.Add(this.SearchConditionsPanel, 0, 0);
             this.SearchRootTableLayoutPanel.Dock = System.Windows.Forms.DockStyle.Fill;
             this.SearchRootTableLayoutPanel.Location = new System.Drawing.Point(0, 0);
             this.SearchRootTableLayoutPanel.Margin = new System.Windows.Forms.Padding(1);
@@ -106,15 +106,6 @@
             this.ReplaceAllButton.UseVisualStyleBackColor = true;
             this.ReplaceAllButton.Click += new System.EventHandler(this.ReplaceAllButton_Click);
             // 
-            // SearchConditionsTabControl
-            // 
-            this.SearchConditionsTabControl.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.SearchConditionsTabControl.Location = new System.Drawing.Point(3, 3);
-            this.SearchConditionsTabControl.Name = "SearchConditionsTabControl";
-            this.SearchConditionsTabControl.SelectedIndex = 0;
-            this.SearchConditionsTabControl.Size = new System.Drawing.Size(759, 195);
-            this.SearchConditionsTabControl.TabIndex = 1;
-            // 
             // FoundRowsPanel
             // 
             this.FoundRowsPanel.Dock = System.Windows.Forms.DockStyle.Fill;
@@ -122,6 +113,14 @@
             this.FoundRowsPanel.Name = "FoundRowsPanel";
             this.FoundRowsPanel.Size = new System.Drawing.Size(759, 144);
             this.FoundRowsPanel.TabIndex = 2;
+            // 
+            // SearchConditionsPanel
+            // 
+            this.SearchConditionsPanel.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.SearchConditionsPanel.Location = new System.Drawing.Point(3, 3);
+            this.SearchConditionsPanel.Name = "SearchConditionsPanel";
+            this.SearchConditionsPanel.Size = new System.Drawing.Size(759, 195);
+            this.SearchConditionsPanel.TabIndex = 3;
             // 
             // SearchForm
             // 
@@ -145,7 +144,7 @@
         private System.Windows.Forms.TableLayoutPanel SearchButtonsTableLayoutPanel;
         private System.Windows.Forms.Button ReplaceAllButton;
         private System.Windows.Forms.Button SearchAllButton;
-        internal System.Windows.Forms.TabControl SearchConditionsTabControl;
         private System.Windows.Forms.Panel FoundRowsPanel;
+        private System.Windows.Forms.Panel SearchConditionsPanel;
     }
 }

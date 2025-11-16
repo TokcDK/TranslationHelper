@@ -11,7 +11,6 @@ using System.Windows.Forms;
 using TranslationHelper.Data;
 using TranslationHelper.Main.Functions;
 using TranslationHelper.Projects;
-using Zuby.ADGV;
 
 namespace TranslationHelper.Forms.Search
 {
@@ -19,6 +18,7 @@ namespace TranslationHelper.Forms.Search
     {
         private readonly ProjectBase _project;
         private readonly DataSet _dataSet;
+        private TabControl _searchConditionsTabControl;
 
         public SearchForm(ProjectBase project)
         {
@@ -122,19 +122,25 @@ namespace TranslationHelper.Forms.Search
 
         public void AddSearchConditionTab()
         {
-            var tabPage = new TabPage($"Condition {(SearchConditionsTabControl.TabCount + 1)}");
+            _searchConditionsTabControl = new TabControl
+            {
+                Dock = DockStyle.Fill
+            };
+            SearchConditionsPanel.Controls.Add(_searchConditionsTabControl);
+
+            var tabPage = new TabPage($"Condition {(_searchConditionsTabControl.TabCount + 1)}");
             var columns = _dataSet.Tables.Count > 0 ? _dataSet.Tables[0].Columns.Cast<DataColumn>().Select(c => c.ColumnName).ToArray() : Array.Empty<string>();
             var conditionUC = new SearchConditionUserControl(columns);
             tabPage.Controls.Add(conditionUC);
             conditionUC.Dock = DockStyle.Fill;
-            SearchConditionsTabControl.TabPages.Add(tabPage);
+            _searchConditionsTabControl.TabPages.Add(tabPage);
         }
 
         public void RemoveSearchConditionTab(TabPage tabPage)
         {
-            if (SearchConditionsTabControl.TabCount > 1)
+            if (_searchConditionsTabControl.TabCount > 1)
             {
-                SearchConditionsTabControl.TabPages.Remove(tabPage);
+                _searchConditionsTabControl.TabPages.Remove(tabPage);
             }
         }
 
@@ -192,7 +198,7 @@ namespace TranslationHelper.Forms.Search
 
         private IEnumerable<ISearchCondition> GetSearchConditions()
         {
-            foreach (TabPage tabPage in SearchConditionsTabControl.TabPages)
+            foreach (TabPage tabPage in _searchConditionsTabControl.TabPages)
             {
                 yield return tabPage.Controls[0] as ISearchCondition;
             }
