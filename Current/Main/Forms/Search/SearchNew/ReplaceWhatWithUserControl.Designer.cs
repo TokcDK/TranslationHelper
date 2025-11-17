@@ -127,7 +127,7 @@ namespace TranslationHelper.Forms.Search
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.TableLayoutPanel ReplaceWhatWithTableLayoutPanel;
-        internal ComboBoxVip ReplaceWithComboBox;
-        internal ComboBoxVip ReplaceWhatComboBox;
+        internal System.Windows.Forms.ComboBox ReplaceWithComboBox;
+        internal System.Windows.Forms.ComboBox ReplaceWhatComboBox;
     }
 }

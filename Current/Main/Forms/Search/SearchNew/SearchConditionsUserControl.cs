@@ -29,8 +29,6 @@ namespace TranslationHelper.Forms.Search
             ReplaceWhatWithPanel.Controls.Add(_replaceWhatWithTabControl);
 
             AddReplaceTab();
-
-            //var comboboxVip = new ComboBoxVip();
         }
 
         public void AddReplaceTab()
@@ -122,5 +120,9 @@ namespace TranslationHelper.Forms.Search
             }
         }
 
+        private void SearchOptionSelectedColumnComboBox_TextUpdate(object sender, EventArgs e)
+        {
+
+        }
     }
 }

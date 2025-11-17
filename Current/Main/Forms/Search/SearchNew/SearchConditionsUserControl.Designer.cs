@@ -35,9 +35,9 @@ namespace TranslationHelper.Forms.Search
             this.SearchTextFieldsTableLayoutPanel = new System.Windows.Forms.TableLayoutPanel();
             this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
             this.label1 = new System.Windows.Forms.Label();
-            this.FindWhatComboBox = new ComboBoxVip();
+            this.FindWhatComboBox = new Vip.ComboBox.ComboBoxVip();
             this.SearchOptionsFlowLayoutPanel = new System.Windows.Forms.FlowLayoutPanel();
-            this.SearchOptionSelectedColumnComboBox = new Vip.ComboBox.ComboBoxVip();
+            this.SearchOptionSelectedColumnComboBox = new System.Windows.Forms.ComboBox();
             this.SearchOptionCaseSensitiveCheckBox = new System.Windows.Forms.CheckBox();
             this.SearchOptionRegexCheckBox = new System.Windows.Forms.CheckBox();
             this.ReplaceWhatWithPanel = new System.Windows.Forms.Panel();
@@ -127,11 +127,13 @@ namespace TranslationHelper.Forms.Search
             // 
             // SearchOptionSelectedColumnComboBox
             // 
+            this.SearchOptionSelectedColumnComboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.SearchOptionSelectedColumnComboBox.FormattingEnabled = true;
             this.SearchOptionSelectedColumnComboBox.Location = new System.Drawing.Point(3, 3);
             this.SearchOptionSelectedColumnComboBox.Name = "SearchOptionSelectedColumnComboBox";
             this.SearchOptionSelectedColumnComboBox.Size = new System.Drawing.Size(153, 21);
             this.SearchOptionSelectedColumnComboBox.TabIndex = 2;
+            this.SearchOptionSelectedColumnComboBox.TextUpdate += new System.EventHandler(this.SearchOptionSelectedColumnComboBox_TextUpdate);
             // 
             // SearchOptionCaseSensitiveCheckBox
             // 
@@ -192,10 +194,10 @@ namespace TranslationHelper.Forms.Search
         private System.Windows.Forms.TableLayoutPanel tableLayoutPanel1;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.FlowLayoutPanel SearchOptionsFlowLayoutPanel;
-        internal ComboBoxVip SearchOptionSelectedColumnComboBox;
-        internal ComboBoxVip FindWhatComboBox;
+        internal System.Windows.Forms.ComboBox SearchOptionSelectedColumnComboBox;
         internal System.Windows.Forms.CheckBox SearchOptionCaseSensitiveCheckBox;
         internal System.Windows.Forms.CheckBox SearchOptionRegexCheckBox;
         private System.Windows.Forms.Panel ReplaceWhatWithPanel;
+        internal ComboBoxVip FindWhatComboBox;
     }
 }
