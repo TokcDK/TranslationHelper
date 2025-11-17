@@ -42,8 +42,6 @@ namespace TranslationHelper
         private int _selectedRowIndex;
         private string _lastFoundValue = string.Empty;
         private string _lastFoundReplacedValue = string.Empty;
-        private readonly List<string> _searchQueries = new List<string>();
-        private readonly List<string> _searchReplacers = new List<string>();
         private List<FoundRowData> _foundRowsList;
         private IEnumerator<FoundRowData> _foundRowsEnum;
         private string _lastSearchString;
@@ -175,20 +173,20 @@ namespace TranslationHelper
         {
             var items = new[]
             {
-                (ComboBox: SearchFormFindWhatComboBox, List: _searchQueries, IniName: THSettings.SearchQueriesSectionName),
-                (ComboBox: SearchFormReplaceWithComboBox, List: _searchReplacers, IniName: THSettings.SearchReplacersSectionName)
+                (ComboBox: SearchFormFindWhatComboBox, IniName: THSettings.SearchQueriesSectionName),
+                (ComboBox: SearchFormReplaceWithComboBox, IniName: THSettings.SearchReplacersSectionName)
             };
 
-            foreach (var (comboBox, list, iniName) in items)
+            foreach (var (comboBox, iniSectionName) in items)
             {
                 if (load)
-                    LoadSearchQueryData(comboBox, list, iniName);
+                    LoadSearchQueryData(comboBox, iniSectionName);
                 else
-                    SaveSearchQueryData(comboBox, list, iniName);
+                    SaveSearchQueryData(comboBox, iniSectionName);
             }
         }
 
-        private static void SaveSearchQueryData(ComboBox comboBox, List<string> list, string iniName)
+        private static void SaveSearchQueryData(ComboBox comboBox, string iniName)
         {
             var list1 = new List<string>
             {
@@ -200,7 +198,7 @@ namespace TranslationHelper
             LoadSearchQueries(comboBox, list1.ToArray()); // update list with newest items
         }
 
-        private static void LoadSearchQueryData(ComboBox comboBox, List<string> list, string iniName)
+        private static void LoadSearchQueryData(ComboBox comboBox, string iniName)
         {
             LoadSearchQueries(comboBox, SearchSharedHelpers.LoadSearchQueries(iniName).ToArray());
         }     
