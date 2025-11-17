@@ -24,7 +24,11 @@ namespace TranslationHelper.Forms.Search
                 {
                     arr[i] = unescape ? Regex.Unescape(arr[i]) : Regex.Escape(arr[i]);
                 }
-                catch (ArgumentException) { /* Ignore invalid regex patterns */ }
+                catch (ArgumentException ex) 
+                {
+                    /* Ignore but log invalid regex patterns */
+                    _logger.Debug($"{nameof(UnEscapeSearchValues)} '{arr[i]}' value error:\n {ex}");
+                }
             }
         }
 
