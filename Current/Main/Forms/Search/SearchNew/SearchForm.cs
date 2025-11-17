@@ -83,7 +83,7 @@ namespace TranslationHelper.Forms.Search.SearchNew
                 return;
             }
 
-            SaveSearchResults(searchResults);
+            SaveSearchResults(searchResults, isReplace);
 
             FoundRowsPanel.Controls.Clear();
             var foundRowsDatagridView = new DataGridView
