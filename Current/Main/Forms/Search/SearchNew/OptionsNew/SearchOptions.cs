@@ -13,6 +13,7 @@ namespace TranslationHelper.Forms.Search.SearchNew.OptionsNew
     // regex implemented from case sensitive and using it but overriding match and replace actions
     // maybe search option like selected column better
     // to include in main search options like case sensitive and using it regex search
+    // maybe main search will include options of search area
 
     public enum SearchOptionType
     {
