@@ -71,7 +71,7 @@ namespace TranslationHelper.Forms.Search.SearchNew
 
         private void GetSearchResults(bool isReplace = false)
         {
-            var searchResults = PerformSearch();
+            var searchResults = PerformSearch(isReplace);
 
             var actionName = isReplace ?
                 "Replaced" :
