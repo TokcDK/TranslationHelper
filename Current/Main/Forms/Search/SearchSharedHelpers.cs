@@ -62,10 +62,49 @@ namespace TranslationHelper.Forms.Search
             }
             catch (IOException ex)
             {
-                _logger.Warn("Failed to load search queries", ex);
+                _logger.Warn($"Failed to load {sectionName}", ex);
             }
 
             return list;
+        }
+        internal static List<string> SaveSearchQueries(List<string> list, string sectionName = "", int maxEntriesCount = 20)
+        {
+            try
+            {
+                sectionName = string.IsNullOrWhiteSpace(sectionName) ? THSettings.SearchQueriesSectionName : sectionName;
+
+                var lastLoadedList = LoadSearchQueries(sectionName, maxEntriesCount);
+
+                if (list.Count > 0 && IsSearchQueriesReplacersListChanged(lastLoadedList, list))
+                {
+                    AddNewRecords(lastLoadedList, list);
+                    lastLoadedList = lastLoadedList.Take(maxEntriesCount).ToList();
+                    SearchSharedHelpers.AddQuotesToWritingSearchValues(lastLoadedList);
+                    SearchSharedHelpers.UnEscapeSearchValues(lastLoadedList, false);
+                    AppData.Settings.THConfigINI.SetArrayToSectionValues(sectionName, lastLoadedList.ToArray());
+                }
+
+                return lastLoadedList;
+            }
+            catch (IOException ex)
+            {
+                _logger.Warn($"Failed to save {sectionName}", ex);
+            }
+
+            return list;
+        }
+        private static bool IsSearchQueriesReplacersListChanged(List<string> oldList, List<string> newList)
+            => oldList.Count != newList.Count || !oldList.SequenceEqual(newList);
+
+        private static void AddNewRecords(List<string> list, IEnumerable<string> listToAdd)
+        {
+            foreach (var item in listToAdd)
+            {
+                if (!list.Contains(item)) 
+                { 
+                    list.Insert(0, item);
+                }
+            }
         }
     }
 }
