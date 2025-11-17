@@ -1,4 +1,6 @@
-﻿namespace TranslationHelper
+﻿using Vip.ComboBox;
+
+namespace TranslationHelper
 {
     partial class THfrmSearch
     {
@@ -69,8 +71,8 @@
             this.SearchFormReplaceAllButton = new System.Windows.Forms.Button();
             this.panel3 = new System.Windows.Forms.Panel();
             this.THSearchFindWhatLabel = new System.Windows.Forms.Label();
-            this.SearchFormFindWhatComboBox = new System.Windows.Forms.ComboBox();
-            this.SearchFormReplaceWithComboBox = new System.Windows.Forms.ComboBox();
+            this.SearchFormFindWhatComboBox = new ComboBoxVip();
+            this.SearchFormReplaceWithComboBox = new ComboBoxVip();
             this.label1 = new System.Windows.Forms.Label();
             this.THSearchTabs.SuspendLayout();
             this.THSearch1st.SuspendLayout();
