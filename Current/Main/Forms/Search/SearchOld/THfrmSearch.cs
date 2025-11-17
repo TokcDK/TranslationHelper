@@ -124,15 +124,15 @@ namespace TranslationHelper
                 AppData.Main.THFileElementsDataGridView.EditingControl is TextBox textBox &&
                 !string.IsNullOrEmpty(textBox.SelectedText))
             {
-                SearchFormFindWhatTextBox.Text = textBox.SelectedText;
+                SearchFormFindWhatComboBox.Text = textBox.SelectedText;
             }
             else if (!string.IsNullOrEmpty(AppData.Main.THSourceRichTextBox.SelectedText))
             {
-                SearchFormFindWhatTextBox.Text = AppData.Main.THSourceRichTextBox.SelectedText;
+                SearchFormFindWhatComboBox.Text = AppData.Main.THSourceRichTextBox.SelectedText;
             }
             else if (!string.IsNullOrEmpty(AppData.Main.THTargetRichTextBox.SelectedText))
             {
-                SearchFormFindWhatTextBox.Text = AppData.Main.THTargetRichTextBox.SelectedText;
+                SearchFormFindWhatComboBox.Text = AppData.Main.THTargetRichTextBox.SelectedText;
             }
         }
 
@@ -226,7 +226,7 @@ namespace TranslationHelper
         private void SearchAllButton_Click(object sender, EventArgs e)
         {
             if (AppData.CurrentProject.FilesContent == null ||
-                (!SearchFindLinesWithPossibleIssuesCheckBox.Checked && !SearchEmptyCheckBox.Checked && string.IsNullOrEmpty(SearchFormFindWhatTextBox.Text)))
+                (!SearchFindLinesWithPossibleIssuesCheckBox.Checked && !SearchEmptyCheckBox.Checked && string.IsNullOrEmpty(SearchFormFindWhatComboBox.Text)))
                 return;
 
             lblSearchMsg.Visible = false;
@@ -234,7 +234,7 @@ namespace TranslationHelper
 
             if (_foundRowsList?.Count > 0)
             {
-                StoreFoundValueToComboBox(SearchFormFindWhatTextBox.Text);
+                StoreFoundValueToComboBox(SearchFormFindWhatComboBox.Text);
                 PopulateGrid(_foundRowsList);
                 lblSearchMsg.Visible = true;
                 lblSearchMsg.Text = T._("Found ") + _foundRowsList.Count + T._(" records");
@@ -282,7 +282,7 @@ namespace TranslationHelper
         {
             if (_tables.Count == 0) yield break;
 
-            string[] searchQueries = SearchFormFindWhatTextBox.Text.Split(new[] { DoubleSearchMarker }, StringSplitOptions.None);
+            string[] searchQueries = SearchFormFindWhatComboBox.Text.Split(new[] { DoubleSearchMarker }, StringSplitOptions.None);
             if (searchQueries.Length == 2 && string.IsNullOrEmpty(searchQueries[1]))
                 searchQueries = new[] { searchQueries[0] };
 
@@ -432,7 +432,7 @@ namespace TranslationHelper
 
                 bool isRegex = SearchModeRegexRadioButton.Checked;
                 bool matchCase = THSearchMatchCaseCheckBox.Checked;
-                string searchWord = isRegex ? SearchFormFindWhatTextBox.Text : Regex.Escape(SearchFormFindWhatTextBox.Text);
+                string searchWord = isRegex ? SearchFormFindWhatComboBox.Text : Regex.Escape(SearchFormFindWhatComboBox.Text);
                 var options = matchCase ? RichTextBoxFinds.MatchCase : RichTextBoxFinds.None;
 
                 if (isRegex)
@@ -449,7 +449,7 @@ namespace TranslationHelper
                     while ((start = _translationTextBox.Find(searchWord, start, options)) != -1)
                     {
                         _translationTextBox.SelectionBackColor = Color.Yellow;
-                        start += SearchFormFindWhatTextBox.TextLength;
+                        start += SearchFormFindWhatComboBox.Text.Length;
                     }
                 }
             }));
@@ -487,16 +487,16 @@ namespace TranslationHelper
 
         private void SearchFormFindNextButton_Click(object sender, EventArgs e)
         {
-            if (string.IsNullOrEmpty(SearchFormFindWhatTextBox.Text) || AppData.CurrentProject.FilesContent == null)
+            if (string.IsNullOrEmpty(SearchFormFindWhatComboBox.Text) || AppData.CurrentProject.FilesContent == null)
                 return;
 
             lblSearchMsg.Visible = false;
             Height = SearchResultsWindowNormalHeight;
 
-            if (_foundRowsEnum == null || _lastSearchString != SearchFormFindWhatTextBox.Text)
+            if (_foundRowsEnum == null || _lastSearchString != SearchFormFindWhatComboBox.Text)
             {
                 _foundRowsEnum = EnumerateAndFillSearchResults().GetEnumerator();
-                _lastSearchString = SearchFormFindWhatTextBox.Text;
+                _lastSearchString = SearchFormFindWhatComboBox.Text;
             }
 
             if (!_foundRowsEnum.MoveNext())
@@ -515,12 +515,12 @@ namespace TranslationHelper
 
         private void SearchFormReplaceButton_Click(object sender, EventArgs e)
         {
-            if (string.IsNullOrEmpty(SearchFormFindWhatTextBox.Text) || AppData.CurrentProject.FilesContent == null)
+            if (string.IsNullOrEmpty(SearchFormFindWhatComboBox.Text) || AppData.CurrentProject.FilesContent == null)
                 return;
 
             bool inputEqualWithLatest = THSearchMatchCaseCheckBox.Checked
-                ? SearchFormFindWhatTextBox.Text == _lastFoundValue
-                : string.Equals(SearchFormFindWhatTextBox.Text, _lastFoundValue, StringComparison.OrdinalIgnoreCase);
+                ? SearchFormFindWhatComboBox.Text == _lastFoundValue
+                : string.Equals(SearchFormFindWhatComboBox.Text, _lastFoundValue, StringComparison.OrdinalIgnoreCase);
 
             if (inputEqualWithLatest && _startRowSearchIndex > 0)
             {
@@ -535,7 +535,7 @@ namespace TranslationHelper
 
                 if (_foundRowsList?.Count > 0)
                 {
-                    StoreFoundValueToComboBox(SearchFormFindWhatTextBox.Text, SearchFormReplaceWithTextBox.Text);
+                    StoreFoundValueToComboBox(SearchFormFindWhatComboBox.Text, SearchFormReplaceWithComboBox.Text);
                     MoveToNextRow();
                 }
                 else
@@ -556,8 +556,8 @@ namespace TranslationHelper
                 if (string.IsNullOrEmpty(value)) return;
 
                 bool isRegex = SearchModeRegexRadioButton.Checked;
-                string findText = SearchFormFindWhatTextBox.Text;
-                string replaceText = FixRegexReplacementFromTextbox(SearchFormReplaceWithTextBox.Text);
+                string findText = SearchFormFindWhatComboBox.Text;
+                string replaceText = FixRegexReplacementFromTextbox(SearchFormReplaceWithComboBox.Text);
 
                 if (isRegex && Regex.IsMatch(value, findText, RegexOptions.IgnoreCase) ||
                     !isRegex && value.IndexOf(findText, StringComparison.OrdinalIgnoreCase) != -1)
@@ -585,20 +585,20 @@ namespace TranslationHelper
             }
 
             _workFileDgv.CurrentCell = _workFileDgv[SearchColumnIndex, _selectedRowIndex];
-            new Thread(() => SelectTextInTextBox(SearchFormFindWhatTextBox.Text)).Start();
+            new Thread(() => SelectTextInTextBox(SearchFormFindWhatComboBox.Text)).Start();
             _startRowSearchIndex++;
         }
 
         private void SearchFormReplaceAllButton_Click(object sender, EventArgs e)
         {
-            if (string.IsNullOrEmpty(SearchFormFindWhatTextBox.Text) || AppData.CurrentProject.FilesContent == null ||
+            if (string.IsNullOrEmpty(SearchFormFindWhatComboBox.Text) || AppData.CurrentProject.FilesContent == null ||
                 (ConfirmReplaceAllCheckBox.Checked && !FunctionsMessage.ShowConfirmationDialog(T._("Replace All") + "?", T._("Confirmation"))))
                 return;
 
             lblSearchMsg.Visible = false;
             bool isAnyChanged = false;
-            string searchPattern = SearchFormFindWhatTextBox.Text;
-            string searchReplacementUnescaped = FixRegexReplacementFromTextbox(SearchFormReplaceWithTextBox.Text);
+            string searchPattern = SearchFormFindWhatComboBox.Text;
+            string searchReplacementUnescaped = FixRegexReplacementFromTextbox(SearchFormReplaceWithComboBox.Text);
 
             Action<DataRow> replaceAction = SearchInInfoCheckBox.Checked
                 ? GetInfoSearchReplaceAction(searchReplacementUnescaped)
@@ -614,7 +614,7 @@ namespace TranslationHelper
             lblSearchMsg.Visible = true;
             if (isAnyChanged)
             {
-                StoreFoundValueToComboBox(searchPattern, SearchFormReplaceWithTextBox.Text);
+                StoreFoundValueToComboBox(searchPattern, SearchFormReplaceWithComboBox.Text);
                 lblSearchMsg.Text = T._("Found ") + _foundRowsList.Count + T._(" records");
                 Height = SearchResultsWindowExpandedHeight;
                 PopulateGrid(_foundRowsList);
@@ -679,12 +679,12 @@ namespace TranslationHelper
         #region Events
         private void SearchFindLinesWithPossibleIssuesCheckBox_CheckedChanged(object sender, EventArgs e)
         {
-            SearchFormFindWhatTextBox.Text = string.Empty;
-            SearchFormFindWhatTextBox.Enabled = !SearchFormFindWhatTextBox.Enabled;
+            SearchFormFindWhatComboBox.Text = string.Empty;
+            SearchFormFindWhatComboBox.Enabled = !SearchFormFindWhatComboBox.Enabled;
             SearchFormFindWhatComboBox.Enabled = !SearchFormFindWhatComboBox.Enabled;
 
 
-            SearchFormReplaceWithTextBox.Enabled = !SearchFormReplaceWithTextBox.Enabled;
+            SearchFormReplaceWithComboBox.Enabled = !SearchFormReplaceWithComboBox.Enabled;
             SearchFormReplaceWithComboBox.Enabled = !SearchFormReplaceWithComboBox.Enabled;
             SearchFormReplaceAllButton.Enabled = !SearchFormReplaceAllButton.Enabled;
             SearchFormReplaceButton.Enabled = !SearchFormReplaceButton.Enabled;
@@ -693,17 +693,17 @@ namespace TranslationHelper
 
         private void ClearFindWhatTextBoxLabel_Click(object sender, EventArgs e)
         {
-            SearchFormFindWhatTextBox.Clear();
+            SearchFormFindWhatComboBox.Text = string.Empty;
         }
 
         private void ClearReplaceWithTextBoxLabel_Click(object sender, EventArgs e)
         {
-            SearchFormReplaceWithTextBox.Clear();
+            SearchFormReplaceWithComboBox.Text = string.Empty;
         }
 
         private void SearchFormReplaceWithComboBox_SelectedIndexChanged(object sender, EventArgs e)
         {
-            SearchFormReplaceWithTextBox.Text = (sender as ComboBox).SelectedItem.ToString();
+            SearchFormReplaceWithComboBox.Text = (sender as ComboBox).SelectedItem.ToString();
         }
 
         private void SearchResultsDatagridview_CellEnter(object sender, DataGridViewCellEventArgs e)
@@ -734,19 +734,19 @@ namespace TranslationHelper
 
         private void DoubleSearchOptionCheckBox_CheckedChanged(object sender, EventArgs e)
         {
-            if (DoubleSearchOptionCheckBox.Checked && !SearchFormFindWhatTextBox.Text.Contains(DoubleSearchMarker))
+            if (DoubleSearchOptionCheckBox.Checked && !SearchFormFindWhatComboBox.Text.Contains(DoubleSearchMarker))
             {
-                SearchFormFindWhatTextBox.Text += DoubleSearchMarker;
+                SearchFormFindWhatComboBox.Text += DoubleSearchMarker;
             }
-            else if (!DoubleSearchOptionCheckBox.Checked && SearchFormFindWhatTextBox.Text.Contains(DoubleSearchMarker))
+            else if (!DoubleSearchOptionCheckBox.Checked && SearchFormFindWhatComboBox.Text.Contains(DoubleSearchMarker))
             {
-                SearchFormFindWhatTextBox.Text = SearchFormFindWhatTextBox.Text.Replace(DoubleSearchMarker, "");
+                SearchFormFindWhatComboBox.Text = SearchFormFindWhatComboBox.Text.Replace(DoubleSearchMarker, "");
             }
         }
 
-        private void SearchFormFindWhatTextBox_TextChanged(object sender, EventArgs e)
+        private void SearchFormFindWhatComboBox_TextChanged(object sender, EventArgs e)
         {
-            DoubleSearchOptionCheckBox.Checked = SearchFormFindWhatTextBox.Text.Contains(DoubleSearchMarker);
+            DoubleSearchOptionCheckBox.Checked = SearchFormFindWhatComboBox.Text.Contains(DoubleSearchMarker);
         }
 
 
@@ -792,7 +792,7 @@ namespace TranslationHelper
 
         private void SearchFormFindWhatComboBox_SelectedValueChanged(object sender, EventArgs e)
         {
-            SearchFormFindWhatTextBox.Text = SearchFormFindWhatComboBox.SelectedItem.ToString();
+            SearchFormFindWhatComboBox.Text = SearchFormFindWhatComboBox.SelectedItem.ToString();
         }
 
         private void THSearch_FormClosed(object sender, FormClosedEventArgs e)

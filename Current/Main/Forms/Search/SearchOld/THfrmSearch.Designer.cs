@@ -68,8 +68,6 @@
             this.SearchFormReplaceButton = new System.Windows.Forms.Button();
             this.SearchFormReplaceAllButton = new System.Windows.Forms.Button();
             this.panel3 = new System.Windows.Forms.Panel();
-            this.SearchFormReplaceWithTextBox = new System.Windows.Forms.TextBox();
-            this.SearchFormFindWhatTextBox = new System.Windows.Forms.TextBox();
             this.THSearchFindWhatLabel = new System.Windows.Forms.Label();
             this.SearchFormFindWhatComboBox = new System.Windows.Forms.ComboBox();
             this.SearchFormReplaceWithComboBox = new System.Windows.Forms.ComboBox();
@@ -115,7 +113,7 @@
             // 
             // SearchResultsPanel
             // 
-            this.SearchResultsPanel.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+            this.SearchResultsPanel.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.SearchResultsPanel.Controls.Add(this.SearchResultsDatagridview);
             this.SearchResultsPanel.Location = new System.Drawing.Point(3, 310);
@@ -153,7 +151,7 @@
             // 
             // THSearchPanel
             // 
-            this.THSearchPanel.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+            this.THSearchPanel.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.THSearchPanel.Controls.Add(this.tableLayoutPanel2);
             this.THSearchPanel.Controls.Add(this.tableLayoutPanel1);
@@ -540,8 +538,6 @@
             // 
             // panel3
             // 
-            this.panel3.Controls.Add(this.SearchFormReplaceWithTextBox);
-            this.panel3.Controls.Add(this.SearchFormFindWhatTextBox);
             this.panel3.Controls.Add(this.THSearchFindWhatLabel);
             this.panel3.Controls.Add(this.SearchFormFindWhatComboBox);
             this.panel3.Controls.Add(this.SearchFormReplaceWithComboBox);
@@ -550,23 +546,6 @@
             this.panel3.Name = "panel3";
             this.panel3.Size = new System.Drawing.Size(364, 54);
             this.panel3.TabIndex = 15;
-            // 
-            // SearchFormReplaceWithTextBox
-            // 
-            this.SearchFormReplaceWithTextBox.Location = new System.Drawing.Point(81, 29);
-            this.SearchFormReplaceWithTextBox.Name = "SearchFormReplaceWithTextBox";
-            this.SearchFormReplaceWithTextBox.Size = new System.Drawing.Size(260, 20);
-            this.SearchFormReplaceWithTextBox.TabIndex = 5;
-            // 
-            // SearchFormFindWhatTextBox
-            // 
-            this.SearchFormFindWhatTextBox.AutoCompleteMode = System.Windows.Forms.AutoCompleteMode.Append;
-            this.SearchFormFindWhatTextBox.AutoCompleteSource = System.Windows.Forms.AutoCompleteSource.CustomSource;
-            this.SearchFormFindWhatTextBox.Location = new System.Drawing.Point(81, 2);
-            this.SearchFormFindWhatTextBox.Name = "SearchFormFindWhatTextBox";
-            this.SearchFormFindWhatTextBox.Size = new System.Drawing.Size(260, 20);
-            this.SearchFormFindWhatTextBox.TabIndex = 4;
-            this.SearchFormFindWhatTextBox.TextChanged += new System.EventHandler(this.SearchFormFindWhatTextBox_TextChanged);
             // 
             // THSearchFindWhatLabel
             // 
@@ -679,8 +658,6 @@
         private System.Windows.Forms.GroupBox SearchModeGroupBox;
         private System.Windows.Forms.DataGridView SearchResultsDatagridview;
         private System.Windows.Forms.Panel SearchResultsPanel;
-        private System.Windows.Forms.TextBox SearchFormReplaceWithTextBox;
-        private System.Windows.Forms.TextBox SearchFormFindWhatTextBox;
         private System.Windows.Forms.CheckBox SearchAlwaysOnTopCheckBox;
         private System.Windows.Forms.CheckBox SearchFindLinesWithPossibleIssuesCheckBox;
         private System.Windows.Forms.CheckBox ConfirmReplaceAllCheckBox;
