@@ -116,6 +116,16 @@ namespace TranslationHelper.Forms.Search.SearchNew
             {
                 SearchSharedHelpers.SaveSearchQueries(list, sectionName);
             }
+
+            UpdateSearchQueries(searchResults, isReplace);
+        }
+
+        private static void UpdateSearchQueries(SearchResultsData searchResults, bool isReplace)
+        {
+            foreach (var item in searchResults.searchConditions.Cast<ISearchConditionSearchResult>())
+            {
+                item.LoadSearchQueries(isReplace);
+            }
         }
 
         private (List<string> searchQueries, List<string> searchReplacers, List<string> searchReplacePatterns) GetSearchQueries(SearchResultsData searchResults, bool isReplace)
@@ -127,6 +137,11 @@ namespace TranslationHelper.Forms.Search.SearchNew
             foreach (var item in searchResults.searchConditions.Cast<ISearchConditionSearchResult>())
             {
                 var results = item.GetSearchQueries(isReplace);
+
+                searchQueries.AddRange(results.searchQueries
+                    .Where(s => !searchQueries.Contains(s)));
+
+                if (!isReplace) continue;
 
                 searchReplacers.AddRange(results.searchReplacers
                     .Where(s => !searchReplacers.Contains(s)));
