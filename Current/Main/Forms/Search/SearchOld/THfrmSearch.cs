@@ -107,7 +107,6 @@ namespace TranslationHelper
             _workFileDgv = args[1] as AdvancedDataGridView;
             _tables = AppData.CurrentProject.FilesContent.Tables;
             _translationTextBox = args[2] as RichTextBox;
-            _config = AppData.Settings.THConfigINI;
 
             InitializeTranslations();
             if (SearchAlwaysOnTopCheckBox.Checked)
