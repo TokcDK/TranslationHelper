@@ -175,8 +175,8 @@ namespace TranslationHelper
         {
             var items = new[]
             {
-                (ComboBox: SearchFormFindWhatComboBox, List: _searchQueries, IniName: "Search Queries"),
-                (ComboBox: SearchFormReplaceWithComboBox, List: _searchReplacers, IniName: "Search Replacers")
+                (ComboBox: SearchFormFindWhatComboBox, List: _searchQueries, IniName: THSettings.SearchQueriesSectionName),
+                (ComboBox: SearchFormReplaceWithComboBox, List: _searchReplacers, IniName: THSettings.SearchReplacersSectionName)
             };
 
             foreach (var (comboBox, list, iniName) in items)

@@ -73,5 +73,10 @@ namespace TranslationHelper.Forms.Search
                 return tasks;
             }
         }
+
+        private void SearchConditionUserControl_Load(object sender, EventArgs e)
+        {
+            FindWhatComboBox.Items.AddRange(SearchSharedHelpers.LoadSearchQueries().ToArray());
+        }
     }
 }

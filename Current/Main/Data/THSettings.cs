@@ -27,19 +27,19 @@ namespace TranslationHelper.Data
 
         internal static string TranslationFileSourceDirSuffix { get => "THTranslationDB"; }
 
-        internal static string DBDirName => "DB";
+        internal static string DBDirName { get; } = "DB";
 
         internal static string DBDirPath => Path.Combine(Application.StartupPath, DBDirName);
         internal static string DBDirPathByLanguage => Path.Combine(DBDirPath, THSettings.SourceLanguage, THSettings.TargetLanguage);
 
 
-        internal static string RPGMakerTransDirName => "rpgmakertrans";
+        internal static string RPGMakerTransDirName { get; } = "rpgmakertrans";
 
 
         internal static string RPGMakerTransDirPath => Path.Combine(ToolsDirPath, RPGMakerTransDirName);
 
 
-        internal static string RPGMakerTransEXEName => "rpgmt.exe";
+        internal static string RPGMakerTransEXEName { get; } = "rpgmt.exe";
 
         /// <summary>
         /// path to Scripts dir of Python37
@@ -60,7 +60,7 @@ namespace TranslationHelper.Data
         /// </summary>
         /// <returns></returns>
 
-        internal static string PyLiveMakerLMARExtractionToolEXEName => "lmar.exe";
+        internal static string PyLiveMakerLMARExtractionToolEXEName { get; } = "lmar.exe";
 
         /// <summary>
         /// path for PyLiveMaker lmar extraction tool exe for game main resources extraction
@@ -74,7 +74,7 @@ namespace TranslationHelper.Data
         /// </summary>
         /// <returns></returns>
 
-        internal static string PyLiveMakerLMLSBExtractionToolEXEName => "lmlsb.exe";
+        internal static string PyLiveMakerLMLSBExtractionToolEXEName { get; } = "lmlsb.exe";
 
         /// <summary>
         /// path for PyLiveMaker lmlsb extraction tool exe for lsb files txt and menus text extraction
@@ -88,7 +88,7 @@ namespace TranslationHelper.Data
         /// </summary>
         /// <returns></returns>
 
-        internal static string PyLiveMakerLMPATCHExtractionToolEXEName => "lmpatch.exe";
+        internal static string PyLiveMakerLMPATCHExtractionToolEXEName { get; } = "lmpatch.exe";
 
         /// <summary>
         /// path for PyLiveMaker lmlsb extraction tool exe for lsb files txt and menus text extraction
@@ -101,7 +101,7 @@ namespace TranslationHelper.Data
         internal static string RPGMakerTransEXEPath => Path.Combine(RPGMakerTransDirPath, RPGMakerTransEXEName);
 
 
-        internal static string ResDirName => "Res";
+        internal static string ResDirName { get; } = "Res";
 
         /// <summary>
         /// Res dir path
@@ -116,11 +116,11 @@ namespace TranslationHelper.Data
         /// <returns></returns>
 
         internal static string ResDirPathRelative => Path.GetFullPath(@".\" + ResDirName);
-        internal static string ToolsDirName => "tools";
+        internal static string ToolsDirName { get; } = "tools";
         internal static string ToolsDirPath => Path.Combine(ResDirPathRelative, ToolsDirName);
 
 
-        internal static string WorkDirName => "Work";
+        internal static string WorkDirName { get; } = "Work";
 
         /// <summary>
         /// path to Work dir where project files placed
@@ -133,7 +133,7 @@ namespace TranslationHelper.Data
         internal static string WorkDirPathRelative => @".\" + WorkDirName;
 
 
-        internal static string RulesDirName => "rules";
+        internal static string RulesDirName { get; } = "rules";
 
         /// <summary>
         /// rules dir path where is placed some rules files
@@ -142,7 +142,7 @@ namespace TranslationHelper.Data
         internal static string RulesDirPath => Path.Combine(ResDirPath, RulesDirName);
 
 
-        internal static string RPGMakerMVSkipjsRulesFileName => "rpgmvskipjs.txt";
+        internal static string RPGMakerMVSkipjsRulesFileName { get; } = "rpgmvskipjs.txt";
 
         /// <summary>
         /// path to general skipjs file list which will be skipped while rpg maker js opening
@@ -152,7 +152,7 @@ namespace TranslationHelper.Data
         internal static string RPGMakerMVSkipjsRulesFilePath => Path.Combine(RulesDirPath, RPGMakerMVSkipjsRulesFileName);
 
 
-        internal static string RPGMakerMVProjectSkipjsRulesFileName => "skipjs.txt";
+        internal static string RPGMakerMVProjectSkipjsRulesFileName { get; } = "skipjs.txt";
 
         /// <summary>
         /// path to project specific skipjs file list which will be skipped while rpg maker js opening
@@ -172,19 +172,19 @@ namespace TranslationHelper.Data
                     RPGMakerMVProjectSkipjsRulesFilePath                };
 
 
-        internal static string ArcConvDirName => "arc_conv";
+        internal static string ArcConvDirName { get; } = "arc_conv";
 
 
         internal static string ArcConvDirPath => Path.Combine(ToolsDirPath, ArcConvDirName);
 
 
-        internal static string ArcConvExeName => "arc_conv.exe";
+        internal static string ArcConvExeName { get; } = "arc_conv.exe";
 
 
         internal static string ArcConvExePath => Path.Combine(ArcConvDirPath, ArcConvExeName);
 
 
-        internal static string NScriptDirName => "nscript";
+        internal static string NScriptDirName { get; } = "nscript";
 
 
         internal static bool SourceLanguageIsJapanese => AppSettings.OnlineTranslationSourceLanguage.EndsWith("ja");
@@ -211,13 +211,13 @@ namespace TranslationHelper.Data
         internal static string NScriptDirPath => Path.Combine(ToolsDirPath, NScriptDirName);
 
 
-        internal static string NSDECexeName => "NSDEC.exe";
+        internal static string NSDECexeName { get; } = "NSDEC.exe";
 
 
         internal static string NSDECexePath => Path.Combine(NScriptDirPath, NSDECexeName);
 
 
-        internal static string PythonDirName => "python38";
+        internal static string PythonDirName { get; } = "python38";
 
 
         internal static string PythonPath => Path.Combine(ToolsDirPath, PythonDirName);
@@ -228,10 +228,10 @@ namespace TranslationHelper.Data
         internal static string PythonExePath => Path.Combine(PythonPath, "python.exe");
 
         
-        internal static string OriginalColumnName => "Original";
+        internal static string OriginalColumnName { get; } = "Original";
 
         
-        internal static string TranslationColumnName => "Translation";
+        internal static string TranslationColumnName { get; } = "Translation";
 
         
         internal static string Python37ExePathRelative => PythonPathRelative+ @"\python.exe";
@@ -248,7 +248,7 @@ namespace TranslationHelper.Data
         internal static string SCPackerPYPath2 => SCPackerPathRelative+ @"\scpacker.py";
 
 
-        internal static string THTranslationCacheFileName => "THTranslationCache.cmx";
+        internal static string THTranslationCacheFileName { get; } = "THTranslationCache.cmx";
 
 
         internal static string THTranslationCacheFilePath => Path.Combine(DBDirPath, THTranslationCacheFileName);
@@ -268,22 +268,22 @@ namespace TranslationHelper.Data
             };
 
 
-        internal static string DXExtractDirName => "DXExtract";
+        internal static string DXExtractDirName { get; } = "DXExtract";
 
 
         internal static string DXExtractDirPath => Path.Combine(ToolsDirPath, DXExtractDirName);
 
 
-        internal static string DXExtractExeName => "DXExtract.exe";
+        internal static string DXExtractExeName { get; } = "DXExtract.exe";
 
 
         internal static string DXExtractExePath => Path.Combine(DXExtractDirPath, DXExtractExeName);
 
 
-        internal static string DXADecodeWFolderName => "dxadecodew";
+        internal static string DXADecodeWFolderName { get; } = "dxadecodew";
 
 
-        internal static string WolfDecFolderName => "wolfdec";
+        internal static string WolfDecFolderName { get; } = "wolfdec";
 
 
         internal static string WolfdecDirPath => Path.Combine(ToolsDirPath, WolfDecFolderName);
@@ -301,7 +301,7 @@ namespace TranslationHelper.Data
         internal static string DXAEncodeWExePath => Path.Combine(DXADecodeWDirPath, "DXAEncode.exe");
 
 
-        internal static string TranslationRegexRulesFileName => "TranslationHelperTranslationRegexRules.txt";
+        internal static string TranslationRegexRulesFileName { get; } = "TranslationHelperTranslationRegexRules.txt";
 
 
         internal static string TranslationRegexRulesFilePath => Path.Combine(ApplicationStartupPath, TranslationRegexRulesFileName);
@@ -316,13 +316,13 @@ namespace TranslationHelper.Data
         internal static string THLogPath => Path.Combine(ApplicationStartupPath, AppSettings.ApplicationProductName + ".log");
 
 
-        internal static string CellFixesRegexRulesFileName => "TranslationHelperCellFixesRegexRules.txt";
+        internal static string CellFixesRegexRulesFileName { get; } = "TranslationHelperCellFixesRegexRules.txt";
 
 
         internal static string CellFixesRegexRulesFilePath => Path.Combine(ApplicationStartupPath, CellFixesRegexRulesFileName);
 
 
-        internal static string KiriKiriToolDirName => "kirikiriunpacker";
+        internal static string KiriKiriToolDirName { get; } = "kirikiriunpacker";
 
 
         internal static string KiriKiriToolDirPath => Path.Combine(ToolsDirPath, KiriKiriToolDirName);
@@ -337,39 +337,43 @@ namespace TranslationHelper.Data
         internal static string LocaleEmulatorEXE => Path.Combine(ToolsDirPath, "localeemulator", "LEProc.exe");
 
         
-        internal static string DBAutoSavesDirName => "Auto";
+        internal static string DBAutoSavesDirName { get; } = "Auto";
 
 
-        internal static string RGSSDecrypterDirName => "rgssdecryptor";
+        internal static string RGSSDecrypterDirName { get; } = "rgssdecryptor";
 
 
         internal static string RGSSDecrypterDirPath => Path.Combine(ToolsDirPath, RGSSDecrypterDirName);
 
 
-        internal static string RGSSDecrypterEXEName => "RgssDecrypter.exe";
+        internal static string RGSSDecrypterEXEName { get; } = "RgssDecrypter.exe";
 
 
         internal static string RGSSDecrypterEXEPath => Path.Combine(RGSSDecrypterDirPath, RGSSDecrypterEXEName);
 
 
-        internal static string AliceToolsDirName => "alice-tools";
+        internal static string AliceToolsDirName { get; } = "alice-tools";
 
 
         internal static string AliceToolsDirPath => Path.Combine(ToolsDirPath, AliceToolsDirName);
 
 
-        internal static string AliceToolsExeName => "alice.exe";
+        internal static string AliceToolsExeName { get; } = "alice.exe";
 
 
         internal static string AliceToolsExePath => Path.Combine(AliceToolsDirPath, AliceToolsExeName);
 
 
-        internal static string CustomDBName => "Custom.cmx";
+        internal static string CustomDBName { get; } = "Custom.cmx";
 
 
         internal static string CustomDBPath => Path.Combine(DBDirPath, CustomDBName);
 
         
-        internal static string SoundsTextRegexPattern => "(((ぴちゃ)|(ぬっぶ)|(ぬっぷ)|(にちゅ)|(ひぇぐ)|(くにゅ)|(にゅく)|(べ[(ちゃ)]+)|(グル+)|(くちゅ)|(ぶちゅる+[ぅう]+)|(ちゅぷ)|(んほ[ぇえ]+)|(ギ+[ィイ]+)|(ふ[えぇ]+[ぁあ}+)|(ぐぢゅ[う]*)|(ぢゅる+)|(フ[ギャ]+)|(ずぶ+[ぅう]*)|(ぐぶ+)|(ぐぢゅう*)|(にゅっ?ぷ)|([クヌプ]チュ)|([ぷぴぬずぐ]ちゅ)|(ヒ+イ+)|(グヒ+)|(キヒ+)|(クホ+)|(グフ+)|(ぬるぅ)|(ぴゅ)|(くち)|(くっ)|(んく)|(ちゅ)|(イクう*)|(びゅる+)|(ずぶ[うぅ]+)|(ぬぷ+)|(ぶず+)|(フゴ[ォオ]+)|(んぎゅン)|(ドチュル+ゥ)|(ブ?(ビュ)+ゥ*)|(ウグ+)|(びゅ[ぐく])|(ん?は[ぁあ]+[ーっンッ]*)|(ん[ぅう…]*え)|(いや[ぁあ]+)|(ギィヒ+)|(ン[ぁあ]+)|(ん?…*[ふぅう]+[ぁあ]*)|(ぶ[(じゅ)]+)|(ぶ[りゅ]+)|(ふ[ぅう]+)|(う[んぁあ]+[ーっン]*)|(んゃ+[ぁあ]*[ーっン]*)|(へ[ぁあ]+)|(ん[ぁあ]*[ーっン]*)|(キ[ャアァ]+)|(あぎ)|(キ[イィ]+)|(ン?ぐ、?[ぅうぁあ]+)|([あは]+)|(く、?[ぅう]+[ーっン]*)|([ぅう]+)|(ひん+)|([ギ]+[ィ]*)|(へ[えぇ]+)|(ほ[お]+)|(ン?[オォおぉ]+)|(ふ+…+)|(や?[ぁあ]+[ーっン]*)|([いぃ]+)|(ゲ+)|(ン+)|(ッ+)|(く+)|(ひ+)|(グ+))[、…ーっッ]*)+";
+        internal static string SoundsTextRegexPattern { get; } = "(((ぴちゃ)|(ぬっぶ)|(ぬっぷ)|(にちゅ)|(ひぇぐ)|(くにゅ)|(にゅく)|(べ[(ちゃ)]+)|(グル+)|(くちゅ)|(ぶちゅる+[ぅう]+)|(ちゅぷ)|(んほ[ぇえ]+)|(ギ+[ィイ]+)|(ふ[えぇ]+[ぁあ}+)|(ぐぢゅ[う]*)|(ぢゅる+)|(フ[ギャ]+)|(ずぶ+[ぅう]*)|(ぐぶ+)|(ぐぢゅう*)|(にゅっ?ぷ)|([クヌプ]チュ)|([ぷぴぬずぐ]ちゅ)|(ヒ+イ+)|(グヒ+)|(キヒ+)|(クホ+)|(グフ+)|(ぬるぅ)|(ぴゅ)|(くち)|(くっ)|(んく)|(ちゅ)|(イクう*)|(びゅる+)|(ずぶ[うぅ]+)|(ぬぷ+)|(ぶず+)|(フゴ[ォオ]+)|(んぎゅン)|(ドチュル+ゥ)|(ブ?(ビュ)+ゥ*)|(ウグ+)|(びゅ[ぐく])|(ん?は[ぁあ]+[ーっンッ]*)|(ん[ぅう…]*え)|(いや[ぁあ]+)|(ギィヒ+)|(ン[ぁあ]+)|(ん?…*[ふぅう]+[ぁあ]*)|(ぶ[(じゅ)]+)|(ぶ[りゅ]+)|(ふ[ぅう]+)|(う[んぁあ]+[ーっン]*)|(んゃ+[ぁあ]*[ーっン]*)|(へ[ぁあ]+)|(ん[ぁあ]*[ーっン]*)|(キ[ャアァ]+)|(あぎ)|(キ[イィ]+)|(ン?ぐ、?[ぅうぁあ]+)|([あは]+)|(く、?[ぅう]+[ーっン]*)|([ぅう]+)|(ひん+)|([ギ]+[ィ]*)|(へ[えぇ]+)|(ほ[お]+)|(ン?[オォおぉ]+)|(ふ+…+)|(や?[ぁあ]+[ーっン]*)|([いぃ]+)|(ゲ+)|(ン+)|(ッ+)|(く+)|(ひ+)|(グ+))[、…ーっッ]*)+";
+
+        internal static string SearchQueriesSectionName { get; } = "Search Queries";
+        internal static string SearchReplacersSectionName { get; } = "Search Replacers";
+        internal static string SearchReplacePatternsSectionName { get; } = "Search Replace patterns";
     }
 }

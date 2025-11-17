@@ -1,14 +1,20 @@
-﻿using System;
+﻿using NLog;
+using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using TranslationHelper.Data;
+using static IronRuby.StandardLibrary.BigDecimal.BigDecimal;
 
 namespace TranslationHelper.Forms.Search
 {
     internal class SearchSharedHelpers
     {
+        private static readonly Logger _logger = LogManager.GetCurrentClassLogger();
+
         internal static void UnEscapeSearchValues(List<string> arr, bool unescape = true)
         {
             int arrCount = arr.Count;
@@ -37,6 +43,29 @@ namespace TranslationHelper.Forms.Search
             int itemsCount = items.Count;
             for (int i = 0; i < itemsCount; i++)
                 items[i] = $"\"{items[i]}\"";
+        }
+
+        internal static List<string> LoadSearchQueries(string sectionName = "", int maxEntriesCount = 20)
+        {
+            sectionName = string.IsNullOrWhiteSpace(sectionName) ? THSettings.SearchQueriesSectionName : sectionName;
+            var list = new List<string>();
+            try
+            {
+                var savedQueries = AppData.Settings.THConfigINI.GetSectionValues(sectionName)?.ToArray();
+                if (savedQueries?.Length > 0)
+                {
+                    list.Clear();
+                    list.AddRange(savedQueries.Take(maxEntriesCount));
+                    SearchSharedHelpers.RemoveQuotesFromLoadedSearchValues(list);
+                    SearchSharedHelpers.UnEscapeSearchValues(list);
+                }
+            }
+            catch (IOException ex)
+            {
+                _logger.Warn("Failed to load search queries", ex);
+            }
+
+            return list;
         }
     }
 }

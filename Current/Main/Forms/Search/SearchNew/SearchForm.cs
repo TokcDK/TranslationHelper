@@ -1,4 +1,5 @@
 ﻿using Manina.Windows.Forms;
+using NLog;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -16,6 +17,8 @@ namespace TranslationHelper.Forms.Search.SearchNew
 {
     public partial class SearchForm : Form
     {
+        private static readonly Logger _logger = LogManager.GetCurrentClassLogger();
+
         private readonly ProjectBase _project;
         private readonly DataSet _dataSet;
         private Manina.Windows.Forms.TabControl _searchConditionsTabControl;

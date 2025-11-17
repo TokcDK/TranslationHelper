@@ -38,8 +38,8 @@
             this.SearchOptionSelectedColumnComboBox = new System.Windows.Forms.ComboBox();
             this.SearchOptionCaseSensitiveCheckBox = new System.Windows.Forms.CheckBox();
             this.SearchOptionRegexCheckBox = new System.Windows.Forms.CheckBox();
-            this.contextMenuStrip1 = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.ReplaceWhatWithPanel = new System.Windows.Forms.Panel();
+            this.contextMenuStrip1 = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.SearchConditionsRootTableLayoutPanel.SuspendLayout();
             this.SearchTextFieldsTableLayoutPanel.SuspendLayout();
             this.tableLayoutPanel1.SuspendLayout();
@@ -151,11 +151,6 @@
             this.SearchOptionRegexCheckBox.Text = "Regex";
             this.SearchOptionRegexCheckBox.UseVisualStyleBackColor = true;
             // 
-            // contextMenuStrip1
-            // 
-            this.contextMenuStrip1.Name = "contextMenuStrip1";
-            this.contextMenuStrip1.Size = new System.Drawing.Size(61, 4);
-            // 
             // ReplaceWhatWithPanel
             // 
             this.ReplaceWhatWithPanel.Dock = System.Windows.Forms.DockStyle.Fill;
@@ -164,6 +159,11 @@
             this.ReplaceWhatWithPanel.Size = new System.Drawing.Size(610, 118);
             this.ReplaceWhatWithPanel.TabIndex = 1;
             // 
+            // contextMenuStrip1
+            // 
+            this.contextMenuStrip1.Name = "contextMenuStrip1";
+            this.contextMenuStrip1.Size = new System.Drawing.Size(61, 4);
+            // 
             // SearchConditionUserControl
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -171,6 +171,7 @@
             this.Controls.Add(this.SearchConditionsRootTableLayoutPanel);
             this.Name = "SearchConditionUserControl";
             this.Size = new System.Drawing.Size(616, 212);
+            this.Load += new System.EventHandler(this.SearchConditionUserControl_Load);
             this.SearchConditionsRootTableLayoutPanel.ResumeLayout(false);
             this.SearchTextFieldsTableLayoutPanel.ResumeLayout(false);
             this.tableLayoutPanel1.ResumeLayout(false);
