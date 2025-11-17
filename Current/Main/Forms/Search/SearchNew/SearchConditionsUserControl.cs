@@ -98,7 +98,7 @@ namespace TranslationHelper.Forms.Search
 
                 searchReplacers.AddRange(results.searchReplacers
                     .Where(s => !searchReplacers.Contains(s)));
-                searchReplacePatterns.AddRange(results.SearchReplacePatterns
+                searchReplacePatterns.AddRange(results.searchReplacePatterns
                     .Where(s => !searchReplacePatterns.Contains(s)));
             }
 
