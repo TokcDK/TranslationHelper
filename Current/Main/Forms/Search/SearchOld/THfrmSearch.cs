@@ -46,8 +46,7 @@ namespace TranslationHelper
         private static readonly int _originalColumnIndex = AppData.CurrentProject.OriginalColumnIndex;
         private static readonly int _translationColumnIndex = AppData.CurrentProject.TranslationColumnIndex;
         private int SearchColumnIndex { get => SearchMethodTranslationRadioButton.Checked ? _translationColumnIndex : _originalColumnIndex; }
-        public int MaxSavedQueries { get; private set; } = 20;
-
+        
         #region Nested Classes
         internal interface ISearchComparer
         {
