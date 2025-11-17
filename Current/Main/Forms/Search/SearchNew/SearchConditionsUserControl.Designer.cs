@@ -49,30 +49,30 @@
             // SearchConditionsRootTableLayoutPanel
             // 
             this.SearchConditionsRootTableLayoutPanel.ColumnCount = 1;
-            this.SearchConditionsRootTableLayoutPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
+            this.SearchConditionsRootTableLayoutPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
             this.SearchConditionsRootTableLayoutPanel.Controls.Add(this.SearchTextFieldsTableLayoutPanel, 0, 0);
             this.SearchConditionsRootTableLayoutPanel.Controls.Add(this.ReplaceWhatWithPanel, 0, 1);
             this.SearchConditionsRootTableLayoutPanel.Dock = System.Windows.Forms.DockStyle.Fill;
             this.SearchConditionsRootTableLayoutPanel.Location = new System.Drawing.Point(0, 0);
             this.SearchConditionsRootTableLayoutPanel.Name = "SearchConditionsRootTableLayoutPanel";
             this.SearchConditionsRootTableLayoutPanel.RowCount = 2;
-            this.SearchConditionsRootTableLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 41.98113F));
-            this.SearchConditionsRootTableLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 58.01887F));
+            this.SearchConditionsRootTableLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
+            this.SearchConditionsRootTableLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
             this.SearchConditionsRootTableLayoutPanel.Size = new System.Drawing.Size(616, 212);
             this.SearchConditionsRootTableLayoutPanel.TabIndex = 0;
             // 
             // SearchTextFieldsTableLayoutPanel
             // 
             this.SearchTextFieldsTableLayoutPanel.ColumnCount = 1;
-            this.SearchTextFieldsTableLayoutPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
+            this.SearchTextFieldsTableLayoutPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
             this.SearchTextFieldsTableLayoutPanel.Controls.Add(this.tableLayoutPanel1, 0, 0);
             this.SearchTextFieldsTableLayoutPanel.Controls.Add(this.SearchOptionsFlowLayoutPanel, 0, 1);
             this.SearchTextFieldsTableLayoutPanel.Dock = System.Windows.Forms.DockStyle.Fill;
             this.SearchTextFieldsTableLayoutPanel.Location = new System.Drawing.Point(3, 3);
             this.SearchTextFieldsTableLayoutPanel.Name = "SearchTextFieldsTableLayoutPanel";
             this.SearchTextFieldsTableLayoutPanel.RowCount = 2;
-            this.SearchTextFieldsTableLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 40.69767F));
-            this.SearchTextFieldsTableLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 59.30233F));
+            this.SearchTextFieldsTableLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 30F));
+            this.SearchTextFieldsTableLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.SearchTextFieldsTableLayoutPanel.Size = new System.Drawing.Size(610, 82);
             this.SearchTextFieldsTableLayoutPanel.TabIndex = 0;
             // 
@@ -88,7 +88,7 @@
             this.tableLayoutPanel1.Name = "tableLayoutPanel1";
             this.tableLayoutPanel1.RowCount = 1;
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
-            this.tableLayoutPanel1.Size = new System.Drawing.Size(604, 27);
+            this.tableLayoutPanel1.Size = new System.Drawing.Size(604, 24);
             this.tableLayoutPanel1.TabIndex = 0;
             // 
             // label1
@@ -118,9 +118,9 @@
             this.SearchOptionsFlowLayoutPanel.Controls.Add(this.SearchOptionCaseSensitiveCheckBox);
             this.SearchOptionsFlowLayoutPanel.Controls.Add(this.SearchOptionRegexCheckBox);
             this.SearchOptionsFlowLayoutPanel.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.SearchOptionsFlowLayoutPanel.Location = new System.Drawing.Point(3, 36);
+            this.SearchOptionsFlowLayoutPanel.Location = new System.Drawing.Point(3, 33);
             this.SearchOptionsFlowLayoutPanel.Name = "SearchOptionsFlowLayoutPanel";
-            this.SearchOptionsFlowLayoutPanel.Size = new System.Drawing.Size(604, 43);
+            this.SearchOptionsFlowLayoutPanel.Size = new System.Drawing.Size(604, 46);
             this.SearchOptionsFlowLayoutPanel.TabIndex = 1;
             // 
             // SearchOptionSelectedColumnComboBox
