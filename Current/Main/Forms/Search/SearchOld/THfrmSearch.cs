@@ -1,11 +1,8 @@
-﻿using Microsoft.Scripting.Utils;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Drawing;
-using System.Globalization;
-using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading;
@@ -34,7 +31,6 @@ namespace TranslationHelper
         private readonly AdvancedDataGridView _workFileDgv;
         private readonly DataTableCollection _tables;
         private readonly RichTextBox _translationTextBox;
-        private readonly INIFileMan.INIFile _config;
 
         private bool _isAnyRowFound;
         private int _startRowSearchIndex; // Tracks the current position in search results
@@ -201,8 +197,8 @@ namespace TranslationHelper
         private static void LoadSearchQueryData(ComboBox comboBox, string iniName)
         {
             LoadSearchQueries(comboBox, SearchSharedHelpers.LoadSearchQueries(iniName).ToArray());
-        }     
-        
+        }
+
         private static void LoadSearchQueries(ComboBox comboBox, string[] items)
         {
             comboBox.Items.Clear();
@@ -293,7 +289,7 @@ namespace TranslationHelper
             if (_tables.Count == 0) yield break;
 
             _isAnyRowFound = false;
-            if(_foundRowsList == null) 
+            if (_foundRowsList == null)
                 _foundRowsList = new List<FoundRowData>();
 
             foreach (var foundRowData in EnumerateFoundRows())
