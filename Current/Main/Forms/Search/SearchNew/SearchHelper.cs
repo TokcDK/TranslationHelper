@@ -28,7 +28,7 @@ namespace TranslationHelper.Forms.Search
 
     public interface IReplaceTaskSearchResult
     {
-        (List<string> searchReplacers, List<string> SearchReplacePatterns) GetSearchReplacers();
+        (List<string> searchReplacers, List<string> searchReplacePatterns) GetSearchReplacers();
         void LoadSearchReplacers();
     }
     public interface IReplaceTask

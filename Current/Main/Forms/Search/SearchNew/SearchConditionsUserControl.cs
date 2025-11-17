@@ -80,6 +80,10 @@ namespace TranslationHelper.Forms.Search
             var searchReplacers = new List<string>();
             var searchReplacePatterns = new List<string>();
 
+            if(!string.IsNullOrWhiteSpace(FindWhatComboBox.Text))
+            {
+                searchQueries.Add(FindWhatComboBox.Text);
+            }
             searchQueries.AddRange(FindWhatComboBox.Items.Cast<string>()
                 .Where(s => !searchReplacers.Contains(s)));
 

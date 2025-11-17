@@ -21,10 +21,29 @@ namespace TranslationHelper.Forms.Search
         public string ReplaceWhat => ReplaceWhatComboBox.Text ?? string.Empty;
         public string ReplaceWith => ReplaceWithComboBox.Text ?? string.Empty;
 
-        public (List<string> searchReplacers, List<string> SearchReplacePatterns) GetSearchReplacers()
+        public (List<string> searchReplacers, List<string> searchReplacePatterns) GetSearchReplacers()
         {
-            return (ReplaceWhatComboBox.Items.Cast<string>().ToList()
-                , ReplaceWithComboBox.Items.Cast<string>().ToList());
+            var searchReplacers = new List<string>();
+            var searchReplacePatterns = new List<string>();
+
+            foreach(var (list, comboBox) in new[]
+            {
+                (searchReplacers, ReplaceWhatComboBox),
+                (searchReplacePatterns, ReplaceWithComboBox),
+            })
+            {
+                if (!string.IsNullOrWhiteSpace(comboBox.Text))
+                {
+                    list.Add(comboBox.Text);
+                }
+                var items = comboBox.Items.Cast<string>().ToList();
+                if (items.Count > 0)
+                {
+                    list.AddRange(items);
+                }
+            }
+            
+            return (searchReplacers, searchReplacePatterns);
         }
 
         public void LoadSearchReplacers()
