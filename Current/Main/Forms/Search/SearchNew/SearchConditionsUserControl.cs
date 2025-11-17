@@ -19,7 +19,7 @@ namespace TranslationHelper.Forms.Search
             SearchOptionSelectedColumnComboBox.Items.AddRange(columns);
             if (columns.Length > 0)
             {
-                SearchOptionSelectedColumnComboBox.SelectedIndex = 0;
+                SearchOptionSelectedColumnComboBox.SelectedIndex = AppData.CurrentProject.TranslationColumnIndex;
             }
 
             _replaceWhatWithTabControl = new TabControl
