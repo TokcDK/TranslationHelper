@@ -11,6 +11,7 @@ using System.Windows.Forms;
 using TranslationHelper.Data;
 using TranslationHelper.Extensions;
 using TranslationHelper.Forms.Search;
+using TranslationHelper.Forms.Search.Data;
 using TranslationHelper.Functions;
 using TranslationHelper.Functions.FileElementsFunctions.Row.SearchIssueCheckers;
 using TranslationHelper.Main.Functions;
@@ -70,30 +71,6 @@ namespace TranslationHelper
 
             public void Replace(string searchString, string searchPattern, string replaceString, bool isCaseInsensitive = false)
                 => Regex.Replace(searchString, searchPattern, replaceString, isCaseInsensitive ? RegexOptions.IgnoreCase : RegexOptions.None);
-        }
-
-        public class FoundRowData
-        {
-            public FoundRowData(DataRow row)
-            {
-                Row = row;
-                TableIndex = AppData.CurrentProject.FilesContent.Tables.IndexOf(row.Table);
-                RowIndex = row.Table.Rows.IndexOf(row);
-            }
-
-            [Browsable(false)]
-            public DataRow Row { get; }
-            public string Original => Row.Field<string>(_originalColumnIndex);
-            public string Translation
-            {
-                get => Row.Field<string>(_translationColumnIndex);
-                set => Row.SetField(_translationColumnIndex, value);
-            }
-
-            [Browsable(false)]
-            public int TableIndex { get; }
-            [Browsable(false)]
-            public int RowIndex { get; }
         }
         #endregion
 

@@ -6,6 +6,7 @@ using System.Data;
 using System.Linq;
 using System.Windows.Forms;
 using TranslationHelper.Data;
+using TranslationHelper.Forms.Search.Data;
 using TranslationHelper.Main.Functions;
 using TranslationHelper.Projects;
 using Tab = Manina.Windows.Forms.Tab;
@@ -30,32 +31,6 @@ namespace TranslationHelper.Forms.Search.SearchNew
             InitializeComponent();
 
             InitSearchConditionsTabControl();
-        }
-        public class FoundRowData
-        {
-            private static readonly int _originalColumnIndex = AppData.CurrentProject.OriginalColumnIndex;
-            private static readonly int _translationColumnIndex = AppData.CurrentProject.TranslationColumnIndex;
-
-            public FoundRowData(DataRow row)
-            {
-                Row = row;
-                TableIndex = AppData.CurrentProject.FilesContent.Tables.IndexOf(row.Table);
-                RowIndex = row.Table.Rows.IndexOf(row);
-            }
-
-            [Browsable(false)]
-            public DataRow Row { get; }
-            public string Original => Row.Field<string>(_originalColumnIndex);
-            public string Translation
-            {
-                get => Row.Field<string>(_translationColumnIndex);
-                set => Row.SetField(_translationColumnIndex, value);
-            }
-
-            [Browsable(false)]
-            public int TableIndex { get; }
-            [Browsable(false)]
-            public int RowIndex { get; }
         }
 
         public class SearchResultsData
