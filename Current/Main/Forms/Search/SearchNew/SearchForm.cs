@@ -99,6 +99,7 @@ namespace TranslationHelper.Forms.Search.SearchNew
             {
                 ShowSelectedCellInMainTable(searchResults.FoundRows, e.RowIndex, e.ColumnIndex);
             };
+            foundRowsDatagridView.DataSource = searchResults.FoundRows;
             FoundRowsPanel.Controls.Add(foundRowsDatagridView);
         }
 
