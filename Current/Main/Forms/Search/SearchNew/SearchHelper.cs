@@ -36,68 +36,6 @@ namespace TranslationHelper.Forms.Search
         string ReplaceWhat { get; }
         string ReplaceWith { get; }
     }
-    public interface ISearchOption
-    {
-        int Priority { get; }
-    }
-    public interface ISearchOptionMatch
-    {
-        bool IsMatch(string inputString, string pattern);
-    }
-    public interface ISearchOptionReplace
-    {
-        string Replace(string inputString, string replaceWhat, string replaceWith);
-    }
-    public interface ISearchOptionUsingControl
-    {
-        Control Control { get; }
-    }
-    public class SearchOptionSearchColumn : ISearchOption, ISearchOptionUsingControl
-    {
-        readonly ComboBox _control = new ComboBox();
-
-        public Control Control => _control;
-
-        public int Priority => 999;
-    }
-
-    public class SearchOptionCaseSensitive : ISearchOption, ISearchOptionMatch, ISearchOptionReplace, ISearchOptionUsingControl
-    {
-        readonly CheckBox _control = new CheckBox() { Checked = false };
-
-        public Control Control => _control;
-
-        public int Priority => 10;
-
-        protected bool CaseSensitive => _control.Checked;
-
-        public bool IsMatch(string inputString, string pattern)
-        {
-            var comparison = CaseSensitive ? StringComparison.Ordinal : StringComparison.OrdinalIgnoreCase;
-            return inputString.IndexOf(pattern, comparison) != -1;
-        }
-
-        public string Replace(string inputString, string replaceWhat, string replaceWith)
-        {
-            var options = CaseSensitive ? StringComparison.InvariantCulture : StringComparison.InvariantCultureIgnoreCase;
-            return inputString.Replace(replaceWhat, replaceWith, options);
-        }
-    }
-    public class SearchOptionRegex : SearchOptionCaseSensitive
-    {
-        public new bool IsMatch(string inputString, string pattern)
-        {
-            var options = CaseSensitive ? RegexOptions.None : RegexOptions.IgnoreCase;
-            return Regex.IsMatch(inputString, pattern, options);
-        }
-
-        public new string Replace(string inputString, string replaceWhat, string replaceWith)
-        {
-            var options = CaseSensitive ? RegexOptions.None : RegexOptions.IgnoreCase;
-            return Regex.Replace(inputString, replaceWhat, replaceWith, options);
-        }
-        public new int Priority => 100;
-    }
 
     public static class SearchHelpers
     {

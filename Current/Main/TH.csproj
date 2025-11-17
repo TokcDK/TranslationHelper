@@ -136,6 +136,7 @@
     <Compile Include="Formats\RPGMMV\ValueLocationPresetTxt.cs" />
     <Compile Include="Formats\WolfRPG\TextEPH.cs" />
     <Compile Include="Forms\Search\Data\FoundRowData.cs" />
+    <Compile Include="Forms\Search\SearchNew\OptionsNew\SearchOptions.cs" />
     <Compile Include="Forms\Search\SearchNew\ReplaceWhatWithUserControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
