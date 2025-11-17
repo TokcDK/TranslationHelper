@@ -112,6 +112,7 @@
             this.Controls.Add(this.ReplaceWhatWithTableLayoutPanel);
             this.Name = "ReplaceWhatWithUserControl";
             this.Size = new System.Drawing.Size(666, 62);
+            this.Load += new System.EventHandler(this.ReplaceWhatWithUserControl_Load);
             this.panel1.ResumeLayout(false);
             this.ReplaceWhatWithTableLayoutPanel.ResumeLayout(false);
             this.ReplaceWhatWithTableLayoutPanel.PerformLayout();

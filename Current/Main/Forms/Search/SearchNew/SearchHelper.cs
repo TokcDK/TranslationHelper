@@ -14,6 +14,8 @@ namespace TranslationHelper.Forms.Search
     public interface ISearchConditionSearchResult
     {
         (List<string> searchQueries, List<string> searchReplacers, List<string> searchReplacePatterns) GetSearchQueries(bool isReplace);
+
+        void LoadSearchQueries(bool isReplace);
     }
     public interface ISearchCondition
     {
@@ -27,6 +29,7 @@ namespace TranslationHelper.Forms.Search
     public interface IReplaceTaskSearchResult
     {
         (List<string> searchReplacers, List<string> SearchReplacePatterns) GetSearchReplacers();
+        void LoadSearchReplacers();
     }
     public interface IReplaceTask
     {

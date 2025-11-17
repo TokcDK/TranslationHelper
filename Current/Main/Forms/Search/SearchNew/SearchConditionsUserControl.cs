@@ -1,13 +1,7 @@
-﻿using Microsoft.Scripting.Utils;
-using System;
+﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Data;
-using System.Drawing;
-using System.IO;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 using TranslationHelper.Data;
 
@@ -77,7 +71,7 @@ namespace TranslationHelper.Forms.Search
 
         private void SearchConditionUserControl_Load(object sender, EventArgs e)
         {
-            FindWhatComboBox.Items.AddRange(SearchSharedHelpers.LoadSearchQueries().ToArray());
+            LoadSearchQueries(false);
         }
 
         public (List<string> searchQueries, List<string> searchReplacers, List<string> searchReplacePatterns) GetSearchQueries(bool isReplace)
@@ -106,5 +100,20 @@ namespace TranslationHelper.Forms.Search
 
             return (searchQueries, searchReplacers, searchReplacePatterns);
         }
+
+        public void LoadSearchQueries(bool isReplace)
+        {
+            FindWhatComboBox.Items.Clear();
+            var items = SearchSharedHelpers.LoadSearchQueries(THSettings.SearchQueriesSectionName).ToArray();
+            FindWhatComboBox.Items.AddRange(items);
+
+            if (!isReplace) return;
+
+            foreach (var replaceTask in ReplaceTasks.Cast<IReplaceTaskSearchResult>())
+            {
+                replaceTask.LoadSearchReplacers();
+            }
+        }
+
     }
 }
