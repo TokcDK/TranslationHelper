@@ -48,9 +48,9 @@ namespace TranslationHelper.Forms.Search
 
         public void LoadSearchReplacers()
         {
-            ReplaceWithComboBox.Items.Clear();
+            ReplaceWhatComboBox.Items.Clear();
             var items = SearchSharedHelpers.LoadSearchQueries(THSettings.SearchReplacersSectionName).ToArray();
-            ReplaceWithComboBox.Items.AddRange(items);
+            ReplaceWhatComboBox.Items.AddRange(items);
 
             ReplaceWithComboBox.Items.Clear();
             items = SearchSharedHelpers.LoadSearchQueries(THSettings.SearchReplacePatternsSectionName).ToArray();
