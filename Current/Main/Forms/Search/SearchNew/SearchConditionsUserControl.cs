@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.Scripting.Utils;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -12,7 +13,7 @@ using TranslationHelper.Data;
 
 namespace TranslationHelper.Forms.Search
 {
-    public partial class SearchConditionUserControl : UserControl, ISearchCondition
+    public partial class SearchConditionUserControl : UserControl, ISearchCondition, ISearchConditionSearchResult
     {
         private TabControl _replaceWhatWithTabControl;
 
@@ -77,6 +78,33 @@ namespace TranslationHelper.Forms.Search
         private void SearchConditionUserControl_Load(object sender, EventArgs e)
         {
             FindWhatComboBox.Items.AddRange(SearchSharedHelpers.LoadSearchQueries().ToArray());
+        }
+
+        public (List<string> searchQueries, List<string> searchReplacers, List<string> searchReplacePatterns) GetSearchQueries(bool isReplace)
+        {
+            var searchQueries = new List<string>();
+            var searchReplacers = new List<string>();
+            var searchReplacePatterns = new List<string>();
+
+            searchQueries.AddRange(FindWhatComboBox.Items.Cast<string>()
+                .Where(s => !searchReplacers.Contains(s)));
+
+            if (!isReplace)
+            {
+                return (searchQueries, searchReplacers, searchReplacePatterns);
+            }
+
+            foreach (var replaceTask in ReplaceTasks.Cast<IReplaceTaskSearchResult>())
+            {
+                var results = replaceTask.GetSearchReplacers();
+
+                searchReplacers.AddRange(results.searchReplacers
+                    .Where(s => !searchReplacers.Contains(s)));
+                searchReplacePatterns.AddRange(results.SearchReplacePatterns
+                    .Where(s => !searchReplacePatterns.Contains(s)));
+            }
+
+            return (searchQueries, searchReplacers, searchReplacePatterns);
         }
     }
 }

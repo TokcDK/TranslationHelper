@@ -10,7 +10,7 @@ using System.Windows.Forms;
 
 namespace TranslationHelper.Forms.Search
 {
-    public partial class ReplaceWhatWithUserControl : UserControl, IReplaceTask
+    public partial class ReplaceWhatWithUserControl : UserControl, IReplaceTask, IReplaceTaskSearchResult
     {
         public ReplaceWhatWithUserControl()
         {
@@ -19,5 +19,11 @@ namespace TranslationHelper.Forms.Search
 
         public string ReplaceWhat => ReplaceWhatComboBox.Text ?? string.Empty;
         public string ReplaceWith => ReplaceWithComboBox.Text ?? string.Empty;
+
+        public (List<string> searchReplacers, List<string> SearchReplacePatterns) GetSearchReplacers()
+        {
+            return (ReplaceWhatComboBox.Items.Cast<string>().ToList()
+                , ReplaceWithComboBox.Items.Cast<string>().ToList());
+        }
     }
 }

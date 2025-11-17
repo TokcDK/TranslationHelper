@@ -11,6 +11,10 @@ using TranslationHelper.Data;
 
 namespace TranslationHelper.Forms.Search
 {
+    public interface ISearchConditionSearchResult
+    {
+        (List<string> searchQueries, List<string> searchReplacers, List<string> searchReplacePatterns) GetSearchQueries(bool isReplace);
+    }
     public interface ISearchCondition
     {
         string FindWhat { get; }
@@ -20,6 +24,10 @@ namespace TranslationHelper.Forms.Search
         List<IReplaceTask> ReplaceTasks { get; }
     }
 
+    public interface IReplaceTaskSearchResult
+    {
+        (List<string> searchReplacers, List<string> SearchReplacePatterns) GetSearchReplacers();
+    }
     public interface IReplaceTask
     {
         string ReplaceWhat { get; }

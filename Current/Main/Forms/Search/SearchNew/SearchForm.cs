@@ -1,5 +1,4 @@
-﻿using Manina.Windows.Forms;
-using NLog;
+﻿using NLog;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -9,9 +8,7 @@ using System.Windows.Forms;
 using TranslationHelper.Data;
 using TranslationHelper.Main.Functions;
 using TranslationHelper.Projects;
-using Button = System.Windows.Forms.Button;
 using Tab = Manina.Windows.Forms.Tab;
-using TabControl = Manina.Windows.Forms.TabControl;
 
 namespace TranslationHelper.Forms.Search.SearchNew
 {
@@ -105,9 +102,38 @@ namespace TranslationHelper.Forms.Search.SearchNew
             FoundRowsPanel.Controls.Add(foundRowsDatagridView);
         }
 
-        private void SaveSearchResults(SearchResultsData searchResults)
+        private void SaveSearchResults(SearchResultsData searchResults, bool isReplace = false)
         {
-            throw new NotImplementedException();
+            var (searchQueries, searchReplacers, searchReplacePatterns) = GetSearchQueries(searchResults, isReplace);
+
+            foreach (var (list, sectionName) in new [] 
+            {
+                (searchQueries, THSettings.SearchQueriesSectionName ), 
+                (searchReplacers, THSettings.SearchReplacersSectionName),
+                (searchReplacePatterns, THSettings.SearchReplacePatternsSectionName)
+            })
+            {
+                SearchSharedHelpers.SaveSearchQueries(list, sectionName);
+            }
+        }
+
+        private (List<string> searchQueries, List<string> searchReplacers, List<string> searchReplacePatterns) GetSearchQueries(SearchResultsData searchResults, bool isReplace)
+        {
+            var searchQueries = new List<string>();
+            var searchReplacers = new List<string>();
+            var searchReplacePatterns = new List<string>();
+
+            foreach (var item in searchResults.searchConditions.Cast<ISearchConditionSearchResult>())
+            {
+                var results = item.GetSearchQueries(isReplace);
+
+                searchReplacers.AddRange(results.searchReplacers
+                    .Where(s => !searchReplacers.Contains(s)));
+                searchReplacePatterns.AddRange(results.searchReplacePatterns
+                    .Where(s => !searchReplacePatterns.Contains(s)));
+            }
+
+            return (searchQueries, searchReplacers, searchReplacePatterns);
         }
 
         private void ShowSelectedCellInMainTable(List<FoundRowData> _foundRowsList, int foundRowIndex, int columnIndex)
