@@ -263,10 +263,5 @@ namespace TranslationHelper.Forms.Search.SearchNew
                 yield return tab.Controls[0] as ISearchCondition;
             }
         }
-
-        private void SearchRootTableLayoutPanel_Paint(object sender, PaintEventArgs e)
-        {
-
-        }
     }
 }
