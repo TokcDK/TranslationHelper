@@ -1,7 +1,6 @@
 ﻿using NLog;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Data;
 using System.Linq;
 using System.Windows.Forms;
@@ -20,8 +19,6 @@ namespace TranslationHelper.Forms.Search.SearchNew
         private readonly ProjectBase _project;
         private readonly DataSet _dataSet;
         private Manina.Windows.Forms.TabControl _searchConditionsTabControl;
-        private Tab _plusTab;
-        private const string PLUS_TAB_TEXT = "+";
 
         public SearchForm(ProjectBase project)
         {
@@ -82,9 +79,9 @@ namespace TranslationHelper.Forms.Search.SearchNew
         {
             var (searchQueries, searchReplacers, searchReplacePatterns) = GetSearchQueries(searchResults, isReplace);
 
-            foreach (var (list, sectionName) in new [] 
+            foreach (var (list, sectionName) in new[]
             {
-                (searchQueries, THSettings.SearchQueriesSectionName ), 
+                (searchQueries, THSettings.SearchQueriesSectionName ),
                 (searchReplacers, THSettings.SearchReplacersSectionName),
                 (searchReplacePatterns, THSettings.SearchReplacePatternsSectionName)
             })
