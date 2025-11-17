@@ -1,4 +1,6 @@
-﻿namespace TranslationHelper.Forms.Search
+﻿using Vip.ComboBox;
+
+namespace TranslationHelper.Forms.Search
 {
     partial class ReplaceWhatWithUserControl
     {
@@ -28,9 +30,9 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.ReplaceWithComboBox = new System.Windows.Forms.ComboBox();
+            this.ReplaceWithComboBox = new Vip.ComboBox.ComboBoxVip();
             this.panel1 = new System.Windows.Forms.Panel();
-            this.ReplaceWhatComboBox = new System.Windows.Forms.ComboBox();
+            this.ReplaceWhatComboBox = new Vip.ComboBox.ComboBoxVip();
             this.label1 = new System.Windows.Forms.Label();
             this.label3 = new System.Windows.Forms.Label();
             this.ReplaceWhatWithTableLayoutPanel = new System.Windows.Forms.TableLayoutPanel();
@@ -125,7 +127,7 @@
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.TableLayoutPanel ReplaceWhatWithTableLayoutPanel;
-        internal System.Windows.Forms.ComboBox ReplaceWithComboBox;
-        internal System.Windows.Forms.ComboBox ReplaceWhatComboBox;
+        internal ComboBoxVip ReplaceWithComboBox;
+        internal ComboBoxVip ReplaceWhatComboBox;
     }
 }

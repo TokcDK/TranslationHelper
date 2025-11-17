@@ -1,4 +1,6 @@
-﻿namespace TranslationHelper.Forms.Search
+﻿using Vip.ComboBox;
+
+namespace TranslationHelper.Forms.Search
 {
     partial class SearchConditionUserControl
     {
@@ -33,9 +35,9 @@
             this.SearchTextFieldsTableLayoutPanel = new System.Windows.Forms.TableLayoutPanel();
             this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
             this.label1 = new System.Windows.Forms.Label();
-            this.FindWhatComboBox = new System.Windows.Forms.ComboBox();
+            this.FindWhatComboBox = new ComboBoxVip();
             this.SearchOptionsFlowLayoutPanel = new System.Windows.Forms.FlowLayoutPanel();
-            this.SearchOptionSelectedColumnComboBox = new System.Windows.Forms.ComboBox();
+            this.SearchOptionSelectedColumnComboBox = new Vip.ComboBox.ComboBoxVip();
             this.SearchOptionCaseSensitiveCheckBox = new System.Windows.Forms.CheckBox();
             this.SearchOptionRegexCheckBox = new System.Windows.Forms.CheckBox();
             this.ReplaceWhatWithPanel = new System.Windows.Forms.Panel();
@@ -73,7 +75,7 @@
             this.SearchTextFieldsTableLayoutPanel.RowCount = 2;
             this.SearchTextFieldsTableLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 30F));
             this.SearchTextFieldsTableLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.SearchTextFieldsTableLayoutPanel.Size = new System.Drawing.Size(610, 82);
+            this.SearchTextFieldsTableLayoutPanel.Size = new System.Drawing.Size(610, 100);
             this.SearchTextFieldsTableLayoutPanel.TabIndex = 0;
             // 
             // tableLayoutPanel1
@@ -120,7 +122,7 @@
             this.SearchOptionsFlowLayoutPanel.Dock = System.Windows.Forms.DockStyle.Fill;
             this.SearchOptionsFlowLayoutPanel.Location = new System.Drawing.Point(3, 33);
             this.SearchOptionsFlowLayoutPanel.Name = "SearchOptionsFlowLayoutPanel";
-            this.SearchOptionsFlowLayoutPanel.Size = new System.Drawing.Size(604, 46);
+            this.SearchOptionsFlowLayoutPanel.Size = new System.Drawing.Size(604, 64);
             this.SearchOptionsFlowLayoutPanel.TabIndex = 1;
             // 
             // SearchOptionSelectedColumnComboBox
@@ -154,9 +156,9 @@
             // ReplaceWhatWithPanel
             // 
             this.ReplaceWhatWithPanel.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.ReplaceWhatWithPanel.Location = new System.Drawing.Point(3, 91);
+            this.ReplaceWhatWithPanel.Location = new System.Drawing.Point(3, 109);
             this.ReplaceWhatWithPanel.Name = "ReplaceWhatWithPanel";
-            this.ReplaceWhatWithPanel.Size = new System.Drawing.Size(610, 118);
+            this.ReplaceWhatWithPanel.Size = new System.Drawing.Size(610, 100);
             this.ReplaceWhatWithPanel.TabIndex = 1;
             // 
             // contextMenuStrip1
@@ -190,8 +192,8 @@
         private System.Windows.Forms.TableLayoutPanel tableLayoutPanel1;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.FlowLayoutPanel SearchOptionsFlowLayoutPanel;
-        internal System.Windows.Forms.ComboBox SearchOptionSelectedColumnComboBox;
-        internal System.Windows.Forms.ComboBox FindWhatComboBox;
+        internal ComboBoxVip SearchOptionSelectedColumnComboBox;
+        internal ComboBoxVip FindWhatComboBox;
         internal System.Windows.Forms.CheckBox SearchOptionCaseSensitiveCheckBox;
         internal System.Windows.Forms.CheckBox SearchOptionRegexCheckBox;
         private System.Windows.Forms.Panel ReplaceWhatWithPanel;

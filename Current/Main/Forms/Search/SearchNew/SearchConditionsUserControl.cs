@@ -4,6 +4,7 @@ using System.Data;
 using System.Linq;
 using System.Windows.Forms;
 using TranslationHelper.Data;
+using Vip.ComboBox;
 
 namespace TranslationHelper.Forms.Search
 {
@@ -28,6 +29,8 @@ namespace TranslationHelper.Forms.Search
             ReplaceWhatWithPanel.Controls.Add(_replaceWhatWithTabControl);
 
             AddReplaceTab();
+
+            //var comboboxVip = new ComboBoxVip();
         }
 
         public void AddReplaceTab()
