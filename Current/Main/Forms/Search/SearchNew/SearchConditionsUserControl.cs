@@ -85,7 +85,7 @@ namespace TranslationHelper.Forms.Search
                 searchQueries.Add(FindWhatComboBox.Text);
             }
             searchQueries.AddRange(FindWhatComboBox.Items.Cast<string>()
-                .Where(s => !searchReplacers.Contains(s)));
+                .Where(s => !searchQueries.Contains(s)));
 
             if (!isReplace)
             {
