@@ -188,49 +188,28 @@ namespace TranslationHelper
             }
         }
 
-        private void SaveSearchQueryData(ComboBox comboBox, List<string> list, string iniName)
+        private static void SaveSearchQueryData(ComboBox comboBox, List<string> list, string iniName)
         {
-            try
+            var list1 = new List<string>
             {
-                if (comboBox.Items.Count > 0 && IsSearchQueriesReplacersListChanged(list, comboBox.Items))
-                {
-                    list.Clear();
-                    list.AddRange(comboBox.Items.Cast<string>());
-                    SearchSharedHelpers.AddQuotesToWritingSearchValues(list);
-                    SearchSharedHelpers.UnEscapeSearchValues(list, false);
-                    _config.SetArrayToSectionValues(iniName, list.ToArray());
-                }
-            }
-            catch (IOException ex)
-            {
-                // Log the error instead of silently ignoring it
-                //AppData.LogError("Failed to save search queries", ex);
-            }
+                comboBox.Text
+            };
+            list1.AddRange(comboBox.Items.Cast<string>().ToList());
+            list1 = SearchSharedHelpers.SaveSearchQueries(list1, iniName);
+
+            LoadSearchQueries(comboBox, list1.ToArray()); // update list with newest items
         }
 
-        private void LoadSearchQueryData(ComboBox comboBox, List<string> list, string iniName)
+        private static void LoadSearchQueryData(ComboBox comboBox, List<string> list, string iniName)
         {
-            try
-            {
-                var savedQueries = _config.GetSectionValues(iniName)?.ToArray();
-                if (savedQueries?.Length > 0)
-                {
-                    list.Clear();
-                    list.AddRange(savedQueries.Take(MaxSavedQueries));
-                    SearchSharedHelpers.RemoveQuotesFromLoadedSearchValues(list);
-                    SearchSharedHelpers.UnEscapeSearchValues(list);
-                    comboBox.Items.Clear();
-                    comboBox.Items.AddRange(list.ToArray());
-                }
-            }
-            catch (IOException ex)
-            {
-                //AppData.LogError("Failed to load search queries", ex);
-            }
-        }        
-
-        private static bool IsSearchQueriesReplacersListChanged(List<string> oldList, ComboBox.ObjectCollection items)
-            => oldList.Count != items.Count || !oldList.SequenceEqual(items.Cast<string>());
+            LoadSearchQueries(comboBox, SearchSharedHelpers.LoadSearchQueries(iniName).ToArray());
+        }     
+        
+        private static void LoadSearchQueries(ComboBox comboBox, string[] items)
+        {
+            comboBox.Items.Clear();
+            comboBox.Items.AddRange(items);
+        }
         #endregion
 
         #region ComboBox Management
