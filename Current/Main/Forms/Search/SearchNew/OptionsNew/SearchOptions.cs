@@ -1,10 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using System.Windows;
 using System.Windows.Forms;
+using TranslationHelper.Projects;
+using static TranslationHelper.Forms.Search.SearchNew.SearchForm;
 
 namespace TranslationHelper.Forms.Search.SearchNew.OptionsNew
 {
@@ -23,8 +27,7 @@ namespace TranslationHelper.Forms.Search.SearchNew.OptionsNew
 
     public interface ISearchOption
     {
-        int Priority { get; }
-        SearchOptionType SearchType { get; }
+        bool IsEnabled { get; }
     }
     public interface ISearchOptionMatch
     {
@@ -38,7 +41,11 @@ namespace TranslationHelper.Forms.Search.SearchNew.OptionsNew
     {
         Control Control { get; }
     }
-    public class SearchOptionSearchColumn : ISearchOption, ISearchOptionUsingControl
+    public interface ISearchTarget 
+    {
+        IEnumerable<(string stringToCheck, DataRow row)> EnumerateStrings(ProjectBase project);
+    }
+    public class SearchOptionSearchColumn : ISearchOption, ISearchOptionUsingControl, ISearchTarget
     {
         public SearchOptionSearchColumn(string[] columns)
         {
@@ -49,19 +56,49 @@ namespace TranslationHelper.Forms.Search.SearchNew.OptionsNew
 
         public Control Control => _control;
 
-        public int Priority => 200;
+        public bool IsEnabled => _control.Items.Count > 0;
 
-        public SearchOptionType SearchType => SearchOptionType.SearchTarget;
+        public IEnumerable<(string stringToCheck, DataRow row)> EnumerateStrings(ProjectBase project)
+        {
+            if(string.IsNullOrWhiteSpace(_control.Text)) yield break;
+
+            foreach (DataTable table in project.FilesContent.Tables)
+            {
+                foreach (DataRow row in table.Rows)
+                {
+                    // return value of cell for specific column
+                    yield return (row.Field<string>(_control.Text), row);
+                }
+            }
+        }
     }
-    public class SearchOptionInfoTarget : ISearchOption, ISearchOptionUsingControl
+    public class SearchOptionInfoTarget : ISearchOption, ISearchOptionUsingControl, ISearchTarget
     {
         readonly CheckBox _control = new CheckBox();
 
         public Control Control => _control;
 
-        public int Priority => 200;
+        public bool IsEnabled => _control.Enabled;
 
-        public SearchOptionType SearchType => SearchOptionType.SearchTarget;
+        public IEnumerable<(string stringToCheck, DataRow row)> EnumerateStrings(ProjectBase project)
+        {
+            if (string.IsNullOrWhiteSpace(_control.Text)) yield break;
+
+            var tables = project.FilesContent.Tables;
+            var tablesInfo = project.FilesContentInfo.Tables;
+            int tablesInfoCount = tablesInfo.Count;
+            for (int t = 0; t < tablesInfoCount; t++)
+            {
+                var rows = tables[t].Rows;
+                var rowsInfo = tablesInfo[t].Rows;
+                int rowsInfoCount = rowsInfo.Count;
+                for ( var r = 0; r < rowsInfoCount; r++)
+                {
+                    // return infos for each row
+                    yield return (rowsInfo[r].Field<string>(0), rows[r]);
+                }
+            }
+        }
     }
 
     public class SearchOptionCaseSensitive : ISearchOption, ISearchOptionMatch, ISearchOptionReplace, ISearchOptionUsingControl
@@ -70,9 +107,7 @@ namespace TranslationHelper.Forms.Search.SearchNew.OptionsNew
 
         public Control Control => _control;
 
-        public int Priority => 10;
-
-        public SearchOptionType SearchType => SearchOptionType.SearchType;
+        public bool IsEnabled => _control.Enabled;
 
         protected bool CaseSensitive => _control.Checked;
 
@@ -101,6 +136,86 @@ namespace TranslationHelper.Forms.Search.SearchNew.OptionsNew
             var options = CaseSensitive ? RegexOptions.None : RegexOptions.IgnoreCase;
             return Regex.Replace(inputString, replaceWhat, replaceWith, options);
         }
-        public new int Priority => 100;
+    }
+
+    public class SearchLoader
+    {
+        ProjectBase _project;
+        public SearchLoader(ProjectBase project)
+        {
+            _project = project;
+        }
+
+        public SearchResultsData Search(ISearchCondition[] conditions)
+        {
+            var results = new SearchResultsData();
+
+            if (conditions.Length == 0) return results;
+            if (_project.FilesContent.Tables.Count == 0) return results;
+            if (_project.FilesContent.Tables[0].Rows.Count == 0) return results;
+            if (_project.FilesContent.Tables[0].Columns.Count == 0) return results;
+
+            var searchTargets = new List<ISearchTarget>()
+            {
+                new SearchOptionInfoTarget(),
+                new SearchOptionSearchColumn(_project.FilesContent.Tables[0].Columns.Cast<DataColumn>().Select(c => c.ColumnName).ToArray())
+            };
+
+            var searchers = new List<ISearchOptionMatch>()
+            {
+                new SearchOptionRegex(),
+                new SearchOptionCaseSensitive(),
+            };
+
+            var searchArea = searchTargets.FirstOrDefault(t => t is ISearchOption o && o.IsEnabled);
+
+            var searcher = searchers.FirstOrDefault(s => s is ISearchOption o && o.IsEnabled);
+
+            if (searchArea == default || searcher == default) return results;
+
+            results.searchConditions.AddRange(conditions);
+
+            foreach (var (stringToCheck, row) in searchArea.EnumerateStrings(_project))
+            {
+                if (conditions.Any(c => !searcher.IsMatch(stringToCheck, c.FindWhat))) continue;
+
+                results.FoundRows.Add(new Data.FoundRowData(row));
+            }
+
+            return results;
+        }
+
+        //private void PerformSearch(SearchResultsData results, bool isReplace = false)
+        //{
+        //    foreach (var (stringToCheck, row) in searchArea.EnumerateStrings(_project))
+        //    {
+        //        if (results.se.Any(c => !searcher.IsMatch(stringToCheck, c.FindWhat))) continue;
+
+        //        results.FoundRows.Add(new Data.FoundRowData(row));
+        //    }
+        //}
+
+        public SearchResultsData Replace()
+        {
+            var results = new SearchResultsData();
+
+            if (_project.FilesContent.Tables.Count == 0) return results;
+            if (_project.FilesContent.Tables[0].Rows.Count == 0) return results;
+            if (_project.FilesContent.Tables[0].Columns.Count == 0) return results;
+
+            var searchTargets = new List<ISearchTarget>()
+            {
+                new SearchOptionInfoTarget(),
+                new SearchOptionSearchColumn(_project.FilesContent.Tables[0].Columns.Cast<DataColumn>().Select(c => c.ColumnName).ToArray())
+            };
+
+            var replacers = new List<ISearchOptionReplace>()
+            {
+                new SearchOptionRegex(),
+                new SearchOptionCaseSensitive(),
+            };
+
+            return results;
+        }
     }
 }
