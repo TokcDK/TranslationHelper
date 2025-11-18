@@ -45,6 +45,17 @@ namespace TranslationHelper.Forms.Search.SearchNew
         {
             var searchResults = PerformSearch(isReplace);
 
+            FoundRowsPanel.Controls.Clear();
+            var foundRowsDatagridView = new DataGridView
+            {
+                DataSource = searchResults,
+                Dock = DockStyle.Fill,
+                ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize,
+                ColumnHeadersVisible = false,
+                AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill,
+                AutoSizeRowsMode = DataGridViewAutoSizeRowsMode.DisplayedCellsExceptHeaders,
+            };
+
             var actionName = isReplace ?
                 "Replaced" :
                 "Found";
@@ -57,16 +68,6 @@ namespace TranslationHelper.Forms.Search.SearchNew
 
             SaveSearchResults(searchResults, isReplace);
 
-            FoundRowsPanel.Controls.Clear();
-            var foundRowsDatagridView = new DataGridView
-            {
-                DataSource = searchResults,
-                Dock = DockStyle.Fill,
-                ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize,
-                ColumnHeadersVisible = false,
-                AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill,
-                AutoSizeRowsMode = DataGridViewAutoSizeRowsMode.DisplayedCellsExceptHeaders,
-            };
             foundRowsDatagridView.CellClick += (sender, e) =>
             {
                 ShowSelectedCellInMainTable(searchResults.FoundRows, e.RowIndex, e.ColumnIndex);
