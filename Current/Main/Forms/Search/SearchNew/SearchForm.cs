@@ -144,7 +144,7 @@ namespace TranslationHelper.Forms.Search.SearchNew
         {
             var searchResults = new SearchResultsData();
 
-            var validConditions = GetValidConditions(GetSearchConditions(), isReplace);
+            var validConditions = SearchHelpers.GetValidConditions(GetSearchConditions(), isReplace);
             if (validConditions.Length == 0) return searchResults;
 
             searchResults.SearchConditions.AddRange(validConditions);
@@ -169,13 +169,6 @@ namespace TranslationHelper.Forms.Search.SearchNew
             }
 
             return searchResults;
-        }
-
-        private ISearchCondition[] GetValidConditions(IEnumerable<ISearchCondition> conditions, bool isReplace)
-        {
-            return conditions.Where(c => c != null && !string.IsNullOrEmpty(c.FindWhat)
-            && (!isReplace || isReplace && c.ReplaceTasks.Any(t => !string.IsNullOrEmpty(t.ReplaceWhat))))
-                .ToArray();
         }
 
         private IEnumerable<ISearchCondition> GetSearchConditions()

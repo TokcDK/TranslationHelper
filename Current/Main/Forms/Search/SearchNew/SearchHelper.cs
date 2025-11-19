@@ -48,6 +48,11 @@ namespace TranslationHelper.Forms.Search
 
     internal static class SearchHelpers
     {
+        internal static ISearchCondition[] GetValidConditions(IEnumerable<ISearchCondition> conditions, bool isReplace)
+        {
+            return conditions.Where(c => c != null && !string.IsNullOrEmpty(c.FindWhat)).ToArray();
+        }
+
         internal static bool Matches(string input, string pattern, bool caseSensitive, bool useRegex)
         {
             if (string.IsNullOrEmpty(input) || string.IsNullOrEmpty(pattern))
