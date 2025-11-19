@@ -174,12 +174,12 @@ namespace TranslationHelper.Forms.Search.SearchNew
                 .ToArray();
         }
 
-        private bool TryReplaceAny(ISearchCondition[] nonEmptyConditions, DataRow row)
+        private bool TryReplaceAny(IEnumerable<ISearchCondition> conditions, DataRow row)
         {
             string currentValue = row.Field<string>(_project.TranslationColumnIndex);
             string newValue = currentValue;
 
-            foreach (var cond in nonEmptyConditions)
+            foreach (var cond in conditions)
             {
                 var matchingValue = row.Field<string>(cond.SearchColumn);
                 if (string.IsNullOrEmpty(matchingValue))
