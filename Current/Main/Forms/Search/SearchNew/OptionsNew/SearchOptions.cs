@@ -22,12 +22,6 @@ namespace TranslationHelper.Forms.Search.SearchNew.OptionsNew
     // to include in main search options like case sensitive and using it regex search
     // maybe main search will include options of search area
 
-    public enum SearchOptionType
-    {
-        SearchTarget = 0, // determine the search target like search column or info field
-        SearchType = 0, // determine the main search type like case sensitive search or regex search
-    }
-
     public interface ISearchOption
     {
         bool IsEnabled { get; }
@@ -208,24 +202,6 @@ namespace TranslationHelper.Forms.Search.SearchNew.OptionsNew
 
         public SearchResultsData Replace(ISearchCondition[] conditions)
         {
-            var results = new SearchResultsData();
-
-            if (_project.FilesContent.Tables.Count == 0) return results;
-            if (_project.FilesContent.Tables[0].Rows.Count == 0) return results;
-            if (_project.FilesContent.Tables[0].Columns.Count == 0) return results;
-
-            var searchTargets = new List<ISearchTarget>()
-            {
-                new SearchOptionInfoTarget(),
-                new SearchOptionSearchColumn(_project.FilesContent.Tables[0].Columns.Cast<DataColumn>().Select(c => c.ColumnName).ToArray())
-            };
-
-            var replacers = new List<ISearchOptionReplace>()
-            {
-                new SearchOptionRegex(),
-                new SearchOptionCaseSensitive(),
-            };
-
             return PerformSearch(conditions, true);
         }
     }
