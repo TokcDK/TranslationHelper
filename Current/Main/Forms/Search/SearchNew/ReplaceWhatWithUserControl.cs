@@ -23,13 +23,13 @@ namespace TranslationHelper.Forms.Search
 
         public (List<string> searchReplacers, List<string> searchReplacePatterns) GetSearchReplacers()
         {
-            var searchReplacers = new List<string>();
             var searchReplacePatterns = new List<string>();
+            var searchReplacers = new List<string>();
 
             foreach(var (list, comboBox) in new[]
             {
-                (searchReplacers, ReplaceWhatComboBox),
-                (searchReplacePatterns, ReplaceWithComboBox),
+                (searchReplacePatterns,ReplaceWhatComboBox),
+                (searchReplacers, ReplaceWithComboBox),
             })
             {
                 if (!string.IsNullOrWhiteSpace(comboBox.Text))
