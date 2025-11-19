@@ -139,10 +139,31 @@ namespace TranslationHelper.Forms.Search.SearchNew.OptionsNew
 
     public class SearchLoader
     {
-        ProjectBase _project;
+        private readonly IEnumerable<ISearchTarget> searchTargets;
+        private readonly IEnumerable<ISearchOptionMatch> searchers;
+        private readonly IEnumerable<ISearchOptionReplace> replacers;
+
+        private readonly ProjectBase _project;
+
         public SearchLoader(ProjectBase project)
         {
             _project = project;
+
+            searchTargets = new List<ISearchTarget>()
+            {
+                new SearchOptionInfoTarget(),
+                new SearchOptionSearchColumn(_project.FilesContent.Tables[0].Columns.Cast<DataColumn>().Select(c => c.ColumnName).ToArray())
+            };
+            searchers = new List<ISearchOptionMatch>()
+            {
+                new SearchOptionRegex(),
+                new SearchOptionCaseSensitive(),
+            };
+            replacers = new List<ISearchOptionReplace>()
+            {
+                new SearchOptionRegex(),
+                new SearchOptionCaseSensitive(),
+            };
         }
 
         public SearchResultsData PerformSearch(ISearchCondition[] conditions, bool isReplace = false)
@@ -153,24 +174,6 @@ namespace TranslationHelper.Forms.Search.SearchNew.OptionsNew
             if (_project.FilesContent.Tables.Count == 0) return results;
             if (_project.FilesContent.Tables[0].Rows.Count == 0) return results;
             if (_project.FilesContent.Tables[0].Columns.Count == 0) return results;
-
-            var searchTargets = new List<ISearchTarget>()
-            {
-                new SearchOptionInfoTarget(),
-                new SearchOptionSearchColumn(_project.FilesContent.Tables[0].Columns.Cast<DataColumn>().Select(c => c.ColumnName).ToArray())
-            };
-
-            var searchers = new List<ISearchOptionMatch>()
-            {
-                new SearchOptionRegex(),
-                new SearchOptionCaseSensitive(),
-            };
-
-            var replacers = new List<ISearchOptionReplace>()
-            {
-                new SearchOptionRegex(),
-                new SearchOptionCaseSensitive(),
-            };
 
             var searchArea = searchTargets.FirstOrDefault(t => t is ISearchOption o && o.IsEnabled);
 
