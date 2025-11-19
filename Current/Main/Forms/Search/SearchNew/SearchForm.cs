@@ -58,7 +58,7 @@ namespace TranslationHelper.Forms.Search.SearchNew
                 return;
             }
 
-            SaveSearchResults(searchResults, isReplace);
+            SearchHelpers.SaveSearchResults(searchResults, isReplace);
 
             var foundRowsDatagridView = new DataGridView
             {
@@ -71,84 +71,10 @@ namespace TranslationHelper.Forms.Search.SearchNew
             };
             foundRowsDatagridView.CellClick += (sender, e) =>
             {
-                ShowSelectedCellInMainTable(searchResults.FoundRows, e.RowIndex, e.ColumnIndex);
+                SearchHelpers.ShowSelectedCellInMainTable(_project, searchResults.FoundRows, e.RowIndex, e.ColumnIndex);
             };
             foundRowsDatagridView.DataSource = searchResults.FoundRows;
             FoundRowsPanel.Controls.Add(foundRowsDatagridView);
-        }
-
-        private void SaveSearchResults(SearchResultsData searchResults, bool isReplace = false)
-        {
-            var (searchQueries, searchReplacers, searchReplacePatterns) = GetSearchQueries(searchResults, isReplace);
-
-            foreach (var (list, sectionName) in new[]
-            {
-                (searchQueries, THSettings.SearchQueriesSectionName ),
-                (searchReplacers, THSettings.SearchReplacersSectionName),
-                (searchReplacePatterns, THSettings.SearchReplacePatternsSectionName)
-            })
-            {
-                SearchSharedHelpers.SaveSearchQueries(list, sectionName);
-            }
-
-            UpdateSearchQueries(searchResults, isReplace);
-        }
-
-        private static void UpdateSearchQueries(SearchResultsData searchResults, bool isReplace)
-        {
-            foreach (var item in searchResults.searchConditions.Cast<ISearchConditionSearchResult>())
-            {
-                item.LoadSearchQueries(isReplace);
-            }
-        }
-
-        private (List<string> searchQueries, List<string> searchReplacers, List<string> searchReplacePatterns) GetSearchQueries(SearchResultsData searchResults, bool isReplace)
-        {
-            var searchQueries = new List<string>();
-            var searchReplacers = new List<string>();
-            var searchReplacePatterns = new List<string>();
-
-            foreach (var item in searchResults.searchConditions.Cast<ISearchConditionSearchResult>())
-            {
-                var results = item.GetSearchQueries(isReplace);
-
-                searchQueries.AddRange(results.searchQueries
-                    .Where(s => !searchQueries.Contains(s)));
-
-                if (!isReplace) continue;
-
-                searchReplacers.AddRange(results.searchReplacers
-                    .Where(s => !searchReplacers.Contains(s)));
-                searchReplacePatterns.AddRange(results.searchReplacePatterns
-                    .Where(s => !searchReplacePatterns.Contains(s)));
-            }
-
-            return (searchQueries, searchReplacers, searchReplacePatterns);
-        }
-
-        private void ShowSelectedCellInMainTable(List<FoundRowData> _foundRowsList, int foundRowIndex, int columnIndex)
-        {
-            var _workFileDgv = AppData.Main.THFileElementsDataGridView;
-            try
-            {
-                var foundRowData = _foundRowsList[foundRowIndex];
-                var (_selectedTableIndex, _selectedRowIndex) = (foundRowData.TableIndex, foundRowData.RowIndex);
-
-                AppData.Main.THFileElementsDataGridView.CleanFilter();
-
-                var tableDefaultView = _project.FilesContent.Tables[_selectedTableIndex].DefaultView;
-                tableDefaultView.RowFilter = string.Empty;
-                tableDefaultView.Sort = string.Empty;
-                _workFileDgv.Refresh();
-
-                FunctionsTable.ShowSelectedRow(_selectedTableIndex, columnIndex, _selectedRowIndex, AppData.Main.THFileElementsDataGridView);
-                //if (_workFileDgv.CurrentCell != null)
-                //{
-                //    await Task.Run(() => SelectTextInTextBox(_workFileDgv.CurrentCell.Value.ToString())).ConfigureAwait(false);
-                //}
-            }
-            catch (ArgumentException) { }
-            catch (InvalidOperationException) { }
         }
 
         private void ReplaceAllButton_Click(object sender, EventArgs e)

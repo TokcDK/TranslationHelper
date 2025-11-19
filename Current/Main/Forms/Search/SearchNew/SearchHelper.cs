@@ -8,6 +8,10 @@ using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using TranslationHelper.Data;
+using TranslationHelper.Forms.Search.Data;
+using TranslationHelper.Main.Functions;
+using TranslationHelper.Projects;
+using static TranslationHelper.Forms.Search.SearchNew.SearchForm;
 
 namespace TranslationHelper.Forms.Search
 {
@@ -37,9 +41,9 @@ namespace TranslationHelper.Forms.Search
         string ReplaceWith { get; }
     }
 
-    public static class SearchHelpers
+    internal static class SearchHelpers
     {
-        public static bool Matches(string input, string pattern, bool caseSensitive, bool useRegex)
+        internal static bool Matches(string input, string pattern, bool caseSensitive, bool useRegex)
         {
             if (string.IsNullOrEmpty(input) || string.IsNullOrEmpty(pattern))
                 return false;
@@ -57,7 +61,7 @@ namespace TranslationHelper.Forms.Search
             }
         }
 
-        public static string ApplyReplaces(string input, List<IReplaceTask> tasks, bool caseSensitive, bool useRegex)
+        internal static string ApplyReplaces(string input, List<IReplaceTask> tasks, bool caseSensitive, bool useRegex)
         {
             var result = input;
             foreach (var task in tasks)
@@ -76,6 +80,80 @@ namespace TranslationHelper.Forms.Search
                 }
             }
             return result;
+        }
+
+        internal static void ShowSelectedCellInMainTable(ProjectBase project, List<FoundRowData> _foundRowsList, int foundRowIndex, int columnIndex)
+        {
+            var _workFileDgv = AppData.Main.THFileElementsDataGridView;
+            try
+            {
+                var foundRowData = _foundRowsList[foundRowIndex];
+                var (_selectedTableIndex, _selectedRowIndex) = (foundRowData.TableIndex, foundRowData.RowIndex);
+
+                AppData.Main.THFileElementsDataGridView.CleanFilter();
+
+                var tableDefaultView = project.FilesContent.Tables[_selectedTableIndex].DefaultView;
+                tableDefaultView.RowFilter = string.Empty;
+                tableDefaultView.Sort = string.Empty;
+                _workFileDgv.Refresh();
+
+                FunctionsTable.ShowSelectedRow(_selectedTableIndex, columnIndex, _selectedRowIndex, AppData.Main.THFileElementsDataGridView);
+                //if (_workFileDgv.CurrentCell != null)
+                //{
+                //    await Task.Run(() => SelectTextInTextBox(_workFileDgv.CurrentCell.Value.ToString())).ConfigureAwait(false);
+                //}
+            }
+            catch (ArgumentException) { }
+            catch (InvalidOperationException) { }
+        }
+
+        internal static void SaveSearchResults(SearchResultsData searchResults, bool isReplace = false)
+        {
+            var (searchQueries, searchReplacers, searchReplacePatterns) = GetSearchQueries(searchResults, isReplace);
+
+            foreach (var (list, sectionName) in new[]
+            {
+                (searchQueries, THSettings.SearchQueriesSectionName ),
+                (searchReplacers, THSettings.SearchReplacersSectionName),
+                (searchReplacePatterns, THSettings.SearchReplacePatternsSectionName)
+            })
+            {
+                SearchSharedHelpers.SaveSearchQueries(list, sectionName);
+            }
+
+            UpdateSearchQueries(searchResults, isReplace);
+        }
+
+        internal static void UpdateSearchQueries(SearchResultsData searchResults, bool isReplace)
+        {
+            foreach (var item in searchResults.searchConditions.Cast<ISearchConditionSearchResult>())
+            {
+                item.LoadSearchQueries(isReplace);
+            }
+        }
+
+        internal static (List<string> searchQueries, List<string> searchReplacers, List<string> searchReplacePatterns) GetSearchQueries(SearchResultsData searchResults, bool isReplace)
+        {
+            var searchQueries = new List<string>();
+            var searchReplacers = new List<string>();
+            var searchReplacePatterns = new List<string>();
+
+            foreach (var item in searchResults.searchConditions.Cast<ISearchConditionSearchResult>())
+            {
+                var results = item.GetSearchQueries(isReplace);
+
+                searchQueries.AddRange(results.searchQueries
+                    .Where(s => !searchQueries.Contains(s)));
+
+                if (!isReplace) continue;
+
+                searchReplacers.AddRange(results.searchReplacers
+                    .Where(s => !searchReplacers.Contains(s)));
+                searchReplacePatterns.AddRange(results.searchReplacePatterns
+                    .Where(s => !searchReplacePatterns.Contains(s)));
+            }
+
+            return (searchQueries, searchReplacers, searchReplacePatterns);
         }
     }
 }
