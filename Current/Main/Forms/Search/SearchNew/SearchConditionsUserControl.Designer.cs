@@ -40,12 +40,15 @@ namespace TranslationHelper.Forms.Search
             this.SearchOptionSelectedColumnComboBox = new System.Windows.Forms.ComboBox();
             this.SearchOptionCaseSensitiveCheckBox = new System.Windows.Forms.CheckBox();
             this.SearchOptionRegexCheckBox = new System.Windows.Forms.CheckBox();
+            this.ReplaceWhatWithTableLayoutPanel = new System.Windows.Forms.TableLayoutPanel();
             this.ReplaceWhatWithPanel = new System.Windows.Forms.Panel();
+            this.ReplaceWhatWithAddTabButton = new System.Windows.Forms.Button();
             this.contextMenuStrip1 = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.SearchConditionsRootTableLayoutPanel.SuspendLayout();
             this.SearchTextFieldsTableLayoutPanel.SuspendLayout();
             this.tableLayoutPanel1.SuspendLayout();
             this.SearchOptionsFlowLayoutPanel.SuspendLayout();
+            this.ReplaceWhatWithTableLayoutPanel.SuspendLayout();
             this.SuspendLayout();
             // 
             // SearchConditionsRootTableLayoutPanel
@@ -53,7 +56,7 @@ namespace TranslationHelper.Forms.Search
             this.SearchConditionsRootTableLayoutPanel.ColumnCount = 1;
             this.SearchConditionsRootTableLayoutPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
             this.SearchConditionsRootTableLayoutPanel.Controls.Add(this.SearchTextFieldsTableLayoutPanel, 0, 0);
-            this.SearchConditionsRootTableLayoutPanel.Controls.Add(this.ReplaceWhatWithPanel, 0, 1);
+            this.SearchConditionsRootTableLayoutPanel.Controls.Add(this.ReplaceWhatWithTableLayoutPanel, 0, 1);
             this.SearchConditionsRootTableLayoutPanel.Dock = System.Windows.Forms.DockStyle.Fill;
             this.SearchConditionsRootTableLayoutPanel.Location = new System.Drawing.Point(0, 0);
             this.SearchConditionsRootTableLayoutPanel.Name = "SearchConditionsRootTableLayoutPanel";
@@ -154,13 +157,43 @@ namespace TranslationHelper.Forms.Search
             this.SearchOptionRegexCheckBox.Text = "Regex";
             this.SearchOptionRegexCheckBox.UseVisualStyleBackColor = true;
             // 
+            // ReplaceWhatWithTableLayoutPanel
+            // 
+            this.ReplaceWhatWithTableLayoutPanel.ColumnCount = 2;
+            this.ReplaceWhatWithTableLayoutPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.ReplaceWhatWithTableLayoutPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 30F));
+            this.ReplaceWhatWithTableLayoutPanel.Controls.Add(this.ReplaceWhatWithPanel, 0, 0);
+            this.ReplaceWhatWithTableLayoutPanel.Controls.Add(this.ReplaceWhatWithAddTabButton, 1, 0);
+            this.ReplaceWhatWithTableLayoutPanel.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.ReplaceWhatWithTableLayoutPanel.Location = new System.Drawing.Point(0, 106);
+            this.ReplaceWhatWithTableLayoutPanel.Margin = new System.Windows.Forms.Padding(0);
+            this.ReplaceWhatWithTableLayoutPanel.Name = "ReplaceWhatWithTableLayoutPanel";
+            this.ReplaceWhatWithTableLayoutPanel.RowCount = 1;
+            this.ReplaceWhatWithTableLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.ReplaceWhatWithTableLayoutPanel.Size = new System.Drawing.Size(616, 106);
+            this.ReplaceWhatWithTableLayoutPanel.TabIndex = 1;
+            // 
             // ReplaceWhatWithPanel
             // 
+            this.ReplaceWhatWithPanel.BackColor = System.Drawing.Color.WhiteSmoke;
             this.ReplaceWhatWithPanel.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.ReplaceWhatWithPanel.Location = new System.Drawing.Point(3, 109);
+            this.ReplaceWhatWithPanel.Location = new System.Drawing.Point(3, 3);
             this.ReplaceWhatWithPanel.Name = "ReplaceWhatWithPanel";
-            this.ReplaceWhatWithPanel.Size = new System.Drawing.Size(610, 100);
+            this.ReplaceWhatWithPanel.Size = new System.Drawing.Size(580, 100);
             this.ReplaceWhatWithPanel.TabIndex = 1;
+            // 
+            // ReplaceWhatWithAddTabButton
+            // 
+            this.ReplaceWhatWithAddTabButton.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(52)))), ((int)(((byte)(58)))), ((int)(((byte)(64)))));
+            this.ReplaceWhatWithAddTabButton.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.ReplaceWhatWithAddTabButton.ForeColor = System.Drawing.Color.White;
+            this.ReplaceWhatWithAddTabButton.Location = new System.Drawing.Point(589, 3);
+            this.ReplaceWhatWithAddTabButton.Name = "ReplaceWhatWithAddTabButton";
+            this.ReplaceWhatWithAddTabButton.Size = new System.Drawing.Size(24, 100);
+            this.ReplaceWhatWithAddTabButton.TabIndex = 2;
+            this.ReplaceWhatWithAddTabButton.Text = "+";
+            this.ReplaceWhatWithAddTabButton.UseVisualStyleBackColor = false;
+            this.ReplaceWhatWithAddTabButton.Click += new System.EventHandler(this.ReplaceWhatWithAddTabButton_Click);
             // 
             // contextMenuStrip1
             // 
@@ -181,6 +214,7 @@ namespace TranslationHelper.Forms.Search
             this.tableLayoutPanel1.PerformLayout();
             this.SearchOptionsFlowLayoutPanel.ResumeLayout(false);
             this.SearchOptionsFlowLayoutPanel.PerformLayout();
+            this.ReplaceWhatWithTableLayoutPanel.ResumeLayout(false);
             this.ResumeLayout(false);
 
         }
@@ -198,5 +232,7 @@ namespace TranslationHelper.Forms.Search
         private System.Windows.Forms.Panel ReplaceWhatWithPanel;
         internal ComboBoxVip FindWhatComboBox;
         internal System.Windows.Forms.FlowLayoutPanel SearchOptionsFlowLayoutPanel;
+        private System.Windows.Forms.TableLayoutPanel ReplaceWhatWithTableLayoutPanel;
+        private System.Windows.Forms.Button ReplaceWhatWithAddTabButton;
     }
 }

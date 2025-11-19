@@ -1,17 +1,11 @@
 ﻿using NLog;
 using System;
-using System.Collections.Generic;
 using System.Data;
 using System.Linq;
-using System.Windows;
 using System.Windows.Forms;
-using TranslationHelper.Data;
 using TranslationHelper.Forms.Search.Data;
 using TranslationHelper.Forms.Search.SearchNew.Data;
-using TranslationHelper.Main.Functions;
 using TranslationHelper.Projects;
-using static Manina.Windows.Forms.TabControl;
-using Tab = Manina.Windows.Forms.Tab;
 
 namespace TranslationHelper.Forms.Search.SearchNew
 {
@@ -47,7 +41,7 @@ namespace TranslationHelper.Forms.Search.SearchNew
                 SearchHelpers.TextSearchResultsReplacedPrefix :
                 SearchHelpers.TextSearchResultsFoundPrefix;
             SearchResultInfoLabel.Text = string.Format(SearchHelpers.TextSearchResultsMatchingStringsMessage, actionName, searchResults.FoundRows.Count);
-            
+
             if (searchResults.FoundRows.Count == 0)
             {
                 return;
@@ -71,7 +65,7 @@ namespace TranslationHelper.Forms.Search.SearchNew
                 AllowDrop = true
             };
             _searchConditionsTabControl.CloseTabButtonClick += (o, e) =>
-            {                
+            {
                 e.Cancel = true; // cancel included removal function to remove manually with renumerate
                 SearchHelpers.RemoveSearchConditionTab(_searchConditionsTabControl, e.Tab, _dataSet.Tables);
             };
@@ -104,7 +98,7 @@ namespace TranslationHelper.Forms.Search.SearchNew
 
                 foreach (var row in matchingRows)
                 {
-                    if(!isReplace || SearchHelpers.TryReplaceAny(validConditions, row, _project))
+                    if (!isReplace || SearchHelpers.TryReplaceAny(validConditions, row, _project))
                     {
                         searchResults.FoundRows.Add(new FoundRowData(row));
                     }

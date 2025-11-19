@@ -1,17 +1,17 @@
-﻿using System;
+﻿using Manina.Windows.Forms;
+using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
 using System.Windows.Forms;
 using TranslationHelper.Data;
 using TranslationHelper.Forms.Search.SearchNew.OptionsNew;
-using Vip.ComboBox;
 
 namespace TranslationHelper.Forms.Search
 {
-    public partial class SearchConditionUserControl : UserControl, ISearchCondition, ISearchConditionSearchResult
+    public partial class SearchConditionUserControl : System.Windows.Forms.UserControl, ISearchCondition, ISearchConditionSearchResult
     {
-        private TabControl _replaceWhatWithTabControl;
+        private readonly Manina.Windows.Forms.TabControl _replaceWhatWithTabControl;
 
         public SearchConditionUserControl(string[] columns)
         {
@@ -23,9 +23,15 @@ namespace TranslationHelper.Forms.Search
                 SearchOptionSelectedColumnComboBox.SelectedIndex = AppData.CurrentProject.TranslationColumnIndex;
             }
 
-            _replaceWhatWithTabControl = new TabControl
+            _replaceWhatWithTabControl = new Manina.Windows.Forms.TabControl
             {
-                Dock = DockStyle.Fill
+                Dock = DockStyle.Fill,
+                ShowCloseTabButtons = true,
+            };
+            _replaceWhatWithTabControl.CloseTabButtonClick += (o, e) =>
+            {
+                e.Cancel = true; // cancel included removal function to remove manually with renumerate
+                RemoveReplaceTab(e.Tab);
             };
             ReplaceWhatWithPanel.Controls.Add(_replaceWhatWithTabControl);
 
@@ -34,19 +40,24 @@ namespace TranslationHelper.Forms.Search
 
         public void AddReplaceTab()
         {
-            var tabPage = new TabPage($"Replace {(_replaceWhatWithTabControl.TabCount + 1)}");
+            var tab = new Tab() { Text = string.Format(T._("Replace {0}"), _replaceWhatWithTabControl.Tabs.Count + 1) };
             var replaceUC = new ReplaceWhatWithUserControl();
-            tabPage.Controls.Add(replaceUC);
+            tab.Controls.Add(replaceUC);
             replaceUC.Dock = DockStyle.Fill;
-            _replaceWhatWithTabControl.TabPages.Add(tabPage);
+            _replaceWhatWithTabControl.Tabs.Add(tab);
             _replaceWhatWithTabControl.Update();
         }
 
-        public void RemoveReplaceTab(TabPage tabPage)
+        public void RemoveReplaceTab(Tab tab)
         {
-            if (_replaceWhatWithTabControl.TabCount > 1)
+            _replaceWhatWithTabControl.Tabs.Remove(tab);
+            if (_replaceWhatWithTabControl.Tabs.Count == 0)
             {
-                _replaceWhatWithTabControl.TabPages.Remove(tabPage);
+                AddReplaceTab(); // always one default search replacer tab by default
+            }
+            else
+            {
+                SearchHelpers.RenumerateTabNames(_replaceWhatWithTabControl.Tabs, SearchHelpers.TextReplacerTabIndexed);
             }
         }
         public string FindWhat => FindWhatComboBox.Text ?? string.Empty;
@@ -62,9 +73,9 @@ namespace TranslationHelper.Forms.Search
             get
             {
                 var tasks = new List<IReplaceTask>();
-                foreach (TabPage tabPage in _replaceWhatWithTabControl.TabPages)
+                foreach (var tab in _replaceWhatWithTabControl.Tabs)
                 {
-                    tasks.Add(tabPage.Controls[0] as IReplaceTask);
+                    tasks.Add(tab.Controls[0] as IReplaceTask);
                 }
 
                 return tasks;
@@ -88,7 +99,7 @@ namespace TranslationHelper.Forms.Search
             var searchReplacers = new List<string>();
             var searchReplacePatterns = new List<string>();
 
-            if(!string.IsNullOrWhiteSpace(FindWhatComboBox.Text))
+            if (!string.IsNullOrWhiteSpace(FindWhatComboBox.Text))
             {
                 searchQueries.Add(FindWhatComboBox.Text);
             }
@@ -122,6 +133,11 @@ namespace TranslationHelper.Forms.Search
             {
                 replaceTask.LoadSearchReplacers();
             }
+        }
+
+        private void ReplaceWhatWithAddTabButton_Click(object sender, EventArgs e)
+        {
+            AddReplaceTab();
         }
     }
 }

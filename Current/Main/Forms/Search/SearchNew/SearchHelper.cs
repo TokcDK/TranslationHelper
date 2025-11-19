@@ -1,12 +1,9 @@
 ﻿using Manina.Windows.Forms;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Data;
 using System.Linq;
-using System.Text;
 using System.Text.RegularExpressions;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 using TranslationHelper.Data;
 using TranslationHelper.Forms.Search.Data;
@@ -15,7 +12,6 @@ using TranslationHelper.Forms.Search.SearchNew.OptionsNew;
 using TranslationHelper.Main.Functions;
 using TranslationHelper.Projects;
 using static Manina.Windows.Forms.TabControl;
-using static TranslationHelper.Forms.Search.SearchNew.SearchForm;
 
 namespace TranslationHelper.Forms.Search
 {
@@ -51,6 +47,7 @@ namespace TranslationHelper.Forms.Search
     internal static class SearchHelpers
     {
         internal static string TextConditionTabIndexed { get; } = T._("Condition {0}");
+        internal static string TextReplacerTabIndexed { get; } = T._("Replace {0}");
         internal static string TextSearchResultsReplacedPrefix { get; } = T._("Replaced");
         internal static string TextSearchResultsFoundPrefix { get; } = T._("Found");
         internal static string TextSearchResultsMatchingStringsMessage { get; } = T._("{0} {1} matching strings.");
@@ -81,16 +78,16 @@ namespace TranslationHelper.Forms.Search
             }
             else
             {
-                SearchHelpers.RenumerateTabNames(tabControl.Tabs);
+                SearchHelpers.RenumerateTabNames(tabControl.Tabs, TextConditionTabIndexed);
             }
         }
 
-        internal static void RenumerateTabNames(TabCollection tabs)
+        internal static void RenumerateTabNames(TabCollection tabs, string formattedText)
         {
             int i = 1;
             foreach (var t in tabs)
             {
-                t.Text = string.Format(TextConditionTabIndexed, i++);
+                t.Text = string.Format(formattedText, i++);
             }
         }
 
@@ -180,7 +177,7 @@ namespace TranslationHelper.Forms.Search
             var result = input;
             foreach (var task in tasks)
             {
-                if(string.IsNullOrEmpty(task.ReplaceWhat)) continue;
+                if (string.IsNullOrEmpty(task.ReplaceWhat)) continue;
 
                 if (useRegex)
                 {
@@ -257,7 +254,7 @@ namespace TranslationHelper.Forms.Search
                 var results = item.GetSearchQueries(isReplace);
 
                 string lastQuery = results.searchQueries.Count > 0 ? results.searchQueries[0] : "";
-                if(lastQuery != "")
+                if (lastQuery != "")
                 {
                     int lastQueryIndex = searchQueries.IndexOf(lastQuery);
                     if (lastQueryIndex > 0)
@@ -266,7 +263,7 @@ namespace TranslationHelper.Forms.Search
                         searchQueries.RemoveAt(lastQueryIndex);
                         searchQueries.Insert(0, lastQuery);
                     }
-                    else if(lastQueryIndex == -1)
+                    else if (lastQueryIndex == -1)
                     {
                         searchQueries.Insert(0, lastQuery);
                     }
