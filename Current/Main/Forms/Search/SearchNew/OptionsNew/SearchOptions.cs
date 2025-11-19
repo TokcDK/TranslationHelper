@@ -79,20 +79,22 @@ namespace TranslationHelper.Forms.Search.SearchNew.OptionsNew
 
         public IEnumerable<(string stringToCheck, DataRow row)> EnumerateStrings(ProjectBase project)
         {
-            if (!_control.Checked) yield break;
+            if (!_control.Checked) yield break; // Use Checked for enablement
 
             var tables = project.FilesContent.Tables;
             var tablesInfo = project.FilesContentInfo.Tables;
-            int tablesInfoCount = tablesInfo.Count;
-            for (int t = 0; t < tablesInfoCount; t++)
+            if (tables.Count != tablesInfo.Count) yield break;
+
+            int infoColIdx = 0;
+            for (int t = 0; t < tables.Count; t++)
             {
                 var rows = tables[t].Rows;
                 var rowsInfo = tablesInfo[t].Rows;
-                int rowsInfoCount = rowsInfo.Count;
-                for ( var r = 0; r < rowsInfoCount; r++)
+                if (rows.Count != rowsInfo.Count) continue;
+
+                for (int r = 0; r < rows.Count; r++)
                 {
-                    // return infos for each row
-                    yield return (rowsInfo[r].Field<string>(0), rows[r]);
+                    yield return (rowsInfo[r].Field<string>(infoColIdx), rows[r]);
                 }
             }
         }
