@@ -123,10 +123,5 @@ namespace TranslationHelper.Forms.Search
                 replaceTask.LoadSearchReplacers();
             }
         }
-
-        private void SearchOptionSelectedColumnComboBox_TextUpdate(object sender, EventArgs e)
-        {
-
-        }
     }
 }

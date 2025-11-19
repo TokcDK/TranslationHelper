@@ -133,7 +133,6 @@ namespace TranslationHelper.Forms.Search
             this.SearchOptionSelectedColumnComboBox.Name = "SearchOptionSelectedColumnComboBox";
             this.SearchOptionSelectedColumnComboBox.Size = new System.Drawing.Size(153, 21);
             this.SearchOptionSelectedColumnComboBox.TabIndex = 2;
-            this.SearchOptionSelectedColumnComboBox.TextUpdate += new System.EventHandler(this.SearchOptionSelectedColumnComboBox_TextUpdate);
             // 
             // SearchOptionCaseSensitiveCheckBox
             // 
