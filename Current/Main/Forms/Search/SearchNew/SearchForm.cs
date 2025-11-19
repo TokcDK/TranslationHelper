@@ -60,20 +60,7 @@ namespace TranslationHelper.Forms.Search.SearchNew
 
             SearchHelpers.SaveSearchResults(searchResults, isReplace);
 
-            var foundRowsDatagridView = new DataGridView
-            {
-                DataSource = searchResults.FoundRows,
-                Dock = DockStyle.Fill,
-                ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize,
-                ColumnHeadersVisible = false,
-                AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill,
-                AutoSizeRowsMode = DataGridViewAutoSizeRowsMode.DisplayedCellsExceptHeaders,
-            };
-            foundRowsDatagridView.CellClick += (sender, e) =>
-            {
-                SearchHelpers.ShowSelectedCellInMainTable(_project, searchResults.FoundRows, e.RowIndex, e.ColumnIndex);
-            };
-            FoundRowsPanel.Controls.Add(foundRowsDatagridView);
+            SearchHelpers.BindSearchResults(searchResults, FoundRowsPanel, _project);
         }
 
         private void ReplaceAllButton_Click(object sender, EventArgs e)

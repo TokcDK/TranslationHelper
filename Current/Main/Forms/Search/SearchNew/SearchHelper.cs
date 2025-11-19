@@ -112,6 +112,24 @@ namespace TranslationHelper.Forms.Search
             return false;
         }
 
+        internal static void BindSearchResults(SearchResultsData searchResults, Control foundRowsControl, ProjectBase project)
+        {
+            var foundRowsDatagridView = new DataGridView
+            {
+                DataSource = searchResults.FoundRows,
+                Dock = DockStyle.Fill,
+                ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize,
+                ColumnHeadersVisible = false,
+                AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill,
+                AutoSizeRowsMode = DataGridViewAutoSizeRowsMode.DisplayedCellsExceptHeaders,
+            };
+            foundRowsDatagridView.CellClick += (sender, e) =>
+            {
+                SearchHelpers.ShowSelectedCellInMainTable(project, searchResults.FoundRows, e.RowIndex, e.ColumnIndex);
+            };
+            foundRowsControl.Controls.Add(foundRowsDatagridView);
+        }
+
         internal static string ApplyReplaces(string input, List<IReplaceTask> tasks, bool caseSensitive, bool useRegex)
         {
             var result = input;
