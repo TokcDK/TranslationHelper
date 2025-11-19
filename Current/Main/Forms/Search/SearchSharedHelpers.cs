@@ -59,7 +59,7 @@ namespace TranslationHelper.Forms.Search
                 if (savedQueries?.Length > 0)
                 {
                     list.Clear();
-                    list.AddRange(savedQueries.Take(maxEntriesCount));
+                    list.AddRange(savedQueries.Where(s => !string.IsNullOrEmpty(s)).Take(maxEntriesCount));
                     SearchSharedHelpers.RemoveQuotesFromLoadedSearchValues(list);
                     SearchSharedHelpers.UnEscapeSearchValues(list);
                 }
