@@ -193,11 +193,11 @@ namespace TranslationHelper.Forms.Search
         private System.Windows.Forms.ContextMenuStrip contextMenuStrip1;
         private System.Windows.Forms.TableLayoutPanel tableLayoutPanel1;
         private System.Windows.Forms.Label label1;
-        private System.Windows.Forms.FlowLayoutPanel SearchOptionsFlowLayoutPanel;
         internal System.Windows.Forms.ComboBox SearchOptionSelectedColumnComboBox;
         internal System.Windows.Forms.CheckBox SearchOptionCaseSensitiveCheckBox;
         internal System.Windows.Forms.CheckBox SearchOptionRegexCheckBox;
         private System.Windows.Forms.Panel ReplaceWhatWithPanel;
         internal ComboBoxVip FindWhatComboBox;
+        internal System.Windows.Forms.FlowLayoutPanel SearchOptionsFlowLayoutPanel;
     }
 }

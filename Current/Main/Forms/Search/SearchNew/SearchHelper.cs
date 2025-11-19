@@ -30,6 +30,9 @@ namespace TranslationHelper.Forms.Search
         bool CaseSensitive { get; }
         bool UseRegex { get; }
         List<IReplaceTask> ReplaceTasks { get; }
+        ISearchOptionTarget Target { get; }
+        ISearchOptionMatch Searcher { get; }
+        ISearchOptionReplace Replacer { get; }
     }
 
     public interface IReplaceTaskSearchResult

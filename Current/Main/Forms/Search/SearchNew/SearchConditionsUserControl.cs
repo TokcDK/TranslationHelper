@@ -4,6 +4,7 @@ using System.Data;
 using System.Linq;
 using System.Windows.Forms;
 using TranslationHelper.Data;
+using TranslationHelper.Forms.Search.SearchNew.OptionsNew;
 using Vip.ComboBox;
 
 namespace TranslationHelper.Forms.Search
@@ -69,6 +70,12 @@ namespace TranslationHelper.Forms.Search
                 return tasks;
             }
         }
+
+        public ISearchOptionTarget Target { get; }
+
+        public ISearchOptionMatch Searcher { get; }
+
+        public ISearchOptionReplace Replacer { get; }
 
         private void SearchConditionUserControl_Load(object sender, EventArgs e)
         {
