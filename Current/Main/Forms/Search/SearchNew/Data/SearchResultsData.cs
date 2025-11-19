@@ -7,6 +7,6 @@ namespace TranslationHelper.Forms.Search.SearchNew.Data
     {
         public List<FoundRowData> FoundRows { get; set; } = new List<FoundRowData>();
 
-        public List<ISearchCondition> searchConditions { get; set; } = new List<ISearchCondition>();
+        public List<ISearchCondition> SearchConditions { get; set; } = new List<ISearchCondition>();
     }
 }

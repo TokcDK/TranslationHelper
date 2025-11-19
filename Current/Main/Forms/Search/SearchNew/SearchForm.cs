@@ -144,7 +144,7 @@ namespace TranslationHelper.Forms.Search.SearchNew
                 .ToArray();
             if (nonEmptyConditions.Length == 0) return searchResults;
 
-            searchResults.searchConditions.AddRange(nonEmptyConditions);
+            searchResults.SearchConditions.AddRange(nonEmptyConditions);
 
             foreach (DataTable table in _dataSet.Tables)
             {

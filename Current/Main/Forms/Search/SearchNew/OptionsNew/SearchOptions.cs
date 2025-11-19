@@ -7,6 +7,7 @@ using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Forms;
+using TranslationHelper.Forms.Search.Data;
 using TranslationHelper.Forms.Search.SearchNew.Data;
 using TranslationHelper.Projects;
 using static TranslationHelper.Forms.Search.SearchNew.SearchForm;
@@ -174,13 +175,13 @@ namespace TranslationHelper.Forms.Search.SearchNew.OptionsNew
 
             if (searchArea == default || searcher == default) return results;
 
-            results.searchConditions.AddRange(conditions);
+            results.SearchConditions.AddRange(conditions);
 
             foreach (var (stringToCheck, row) in searchArea.EnumerateStrings(_project))
             {
                 if (conditions.Any(c => !searcher.IsMatch(stringToCheck, c.FindWhat))) continue;
 
-                results.FoundRows.Add(new Data.FoundRowData(row));
+                results.FoundRows.Add(new FoundRowData(row));
             }
 
             return results;

@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using TranslationHelper.Data;
 using TranslationHelper.Forms.Search.Data;
+using TranslationHelper.Forms.Search.SearchNew.Data;
 using TranslationHelper.Main.Functions;
 using TranslationHelper.Projects;
 using static TranslationHelper.Forms.Search.SearchNew.SearchForm;
@@ -126,7 +127,7 @@ namespace TranslationHelper.Forms.Search
 
         internal static void UpdateSearchQueries(SearchResultsData searchResults, bool isReplace)
         {
-            foreach (var item in searchResults.searchConditions.Cast<ISearchConditionSearchResult>())
+            foreach (var item in searchResults.SearchConditions.Cast<ISearchConditionSearchResult>())
             {
                 item.LoadSearchQueries(isReplace);
             }
@@ -138,7 +139,7 @@ namespace TranslationHelper.Forms.Search
             var searchReplacers = new List<string>();
             var searchReplacePatterns = new List<string>();
 
-            foreach (var item in searchResults.searchConditions.Cast<ISearchConditionSearchResult>())
+            foreach (var item in searchResults.SearchConditions.Cast<ISearchConditionSearchResult>())
             {
                 var results = item.GetSearchQueries(isReplace);
 
