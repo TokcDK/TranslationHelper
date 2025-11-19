@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
+using System.Windows;
 using System.Windows.Forms;
 using TranslationHelper.Data;
 using TranslationHelper.Forms.Search.Data;
@@ -138,54 +139,25 @@ namespace TranslationHelper.Forms.Search.SearchNew
         private SearchResultsData PerformSearch(bool isReplace = false)
         {
             var searchResults = new SearchResultsData();
-            var conditions = GetSearchConditions();
-            var nonEmptyConditions = conditions.Where(c => c != null && !string.IsNullOrEmpty(c.FindWhat)
-            && (!isReplace || isReplace && c.ReplaceTasks.Any(t => !string.IsNullOrEmpty(t.ReplaceWhat))))
-                .ToArray();
-            if (nonEmptyConditions.Length == 0) return searchResults;
 
-            searchResults.SearchConditions.AddRange(nonEmptyConditions);
+            var validConditions = GetValidConditions(GetSearchConditions(), isReplace);
+            if (validConditions.Length == 0) return searchResults;
+
+            searchResults.SearchConditions.AddRange(validConditions);
 
             foreach (DataTable table in _dataSet.Tables)
             {
                 // Skip tables missing required columns
-                if (!nonEmptyConditions.All(c => !string.IsNullOrEmpty(c.SearchColumn) && table.Columns.Contains(c.SearchColumn)))
+                if (!validConditions.All(c => !string.IsNullOrEmpty(c.SearchColumn) && table.Columns.Contains(c.SearchColumn)))
                     continue;
 
                 var matchingRows = table.AsEnumerable()
-                    .Where(row => nonEmptyConditions.All(cond =>
+                    .Where(row => validConditions.All(cond =>
                         SearchHelpers.Matches(row.Field<string>(cond.SearchColumn), cond.FindWhat, cond.CaseSensitive, cond.UseRegex)));
 
                 foreach (var row in matchingRows)
                 {
-                    bool haveAnyReplaced = false;
-                    if (isReplace)
-                    {
-                        string currentValue = row.Field<string>(_project.TranslationColumnIndex);
-                        string newValue = currentValue;
-
-                        foreach (var cond in nonEmptyConditions)
-                        {
-                            var matchingValue = row.Field<string>(cond.SearchColumn);
-                            if (string.IsNullOrEmpty(matchingValue))
-                            {
-                                continue;
-                            }
-
-                            // replace all values in the target string
-                            newValue = SearchHelpers.ApplyReplaces(newValue, cond.ReplaceTasks, cond.CaseSensitive, cond.UseRegex);
-                        }
-
-                        if (!string.Equals(currentValue, newValue))
-                        {
-                            haveAnyReplaced = true;
-
-                            // set result value to row when it was changed by any replacement
-                            row.SetField(_project.TranslationColumnIndex, newValue);
-                        }
-                    }
-
-                    if(!isReplace || (isReplace && haveAnyReplaced))
+                    if(!isReplace || TryReplaceAny(validConditions, row))
                     {
                         searchResults.FoundRows.Add(new FoundRowData(row));
                     }
@@ -193,6 +165,41 @@ namespace TranslationHelper.Forms.Search.SearchNew
             }
 
             return searchResults;
+        }
+
+        private ISearchCondition[] GetValidConditions(IEnumerable<ISearchCondition> conditions, bool isReplace)
+        {
+            return conditions.Where(c => c != null && !string.IsNullOrEmpty(c.FindWhat)
+            && (!isReplace || isReplace && c.ReplaceTasks.Any(t => !string.IsNullOrEmpty(t.ReplaceWhat))))
+                .ToArray();
+        }
+
+        private bool TryReplaceAny(ISearchCondition[] nonEmptyConditions, DataRow row)
+        {
+            string currentValue = row.Field<string>(_project.TranslationColumnIndex);
+            string newValue = currentValue;
+
+            foreach (var cond in nonEmptyConditions)
+            {
+                var matchingValue = row.Field<string>(cond.SearchColumn);
+                if (string.IsNullOrEmpty(matchingValue))
+                {
+                    continue;
+                }
+
+                // replace all values in the target string
+                newValue = SearchHelpers.ApplyReplaces(newValue, cond.ReplaceTasks, cond.CaseSensitive, cond.UseRegex);
+            }
+
+            if (!string.Equals(currentValue, newValue))
+            {
+                // set result value to row when it was changed by any replacement
+                row.SetField(_project.TranslationColumnIndex, newValue);
+
+                return true;
+            }
+
+            return false;
         }
 
         private IEnumerable<ISearchCondition> GetSearchConditions()
