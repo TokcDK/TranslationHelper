@@ -110,13 +110,13 @@ namespace TranslationHelper.Forms.Search.SearchNew.OptionsNew
 
         protected bool CaseSensitive => _control.Checked;
 
-        public bool IsMatch(string inputString, string pattern)
+        public virtual bool IsMatch(string inputString, string pattern)
         {
             var comparison = CaseSensitive ? StringComparison.Ordinal : StringComparison.OrdinalIgnoreCase;
             return inputString.IndexOf(pattern, comparison) != -1;
         }
 
-        public string Replace(string inputString, string replaceWhat, string replaceWith)
+        public virtual string Replace(string inputString, string replaceWhat, string replaceWith)
         {
             var options = CaseSensitive ? StringComparison.InvariantCulture : StringComparison.InvariantCultureIgnoreCase;
             return inputString.Replace(replaceWhat, replaceWith, options);
@@ -124,13 +124,13 @@ namespace TranslationHelper.Forms.Search.SearchNew.OptionsNew
     }
     public class SearchOptionRegex : SearchOptionCaseSensitive
     {
-        public new bool IsMatch(string inputString, string pattern)
+        public override bool IsMatch(string inputString, string pattern)
         {
             var options = CaseSensitive ? RegexOptions.None : RegexOptions.IgnoreCase;
             return Regex.IsMatch(inputString, pattern, options);
         }
 
-        public new string Replace(string inputString, string replaceWhat, string replaceWith)
+        public override string Replace(string inputString, string replaceWhat, string replaceWith)
         {
             var options = CaseSensitive ? RegexOptions.None : RegexOptions.IgnoreCase;
             return Regex.Replace(inputString, replaceWhat, replaceWith, options);
