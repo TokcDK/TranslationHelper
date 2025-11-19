@@ -81,14 +81,14 @@ namespace TranslationHelper.Forms.Search
 
                 if (list.Count > 0 && IsSearchQueriesReplacersListChanged(lastLoadedList, list))
                 {
-                    AddNewRecords(lastLoadedList, list);
-                    lastLoadedList = lastLoadedList.Take(maxEntriesCount).ToList();
-                    SearchSharedHelpers.AddQuotesToWritingSearchValues(lastLoadedList);
-                    SearchSharedHelpers.UnEscapeSearchValues(lastLoadedList, false);
-                    AppData.Settings.THConfigINI.SetArrayToSectionValues(sectionName, lastLoadedList.ToArray());
+                    AddNewRecords(list, lastLoadedList);
+                    list = list.Take(maxEntriesCount).ToList();
+                    SearchSharedHelpers.AddQuotesToWritingSearchValues(list);
+                    SearchSharedHelpers.UnEscapeSearchValues(list, false);
+                    AppData.Settings.THConfigINI.SetArrayToSectionValues(sectionName, list.ToArray());
                 }
 
-                return lastLoadedList;
+                return list;
             }
             catch (IOException ex)
             {
