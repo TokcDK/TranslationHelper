@@ -175,7 +175,9 @@ namespace TranslationHelper.Forms.Search.SearchNew
         {
             foreach (var tab in _searchConditionsTabControl.Tabs)
             {
-                yield return tab.Controls[0] as ISearchCondition;
+                if (!(tab.Controls[0] is ISearchCondition c)) continue;
+
+                yield return c;
             }
         }
     }
