@@ -18,6 +18,9 @@ namespace TranslationHelper.Forms.Search.SearchNew.OptionsNew
     // to include in main search options like case sensitive and using it regex search
     // maybe main search will include options of search area
 
+    // we must init standalone search options for each ISearchCondition
+    // and set Target, Searcher and Replacer for each condition for each condition
+
     public interface ISearchOption
     {
         bool IsEnabled { get; }
