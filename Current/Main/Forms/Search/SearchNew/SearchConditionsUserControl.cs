@@ -114,8 +114,8 @@ namespace TranslationHelper.Forms.Search
             {
                 var results = replaceTask.GetSearchReplacers();
 
-                SearchHelpers.AddMissing(searchReplacers, results.searchReplacers);
                 SearchHelpers.AddMissing(searchReplacePatterns, results.searchReplacePatterns);
+                SearchHelpers.AddMissing(searchReplacers, results.searchReplacers);
             }
 
             return (searchQueries, searchReplacers, searchReplacePatterns);

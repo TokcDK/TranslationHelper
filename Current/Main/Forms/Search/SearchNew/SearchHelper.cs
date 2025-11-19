@@ -225,8 +225,8 @@ namespace TranslationHelper.Forms.Search
             foreach (var (list, sectionName) in new[]
             {
                 (searchQueries, THSettings.SearchQueriesSectionName ),
+                (searchReplacePatterns, THSettings.SearchReplacePatternsSectionName),
                 (searchReplacers, THSettings.SearchReplacersSectionName),
-                (searchReplacePatterns, THSettings.SearchReplacePatternsSectionName)
             })
             {
                 SearchSharedHelpers.SaveSearchQueries(list, sectionName);
@@ -273,8 +273,8 @@ namespace TranslationHelper.Forms.Search
 
                 if (!isReplace) continue;
 
-                SearchHelpers.AddMissing(searchReplacers, results.searchReplacers);
                 SearchHelpers.AddMissing(searchReplacePatterns, results.searchReplacePatterns);
+                SearchHelpers.AddMissing(searchReplacers, results.searchReplacers);
             }
 
             return (searchQueries, searchReplacers, searchReplacePatterns);
