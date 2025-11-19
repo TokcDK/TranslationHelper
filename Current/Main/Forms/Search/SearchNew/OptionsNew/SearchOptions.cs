@@ -7,6 +7,7 @@ using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Forms;
+using TranslationHelper.Forms.Search.SearchNew.Data;
 using TranslationHelper.Projects;
 using static TranslationHelper.Forms.Search.SearchNew.SearchForm;
 

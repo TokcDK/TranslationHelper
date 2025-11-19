@@ -6,6 +6,7 @@ using System.Linq;
 using System.Windows.Forms;
 using TranslationHelper.Data;
 using TranslationHelper.Forms.Search.Data;
+using TranslationHelper.Forms.Search.SearchNew.Data;
 using TranslationHelper.Main.Functions;
 using TranslationHelper.Projects;
 using static Manina.Windows.Forms.TabControl;
@@ -29,13 +30,6 @@ namespace TranslationHelper.Forms.Search.SearchNew
             InitializeComponent();
 
             InitSearchConditionsTabControl();
-        }
-
-        public class SearchResultsData
-        {
-            public List<FoundRowData> FoundRows { get; set; } = new List<FoundRowData>();
-
-            public List<ISearchCondition> searchConditions { get; set; } = new List<ISearchCondition>();
         }
         private void SearchAllButton_Click(object sender, EventArgs e)
         {

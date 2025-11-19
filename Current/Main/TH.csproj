@@ -156,6 +156,7 @@
       <DependentUpon>SearchForm.cs</DependentUpon>
     </Compile>
     <Compile Include="Forms\Search\SearchNew\SearchHelper.cs" />
+    <Compile Include="Forms\Search\SearchNew\Data\SearchResultsData.cs" />
     <Compile Include="Forms\Search\SearchSharedHelpers.cs" />
     <Compile Include="Functions\FileElementsFunctions\Row\OnlineTranslate\ITranslationCache.cs" />
     <Compile Include="Functions\FileElementsFunctions\Row\OnlineTranslate\OnlineTranslateTEST.cs" />
