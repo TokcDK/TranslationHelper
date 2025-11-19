@@ -13,6 +13,7 @@ using TranslationHelper.Forms.Search.SearchNew.Data;
 using TranslationHelper.Forms.Search.SearchNew.OptionsNew;
 using TranslationHelper.Main.Functions;
 using TranslationHelper.Projects;
+using static Manina.Windows.Forms.TabControl;
 using static TranslationHelper.Forms.Search.SearchNew.SearchForm;
 
 namespace TranslationHelper.Forms.Search
@@ -48,6 +49,15 @@ namespace TranslationHelper.Forms.Search
 
     internal static class SearchHelpers
     {
+        internal static IEnumerable<ISearchCondition> GetSearchConditions(TabCollection tabs)
+        {
+            foreach (var tab in tabs)
+            {
+                if (!(tab.Controls[0] is ISearchCondition c)) continue;
+
+                yield return c;
+            }
+        }
         internal static ISearchCondition[] GetValidConditions(IEnumerable<ISearchCondition> conditions, bool isReplace)
         {
             return conditions.Where(c => c != null && !string.IsNullOrEmpty(c.FindWhat)).ToArray();
