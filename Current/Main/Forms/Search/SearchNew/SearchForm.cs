@@ -161,7 +161,7 @@ namespace TranslationHelper.Forms.Search.SearchNew
 
                 foreach (var row in matchingRows)
                 {
-                    if(!isReplace || TryReplaceAny(validConditions, row))
+                    if(!isReplace || SearchHelpers.TryReplaceAny(validConditions, row, _project))
                     {
                         searchResults.FoundRows.Add(new FoundRowData(row));
                     }
@@ -176,34 +176,6 @@ namespace TranslationHelper.Forms.Search.SearchNew
             return conditions.Where(c => c != null && !string.IsNullOrEmpty(c.FindWhat)
             && (!isReplace || isReplace && c.ReplaceTasks.Any(t => !string.IsNullOrEmpty(t.ReplaceWhat))))
                 .ToArray();
-        }
-
-        private bool TryReplaceAny(IEnumerable<ISearchCondition> conditions, DataRow row)
-        {
-            string currentValue = row.Field<string>(_project.TranslationColumnIndex);
-            string newValue = currentValue;
-
-            foreach (var cond in conditions)
-            {
-                var matchingValue = row.Field<string>(cond.SearchColumn);
-                if (string.IsNullOrEmpty(matchingValue))
-                {
-                    continue;
-                }
-
-                // replace all values in the target string
-                newValue = SearchHelpers.ApplyReplaces(newValue, cond.ReplaceTasks, cond.CaseSensitive, cond.UseRegex);
-            }
-
-            if (!string.Equals(currentValue, newValue))
-            {
-                // set result value to row when it was changed by any replacement
-                row.SetField(_project.TranslationColumnIndex, newValue);
-
-                return true;
-            }
-
-            return false;
         }
 
         private IEnumerable<ISearchCondition> GetSearchConditions()

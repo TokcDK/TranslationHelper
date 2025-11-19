@@ -10,6 +10,7 @@ using System.Windows.Forms;
 using TranslationHelper.Data;
 using TranslationHelper.Forms.Search.Data;
 using TranslationHelper.Forms.Search.SearchNew.Data;
+using TranslationHelper.Forms.Search.SearchNew.OptionsNew;
 using TranslationHelper.Main.Functions;
 using TranslationHelper.Projects;
 using static TranslationHelper.Forms.Search.SearchNew.SearchForm;
@@ -60,6 +61,65 @@ namespace TranslationHelper.Forms.Search
                 var comparison = caseSensitive ? StringComparison.Ordinal : StringComparison.OrdinalIgnoreCase;
                 return input.IndexOf(pattern, comparison) != -1;
             }
+        }
+
+        internal static bool TryReplaceAny(IEnumerable<ISearchCondition> conditions, DataRow row, ProjectBase project)
+        {
+            string currentValue = row.Field<string>(project.TranslationColumnIndex);
+            string newValue = currentValue;
+
+            foreach (var cond in conditions)
+            {
+                var matchingValue = row.Field<string>(cond.SearchColumn);
+                if (string.IsNullOrEmpty(matchingValue))
+                {
+                    continue;
+                }
+
+                // replace all values in the target string
+                newValue = SearchHelpers.ApplyReplaces(newValue, cond.ReplaceTasks, cond.CaseSensitive, cond.UseRegex);
+            }
+
+            if (!string.Equals(currentValue, newValue))
+            {
+                // set result value to row when it was changed by any replacement
+                row.SetField(project.TranslationColumnIndex, newValue);
+
+                return true;
+            }
+
+            return false;
+        }
+
+        internal static bool TryReplaceAny(IEnumerable<ISearchCondition> conditions, DataRow row, ProjectBase project, ISearchOptionReplace replacer)
+        {
+            string currentValue = row.Field<string>(project.TranslationColumnIndex);
+            string newValue = currentValue;
+
+            foreach (var cond in conditions)
+            {
+                var matchingValue = row.Field<string>(cond.SearchColumn);
+                if (string.IsNullOrEmpty(matchingValue))
+                {
+                    continue;
+                }
+
+                // replace all values in the target string
+                foreach (var task in cond.ReplaceTasks)
+                {
+                    newValue = replacer.Replace(newValue, task.ReplaceWhat, task.ReplaceWith);
+                }
+            }
+
+            if (!string.Equals(currentValue, newValue))
+            {
+                // set result value to row when it was changed by any replacement
+                row.SetField(project.TranslationColumnIndex, newValue);
+
+                return true;
+            }
+
+            return false;
         }
 
         internal static string ApplyReplaces(string input, List<IReplaceTask> tasks, bool caseSensitive, bool useRegex)

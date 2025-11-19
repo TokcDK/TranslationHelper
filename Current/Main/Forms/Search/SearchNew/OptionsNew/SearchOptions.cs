@@ -7,6 +7,7 @@ using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Forms;
+using System.Windows.Navigation;
 using TranslationHelper.Forms.Search.Data;
 using TranslationHelper.Forms.Search.SearchNew.Data;
 using TranslationHelper.Projects;
@@ -148,7 +149,7 @@ namespace TranslationHelper.Forms.Search.SearchNew.OptionsNew
             _project = project;
         }
 
-        public SearchResultsData Search(ISearchCondition[] conditions)
+        public SearchResultsData PerformSearch(ISearchCondition[] conditions, bool isReplace = false)
         {
             var results = new SearchResultsData();
 
@@ -169,11 +170,21 @@ namespace TranslationHelper.Forms.Search.SearchNew.OptionsNew
                 new SearchOptionCaseSensitive(),
             };
 
+            var replacers = new List<ISearchOptionReplace>()
+            {
+                new SearchOptionRegex(),
+                new SearchOptionCaseSensitive(),
+            };
+
             var searchArea = searchTargets.FirstOrDefault(t => t is ISearchOption o && o.IsEnabled);
 
             var searcher = searchers.FirstOrDefault(s => s is ISearchOption o && o.IsEnabled);
+            var replacer = replacers.FirstOrDefault(s => s is ISearchOption o && o.IsEnabled);
 
-            if (searchArea == default || searcher == default) return results;
+            if (searchArea == default 
+                || searcher == default 
+                || (isReplace && replacer == default)) 
+                return results;
 
             results.SearchConditions.AddRange(conditions);
 
@@ -181,23 +192,21 @@ namespace TranslationHelper.Forms.Search.SearchNew.OptionsNew
             {
                 if (conditions.Any(c => !searcher.IsMatch(stringToCheck, c.FindWhat))) continue;
 
-                results.FoundRows.Add(new FoundRowData(row));
+                if (!isReplace || SearchHelpers.TryReplaceAny(conditions, row, _project, replacer))
+                {
+                    results.FoundRows.Add(new FoundRowData(row));
+                }
             }
 
             return results;
         }
 
-        //private void PerformSearch(SearchResultsData results, bool isReplace = false)
-        //{
-        //    foreach (var (stringToCheck, row) in searchArea.EnumerateStrings(_project))
-        //    {
-        //        if (results.se.Any(c => !searcher.IsMatch(stringToCheck, c.FindWhat))) continue;
+        public SearchResultsData Search(ISearchCondition[] conditions)
+        {
+            return PerformSearch(conditions);
+        }
 
-        //        results.FoundRows.Add(new Data.FoundRowData(row));
-        //    }
-        //}
-
-        public SearchResultsData Replace()
+        public SearchResultsData Replace(ISearchCondition[] conditions)
         {
             var results = new SearchResultsData();
 
@@ -217,7 +226,7 @@ namespace TranslationHelper.Forms.Search.SearchNew.OptionsNew
                 new SearchOptionCaseSensitive(),
             };
 
-            return results;
+            return PerformSearch(conditions, true);
         }
     }
 }
