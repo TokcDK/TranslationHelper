@@ -47,7 +47,8 @@ namespace TranslationHelper.Forms.Search
             if (useRegex)
             {
                 var options = caseSensitive ? RegexOptions.None : RegexOptions.IgnoreCase;
-                return Regex.IsMatch(input, pattern, options);
+                bool ret = Regex.IsMatch(input, pattern, options);
+                return ret;
             }
             else
             {

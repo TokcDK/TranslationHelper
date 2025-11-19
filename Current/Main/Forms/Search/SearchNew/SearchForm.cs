@@ -8,6 +8,7 @@ using TranslationHelper.Data;
 using TranslationHelper.Forms.Search.Data;
 using TranslationHelper.Main.Functions;
 using TranslationHelper.Projects;
+using static Manina.Windows.Forms.TabControl;
 using Tab = Manina.Windows.Forms.Tab;
 
 namespace TranslationHelper.Forms.Search.SearchNew
@@ -48,10 +49,10 @@ namespace TranslationHelper.Forms.Search.SearchNew
             FoundRowsPanel.Controls.Clear();
 
             var actionName = isReplace ?
-                "Replaced" :
-                "Found";
-            SearchResultInfoLabel.Text = $"{actionName} {searchResults.FoundRows.Count} matching strings.";
-
+                T._("Replaced") :
+                T._("Found");
+            SearchResultInfoLabel.Text = string.Format(T._("{0} {1} matching strings."), actionName, searchResults.FoundRows.Count);
+            
             if (searchResults.FoundRows.Count == 0)
             {
                 return;
@@ -163,7 +164,8 @@ namespace TranslationHelper.Forms.Search.SearchNew
                 AllowDrop = true
             };
             _searchConditionsTabControl.CloseTabButtonClick += (o, e) =>
-            {
+            {                
+                e.Cancel = true; // cancel included removal function to remove manually with renumerate
                 RemoveSearchConditionTab(e.Tab);
             };
             SearchConditionTabsPanel.Controls.Add(_searchConditionsTabControl);
@@ -178,7 +180,7 @@ namespace TranslationHelper.Forms.Search.SearchNew
         {
             var tabPage = new Tab
             {
-                Text = $"Condition {(_searchConditionsTabControl.Tabs.Count + 1)}"
+                Text = string.Format(T._("Condition {0}", _searchConditionsTabControl.Tabs.Count + 1)),
             };
             var columns = _dataSet.Tables.Count > 0 ? _dataSet.Tables[0].Columns.Cast<DataColumn>().Select(c => c.ColumnName).ToArray() : Array.Empty<string>();
             var conditionUC = new SearchConditionUserControl(columns);
@@ -197,6 +199,19 @@ namespace TranslationHelper.Forms.Search.SearchNew
             if (_searchConditionsTabControl.Tabs.Count == 0)
             {
                 AddSearchConditionTab(); // always one default search condition tab by default
+            }
+            else
+            {
+                RenumerateTabNames(_searchConditionsTabControl.Tabs);
+            }
+        }
+
+        private static void RenumerateTabNames(TabCollection tabs)
+        {
+            int i = 1;
+            foreach (var t in tabs)
+            {
+                t.Text = string.Format(T._("Condition {0}", i++));
             }
         }
 
