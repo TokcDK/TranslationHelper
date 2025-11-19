@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.Scripting.Utils;
+using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
@@ -139,9 +140,11 @@ namespace TranslationHelper.Forms.Search.SearchNew.OptionsNew
 
     public class SearchLoader
     {
-        private readonly IEnumerable<ISearchTarget> searchTargets;
-        private readonly IEnumerable<ISearchOptionMatch> searchers;
-        private readonly IEnumerable<ISearchOptionReplace> replacers;
+        private readonly List<ISearchOption> searchOptions;
+        private readonly List<ISearchTarget> searchTargets;
+        private readonly List<ISearchOptionMatch> searchers;
+        private readonly List<ISearchOptionReplace> replacers;
+        private readonly List<ISearchOptionUsingControl> searchOptionsUsingControl;
 
         private readonly ProjectBase _project;
 
@@ -149,21 +152,36 @@ namespace TranslationHelper.Forms.Search.SearchNew.OptionsNew
         {
             _project = project;
 
-            searchTargets = new List<ISearchTarget>()
+            // init search options
+            var searchOptionInfoTarget = new SearchOptionInfoTarget();
+            var searchOptionSearchColumn = new SearchOptionSearchColumn(_project.FilesContent.Tables[0].Columns.Cast<DataColumn>().Select(c => c.ColumnName).ToArray());
+            var searchOptionRegex = new SearchOptionRegex();
+            var searchOptionCaseSensitive = new SearchOptionCaseSensitive();
+
+            searchOptions = new List<ISearchOption>()
             {
-                new SearchOptionInfoTarget(),
-                new SearchOptionSearchColumn(_project.FilesContent.Tables[0].Columns.Cast<DataColumn>().Select(c => c.ColumnName).ToArray())
+                searchOptionInfoTarget,
+                searchOptionSearchColumn,
+                searchOptionRegex,
+                searchOptionCaseSensitive,
             };
-            searchers = new List<ISearchOptionMatch>()
+
+            searchOptionsUsingControl = searchOptions.Where(o => o is ISearchOptionUsingControl).Select(o => o as ISearchOptionUsingControl).ToList();
+
+            searchTargets = searchOptions.Where(o => o is ISearchTarget).Select(o => o as ISearchTarget).ToList();
+            searchers = searchOptions.Where(o => o is ISearchOptionMatch).Select(o => o as ISearchOptionMatch).ToList();
+            replacers = searchOptions.Where(o => o is ISearchOptionReplace).Select(o => o as ISearchOptionReplace).ToList();
+        }
+
+        public void CreateControls(Control parentControl)
+        {
+            foreach (var option in searchOptionsUsingControl)
             {
-                new SearchOptionRegex(),
-                new SearchOptionCaseSensitive(),
-            };
-            replacers = new List<ISearchOptionReplace>()
-            {
-                new SearchOptionRegex(),
-                new SearchOptionCaseSensitive(),
-            };
+                if (option == null) continue;
+                if (option.Control == null) continue;
+
+                parentControl.Controls.Add(option.Control);
+            }
         }
 
         public SearchResultsData PerformSearch(ISearchCondition[] conditions, bool isReplace = false)
