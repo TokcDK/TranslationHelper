@@ -79,7 +79,7 @@ namespace TranslationHelper.Forms.Search.SearchNew.OptionsNew
 
         public IEnumerable<(string stringToCheck, DataRow row)> EnumerateStrings(ProjectBase project)
         {
-            if (string.IsNullOrWhiteSpace(_control.Text)) yield break;
+            if (!_control.Checked) yield break;
 
             var tables = project.FilesContent.Tables;
             var tablesInfo = project.FilesContentInfo.Tables;
