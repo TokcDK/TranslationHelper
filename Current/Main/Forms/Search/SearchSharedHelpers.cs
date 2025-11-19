@@ -82,7 +82,7 @@ namespace TranslationHelper.Forms.Search
                 if (list.Count > 0 && IsSearchQueriesReplacersListChanged(lastLoadedList, list))
                 {
                     AddNewRecords(list, lastLoadedList);
-                    list = list.Take(maxEntriesCount).ToList();
+                    list = list.Where(s => !string.IsNullOrEmpty(s)).Take(maxEntriesCount).ToList();
                     SearchSharedHelpers.AddQuotesToWritingSearchValues(list);
                     SearchSharedHelpers.UnEscapeSearchValues(list, false);
                     AppData.Settings.THConfigINI.SetArrayToSectionValues(sectionName, list.ToArray());
