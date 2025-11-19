@@ -70,12 +70,6 @@ namespace TranslationHelper.Forms.Search
 
             foreach (var cond in conditions)
             {
-                var matchingValue = row.Field<string>(cond.SearchColumn);
-                if (string.IsNullOrEmpty(matchingValue))
-                {
-                    continue;
-                }
-
                 // replace all values in the target string
                 newValue = SearchHelpers.ApplyReplaces(newValue, cond.ReplaceTasks, cond.CaseSensitive, cond.UseRegex);
             }
@@ -98,12 +92,6 @@ namespace TranslationHelper.Forms.Search
 
             foreach (var cond in conditions)
             {
-                var matchingValue = row.Field<string>(cond.SearchColumn);
-                if (string.IsNullOrEmpty(matchingValue))
-                {
-                    continue;
-                }
-
                 // replace all values in the target string
                 foreach (var task in cond.ReplaceTasks)
                 {
