@@ -158,32 +158,35 @@ namespace TranslationHelper.Forms.Search.SearchNew
 
                 foreach (var row in matchingRows)
                 {
-                    foreach (var cond in nonEmptyConditions)
+                    bool haveAnyReplaced = false;
+                    if (isReplace)
                     {
-                        var matchingValue = row.Field<string>(cond.SearchColumn);
-                        if (string.IsNullOrEmpty(matchingValue))
-                        {
-                            continue;
-                        }
+                        string currentValue = row.Field<string>(_project.TranslationColumnIndex);
+                        string newValue = currentValue;
 
-                        if (isReplace)
+                        foreach (var cond in nonEmptyConditions)
                         {
-                            // replace all values in the target string
-                            var columnName = cond.SearchColumn;
-                            var currentValue = row.Field<string>(columnName);
-                            var newValue = SearchHelpers.ApplyReplaces(currentValue, cond.ReplaceTasks, cond.CaseSensitive, cond.UseRegex);
-
-                            if (!string.Equals(currentValue, newValue))
-                            {
-                                // set result value to row when it was changed by any replacement
-                                row.SetField(columnName, newValue);
-                            }
-                            else
+                            var matchingValue = row.Field<string>(cond.SearchColumn);
+                            if (string.IsNullOrEmpty(matchingValue))
                             {
                                 continue;
                             }
+
+                            // replace all values in the target string
+                            newValue = SearchHelpers.ApplyReplaces(newValue, cond.ReplaceTasks, cond.CaseSensitive, cond.UseRegex);
                         }
 
+                        if (!string.Equals(currentValue, newValue))
+                        {
+                            haveAnyReplaced = true;
+
+                            // set result value to row when it was changed by any replacement
+                            row.SetField(_project.TranslationColumnIndex, newValue);
+                        }
+                    }
+
+                    if(!isReplace || (isReplace && haveAnyReplaced))
+                    {
                         searchResults.FoundRows.Add(new FoundRowData(row));
                     }
                 }
