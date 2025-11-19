@@ -248,9 +248,9 @@ namespace TranslationHelper.Forms.Search.SearchNew.OptionsNew
 
             foreach (var (stringToCheck, row) in searchArea.EnumerateStrings(_project))
             {
-                if (conditions.Any(c => !searcher.IsMatch(stringToCheck, c.FindWhat))) continue;
+                if (conditions.Any(c => !c.Searcher.IsMatch(stringToCheck, c.FindWhat))) continue;
 
-                if (!isReplace || SearchHelpers.TryReplaceAny(conditions, row, _project, replacer))
+                if (!isReplace || SearchHelpers.TryReplaceAny(conditions, row, _project, true))
                 {
                     results.FoundRows.Add(new FoundRowData(row));
                 }

@@ -66,39 +66,23 @@ namespace TranslationHelper.Forms.Search
             }
         }
 
-        internal static bool TryReplaceAny(IEnumerable<ISearchCondition> conditions, DataRow row, ProjectBase project)
+        internal static bool TryReplaceAny(IEnumerable<ISearchCondition> conditions, DataRow row, ProjectBase project, bool useConditionReplacer = false)
         {
             string currentValue = row.Field<string>(project.TranslationColumnIndex);
             string newValue = currentValue;
 
             foreach (var cond in conditions)
             {
-                // replace all values in the target string
-                newValue = SearchHelpers.ApplyReplaces(newValue, cond.ReplaceTasks, cond.CaseSensitive, cond.UseRegex);
-            }
-
-            if (!string.Equals(currentValue, newValue))
-            {
-                // set result value to row when it was changed by any replacement
-                row.SetField(project.TranslationColumnIndex, newValue);
-
-                return true;
-            }
-
-            return false;
-        }
-
-        internal static bool TryReplaceAny(IEnumerable<ISearchCondition> conditions, DataRow row, ProjectBase project, ISearchOptionReplace replacer)
-        {
-            string currentValue = row.Field<string>(project.TranslationColumnIndex);
-            string newValue = currentValue;
-
-            foreach (var cond in conditions)
-            {
-                // replace all values in the target string
-                foreach (var task in cond.ReplaceTasks)
+                if (useConditionReplacer)
                 {
-                    newValue = replacer.Replace(newValue, task.ReplaceWhat, task.ReplaceWith);
+                    foreach (var task in cond.ReplaceTasks)
+                    {
+                        newValue = cond.Replacer.Replace(newValue, task.ReplaceWhat, task.ReplaceWith);
+                    }
+                }
+                else
+                {
+                    newValue = SearchHelpers.ApplyReplaces(newValue, cond.ReplaceTasks, cond.CaseSensitive, cond.UseRegex);
                 }
             }
 
