@@ -83,7 +83,7 @@ namespace TranslationHelper.Forms.Search
             return result;
         }
 
-        internal static void ShowSelectedCellInMainTable(ProjectBase project, List<FoundRowData> _foundRowsList, int foundRowIndex, int columnIndex)
+        internal static void ShowSelectedCellInMainTable(ProjectBase project, List<FoundRowData> _foundRowsList, int foundRowIndex, int selectedCellColumnIndex)
         {
             var _workFileDgv = AppData.Main.THFileElementsDataGridView;
             try
@@ -98,7 +98,7 @@ namespace TranslationHelper.Forms.Search
                 tableDefaultView.Sort = string.Empty;
                 _workFileDgv.Refresh();
 
-                FunctionsTable.ShowSelectedRow(_selectedTableIndex, columnIndex, _selectedRowIndex, AppData.Main.THFileElementsDataGridView);
+                FunctionsTable.ShowSelectedRowCurrentCell(_selectedTableIndex, selectedCellColumnIndex, _selectedRowIndex, AppData.Main.THFileElementsDataGridView);
                 //if (_workFileDgv.CurrentCell != null)
                 //{
                 //    await Task.Run(() => SelectTextInTextBox(_workFileDgv.CurrentCell.Value.ToString())).ConfigureAwait(false);
