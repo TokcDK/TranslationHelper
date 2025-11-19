@@ -92,8 +92,7 @@ namespace TranslationHelper.Forms.Search
             {
                 searchQueries.Add(FindWhatComboBox.Text);
             }
-            searchQueries.AddRange(FindWhatComboBox.Items.Cast<string>()
-                .Where(s => !searchQueries.Contains(s)));
+            SearchHelpers.AddMissing(searchQueries, FindWhatComboBox.Items.Cast<string>());
 
             if (!isReplace)
             {
@@ -104,10 +103,8 @@ namespace TranslationHelper.Forms.Search
             {
                 var results = replaceTask.GetSearchReplacers();
 
-                searchReplacers.AddRange(results.searchReplacers
-                    .Where(s => !searchReplacers.Contains(s)));
-                searchReplacePatterns.AddRange(results.searchReplacePatterns
-                    .Where(s => !searchReplacePatterns.Contains(s)));
+                SearchHelpers.AddMissing(searchReplacers, results.searchReplacers);
+                SearchHelpers.AddMissing(searchReplacePatterns, results.searchReplacePatterns);
             }
 
             return (searchQueries, searchReplacers, searchReplacePatterns);

@@ -256,18 +256,37 @@ namespace TranslationHelper.Forms.Search
             {
                 var results = item.GetSearchQueries(isReplace);
 
-                searchQueries.AddRange(results.searchQueries
-                    .Where(s => !searchQueries.Contains(s)));
+                string lastQuery = results.searchQueries.Count > 0 ? results.searchQueries[0] : "";
+                if(lastQuery != "")
+                {
+                    int lastQueryIndex = searchQueries.IndexOf(lastQuery);
+                    if (lastQueryIndex > 0)
+                    {
+                        // insert last query of the current saving queries list as first query
+                        searchQueries.RemoveAt(lastQueryIndex);
+                        searchQueries.Insert(0, lastQuery);
+                    }
+                    else if(lastQueryIndex == -1)
+                    {
+                        searchQueries.Insert(0, lastQuery);
+                    }
+                }
+
+                SearchHelpers.AddMissing(searchQueries, results.searchQueries);
 
                 if (!isReplace) continue;
 
-                searchReplacers.AddRange(results.searchReplacers
-                    .Where(s => !searchReplacers.Contains(s)));
-                searchReplacePatterns.AddRange(results.searchReplacePatterns
-                    .Where(s => !searchReplacePatterns.Contains(s)));
+                SearchHelpers.AddMissing(searchReplacers, results.searchReplacers);
+                SearchHelpers.AddMissing(searchReplacePatterns, results.searchReplacePatterns);
             }
 
             return (searchQueries, searchReplacers, searchReplacePatterns);
+        }
+
+        internal static void AddMissing<T>(List<T> listWhereAdd, IEnumerable<T> listFromAdd)
+        {
+            listWhereAdd.AddRange(listFromAdd
+                .Where(s => !listWhereAdd.Contains(s)));
         }
     }
 }
