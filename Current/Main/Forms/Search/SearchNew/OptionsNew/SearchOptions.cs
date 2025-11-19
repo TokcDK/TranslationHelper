@@ -233,8 +233,9 @@ namespace TranslationHelper.Forms.Search.SearchNew.OptionsNew
             if (_project.FilesContent.Tables[0].Rows.Count == 0) return results;
             if (_project.FilesContent.Tables[0].Columns.Count == 0) return results;
 
+            // this kind of setup of searchArea, searcher and replace is wrong
+            // because option enabled state can be different for each condition
             var searchArea = searchTargets.FirstOrDefault(t => t is ISearchOption o && o.IsEnabled);
-
             var searcher = searchers.FirstOrDefault(s => s is ISearchOption o && o.IsEnabled);
             var replacer = replacers.FirstOrDefault(s => s is ISearchOption o && o.IsEnabled);
 
