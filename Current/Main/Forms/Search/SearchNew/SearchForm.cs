@@ -23,6 +23,11 @@ namespace TranslationHelper.Forms.Search.SearchNew
         private readonly DataSet _dataSet;
         private Manina.Windows.Forms.TabControl _searchConditionsTabControl;
 
+        private static string TextConditionTabIndexed { get; } = T._("Condition {0}");
+        private static string TextSearchResultsReplacedPrefix { get; } = T._("Replaced");
+        private static string TextSearchResultsFoundPrefix { get; } = T._("Found");
+        private static string TextSearchResultsMatchingStringsMessage { get; } = T._("{0} {1} matching strings.");
+
         public SearchForm(ProjectBase project)
         {
             _project = project;
@@ -44,9 +49,9 @@ namespace TranslationHelper.Forms.Search.SearchNew
             FoundRowsPanel.Controls.Clear();
 
             var actionName = isReplace ?
-                T._("Replaced") :
-                T._("Found");
-            SearchResultInfoLabel.Text = string.Format(T._("{0} {1} matching strings."), actionName, searchResults.FoundRows.Count);
+                TextSearchResultsReplacedPrefix :
+                TextSearchResultsFoundPrefix;
+            SearchResultInfoLabel.Text = string.Format(TextSearchResultsMatchingStringsMessage, actionName, searchResults.FoundRows.Count);
             
             if (searchResults.FoundRows.Count == 0)
             {
@@ -100,7 +105,7 @@ namespace TranslationHelper.Forms.Search.SearchNew
         {
             var tabPage = new Tab
             {
-                Text = string.Format(T._("Condition {0}", _searchConditionsTabControl.Tabs.Count + 1)),
+                Text = string.Format(TextConditionTabIndexed, _searchConditionsTabControl.Tabs.Count + 1),
             };
             var columns = _dataSet.Tables.Count > 0 ? _dataSet.Tables[0].Columns.Cast<DataColumn>().Select(c => c.ColumnName).ToArray() : Array.Empty<string>();
             var conditionUC = new SearchConditionUserControl(columns);
@@ -131,7 +136,7 @@ namespace TranslationHelper.Forms.Search.SearchNew
             int i = 1;
             foreach (var t in tabs)
             {
-                t.Text = string.Format(T._("Condition {0}", i++));
+                t.Text = string.Format(TextConditionTabIndexed, i++);
             }
         }
 
