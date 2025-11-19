@@ -11,6 +11,7 @@ using TranslationHelper.Data;
 using TranslationHelper.Extensions;
 using TranslationHelper.Functions;
 using TranslationHelper.Functions.FileElementsFunctions.Row;
+using TranslationHelper.Projects;
 
 namespace TranslationHelper.Main.Functions
 {
@@ -87,7 +88,7 @@ namespace TranslationHelper.Main.Functions
                     if (string.IsNullOrEmpty(cellValue))
                     {
                         int columnIndex = table.Columns.IndexOf(translationColumnName);
-                        ShowSelectedRowCurrentCell(t, columnIndex, r, AppData.Main.THFileElementsDataGridView);
+                        ShowSelectedRow(AppData.Main.THFileElementsDataGridView, t, r, columnIndex);
                         return;
                     }
                 }
@@ -101,37 +102,33 @@ namespace TranslationHelper.Main.Functions
         /// <param name="tableIndex"></param>
         /// <param name="selectedCellColumnIndex"></param>
         /// <param name="rowIndex"></param>
-        internal static void ShowSelectedRowCurrentCell(int tableIndex, int selectedCellColumnIndex, int rowIndex, DataGridView dataGridView)
+        internal static void ShowSelectedRow(DataGridView dataGridView, int tableIndex, int rowIndex, int selectedCellColumnIndex = 0)
         {
-            if (tableIndex == -1 
-                || tableIndex > AppData.CurrentProject.FilesContent.Tables.Count - 1 
-                || selectedCellColumnIndex == -1 
-                || selectedCellColumnIndex > AppData.CurrentProject.FilesContent.Tables[tableIndex].Columns.Count - 1)
+            if (tableIndex < 0 || rowIndex < 0 || selectedCellColumnIndex < 0
+                || tableIndex >= AppData.CurrentProject.FilesContent.Tables.Count
+                || rowIndex >= AppData.CurrentProject.FilesContent.Tables[tableIndex].Rows.Count)
             {
                 return;
             }
 
-            // info: when using function Show first untranslated row it s calling the function twice.
-            // added lock to avoid problems with it
+            selectedCellColumnIndex = selectedCellColumnIndex < 0 || selectedCellColumnIndex > AppData.CurrentProject.FilesContent.Tables[tableIndex].Columns.Count 
+                ? 0 : selectedCellColumnIndex;
 
-            int RCount = 0;//for debug purposes
+            int rowsCount = 0;//for debug purposes
             try
             {
                 // reset any filters
                 var table = AppData.CurrentProject.FilesContent.Tables[tableIndex];
-                if (!string.IsNullOrEmpty(table.DefaultView.RowFilter))
-                {
-                    AppData.Main.THFileElementsDataGridView.CleanFilter();
-                    table.DefaultView.RowFilter = string.Empty;
-                    table.DefaultView.Sort = string.Empty;
-                    AppData.Main.THFileElementsDataGridView.Refresh();
-                }
+                ResetDataTableFilters(table);
 
-                RCount = AppData.CurrentProject.FilesContent.Tables[tableIndex].Rows.Count;
-                if (tableIndex != AppData.Main.THFilesList.GetSelectedIndex() || RCount == 0 || AppData.Main.THFileElementsDataGridView.DataSource != table)
+                rowsCount = table.Rows.Count;
+                var filesList = AppData.Main.THFilesList;
+
+                if (tableIndex != filesList.GetSelectedIndex() || rowsCount == 0 || dataGridView.DataSource != table)
                 {
-                    AppData.Main.THFilesList.SetSelectedIndex(tableIndex);
-                    dataGridView.DataSource = AppData.CurrentProject.FilesContent.Tables[tableIndex];
+                    // bind the required datatable as selected table
+                    filesList.SetSelectedIndex(tableIndex);
+                    dataGridView.DataSource = table;
                 }
 
                 dataGridView.CurrentCell = dataGridView[selectedCellColumnIndex, rowIndex];
@@ -145,8 +142,19 @@ namespace TranslationHelper.Main.Functions
             }
             catch (Exception ex)
             {
-                string error = "Error:" + Environment.NewLine + ex + Environment.NewLine + "rowIndex=" + rowIndex + Environment.NewLine + "tableIndex=" + tableIndex + Environment.NewLine + "table rows count=" + RCount;
+                string error = "Error:" + Environment.NewLine + ex + Environment.NewLine + "rowIndex=" + rowIndex + Environment.NewLine + "tableIndex=" + tableIndex + Environment.NewLine + "table rows count=" + rowsCount;
                 Logger.Error(error);
+            }
+        }
+
+        private static void ResetDataTableFilters(DataTable table)
+        {
+            if (!string.IsNullOrEmpty(table.DefaultView.RowFilter))
+            {
+                AppData.Main.THFileElementsDataGridView.CleanFilter();
+                table.DefaultView.RowFilter = string.Empty;
+                table.DefaultView.Sort = string.Empty;
+                AppData.Main.THFileElementsDataGridView.Refresh();
             }
         }
 
@@ -433,7 +441,7 @@ namespace TranslationHelper.Main.Functions
                 int rowindex;
                 AppSettings.DGVSelectedRowIndex = rowindex = row.Index;
                 AppSettings.DGVSelectedRowRealIndex = realrowindex;
-                FunctionsTable.ShowSelectedRowCurrentCell(thFilesList.GetSelectedIndex(), AppSettings.DGVSelectedColumnIndex, rowindex, AppData.Main.THFileElementsDataGridView);
+                FunctionsTable.ShowSelectedRow(AppData.Main.THFileElementsDataGridView, thFilesList.GetSelectedIndex(), rowindex, AppSettings.DGVSelectedColumnIndex);
                 SelectedRowRealIndex = realrowindex;
                 break;
             }

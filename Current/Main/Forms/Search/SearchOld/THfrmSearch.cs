@@ -474,7 +474,7 @@ namespace TranslationHelper
                 tableDefaultView.Sort = string.Empty;
                 _workFileDgv.Refresh();
 
-                FunctionsTable.ShowSelectedRowCurrentCell(_selectedTableIndex, SearchColumnIndex, _selectedRowIndex, AppData.Main.THFileElementsDataGridView);
+                FunctionsTable.ShowSelectedRow(AppData.Main.THFileElementsDataGridView, _selectedTableIndex, _selectedRowIndex, SearchColumnIndex);
                 if (_workFileDgv.CurrentCell != null)
                 {
                     await Task.Run(() => SelectTextInTextBox(_workFileDgv.CurrentCell.Value.ToString())).ConfigureAwait(false);
