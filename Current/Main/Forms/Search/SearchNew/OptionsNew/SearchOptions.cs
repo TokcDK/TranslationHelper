@@ -157,7 +157,6 @@ namespace TranslationHelper.Forms.Search.SearchNew.OptionsNew
             var searchOptionSearchColumn = new SearchOptionSearchColumn(_project.FilesContent.Tables[0].Columns.Cast<DataColumn>().Select(c => c.ColumnName).ToArray());
             var searchOptionRegex = new SearchOptionRegex();
             var searchOptionCaseSensitive = new SearchOptionCaseSensitive();
-
             searchOptions = new List<ISearchOption>()
             {
                 searchOptionInfoTarget,
@@ -165,12 +164,22 @@ namespace TranslationHelper.Forms.Search.SearchNew.OptionsNew
                 searchOptionRegex,
                 searchOptionCaseSensitive,
             };
-
-            searchOptionsUsingControl = searchOptions.Where(o => o is ISearchOptionUsingControl).Select(o => o as ISearchOptionUsingControl).ToList();
-
-            searchTargets = searchOptions.Where(o => o is ISearchTarget).Select(o => o as ISearchTarget).ToList();
-            searchers = searchOptions.Where(o => o is ISearchOptionMatch).Select(o => o as ISearchOptionMatch).ToList();
-            replacers = searchOptions.Where(o => o is ISearchOptionReplace).Select(o => o as ISearchOptionReplace).ToList();
+            searchOptionsUsingControl = searchOptions
+                .Where(o => o is ISearchOptionUsingControl)
+                .Select(o => o as ISearchOptionUsingControl)
+                .ToList();
+            searchTargets = searchOptions
+                .Where(o => o is ISearchTarget)
+                .Select(o => o as ISearchTarget)
+                .ToList();
+            searchers = searchOptions
+                .Where(o => o is ISearchOptionMatch)
+                .Select(o => o as ISearchOptionMatch)
+                .ToList();
+            replacers = searchOptions
+                .Where(o => o is ISearchOptionReplace)
+                .Select(o => o as ISearchOptionReplace)
+                .ToList();
         }
 
         public void CreateControls(Control parentControl)
