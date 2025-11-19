@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Manina.Windows.Forms;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -49,6 +50,50 @@ namespace TranslationHelper.Forms.Search
 
     internal static class SearchHelpers
     {
+        internal static string TextConditionTabIndexed { get; } = T._("Condition {0}");
+        internal static string TextSearchResultsReplacedPrefix { get; } = T._("Replaced");
+        internal static string TextSearchResultsFoundPrefix { get; } = T._("Found");
+        internal static string TextSearchResultsMatchingStringsMessage { get; } = T._("{0} {1} matching strings.");
+
+        internal static Tab AddSearchConditionTab(Manina.Windows.Forms.TabControl tabControl, DataTableCollection tables)
+        {
+            var tabPage = new Tab
+            {
+                Text = string.Format(TextConditionTabIndexed, tabControl.Tabs.Count + 1),
+            };
+            var columns = tables.Count > 0 ? tables[0].Columns.Cast<DataColumn>().Select(c => c.ColumnName).ToArray() : Array.Empty<string>();
+            var conditionUC = new SearchConditionUserControl(columns);
+            tabPage.Controls.Add(conditionUC);
+            conditionUC.Dock = DockStyle.Fill;
+            tabControl.Tabs.Add(tabPage);
+
+            tabControl.SelectedTab = tabPage;
+
+            return tabPage;
+        }
+
+        public static void RemoveSearchConditionTab(Manina.Windows.Forms.TabControl tabControl, Tab tab, DataTableCollection tables)
+        {
+            tabControl.Tabs.Remove(tab);
+            if (tabControl.Tabs.Count == 0)
+            {
+                SearchHelpers.AddSearchConditionTab(tabControl, tables); // always one default search condition tab by default
+            }
+            else
+            {
+                SearchHelpers.RenumerateTabNames(tabControl.Tabs);
+            }
+        }
+
+        internal static void RenumerateTabNames(TabCollection tabs)
+        {
+            int i = 1;
+            foreach (var t in tabs)
+            {
+                t.Text = string.Format(TextConditionTabIndexed, i++);
+            }
+        }
+
         internal static IEnumerable<ISearchCondition> GetSearchConditions(TabCollection tabs)
         {
             foreach (var tab in tabs)
