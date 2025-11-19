@@ -57,7 +57,7 @@ namespace TranslationHelper.Forms.Search.SearchNew
 
             var foundRowsDatagridView = new DataGridView
             {
-                DataSource = searchResults,
+                DataSource = searchResults.FoundRows,
                 Dock = DockStyle.Fill,
                 ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize,
                 ColumnHeadersVisible = false,
@@ -68,7 +68,6 @@ namespace TranslationHelper.Forms.Search.SearchNew
             {
                 SearchHelpers.ShowSelectedCellInMainTable(_project, searchResults.FoundRows, e.RowIndex, e.ColumnIndex);
             };
-            foundRowsDatagridView.DataSource = searchResults.FoundRows;
             FoundRowsPanel.Controls.Add(foundRowsDatagridView);
         }
 
