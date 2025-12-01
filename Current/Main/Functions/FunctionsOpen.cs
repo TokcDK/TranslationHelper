@@ -194,7 +194,7 @@ namespace TranslationHelper.Functions
             {
                 var inst = (IProject)Activator.CreateInstance(type);
                 var instName = !string.IsNullOrWhiteSpace(inst.Name) ? inst.Name + " (" + type.FullName + ")" : type.FullName;
-                foundForm.listBox1.Items.Add(instName);
+                foundForm.SelectTypeListBox.Items.Add(instName);
             }
 
             var result = foundForm.ShowDialog();

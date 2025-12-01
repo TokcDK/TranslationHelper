@@ -26,7 +26,7 @@ namespace TranslationHelper.Projects.ZZZZFormats
 
         private void button1_Click(object sender, EventArgs e)
         {
-            SelectedTypeIndex = listBox1.SelectedIndex;
+            SelectedTypeIndex = SelectTypeListBox.SelectedIndex;
             this.DialogResult = DialogResult.OK;
             this.Close();
         }

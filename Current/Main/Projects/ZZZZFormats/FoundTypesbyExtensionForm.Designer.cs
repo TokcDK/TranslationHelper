@@ -29,49 +29,49 @@ namespace TranslationHelper.Projects.ZZZZFormats
         /// </summary>
         private void InitializeComponent()
         {
-            this.panel1 = new System.Windows.Forms.Panel();
-            this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
+            this.SelectTypeRootPanel = new System.Windows.Forms.Panel();
+            this.SelectTypeRoorTableLayoutPanel = new System.Windows.Forms.TableLayoutPanel();
             this.panel2 = new System.Windows.Forms.Panel();
-            this.panel3 = new System.Windows.Forms.Panel();
             this.label1 = new System.Windows.Forms.Label();
-            this.panel4 = new System.Windows.Forms.Panel();
-            this.tableLayoutPanel2 = new System.Windows.Forms.TableLayoutPanel();
-            this.button1 = new System.Windows.Forms.Button();
-            this.button2 = new System.Windows.Forms.Button();
-            this.listBox1 = new System.Windows.Forms.ListBox();
-            this.panel1.SuspendLayout();
-            this.tableLayoutPanel1.SuspendLayout();
+            this.SelectTypeListPanel = new System.Windows.Forms.Panel();
+            this.SelectTypeListBox = new System.Windows.Forms.ListBox();
+            this.SelectTypeOKCancelPanel = new System.Windows.Forms.Panel();
+            this.SelectTypeButtonsTableLayoutPanel = new System.Windows.Forms.TableLayoutPanel();
+            this.SelectOkButton = new System.Windows.Forms.Button();
+            this.CancelSelectionButton = new System.Windows.Forms.Button();
+            this.SelectTypeRootPanel.SuspendLayout();
+            this.SelectTypeRoorTableLayoutPanel.SuspendLayout();
             this.panel2.SuspendLayout();
-            this.panel3.SuspendLayout();
-            this.panel4.SuspendLayout();
-            this.tableLayoutPanel2.SuspendLayout();
+            this.SelectTypeListPanel.SuspendLayout();
+            this.SelectTypeOKCancelPanel.SuspendLayout();
+            this.SelectTypeButtonsTableLayoutPanel.SuspendLayout();
             this.SuspendLayout();
             // 
-            // panel1
+            // SelectTypeRootPanel
             // 
-            this.panel1.Controls.Add(this.tableLayoutPanel1);
-            this.panel1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.panel1.Location = new System.Drawing.Point(0, 0);
-            this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(467, 435);
-            this.panel1.TabIndex = 0;
+            this.SelectTypeRootPanel.Controls.Add(this.SelectTypeRoorTableLayoutPanel);
+            this.SelectTypeRootPanel.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.SelectTypeRootPanel.Location = new System.Drawing.Point(0, 0);
+            this.SelectTypeRootPanel.Name = "SelectTypeRootPanel";
+            this.SelectTypeRootPanel.Size = new System.Drawing.Size(467, 435);
+            this.SelectTypeRootPanel.TabIndex = 0;
             // 
-            // tableLayoutPanel1
+            // SelectTypeRoorTableLayoutPanel
             // 
-            this.tableLayoutPanel1.ColumnCount = 1;
-            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
-            this.tableLayoutPanel1.Controls.Add(this.panel2, 0, 0);
-            this.tableLayoutPanel1.Controls.Add(this.panel3, 0, 1);
-            this.tableLayoutPanel1.Controls.Add(this.panel4, 0, 2);
-            this.tableLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.tableLayoutPanel1.Location = new System.Drawing.Point(0, 0);
-            this.tableLayoutPanel1.Name = "tableLayoutPanel1";
-            this.tableLayoutPanel1.RowCount = 3;
-            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 8.275862F));
-            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 91.72414F));
-            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 37F));
-            this.tableLayoutPanel1.Size = new System.Drawing.Size(467, 435);
-            this.tableLayoutPanel1.TabIndex = 0;
+            this.SelectTypeRoorTableLayoutPanel.ColumnCount = 1;
+            this.SelectTypeRoorTableLayoutPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
+            this.SelectTypeRoorTableLayoutPanel.Controls.Add(this.panel2, 0, 0);
+            this.SelectTypeRoorTableLayoutPanel.Controls.Add(this.SelectTypeListPanel, 0, 1);
+            this.SelectTypeRoorTableLayoutPanel.Controls.Add(this.SelectTypeOKCancelPanel, 0, 2);
+            this.SelectTypeRoorTableLayoutPanel.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.SelectTypeRoorTableLayoutPanel.Location = new System.Drawing.Point(0, 0);
+            this.SelectTypeRoorTableLayoutPanel.Name = "SelectTypeRoorTableLayoutPanel";
+            this.SelectTypeRoorTableLayoutPanel.RowCount = 3;
+            this.SelectTypeRoorTableLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 8.275862F));
+            this.SelectTypeRoorTableLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 91.72414F));
+            this.SelectTypeRoorTableLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 37F));
+            this.SelectTypeRoorTableLayoutPanel.Size = new System.Drawing.Size(467, 435);
+            this.SelectTypeRoorTableLayoutPanel.TabIndex = 0;
             // 
             // panel2
             // 
@@ -82,107 +82,107 @@ namespace TranslationHelper.Projects.ZZZZFormats
             this.panel2.Size = new System.Drawing.Size(461, 26);
             this.panel2.TabIndex = 0;
             // 
-            // panel3
-            // 
-            this.panel3.Controls.Add(this.listBox1);
-            this.panel3.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.panel3.Location = new System.Drawing.Point(3, 35);
-            this.panel3.Name = "panel3";
-            this.panel3.Size = new System.Drawing.Size(461, 359);
-            this.panel3.TabIndex = 1;
-            // 
             // label1
             // 
             this.label1.AutoSize = true;
             this.label1.Location = new System.Drawing.Point(104, 4);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(264, 13);
+            this.label1.Size = new System.Drawing.Size(257, 13);
             this.label1.TabIndex = 0;
             this.label1.Text = "Found next types by extension. Select one or cancel.";
             // 
-            // panel4
+            // SelectTypeListPanel
             // 
-            this.panel4.Controls.Add(this.tableLayoutPanel2);
-            this.panel4.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.panel4.Location = new System.Drawing.Point(3, 400);
-            this.panel4.Name = "panel4";
-            this.panel4.Size = new System.Drawing.Size(461, 32);
-            this.panel4.TabIndex = 2;
+            this.SelectTypeListPanel.Controls.Add(this.SelectTypeListBox);
+            this.SelectTypeListPanel.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.SelectTypeListPanel.Location = new System.Drawing.Point(3, 35);
+            this.SelectTypeListPanel.Name = "SelectTypeListPanel";
+            this.SelectTypeListPanel.Size = new System.Drawing.Size(461, 359);
+            this.SelectTypeListPanel.TabIndex = 1;
             // 
-            // tableLayoutPanel2
+            // SelectTypeListBox
             // 
-            this.tableLayoutPanel2.ColumnCount = 2;
-            this.tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
-            this.tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
-            this.tableLayoutPanel2.Controls.Add(this.button1, 0, 0);
-            this.tableLayoutPanel2.Controls.Add(this.button2, 1, 0);
-            this.tableLayoutPanel2.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.tableLayoutPanel2.Location = new System.Drawing.Point(0, 0);
-            this.tableLayoutPanel2.Name = "tableLayoutPanel2";
-            this.tableLayoutPanel2.RowCount = 1;
-            this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
-            this.tableLayoutPanel2.Size = new System.Drawing.Size(461, 32);
-            this.tableLayoutPanel2.TabIndex = 0;
+            this.SelectTypeListBox.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.SelectTypeListBox.FormattingEnabled = true;
+            this.SelectTypeListBox.Location = new System.Drawing.Point(0, 0);
+            this.SelectTypeListBox.Name = "SelectTypeListBox";
+            this.SelectTypeListBox.Size = new System.Drawing.Size(461, 359);
+            this.SelectTypeListBox.TabIndex = 0;
             // 
-            // button1
+            // SelectTypeOKCancelPanel
             // 
-            this.button1.Location = new System.Drawing.Point(3, 3);
-            this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(75, 23);
-            this.button1.TabIndex = 0;
-            this.button1.Text = "OK";
-            this.button1.UseVisualStyleBackColor = true;
-            this.button1.Click += new System.EventHandler(this.button1_Click);
+            this.SelectTypeOKCancelPanel.Controls.Add(this.SelectTypeButtonsTableLayoutPanel);
+            this.SelectTypeOKCancelPanel.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.SelectTypeOKCancelPanel.Location = new System.Drawing.Point(3, 400);
+            this.SelectTypeOKCancelPanel.Name = "SelectTypeOKCancelPanel";
+            this.SelectTypeOKCancelPanel.Size = new System.Drawing.Size(461, 32);
+            this.SelectTypeOKCancelPanel.TabIndex = 2;
             // 
-            // button2
+            // SelectTypeButtonsTableLayoutPanel
             // 
-            this.button2.Location = new System.Drawing.Point(233, 3);
-            this.button2.Name = "button2";
-            this.button2.Size = new System.Drawing.Size(75, 23);
-            this.button2.TabIndex = 1;
-            this.button2.Text = "Cancel";
-            this.button2.UseVisualStyleBackColor = true;
-            this.button2.Click += new System.EventHandler(this.button2_Click);
+            this.SelectTypeButtonsTableLayoutPanel.ColumnCount = 2;
+            this.SelectTypeButtonsTableLayoutPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
+            this.SelectTypeButtonsTableLayoutPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
+            this.SelectTypeButtonsTableLayoutPanel.Controls.Add(this.SelectOkButton, 0, 0);
+            this.SelectTypeButtonsTableLayoutPanel.Controls.Add(this.CancelSelectionButton, 1, 0);
+            this.SelectTypeButtonsTableLayoutPanel.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.SelectTypeButtonsTableLayoutPanel.Location = new System.Drawing.Point(0, 0);
+            this.SelectTypeButtonsTableLayoutPanel.Name = "SelectTypeButtonsTableLayoutPanel";
+            this.SelectTypeButtonsTableLayoutPanel.RowCount = 1;
+            this.SelectTypeButtonsTableLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
+            this.SelectTypeButtonsTableLayoutPanel.Size = new System.Drawing.Size(461, 32);
+            this.SelectTypeButtonsTableLayoutPanel.TabIndex = 0;
             // 
-            // listBox1
+            // SelectOkButton
             // 
-            this.listBox1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.listBox1.FormattingEnabled = true;
-            this.listBox1.Location = new System.Drawing.Point(0, 0);
-            this.listBox1.Name = "listBox1";
-            this.listBox1.Size = new System.Drawing.Size(461, 359);
-            this.listBox1.TabIndex = 0;
+            this.SelectOkButton.Location = new System.Drawing.Point(3, 3);
+            this.SelectOkButton.Name = "SelectOkButton";
+            this.SelectOkButton.Size = new System.Drawing.Size(75, 23);
+            this.SelectOkButton.TabIndex = 0;
+            this.SelectOkButton.Text = "OK";
+            this.SelectOkButton.UseVisualStyleBackColor = true;
+            this.SelectOkButton.Click += new System.EventHandler(this.button1_Click);
+            // 
+            // CancelSelectionButton
+            // 
+            this.CancelSelectionButton.Location = new System.Drawing.Point(233, 3);
+            this.CancelSelectionButton.Name = "CancelSelectionButton";
+            this.CancelSelectionButton.Size = new System.Drawing.Size(75, 23);
+            this.CancelSelectionButton.TabIndex = 1;
+            this.CancelSelectionButton.Text = "Cancel";
+            this.CancelSelectionButton.UseVisualStyleBackColor = true;
+            this.CancelSelectionButton.Click += new System.EventHandler(this.button2_Click);
             // 
             // FoundTypesbyExtensionForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(467, 435);
-            this.Controls.Add(this.panel1);
+            this.Controls.Add(this.SelectTypeRootPanel);
             this.Name = "FoundTypesbyExtensionForm";
             this.Text = "FoundTypesbyExtensionForm";
-            this.panel1.ResumeLayout(false);
-            this.tableLayoutPanel1.ResumeLayout(false);
+            this.SelectTypeRootPanel.ResumeLayout(false);
+            this.SelectTypeRoorTableLayoutPanel.ResumeLayout(false);
             this.panel2.ResumeLayout(false);
             this.panel2.PerformLayout();
-            this.panel3.ResumeLayout(false);
-            this.panel4.ResumeLayout(false);
-            this.tableLayoutPanel2.ResumeLayout(false);
+            this.SelectTypeListPanel.ResumeLayout(false);
+            this.SelectTypeOKCancelPanel.ResumeLayout(false);
+            this.SelectTypeButtonsTableLayoutPanel.ResumeLayout(false);
             this.ResumeLayout(false);
 
         }
 
         #endregion
 
-        private System.Windows.Forms.Panel panel1;
-        private System.Windows.Forms.TableLayoutPanel tableLayoutPanel1;
+        private System.Windows.Forms.Panel SelectTypeRootPanel;
+        private System.Windows.Forms.TableLayoutPanel SelectTypeRoorTableLayoutPanel;
         private System.Windows.Forms.Panel panel2;
         private System.Windows.Forms.Label label1;
-        private System.Windows.Forms.Panel panel3;
-        private System.Windows.Forms.Panel panel4;
-        private System.Windows.Forms.TableLayoutPanel tableLayoutPanel2;
-        private System.Windows.Forms.Button button1;
-        private System.Windows.Forms.Button button2;
-        public System.Windows.Forms.ListBox listBox1;
+        private System.Windows.Forms.Panel SelectTypeListPanel;
+        private System.Windows.Forms.Panel SelectTypeOKCancelPanel;
+        private System.Windows.Forms.TableLayoutPanel SelectTypeButtonsTableLayoutPanel;
+        private System.Windows.Forms.Button SelectOkButton;
+        private System.Windows.Forms.Button CancelSelectionButton;
+        public System.Windows.Forms.ListBox SelectTypeListBox;
     }
 }
