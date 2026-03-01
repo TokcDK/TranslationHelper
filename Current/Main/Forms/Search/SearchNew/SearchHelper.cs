@@ -134,36 +134,25 @@ namespace TranslationHelper.Forms.Search
             bool isEmptyTranslation = string.IsNullOrEmpty(translationValue);
             foreach (var cond in conditions)
             {
-                if (useConditionReplacer)
+                foreach (var task in cond.ReplaceTasks)
                 {
-                    foreach (var task in cond.ReplaceTasks)
+                    bool isEmptyTranslationSearchInOriginal = isEmptyTranslation && cond.SearchColumnIndex == project.OriginalColumnIndex;
+                    string sourceValue = isEmptyTranslationSearchInOriginal
+                        ? originalValue
+                        : resultValue;
+
+                    if (useConditionReplacer)
                     {
-                        if (isEmptyTranslation && cond.SearchColumnIndex == project.OriginalColumnIndex)
-                        {
-                            // if translation is empty, try to replace in original value and set it as result value for next replacements
-                            resultValue = cond.Replacer.Replace(originalValue, task.ReplaceWhat, task.ReplaceWith);
-                            isEmptyTranslation = string.IsNullOrEmpty(resultValue);
-                        }
-                        else
-                        {
-                            resultValue = cond.Replacer.Replace(resultValue, task.ReplaceWhat, task.ReplaceWith);
-                        }
+                        resultValue = cond.Replacer.Replace(sourceValue, task.ReplaceWhat, task.ReplaceWith);
                     }
-                }
-                else
-                {
-                    foreach (var task in cond.ReplaceTasks)
+                    else
                     {
-                        if (isEmptyTranslation && cond.SearchColumnIndex == project.OriginalColumnIndex)
-                        {
-                            // if translation is empty, try to replace in original value and set it as result value for next replacements
-                            resultValue = SearchHelpers.ApplyReplaces(originalValue, cond.ReplaceTasks, cond.CaseSensitive, cond.UseRegex);
-                            isEmptyTranslation = string.IsNullOrEmpty(resultValue);
-                        }
-                        else
-                        {
-                            resultValue = SearchHelpers.ApplyReplaces(resultValue, cond.ReplaceTasks, cond.CaseSensitive, cond.UseRegex);
-                        }
+                        resultValue = SearchHelpers.ApplyReplaces(sourceValue, cond.ReplaceTasks, cond.CaseSensitive, cond.UseRegex);
+                    }
+
+                    if (isEmptyTranslationSearchInOriginal)
+                    {
+                        isEmptyTranslation = string.IsNullOrEmpty(resultValue);
                     }
                 }
             }
