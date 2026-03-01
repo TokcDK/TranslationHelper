@@ -64,9 +64,11 @@ namespace TranslationHelper.Forms.Search
 
         public string SearchColumn => SearchOptionSelectedColumnComboBox.SelectedItem?.ToString() ?? string.Empty;
 
+        public bool UseRegex => SearchOptionRegexCheckBox.Checked;
+
         public bool CaseSensitive => SearchOptionCaseSensitiveCheckBox.Checked;
 
-        public bool UseRegex => SearchOptionRegexCheckBox.Checked;
+        public bool SearchInInfo => SearchInInfoCheckBox.Checked;
 
         public List<IReplaceTask> ReplaceTasks
         {

@@ -15,12 +15,14 @@ namespace TranslationHelper.Forms.Search.SearchNew
 
         private readonly ProjectBase _project;
         private readonly DataSet _dataSet;
+        private readonly DataSet _dataSetInfo;
         private Manina.Windows.Forms.TabControl _searchConditionsTabControl;
 
         public SearchForm(ProjectBase project)
         {
             _project = project;
             _dataSet = project.FilesContent ?? throw new ArgumentNullException(nameof(project));
+            _dataSetInfo = project.FilesContentInfo ?? throw new ArgumentNullException(nameof(project));
 
             InitializeComponent();
 
@@ -86,15 +88,18 @@ namespace TranslationHelper.Forms.Search.SearchNew
 
             searchResults.SearchConditions.AddRange(validConditions);
 
+            int tableIndex = -1;
             foreach (DataTable table in _dataSet.Tables)
             {
+                tableIndex++;
+
                 // Skip tables missing required columns
                 if (!validConditions.All(c => !string.IsNullOrEmpty(c.SearchColumn) && table.Columns.Contains(c.SearchColumn)))
                     continue;
 
                 var matchingRows = table.AsEnumerable()
                     .Where(row => validConditions.All(cond =>
-                        SearchHelpers.Matches(row.Field<string>(cond.SearchColumn), cond.FindWhat, cond.CaseSensitive, cond.UseRegex)));
+                        SearchHelpers.Matches(SearchHelpers.GetStringToMatch(row, tableIndex, table.Rows.IndexOf(row), _dataSetInfo, cond), cond.FindWhat, cond.CaseSensitive, cond.UseRegex)));
 
                 foreach (var row in matchingRows)
                 {

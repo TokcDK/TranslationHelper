@@ -44,6 +44,7 @@ namespace TranslationHelper.Forms.Search
             this.ReplaceWhatWithPanel = new System.Windows.Forms.Panel();
             this.ReplaceWhatWithAddTabButton = new System.Windows.Forms.Button();
             this.contextMenuStrip1 = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.SearchInInfoCheckBox = new System.Windows.Forms.CheckBox();
             this.SearchConditionsRootTableLayoutPanel.SuspendLayout();
             this.SearchTextFieldsTableLayoutPanel.SuspendLayout();
             this.tableLayoutPanel1.SuspendLayout();
@@ -122,6 +123,7 @@ namespace TranslationHelper.Forms.Search
             this.SearchOptionsFlowLayoutPanel.Controls.Add(this.SearchOptionSelectedColumnComboBox);
             this.SearchOptionsFlowLayoutPanel.Controls.Add(this.SearchOptionCaseSensitiveCheckBox);
             this.SearchOptionsFlowLayoutPanel.Controls.Add(this.SearchOptionRegexCheckBox);
+            this.SearchOptionsFlowLayoutPanel.Controls.Add(this.SearchInInfoCheckBox);
             this.SearchOptionsFlowLayoutPanel.Dock = System.Windows.Forms.DockStyle.Fill;
             this.SearchOptionsFlowLayoutPanel.Location = new System.Drawing.Point(3, 33);
             this.SearchOptionsFlowLayoutPanel.Name = "SearchOptionsFlowLayoutPanel";
@@ -200,6 +202,16 @@ namespace TranslationHelper.Forms.Search
             this.contextMenuStrip1.Name = "contextMenuStrip1";
             this.contextMenuStrip1.Size = new System.Drawing.Size(61, 4);
             // 
+            // SearchInInfoCheckBox
+            // 
+            this.SearchInInfoCheckBox.AutoSize = true;
+            this.SearchInInfoCheckBox.Location = new System.Drawing.Point(325, 3);
+            this.SearchInInfoCheckBox.Name = "SearchInInfoCheckBox";
+            this.SearchInInfoCheckBox.Size = new System.Drawing.Size(92, 17);
+            this.SearchInInfoCheckBox.TabIndex = 3;
+            this.SearchInInfoCheckBox.Text = "Search in Info";
+            this.SearchInInfoCheckBox.UseVisualStyleBackColor = true;
+            // 
             // SearchConditionUserControl
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -234,5 +246,6 @@ namespace TranslationHelper.Forms.Search
         internal System.Windows.Forms.FlowLayoutPanel SearchOptionsFlowLayoutPanel;
         private System.Windows.Forms.TableLayoutPanel ReplaceWhatWithTableLayoutPanel;
         private System.Windows.Forms.Button ReplaceWhatWithAddTabButton;
+        internal System.Windows.Forms.CheckBox SearchInInfoCheckBox;
     }
 }

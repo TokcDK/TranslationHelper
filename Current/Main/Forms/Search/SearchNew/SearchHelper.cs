@@ -25,6 +25,7 @@ namespace TranslationHelper.Forms.Search
     {
         string FindWhat { get; }
         string SearchColumn { get; }
+        bool SearchInInfo { get; }
         bool CaseSensitive { get; }
         bool UseRegex { get; }
         List<IReplaceTask> ReplaceTasks { get; }
@@ -125,6 +126,7 @@ namespace TranslationHelper.Forms.Search
 
         internal static bool TryReplaceAny(IEnumerable<ISearchCondition> conditions, DataRow row, ProjectBase project, bool useConditionReplacer = false)
         {
+            string originalValue = row.Field<string>(project.OriginalColumnIndex);
             string currentValue = row.Field<string>(project.TranslationColumnIndex);
             string newValue = currentValue;
 
@@ -284,6 +286,18 @@ namespace TranslationHelper.Forms.Search
         {
             listWhereAdd.AddRange(listFromAdd
                 .Where(s => !listWhereAdd.Contains(s)));
+        }
+
+        internal static string GetStringToMatch(DataRow row, int tableIndex, int rowIndex, DataSet dataSetInfo, ISearchCondition cond)
+        {
+            if (cond.SearchInInfo)
+            {
+                return dataSetInfo.Tables[tableIndex].Rows[rowIndex].Field<string>(0);
+            }
+            else
+            {
+                return row.Field<string>(cond.SearchColumn);
+            }
         }
     }
 }
