@@ -25,6 +25,7 @@ namespace TranslationHelper.Forms.Search
     {
         string FindWhat { get; }
         string SearchColumn { get; }
+        int SearchColumnIndex { get; }
         bool SearchInInfo { get; }
         bool CaseSensitive { get; }
         bool UseRegex { get; }
@@ -127,28 +128,50 @@ namespace TranslationHelper.Forms.Search
         internal static bool TryReplaceAny(IEnumerable<ISearchCondition> conditions, DataRow row, ProjectBase project, bool useConditionReplacer = false)
         {
             string originalValue = row.Field<string>(project.OriginalColumnIndex);
-            string currentValue = row.Field<string>(project.TranslationColumnIndex);
-            string newValue = currentValue;
+            string translationValue = row.Field<string>(project.TranslationColumnIndex);
+            string resultValue = translationValue;
 
+            bool isEmptyTranslation = string.IsNullOrEmpty(translationValue);
             foreach (var cond in conditions)
             {
                 if (useConditionReplacer)
                 {
                     foreach (var task in cond.ReplaceTasks)
                     {
-                        newValue = cond.Replacer.Replace(newValue, task.ReplaceWhat, task.ReplaceWith);
+                        if (isEmptyTranslation && cond.SearchColumnIndex == project.OriginalColumnIndex)
+                        {
+                            // if translation is empty, try to replace in original value and set it as result value for next replacements
+                            resultValue = cond.Replacer.Replace(originalValue, task.ReplaceWhat, task.ReplaceWith);
+                            isEmptyTranslation = string.IsNullOrEmpty(resultValue);
+                        }
+                        else
+                        {
+                            resultValue = cond.Replacer.Replace(resultValue, task.ReplaceWhat, task.ReplaceWith);
+                        }
                     }
                 }
                 else
                 {
-                    newValue = SearchHelpers.ApplyReplaces(newValue, cond.ReplaceTasks, cond.CaseSensitive, cond.UseRegex);
+                    foreach (var task in cond.ReplaceTasks)
+                    {
+                        if (isEmptyTranslation && cond.SearchColumnIndex == project.OriginalColumnIndex)
+                        {
+                            // if translation is empty, try to replace in original value and set it as result value for next replacements
+                            resultValue = SearchHelpers.ApplyReplaces(originalValue, cond.ReplaceTasks, cond.CaseSensitive, cond.UseRegex);
+                            isEmptyTranslation = string.IsNullOrEmpty(resultValue);
+                        }
+                        else
+                        {
+                            resultValue = SearchHelpers.ApplyReplaces(resultValue, cond.ReplaceTasks, cond.CaseSensitive, cond.UseRegex);
+                        }
+                    }
                 }
             }
 
-            if (!string.Equals(currentValue, newValue))
+            if (!string.Equals(translationValue, resultValue))
             {
                 // set result value to row when it was changed by any replacement
-                row.SetField(project.TranslationColumnIndex, newValue);
+                row.SetField(project.TranslationColumnIndex, resultValue);
 
                 return true;
             }

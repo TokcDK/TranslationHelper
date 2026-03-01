@@ -63,6 +63,7 @@ namespace TranslationHelper.Forms.Search
         public string FindWhat => FindWhatComboBox.Text ?? string.Empty;
 
         public string SearchColumn => SearchOptionSelectedColumnComboBox.SelectedItem?.ToString() ?? string.Empty;
+        public int SearchColumnIndex => SearchOptionSelectedColumnComboBox.SelectedIndex;
 
         public bool UseRegex => SearchOptionRegexCheckBox.Checked;
 
