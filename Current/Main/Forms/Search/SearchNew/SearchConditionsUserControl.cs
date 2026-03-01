@@ -70,6 +70,7 @@ namespace TranslationHelper.Forms.Search
         public bool CaseSensitive => SearchOptionCaseSensitiveCheckBox.Checked;
 
         public bool SearchInInfo => SearchInInfoCheckBox.Checked;
+        public bool AllowEqualOriginalTranslation => AllowEqualOriginalTranslationCheckBox.Checked;
 
         public List<IReplaceTask> ReplaceTasks
         {

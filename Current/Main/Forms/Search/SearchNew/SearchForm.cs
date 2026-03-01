@@ -96,8 +96,9 @@ namespace TranslationHelper.Forms.Search.SearchNew
                 int tableColumnsCount = table.Columns.Count;
                 var matchingRows = table.AsEnumerable()
                     .Where(row => validConditions.All(cond =>
-                        SearchHelpers.IsValidSearchCondition(cond, tableColumnsCount) &&
-                        SearchHelpers.Matches(SearchHelpers.GetStringToMatch(row, tableIndex, table.Rows.IndexOf(row), _dataSetInfo, cond), cond.FindWhat, cond.CaseSensitive, cond.UseRegex)));
+                        SearchHelpers.IsValidSearchConditionColumn(cond, tableColumnsCount) &&
+                        SearchHelpers.CanParseTheRowOriginalTranslation(cond, row, _project) &&
+                        SearchHelpers.Matches(SearchHelpers.GetStringToMatch(row, tableIndex, table.Rows.IndexOf(row), _dataSetInfo, cond), cond)));
 
                 foreach (var row in matchingRows)
                 {

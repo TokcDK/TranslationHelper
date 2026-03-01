@@ -29,6 +29,7 @@ namespace TranslationHelper.Forms.Search
         bool SearchInInfo { get; }
         bool CaseSensitive { get; }
         bool UseRegex { get; }
+        bool AllowEqualOriginalTranslation { get; }
         List<IReplaceTask> ReplaceTasks { get; }
         ISearchOptionTarget Target { get; }
         ISearchOptionMatch Searcher { get; }
@@ -107,21 +108,21 @@ namespace TranslationHelper.Forms.Search
             return conditions.Where(c => c != null && !string.IsNullOrEmpty(c.FindWhat)).ToArray();
         }
 
-        internal static bool Matches(string input, string pattern, bool caseSensitive, bool useRegex)
+        internal static bool Matches(string input, ISearchCondition condition)
         {
-            if (string.IsNullOrEmpty(input) || string.IsNullOrEmpty(pattern))
+            if (string.IsNullOrEmpty(input) || string.IsNullOrEmpty(condition.FindWhat))
                 return false;
 
-            if (useRegex)
+            if (condition.UseRegex)
             {
-                var options = caseSensitive ? RegexOptions.None : RegexOptions.IgnoreCase;
-                bool ret = Regex.IsMatch(input, pattern, options);
+                var options = condition.CaseSensitive ? RegexOptions.None : RegexOptions.IgnoreCase;
+                bool ret = Regex.IsMatch(input, condition.FindWhat, options);
                 return ret;
             }
             else
             {
-                var comparison = caseSensitive ? StringComparison.Ordinal : StringComparison.OrdinalIgnoreCase;
-                return input.IndexOf(pattern, comparison) != -1;
+                var comparison = condition.CaseSensitive ? StringComparison.Ordinal : StringComparison.OrdinalIgnoreCase;
+                return input.IndexOf(condition.FindWhat, comparison) != -1;
             }
         }
 
@@ -312,9 +313,22 @@ namespace TranslationHelper.Forms.Search
             }
         }
 
-        internal static bool IsValidSearchCondition(ISearchCondition searchCOndition, int columnsCount)
+        internal static bool IsValidSearchConditionColumn(ISearchCondition searchCOndition, int columnsCount)
         {
             return searchCOndition.SearchColumnIndex != -1 && searchCOndition.SearchColumnIndex < columnsCount;
+        }
+
+        /// <summary>
+        /// Check if condition must check matching of input value for the row where original and translation values are equal.
+        /// </summary>
+        /// <param name="cond"></param>
+        /// <param name="row"></param>
+        /// <param name="project"></param>
+        /// <returns> True if condition can ignore equal original and the <paramref name="row"/>'s translation-original are not equal</returns>
+        internal static bool CanParseTheRowOriginalTranslation(ISearchCondition cond, DataRow row, ProjectBase project)
+        {
+            return cond.AllowEqualOriginalTranslation
+                || !string.Equals(row.Field<string>(project.OriginalColumnIndex), row.Field<string>(project.TranslationColumnIndex));
         }
     }
 }
