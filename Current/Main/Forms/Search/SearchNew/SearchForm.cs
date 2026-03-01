@@ -93,12 +93,10 @@ namespace TranslationHelper.Forms.Search.SearchNew
             {
                 tableIndex++;
 
-                // Skip tables missing required columns
-                if (!validConditions.All(c => c.SearchColumnIndex != -1 && table.Columns.Contains(c.SearchColumn)))
-                    continue;
-
+                int tableColumnsCount = table.Columns.Count;
                 var matchingRows = table.AsEnumerable()
                     .Where(row => validConditions.All(cond =>
+                        SearchHelpers.IsValidSearchCondition(cond, tableColumnsCount) &&
                         SearchHelpers.Matches(SearchHelpers.GetStringToMatch(row, tableIndex, table.Rows.IndexOf(row), _dataSetInfo, cond), cond.FindWhat, cond.CaseSensitive, cond.UseRegex)));
 
                 foreach (var row in matchingRows)

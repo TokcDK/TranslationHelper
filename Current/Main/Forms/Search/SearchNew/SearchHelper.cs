@@ -311,5 +311,10 @@ namespace TranslationHelper.Forms.Search
                 return row.Field<string>(cond.SearchColumn);
             }
         }
+
+        internal static bool IsValidSearchCondition(ISearchCondition searchCOndition, int columnsCount)
+        {
+            return searchCOndition.SearchColumnIndex != -1 && searchCOndition.SearchColumnIndex < columnsCount;
+        }
     }
 }
