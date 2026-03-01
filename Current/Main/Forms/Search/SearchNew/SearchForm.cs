@@ -94,7 +94,7 @@ namespace TranslationHelper.Forms.Search.SearchNew
                 tableIndex++;
 
                 // Skip tables missing required columns
-                if (!validConditions.All(c => !string.IsNullOrEmpty(c.SearchColumn) && table.Columns.Contains(c.SearchColumn)))
+                if (!validConditions.All(c => c.SearchColumnIndex != -1 && table.Columns.Contains(c.SearchColumn)))
                     continue;
 
                 var matchingRows = table.AsEnumerable()
