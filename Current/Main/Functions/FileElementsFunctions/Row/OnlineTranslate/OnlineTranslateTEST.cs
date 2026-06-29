@@ -1101,7 +1101,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row.OnlineTranslate
             var match = Regex.Match(html, @"<div class=""result-container"">(.*?)</div>");
             if (!match.Success)
             {
-                Logger.Debug("Failed to extract translation from Google Translate response.");
+                Logger.Debug($"Failed to extract translation from {nameof(GoogleTranslator)} response. HTML: ```\n{html}\n```");
                 throw new InvalidOperationException("Failed to extract translation from response.");
             }
 
