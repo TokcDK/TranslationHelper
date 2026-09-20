@@ -96,16 +96,14 @@ namespace TranslationHelper.Formats.IrisField
                     }
                     else if (IsValidString(mergedMessage))
                     {
-                        string extraEmptyLinesForWrite = string.Empty;
-
-                        try
-                        {
-                            extraEmptyLinesForWrite = mergedMessage.Replace(mergedMessage = mergedMessage.TrimEnd(), string.Empty);//только пустота на конце, пустоту надо записать в новый файл для корректности
-                        }
-                        catch
-                        {
-
-                        }
+                        // The trailing whitespace of the message is kept aside so it can be
+                        // appended back after the translation, otherwise the written file
+                        // loses it. Only the whitespace is stored, the message itself is trimmed.
+                        string trimmedMessage = mergedMessage.TrimEnd();
+                        string extraEmptyLinesForWrite = trimmedMessage.Length == 0
+                            ? string.Empty
+                            : mergedMessage.Substring(trimmedMessage.Length);
+                        mergedMessage = trimmedMessage;
 
                         if (SetTranslation(ref mergedMessage))
                         {

@@ -250,7 +250,10 @@ namespace TranslationHelper.Formats.RPGMMV.JsonParser
             {
                 Parse(jsonProperty.Value);
             }
-            catch { }
+            catch (Exception ex)
+            {
+                Logger.Debug($"{GetType().Name}: failed to parse property '{jsonProperty.Name}': {ex.Message}");
+            }
 
             return JsonObjectPropertyState.Continue;
         }
@@ -287,7 +290,10 @@ namespace TranslationHelper.Formats.RPGMMV.JsonParser
             {
                 Parse(jsonArrayElement);
             }
-            catch { }
+            catch (Exception ex)
+            {
+                Logger.Debug($"{GetType().Name}: failed to parse array element: {ex.Message}");
+            }
         }
     }
 }

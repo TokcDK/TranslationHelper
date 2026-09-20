@@ -26,7 +26,7 @@ namespace TranslationHelper.Menus.MainMenus.Edit.TextCutCopyPaste
         {
             if (!IsValidToCopy()) return;
 
-            new CopyOriginals().Rows();
+            _ = new CopyOriginals().Rows();
         }
 
         public override Keys ShortcutKeys => Keys.None;

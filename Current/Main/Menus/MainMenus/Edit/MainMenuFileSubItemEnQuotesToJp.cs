@@ -37,7 +37,7 @@ namespace TranslationHelper.Menus.MainMenus.Edit.CaseMorph
 
         protected override void OnRows(object sender, EventArgs e)
         {
-            new EnQuotesToJp().Rows();
+            _ = new EnQuotesToJp().Rows();
         }
 
         protected override void OnTable(object sender, EventArgs e)
@@ -59,7 +59,7 @@ namespace TranslationHelper.Menus.MainMenus.Edit.CaseMorph
 
         protected override void OnRows(object sender, EventArgs e)
         {
-            new EnQuotesToJp2().Rows();
+            _ = new EnQuotesToJp2().Rows();
         }
 
         protected override void OnTable(object sender, EventArgs e)

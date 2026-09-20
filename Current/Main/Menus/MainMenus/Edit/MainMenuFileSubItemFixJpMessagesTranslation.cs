@@ -30,7 +30,7 @@ namespace TranslationHelper.Menus.MainMenus.Edit.CaseMorph
 
         protected override void OnRows(object sender, EventArgs e)
         {
-            new FixJpMessagesTranslation().Rows();
+            _ = new FixJpMessagesTranslation().Rows();
         }
 
         protected override void OnTable(object sender, EventArgs e)

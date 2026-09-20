@@ -69,7 +69,7 @@ namespace TranslationHelper.Projects.KiriKiri.Games
                 //PatchDir
                 Directory.CreateDirectory(Path.Combine(AppData.CurrentProject.ProjectWorkDir, PatchDirName));
 
-                new FillEmptyTablesLinesDictSaveModeNoDups().All();
+                _ = new FillEmptyTablesLinesDictSaveModeNoDups().All();
             }
 
             var dir = new DirectoryInfo(GetXP3OrigDirPath());

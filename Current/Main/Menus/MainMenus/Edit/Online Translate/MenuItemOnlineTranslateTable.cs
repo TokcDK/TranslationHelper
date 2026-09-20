@@ -11,6 +11,6 @@ namespace TranslationHelper.Menus.MainMenus.Edit.OnlineTranslate
 
         public override string Description => T._("Translate table rows");
 
-        protected override ParameterizedThreadStart Param => (obj) => new OnlineTranslateTEST().Table();
+        protected override ParameterizedThreadStart Param => (obj) => { _ = new OnlineTranslateTEST().Table(); };
     }
 }

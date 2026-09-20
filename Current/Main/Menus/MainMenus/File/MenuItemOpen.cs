@@ -13,7 +13,7 @@ namespace TranslationHelper.Menus.MainMenus.File
 
         public override string Description => T._("Select game exe or file to try to open");
 
-        public override void OnClick(object sender, EventArgs e) { FunctionsOpen.OpenProject(); }
+        public override void OnClick(object sender, EventArgs e) { _ = FunctionsOpen.OpenProject(); }
         public override int Order => base.Order + 10000;
     }
 }

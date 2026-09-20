@@ -287,7 +287,10 @@ namespace TranslationHelper.Formats.RPGMakerVX.RVData2
 
                 return true;
             }
-            catch { }
+            catch (Exception ex)
+            {
+                Logger.Warn($"{GetType().Name}: failed to write file '{GetSaveFilePath()}': {ex.Message}");
+            }
 
             return false;
         }

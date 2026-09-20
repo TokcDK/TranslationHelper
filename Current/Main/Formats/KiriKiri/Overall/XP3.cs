@@ -1,11 +1,15 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 using System.Windows.Forms;
+using NLog;
 using TranslationHelper.Main.Functions;
 
 namespace TranslationHelper.Formats.KiriKiri
 {
     public static class XP3
     {
+        private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
+
         public static bool ExtractXP3files2(string sPath)
         {
             bool ret = false;
@@ -77,9 +81,9 @@ namespace TranslationHelper.Formats.KiriKiri
                     ret = FunctionsProcess.RunProcess(KiriKiriEXEpath, KiriKiriEXEargs);
                 }
             }
-            catch
+            catch (Exception ex)
             {
-
+                Logger.Warn($"Failed to extract xp3 archive '{sPath}': {ex.Message}");
             }
 
             return ret;

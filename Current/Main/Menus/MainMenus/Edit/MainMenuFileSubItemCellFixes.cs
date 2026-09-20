@@ -33,7 +33,7 @@ namespace TranslationHelper.Menus.MainMenus.Edit.CellFixes
 
         protected override void OnRows(object sender, EventArgs e)
         {
-             new FixCells().Rows();
+            _ = new FixCells().Rows();
         }
 
         protected override void OnTable(object sender, EventArgs e)
@@ -55,7 +55,7 @@ namespace TranslationHelper.Menus.MainMenus.Edit.CellFixes
 
         protected override void OnRows(object sender, EventArgs e)
         {
-            new FixCellsForce().Rows();
+            _ = new FixCellsForce().Rows();
         }
 
         protected override void OnTable(object sender, EventArgs e)

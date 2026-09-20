@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
@@ -217,9 +218,9 @@ namespace TranslationHelper.Formats.NScriptGame.nscript.dat
                     return true;
                 }
             }
-            catch
+            catch (Exception ex)
             {
-
+                Logger.Warn($"{GetType().Name}: failed to write launcher script: {ex.Message}");
             }
             return false;
         }

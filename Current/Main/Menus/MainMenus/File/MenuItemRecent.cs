@@ -27,10 +27,8 @@ namespace TranslationHelper.Menus.MainMenus.File
             if (AppData.ConfigIni == null) return;
 
             string[] items;
-            bool changed = false;
             if (!AppData.ConfigIni.SectionExistsAndNotEmpty("RecentFiles"))
             {
-                changed = true;
                 items = new[] { AppData.SelectedProjectFilePath };
             }
             else
@@ -40,19 +38,16 @@ namespace TranslationHelper.Menus.MainMenus.File
                 // max 20 items
                 while (values.Count >= 20)
                 {
-                    changed = true;
                     values.RemoveAt(values.Count - 1); // remove last when more of limit
                 }
 
                 // check if last value is on first place else update
                 if (!values.Contains(AppData.SelectedProjectFilePath) && !string.IsNullOrWhiteSpace(AppData.SelectedProjectFilePath))
                 {
-                    changed = true;
                     values.Insert(0, AppData.SelectedProjectFilePath);
                 }
                 else if (values.IndexOf(AppData.SelectedProjectFilePath) > 0)
                 {
-                    changed = true;
                     values.Remove(AppData.SelectedProjectFilePath);
                     values.Insert(0, AppData.SelectedProjectFilePath);
                 }
@@ -114,7 +109,7 @@ namespace TranslationHelper.Menus.MainMenus.File
             if (!foundOld) AppData.Main.Invoke((Action)(() => AppData.Main.MainMenuStrip.Items.Add(category)));
         }
 
-        private static void RecentFilesOpen_Click(object sender, EventArgs e) { FunctionsOpen.OpenProject((sender as ToolStripMenuItem).Text); }
+        private static void RecentFilesOpen_Click(object sender, EventArgs e) { _ = FunctionsOpen.OpenProject((sender as ToolStripMenuItem).Text); }
 
         internal static void AfterOpenCleaning()
         {

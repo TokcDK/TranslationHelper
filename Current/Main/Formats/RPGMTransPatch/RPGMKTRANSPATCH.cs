@@ -83,8 +83,9 @@ namespace TranslationHelper.Formats.RPGMTransPatch
                     File.WriteAllLines(path, LinesToWrite);
                     ret = true;
                 }
-                catch
+                catch (Exception ex)
                 {
+                    Logger.Warn($"{GetType().Name}: failed to write patch file: {ex.Message}");
                 }
             }
 

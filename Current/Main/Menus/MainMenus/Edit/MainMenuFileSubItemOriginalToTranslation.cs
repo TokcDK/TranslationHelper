@@ -38,7 +38,7 @@ namespace TranslationHelper.Menus.MainMenus.Edit.CaseMorph
 
         protected override void OnRows(object sender, EventArgs e)
         {
-            new SetOriginalToTranslation().Rows();
+            _ = new SetOriginalToTranslation().Rows();
         }
 
         protected override void OnTable(object sender, EventArgs e)

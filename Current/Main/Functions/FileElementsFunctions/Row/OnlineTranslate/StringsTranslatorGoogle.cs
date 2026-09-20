@@ -1,5 +1,6 @@
 ﻿using GoogleTranslateFreeApi;
 using Microsoft.VisualBasic.Logging;
+using NLog;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -51,6 +52,8 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row.OnlineTranslate
 
     public class StringsTranslatorGoogle : StringsTranslatorBase
     {
+        private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
+
         public override string Name
         {
             get
@@ -98,6 +101,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row.OnlineTranslate
             catch (Exception ex)
             {
                 //Log.Message("<color=#34e2eb>AutoTranslation</color>: Preparing Translator named '" + this.Name + "' was failed, reason: " + ex.Message);
+                Logger.Warn("Preparing translator '" + Name + "' failed. Reason: " + ex.Message);
             }
         }
 
@@ -143,8 +147,6 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row.OnlineTranslate
 
         public static string GetResponseUnsafe(string url)
         {
-            string result = "";
-
             WebRequest webRequest = WebRequest.Create(url);
             webRequest.Method = "GET";
             using (HttpWebResponse httpWebResponse = (HttpWebResponse)webRequest.GetResponse())
@@ -158,7 +160,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row.OnlineTranslate
                         {
                             using (StreamReader streamReader = new StreamReader(responseStream))
                             {
-                                return result = streamReader.ReadToEnd();
+                                return streamReader.ReadToEnd();
                             }
                         }
                     }
@@ -167,13 +169,11 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row.OnlineTranslate
                         throw new Exception(string.Format("Request failed with status: {0}", httpWebResponse.StatusCode));
                     }
                 }
-                catch(Exception ex)
+                catch (Exception ex)
                 {
-                    throw new Exception(string.Format("Request failed with the exception: {0}", ex));
+                    throw new Exception(string.Format("Request failed with the exception: {0}", ex), ex);
                 }
             }
-
-            return result;
         }
         
         internal static string ParseResult(string text, out string detectedLang)

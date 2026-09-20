@@ -1,4 +1,5 @@
-﻿using System;
+﻿using NLog;
+using System;
 using System.Data;
 using System.Drawing;
 using System.Globalization;
@@ -17,6 +18,8 @@ namespace TranslationHelper.Functions
 {
     internal class FunctionsUI
     {
+        private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
+
         internal static void ShowNonEmptyRowsCount(System.Windows.Forms.Label tableCompleteInfoLabel)
         {
             int RowsCount = FunctionsTable.GetDatasetRowsCount(AppData.CurrentProject.FilesContent);
@@ -61,7 +64,6 @@ namespace TranslationHelper.Functions
             try
             {
                 if (AppData.Main.THFileElementsDataGridView.CurrentCell == null) return;
-                var selected = AppData.Main.THFileElementsDataGridView.SelectedCells;
 
                 BindTextBoxesOriginalTranslation();
 
@@ -78,81 +80,11 @@ namespace TranslationHelper.Functions
                 if (realrowIndex == -1) return;
 
                 UpdateRowInfo(tableIndex, columnIndex, realrowIndex);
-
-                return;
-
-                if (AppData.Main.THFileElementsDataGridView.DataSource == null || rowIndex == -1 || tableIndex == -1)
-                {
-                    AppData.Main.THSourceRichTextBox.Clear();
-                    AppData.Main.THTargetRichTextBox.Clear();
-                    return;
-                }
-
-                //Считывание значения ячейки в текстовое поле 1, вариант 2, для DataSet, ds.Tables[0]
-                //Проверка на размер индексов, для избежания ошибки при попытке сортировки " должен быть положительным числом и его размер не должен превышать размер коллекции"
-                if (!AppData.Main.THSourceRichTextBox.Enabled
-                    //&& THFileElementsDataGridView.CurrentCell != null
-                    || AppData.Main.THFileElementsDataGridView.Rows.Count == 0
-                    //|| rowIndex == -1
-                    || columnIndex == -1)
-                {
-                    return;
-                }
-
-                AppData.Main.THTargetRichTextBox.Clear();
-
-                if (string.IsNullOrEmpty(AppData.Main.THFileElementsDataGridView.Rows[AppData.Main.THFileElementsDataGridView.CurrentCell.RowIndex].Cells[THSettings.OriginalColumnName].Value + string.Empty))
-                {
-                    AppData.Main.THSourceRichTextBox.Clear();
-                }
-                else//проверить, не пуста ли ячейка, иначе была бы ошибка //THStrDGTranslationColumnName ошибка при попытке сортировки по столбцу
-                {
-                    //wrap words fix: https://stackoverflow.com/questions/1751371/how-to-use-n-in-a-textbox
-                    AppData.Main.THSourceRichTextBox.Text = (AppData.Main.THFileElementsDataGridView.Rows[rowIndex].Cells[THSettings.OriginalColumnName].Value + string.Empty);
-                    //https://github.com/caguiclajmg/WanaKanaSharp
-                    //if (GetLocaleLangCount(THSourceTextBox.Text, "hiragana") > 0)
-                    //{
-                    //    GetWords(THSourceTextBox.Text);
-                    //   var hepburnConverter = new HepburnConverter();
-                    //   WanaKana.ToRomaji(hepburnConverter, THSourceTextBox.Text); // hiragana
-                    //}
-                    //также по японо ыфуригане
-                    //https://docs.microsoft.com/en-us/uwp/api/windows.globalization.japanesephoneticanalyzer
-                }
-                string TranslationCellValue;
-                if (string.IsNullOrEmpty(TranslationCellValue = AppData.Main.THFileElementsDataGridView.Rows[rowIndex].Cells[THSettings.TranslationColumnName].Value + string.Empty))
-                {
-                    AppData.Main.THTargetRichTextBox.Clear();
-                }
-                else//проверить, не пуста ли ячейка, иначе была бы ошибка // ошибка при попытке сортировки по столбцу
-                {
-                    //запоминание последнего значения ячейки перед считыванием в THTargetRichTextBox,
-                    //для предотвращения записи значения обратно в ячейку, если она была изменена до изменения текстбокса
-                    AppData.TargetTextBoxPreValue = TranslationCellValue;
-
-                    //Отображает в первом текстовом поле Оригинал текст из соответствующей ячейки
-                    AppData.Main.THTargetRichTextBox.Text = AppData.TargetTextBoxPreValue;
-
-                    FormatTextBox();
-
-                    //THTargetRichTextBox.Select(AppSettings.THOptionLineCharLimit+1, THTargetRichTextBox.Text.Length);
-                    //THTargetRichTextBox.SelectionColor = Color.Red;
-
-                    AppData.Main.TranslationLongestLineLenghtLabel.Text = FunctionsString.GetLongestLineLength(TranslationCellValue.ToString(CultureInfo.InvariantCulture)).ToString(CultureInfo.InvariantCulture);
-                    AppData.Main.TargetTextBoxLinePositionLabelData.Text = string.Empty;
-                }
-
-                AppData.Main.THInfoTextBox.Text = string.Empty;
-
-                //gem furigana
-                //https://github.com/helephant/Gem
-                //var furigana = new Furigana(THFileElementsDataGridView.Rows[e.RowIndex].Cells[e.ColumnIndex].Value.ToString());
-                //THInfoTextBox.Text += furigana.Reading + "\r\n";
-                //THInfoTextBox.Text += furigana.Expression + "\r\n";
-                //THInfoTextBox.Text += furigana.Hiragana + "\r\n";
-                //THInfoTextBox.Text += furigana.ReadingHtml + "\r\n";
             }
-            catch { }
+            catch (Exception ex)
+            {
+                Logger.Debug("Failed to update textboxes. Error: {0}", ex);
+            }
         }
 
         internal static void BindTextBoxesOriginalTranslation()

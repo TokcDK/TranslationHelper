@@ -33,7 +33,6 @@ namespace TranslationHelper
         private readonly DataTableCollection _tables;
         private readonly RichTextBox _translationTextBox;
 
-        private bool _isAnyRowFound;
         private int _startRowSearchIndex; // Tracks the current position in search results
         private int _selectedTableIndex;
         private int _selectedRowIndex;
@@ -254,7 +253,6 @@ namespace TranslationHelper
             lblSearchMsg.Visible = false;
             if (_tables.Count == 0) return;
 
-            _isAnyRowFound = false;
             _foundRowsList = EnumerateFoundRows().ToList();
         }
 
@@ -263,7 +261,6 @@ namespace TranslationHelper
             lblSearchMsg.Visible = false;
             if (_tables.Count == 0) yield break;
 
-            _isAnyRowFound = false;
             if (_foundRowsList == null)
                 _foundRowsList = new List<FoundRowData>();
 

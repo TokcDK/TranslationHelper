@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json;
+﻿using System;
+using Newtonsoft.Json;
 using System.Text;
 using TranslationHelper.Projects;
 
@@ -24,12 +25,16 @@ namespace TranslationHelper.Formats.RPGMMV.JS.JSSvar
                 {
                     Svar.Append('}');
 
+                    // NOTE: the same svar block is parsed twice below. The first call discards its
+                    // result, the second one is the one actually used. Kept as-is on purpose:
+                    // removing a call also removes the rows it adds in open mode (see changes.md).
                     try
                     {
                         JsonParser.ParseString(Svar.ToString(), this);
                     }
-                    catch
+                    catch (Exception ex)
                     {
+                        Logger.Debug($"{GetType().Name}: svar pre-parse failed: {ex.Message}");
                     }
 
                     try
@@ -42,8 +47,9 @@ namespace TranslationHelper.Formats.RPGMMV.JS.JSSvar
                             ParseData.Ret = parseSuccess;
                         }
                     }
-                    catch
+                    catch (Exception ex)
                     {
+                        Logger.Debug($"{GetType().Name}: svar parse failed: {ex.Message}");
                     }
 
                     ParseData.ResultForWrite.AppendLine(JsonParser.JsonRoot.ToString(Formatting.Indented) + ";");

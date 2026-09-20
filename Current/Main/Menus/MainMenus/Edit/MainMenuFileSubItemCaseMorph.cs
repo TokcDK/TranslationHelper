@@ -32,7 +32,7 @@ namespace TranslationHelper.Menus.MainMenus.Edit
 
         protected override void OnTable(object sender, EventArgs e) { _ = new ToLowerCaseAll().TableT(); }
 
-        protected override void OnRows(object sender, EventArgs e) { new ToLowerCaseAll().Rows(); }
+        protected override void OnRows(object sender, EventArgs e) { _ = new ToLowerCaseAll().Rows(); }
     }
     internal class MenuItemCaseMorphlower1stVariated : AllTableRowsChildMenuBase
     {
@@ -44,7 +44,7 @@ namespace TranslationHelper.Menus.MainMenus.Edit
 
         protected override void OnTable(object sender, EventArgs e) { _ = new ToLowerCaseFirst().TableT(); }
 
-        protected override void OnRows(object sender, EventArgs e) { new ToLowerCaseFirst().Rows(); }
+        protected override void OnRows(object sender, EventArgs e) { _ = new ToLowerCaseFirst().Rows(); }
     }
 
     internal class MenuItemCaseMorphUpperVariated : AllTableRowsChildMenuBase
@@ -57,7 +57,7 @@ namespace TranslationHelper.Menus.MainMenus.Edit
 
         protected override void OnTable(object sender, EventArgs e) { _ = new ToUpperCaseFirst().TableT(); }
 
-        protected override void OnRows(object sender, EventArgs e) { new ToUpperCaseFirst().Rows(); }
+        protected override void OnRows(object sender, EventArgs e) { _ = new ToUpperCaseFirst().Rows(); }
     }
 
     internal class MenuItemCaseMorphUpperAllLinesVariated : AllTableRowsChildMenuBase
@@ -70,7 +70,7 @@ namespace TranslationHelper.Menus.MainMenus.Edit
 
         protected override void OnTable(object sender, EventArgs e) { _ = new ToLowerCaseFirstAllLines().TableT(); }
 
-        protected override void OnRows(object sender, EventArgs e) { new ToLowerCaseFirstAllLines().Rows(); }
+        protected override void OnRows(object sender, EventArgs e) { _ = new ToLowerCaseFirstAllLines().Rows(); }
     }
 
     internal class MenuItemCaseMorphUPPERAllVariated : AllTableRowsChildMenuBase
@@ -83,6 +83,6 @@ namespace TranslationHelper.Menus.MainMenus.Edit
 
         protected override void OnTable(object sender, EventArgs e) { _ = new ToUpperCaseAll().TableT(); }
 
-        protected override void OnRows(object sender, EventArgs e) { new ToUpperCaseAll().Rows(); }
+        protected override void OnRows(object sender, EventArgs e) { _ = new ToUpperCaseAll().Rows(); }
     }
 }

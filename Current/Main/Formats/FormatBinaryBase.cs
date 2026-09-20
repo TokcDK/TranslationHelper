@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Text;
 using TranslationHelper.Data;
@@ -118,8 +119,9 @@ namespace TranslationHelper.Formats
                 File.WriteAllBytes(GetSaveFilePath(), GetFileBytes());
                 return true;
             }
-            catch
+            catch (Exception ex)
             {
+                Logger.Warn($"{GetType().Name}: failed to write binary file '{GetSaveFilePath()}': {ex.Message}");
             }
             return false;
         }

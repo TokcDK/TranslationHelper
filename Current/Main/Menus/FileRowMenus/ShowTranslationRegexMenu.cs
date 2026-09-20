@@ -14,7 +14,7 @@ namespace TranslationHelper.Menus.FileRowMenus
 
         public override void OnClick(object sender, EventArgs e)
         {
-            new ShowTranslationRegex().Rows();
+            _ = new ShowTranslationRegex().Rows();
         }
     }
 }

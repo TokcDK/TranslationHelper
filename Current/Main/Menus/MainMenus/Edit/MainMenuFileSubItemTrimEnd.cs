@@ -35,7 +35,7 @@ namespace TranslationHelper.Menus.MainMenus.Edit
 
         protected override void OnRows(object sender, EventArgs e)
         {
-            new TrimEndSpace().Rows();
+            _ = new TrimEndSpace().Rows();
         }
 
         protected override void OnTable(object sender, EventArgs e)

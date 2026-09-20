@@ -692,7 +692,7 @@ namespace TranslationHelper.Formats
         /// </summary>
         private bool TryApplyTranslationWithDuplicatesAllowed(ref string valueToTranslate, string original, string existsTranslation)
         {
-            if (!ParentProject.OriginalsTableRowCoordinates?.ContainsKey(original) == true)
+            if (!ParentProject.OriginalsTableRowCoordinates.ContainsKey(original))
                 return false;
 
             int rowIndex = RowIndex++;

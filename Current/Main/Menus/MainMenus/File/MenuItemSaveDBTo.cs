@@ -43,7 +43,12 @@ namespace TranslationHelper.Menus.MainMenus.File
                 {
                     case "RPGMakerTransPatch":
                     case "RPG Maker game with RPGMTransPatch":
+                        // RPGMTransOLD is marked [Obsolete] but is still the only implementation
+                        // that can write an RPG Maker Trans patch, so the legacy call stays.
+                        // Scoped suppression instead of a project-wide one keeps it visible.
+#pragma warning disable CS0612 // Type or member is obsolete
                         _ = await Task.Run(() => new RPGMTransOLD().SaveRPGMTransPatchFiles(AppData.CurrentProject.SelectedDir, RPGMFunctions.RPGMTransPatchVersion)).ConfigureAwait(true);
+#pragma warning restore CS0612 // Type or member is obsolete
                         break;
                 }
 

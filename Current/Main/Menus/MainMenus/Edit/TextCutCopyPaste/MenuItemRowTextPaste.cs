@@ -26,7 +26,7 @@ namespace TranslationHelper.Menus.MainMenus.Edit.TextCutCopyPaste
         {
             if (!Clipboard.ContainsText()) return;
 
-            new PasteTranslation().Rows();
+            _ = new PasteTranslation().Rows();
         }
 
         protected override bool ActionForTextBoxObject(TextBoxBase tb)

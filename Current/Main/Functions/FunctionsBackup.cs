@@ -1,4 +1,5 @@
-﻿using System;
+﻿using NLog;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -9,6 +10,8 @@ namespace TranslationHelper.Functions
 {
     internal class FunctionsBackup
     {
+        private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
+
         internal static void ShiftToBackups(string path)
         {
             try
@@ -27,6 +30,9 @@ namespace TranslationHelper.Functions
             }
             catch (Exception ex)
             {
+                // A failed backup must not be silent: the caller keeps working with the
+                // original file and would otherwise never learn that no backup exists.
+                Logger.Warn("Failed to shift backups for {0}. Error: {1}", path, ex);
             }
         }
 

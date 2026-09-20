@@ -3,11 +3,6 @@ using NLog.Targets;
 using NLog.Windows.Forms;
 using NLog;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Transactions;
 using System.IO;
 
 namespace TranslationHelper.Helpers
@@ -25,7 +20,8 @@ namespace TranslationHelper.Helpers
             }
             else
             {
-                Logger.Info("Logger file is not found", logFilePath);
+                // the path has to be a message-template placeholder, otherwise NLog drops it
+                Logger.Info("Logger file is not found: {0}", logFilePath);
             }
         }
 

@@ -297,7 +297,10 @@ namespace TranslationHelper.Formats
                 DoWriteFile();
                 return true;
             }
-            catch { }
+            catch (Exception ex)
+            {
+                Logger.Warn($"{GetType().Name}: failed to write string file '{GetSaveFilePath()}': {ex.Message}");
+            }
             return false;
         }
 
@@ -311,8 +314,9 @@ namespace TranslationHelper.Formats
                 var encoding = WriteEncoding();
                 File.WriteAllText(filePath, content, encoding);
             }
-            catch
+            catch (Exception ex)
             {
+                Logger.Warn($"{GetType().Name}: failed to write string file '{filePath}': {ex.Message}");
                 return false;
             }
 

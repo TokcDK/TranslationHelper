@@ -20,7 +20,7 @@ namespace TranslationHelper.Projects.RPGMMV.Menus
 
         public override void OnClick(object sender, EventArgs e)
         {
-            new FileRowTryImportStringsFrom().All();
+            _ = new FileRowTryImportStringsFrom().All();
         }
     }
 
@@ -87,8 +87,12 @@ namespace TranslationHelper.Projects.RPGMMV.Menus
                 try
                 {
                     XmlDocument xmldoc = new XmlDocument();
-                    FileStream fs = new FileStream(xml, FileMode.Open, FileAccess.Read);
-                    xmldoc.Load(fs);
+                    // The stream must be disposed: this loop opens one file per xml and the
+                    // previous form leaked a handle for every single one of them.
+                    using (FileStream fs = new FileStream(xml, FileMode.Open, FileAccess.Read))
+                    {
+                        xmldoc.Load(fs);
+                    }
                     var languageDataNode = xmldoc.GetElementsByTagName("LanguageData");
                     foreach (XmlNode subnode in languageDataNode[0].ChildNodes)
                     {

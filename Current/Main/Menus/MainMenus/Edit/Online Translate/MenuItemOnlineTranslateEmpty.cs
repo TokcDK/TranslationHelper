@@ -16,6 +16,6 @@ namespace TranslationHelper.Menus.MainMenus.Edit.OnlineTranslate
 
         public override string Description => T._("Translate empty rows");
 
-        protected override ParameterizedThreadStart Param => (obj) => new OnlineTranslateNewEmpty().All();
+        protected override ParameterizedThreadStart Param => (obj) => { _ = new OnlineTranslateNewEmpty().All(); };
     }
 }

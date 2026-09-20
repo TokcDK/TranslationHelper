@@ -9,7 +9,12 @@ namespace TranslationHelper.Formats.Other
     {
         public override string Extension => ".po";
 
-        readonly StringBuilder Info = new StringBuilder();
+        /// <summary>
+        /// Accumulated comment ("#") lines which are attached to the next msgid/msgstr
+        /// pair. Deliberately not named <c>Info</c>: the base class already exposes an
+        /// <c>Info</c> member and a same-named field here would silently hide it.
+        /// </summary>
+        readonly StringBuilder _info = new StringBuilder();
 
         public PO(ProjectBase parentProject) : base(parentProject)
         {
@@ -19,12 +24,12 @@ namespace TranslationHelper.Formats.Other
         {
             if (OpenFileMode && ParseData.Line.StartsWith("#"))
             {
-                Info.AppendLine(ParseData.Line); // save string info
+                _info.AppendLine(ParseData.Line); // save string info
                 return KeywordActionAfter.Continue;
             }
             else if (!ParseData.Line.StartsWith("msgid"))
             {
-                if (OpenFileMode) Info.Clear();
+                if (OpenFileMode) _info.Clear();
                 return Continue();
             }
 
@@ -53,11 +58,11 @@ namespace TranslationHelper.Formats.Other
 
             // add row data or set translation
             var rowData = new[] { o, t };
-            if (!AddRowData(ref rowData, OpenFileMode ? Info.ToString() : "", false)) return Continue();
+            if (!AddRowData(ref rowData, OpenFileMode ? _info.ToString() : "", false)) return Continue();
 
             // set new line value istead of old
             if (SaveFileMode) ParseData.Line = "msgid \"" + o + "\"\n" + "msgstr \"" + rowData[0] + "\"\n" + ParseData.Line;
-            if (OpenFileMode) Info.Clear();
+            if (OpenFileMode) _info.Clear();
             ParseData.Ret = true; // must autoset to true when any translation set of line added but in any case
 
             return Continue();

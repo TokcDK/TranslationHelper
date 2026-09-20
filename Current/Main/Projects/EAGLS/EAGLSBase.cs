@@ -1,4 +1,5 @@
 ﻿using CheckForEmptyDir;
+using System;
 using System.IO;
 using System.Windows.Forms;
 using TranslationHelper.Data;
@@ -16,7 +17,15 @@ namespace TranslationHelper.Projects.EAGLS
         public override void Init()
         {
             base.Init();
-            ProjectName = ProjectName;
+
+            // The work directory suffix must be the selected game folder name.
+            // This used to be `ProjectName = ProjectName()` where ProjectName() was a
+            // virtual method returning Path.GetFileName(Path.GetDirectoryName(SPath)).
+            // When that method was replaced by the field below the call silently turned
+            // into the no-op self-assignment `ProjectName = ProjectName`, which left the
+            // suffix empty and made every EAGLS game share the same work directory.
+            ProjectName = Path.GetFileName(AppData.CurrentProject.SelectedGameDir) ?? string.Empty;
+
             AppData.CurrentProject.ProjectWorkDir = Path.Combine(THSettings.WorkDirPath, ProjectDBFolderName, ProjectName);
             WorkTXTDir = Path.Combine(AppData.CurrentProject.ProjectWorkDir, "txt");
             ScriptDir = Path.Combine(AppData.CurrentProject.SelectedGameDir, "Script");
@@ -83,14 +92,20 @@ namespace TranslationHelper.Projects.EAGLS
                     FunctionsProcess.RunProcess(AppData.CurrentProject.ProjectWorkDir, "");
                 }
             }
-            catch
+            catch (Exception ex)
             {
+                Logger.Warn(T._("Failed to pack/unpack files") + ": " + ex);
                 return false;
             }
             return true;
         }
 
-        protected new string ProjectName = string.Empty;
+        /// <summary>
+        /// Name of the project sub directory inside the EAGLS work directory.
+        /// Defaults to the selected game folder name and can be replaced by derived
+        /// projects (see <see cref="SCPACKpak"/>) before the work directory is used.
+        /// </summary>
+        protected string ProjectName = string.Empty;
         protected string ScriptDir = string.Empty;
 
         protected bool OpenFiles()

@@ -33,7 +33,7 @@ namespace TranslationHelper.Menus.MainMenus.Edit.CaseMorph
 
         protected override void OnRows(object sender, EventArgs e)
         {
-            new SplitLongLines().Rows();
+            _ = new SplitLongLines().Rows();
         }
 
         protected override void OnTable(object sender, EventArgs e)

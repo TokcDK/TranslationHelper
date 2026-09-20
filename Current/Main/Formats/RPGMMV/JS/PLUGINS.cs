@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json;
+﻿using System;
+using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using TranslationHelper.Formats.RPGMMV.JsonParser;
 using TranslationHelper.Projects;
@@ -41,8 +42,9 @@ namespace TranslationHelper.Formats.RPGMMV.JS
                         ParseData.Ret = true;
                     }
                 }
-                catch
+                catch (Exception ex)
                 {
+                    Logger.Warn($"{GetType().Name}: failed to parse plugin header in '{FileName}': {ex.Message}");
                 }
 
                 IsJsonNotLast = !IsJsonNotLast;

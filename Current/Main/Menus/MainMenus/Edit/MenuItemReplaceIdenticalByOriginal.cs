@@ -24,7 +24,7 @@ namespace TranslationHelper.Menus.MainMenus.Edit
 
         public override void OnClick(object sender, EventArgs e)
         {
-            new ReplaceIdenticalByOriginalGetSelected().Rows();
+            _ = new ReplaceIdenticalByOriginalGetSelected().Rows();
         }
 
         public override int Order => base.Order + 100;

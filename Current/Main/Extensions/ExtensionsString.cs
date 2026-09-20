@@ -24,42 +24,38 @@ namespace TranslationHelper.Extensions
         /// <returns></returns>
         public static string EscapeQuotes(this string str, char quoteSymbol = '"')
         {
-            if (string.IsNullOrEmpty(str) || str.Length < 3 || str.IndexOf(quoteSymbol) == -1)
+            if (string.IsNullOrEmpty(str) || str.IndexOf(quoteSymbol) == -1)
             {
                 return str;
             }
 
-            const int chunkSize = 4096;
-            StringBuilder sb = new StringBuilder(str.Length);
-            bool isEscaped = false;
-            int i = 0;
-            var strLength = str.Length;
-            while (i < strLength)
+            StringBuilder sb = new StringBuilder(str.Length + 8);
+            int precedingBackslashes = 0;
+            foreach (char c in str)
             {
-                int chunkLength = Math.Min(chunkSize, strLength - i);
-                string chunk = str.Substring(i, chunkLength);
-                foreach (char c in chunk)
+                if (c == quoteSymbol)
                 {
-                    if (c == quoteSymbol)
+                    // A quote needs escaping unless it is already escaped, and it is escaped
+                    // only when preceded by an ODD number of backslashes. The previous
+                    // implementation tracked this with a single bool, so a quote following an
+                    // escaped backslash (even count) was wrongly treated as already escaped
+                    // and stayed unescaped, producing a broken quoted string.
+                    if (precedingBackslashes % 2 == 0)
                     {
-                        if (!isEscaped)
-                        {
-                            sb.Append('\\');
-                        }
-                        isEscaped = false;
+                        sb.Append('\\');
                     }
-                    else if (c == '\\')
-                    {
-                        isEscaped = true;
-                    }
-                    else
-                    {
-                        isEscaped = false;
-                    }
-
-                    sb.Append(c);
+                    precedingBackslashes = 0;
                 }
-                i += chunkSize;
+                else if (c == '\\')
+                {
+                    precedingBackslashes++;
+                }
+                else
+                {
+                    precedingBackslashes = 0;
+                }
+
+                sb.Append(c);
             }
 
             return sb.ToString();
@@ -193,7 +189,19 @@ namespace TranslationHelper.Extensions
             var GroupValues = (onlyOne ? new List<string>(1) : new List<string>());//list of values for captured groups which containing in PatternReplacementPair.Value
             foreach (var PatternReplacementPair in AppData.TranslationRegexRules)
             {
-                Match m = Regex.Match(line, PatternReplacementPair.Key);
+                Match m;
+                try
+                {
+                    m = Regex.Match(line, PatternReplacementPair.Key);
+                }
+                catch (ArgumentException ex)
+                {
+                    // A rule with a broken pattern must not abort the whole extraction.
+                    // Same guard as in the buffer overload above.
+                    Logger.Warn("ExtractMulty: Invalid regex:" + PatternReplacementPair.Key + "\r\nError:\r\n" + ex);
+                    continue;
+                }
+
                 if (!m.Success)
                 {
                     continue;
@@ -336,9 +344,11 @@ namespace TranslationHelper.Extensions
             //    , newLine.SplitLineIfBeyondOfLimit(Limit)
             //    ) + Trigger;
             //var newLineBefore = newLine;
-            return string.Join(AppSettings.ProjectNewLineSymbol
-                , newLine.Wrap(Limit)
-                ) + Trigger;
+            // Wrap() already joins the wrapped lines with Environment.NewLine, so no extra
+            // join is needed here. (The previous form, string.Join(ProjectNewLineSymbol, str),
+            // resolved to string.Join(string, params string[]) and therefore returned the
+            // string unchanged - it looked like a separator was applied but never was.)
+            return newLine.Wrap(Limit) + Trigger;
 
             //MatchCollection newLineSymbols = Regex.Matches(newLine, Environment.NewLine);
             //var newLineSymbolsCount = newLineSymbols.Count;

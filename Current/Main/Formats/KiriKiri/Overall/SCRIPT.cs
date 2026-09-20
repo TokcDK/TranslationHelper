@@ -242,9 +242,9 @@ namespace TranslationHelper.Formats.KiriKiri
                     return true;
                 }
             }
-            catch
+            catch (Exception ex)
             {
-
+                Logger.Warn($"{GetType().Name}: failed to parse '{GetFilePath()}': {ex.Message}");
             }
 
             return false;
