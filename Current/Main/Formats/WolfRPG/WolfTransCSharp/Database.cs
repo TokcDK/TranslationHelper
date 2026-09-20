@@ -1,6 +1,6 @@
 ﻿using System.IO;
 using TranslationHelper.Data;
-using TranslationHelper.Projects;
+using TranslationHelper.Formats.Abstractions;
 using WolfTrans.Net.Parsers;
 using WolfTrans.Net.Parsers.Database;
 using WTNet = WolfTrans.Net;
@@ -9,7 +9,7 @@ namespace TranslationHelper.Formats.WolfRPG.WolfTransCSharp
 {
     internal class Database : WolftransCSharpBase
     {
-        public Database(ProjectBase parentProject) : base(parentProject)
+        public Database(IFormatHost host) : base(host)
         {
         }
 

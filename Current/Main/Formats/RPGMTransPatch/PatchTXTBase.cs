@@ -1,6 +1,6 @@
 ﻿using System.Text;
+using TranslationHelper.Formats.Abstractions;
 using TranslationHelper.Formats.WolfRPG;
-using TranslationHelper.Projects;
 
 namespace TranslationHelper.Formats.RPGMTransPatch
 {
@@ -9,7 +9,7 @@ namespace TranslationHelper.Formats.RPGMTransPatch
     /// </summary>
     abstract class PatchTXTBase : RPGMWolfTransPatchBase
     {
-        protected PatchTXTBase(ProjectBase parentProject) : base(parentProject)
+        protected PatchTXTBase(IFormatHost host) : base(host)
         {
         }
 

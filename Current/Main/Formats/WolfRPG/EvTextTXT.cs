@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using TranslationHelper.Data;
-using TranslationHelper.Projects;
+using TranslationHelper.Formats.Abstractions;
 
 namespace TranslationHelper.Formats.WolfRPG
 {
@@ -9,7 +9,7 @@ namespace TranslationHelper.Formats.WolfRPG
     {
         readonly List<string> Buffer = new List<string>();
 
-        public EvTextTXT(ProjectBase parentProject) : base(parentProject)
+        public EvTextTXT(IFormatHost host) : base(host)
         {
         }
 

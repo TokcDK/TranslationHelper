@@ -1,14 +1,14 @@
 ﻿using System;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using TranslationHelper.Formats.Abstractions;
 using TranslationHelper.Formats.RPGMMV.JsonParser;
-using TranslationHelper.Projects;
 
 namespace TranslationHelper.Formats.RPGMMV.JS
 {
     class PLUGINS : JSBase
     {
-        public PLUGINS(ProjectBase parentProject) : base(parentProject)
+        public PLUGINS(IFormatHost host) : base(host)
         {
             JsonParser = new PluginsJSJsonParser(this);
         }

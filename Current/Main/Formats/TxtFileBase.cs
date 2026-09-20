@@ -1,10 +1,10 @@
-﻿using TranslationHelper.Projects;
+﻿using TranslationHelper.Formats.Abstractions;
 
 namespace TranslationHelper.Formats
 {
     internal abstract class FormatTxtFileBase : FormatStringBase
     {
-        protected FormatTxtFileBase(ProjectBase parentProject) : base(parentProject)
+        protected FormatTxtFileBase(IFormatHost host) : base(host)
         {
         }
 

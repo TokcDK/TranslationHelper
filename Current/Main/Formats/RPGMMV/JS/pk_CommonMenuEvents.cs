@@ -1,11 +1,11 @@
 ﻿using TranslationHelper.Data;
-using TranslationHelper.Projects;
+using TranslationHelper.Formats.Abstractions;
 
 namespace TranslationHelper.Formats.RPGMMV.JS
 {
     class pk_CommonMenuEvents : JSQuotedStringsBase
     {
-        public pk_CommonMenuEvents(ProjectBase parentProject) : base(parentProject)
+        public pk_CommonMenuEvents(IFormatHost host) : base(host)
         {
         }
 

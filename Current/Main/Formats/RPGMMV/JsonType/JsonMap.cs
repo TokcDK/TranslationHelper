@@ -2,13 +2,13 @@
 using System.IO;
 using System.Text.RegularExpressions;
 using TranslationHelper.Data;
-using TranslationHelper.Projects;
+using TranslationHelper.Formats.Abstractions;
 
 namespace TranslationHelper.Formats.RPGMMV.JsonType
 {
     internal class JsonMap : EventCommandParseBase
     {
-        public JsonMap(ProjectBase parentProject) : base(parentProject)
+        public JsonMap(IFormatHost host) : base(host)
         {
         }
 

@@ -8,13 +8,13 @@ using WolfTrans.Net.Parsers;
 using WolfTrans.Net.Parsers.CommonEvents;
 using WolfTrans.Net.Parsers.Events;
 using TranslationHelper.Data;
-using TranslationHelper.Projects;
+using TranslationHelper.Formats.Abstractions;
 
 namespace TranslationHelper.Formats.WolfRPG.WolfTransCSharp
 {
     internal class CommonEvents: CommandUserBase
     {
-        public CommonEvents(ProjectBase parentProject) : base(parentProject)
+        public CommonEvents(IFormatHost host) : base(host)
         {
         }
 

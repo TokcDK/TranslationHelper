@@ -1,11 +1,11 @@
 ﻿using System.Collections.Generic;
-using TranslationHelper.Projects;
+using TranslationHelper.Formats.Abstractions;
 
 namespace TranslationHelper.Formats.RPGMTransPatch
 {
     class TXTv2 : PatchTXTBase
     {
-        public TXTv2(ProjectBase parentProject) : base(parentProject)
+        public TXTv2(IFormatHost host) : base(host)
         {
         }
 

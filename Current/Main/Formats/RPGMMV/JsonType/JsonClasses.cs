@@ -1,12 +1,12 @@
 ﻿using RPGMVJsonParser;
 using TranslationHelper.Data;
-using TranslationHelper.Projects;
+using TranslationHelper.Formats.Abstractions;
 
 namespace TranslationHelper.Formats.RPGMMV.JsonType
 {
     internal class JsonClasses : JsonTypeBase
     {
-        public JsonClasses(ProjectBase parentProject) : base(parentProject)
+        public JsonClasses(IFormatHost host) : base(host)
         {
         }
 

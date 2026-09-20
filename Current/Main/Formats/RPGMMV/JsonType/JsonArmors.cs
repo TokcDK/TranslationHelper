@@ -1,11 +1,11 @@
 ﻿using RPGMVJsonParser;
-using TranslationHelper.Projects;
+using TranslationHelper.Formats.Abstractions;
 
 namespace TranslationHelper.Formats.RPGMMV.JsonType
 {
     internal class JsonArmors : JsonItemTypeBase
     {
-        public JsonArmors(ProjectBase parentProject) : base(parentProject)
+        public JsonArmors(IFormatHost host) : base(host)
         {
         }
 

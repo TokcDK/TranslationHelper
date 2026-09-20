@@ -5,15 +5,15 @@ using System.Text;
 using System.Text.RegularExpressions;
 using TranslationHelper.Data;
 using TranslationHelper.Extensions;
-using TranslationHelper.Formats.KiriKiri;
+using TranslationHelper.Formats.Abstractions;
 using TranslationHelper.Formats.KiriKiri.Games.KSSyntax;
-using TranslationHelper.Projects;
+using TranslationHelper.Formats.KiriKiri;
 
 namespace TranslationHelper.Formats.TyranoBuilder.Extracted
 {
     abstract class KSParserBase : KiriKiriBase
     {
-        public KSParserBase(ProjectBase parentProject) : base(parentProject)
+        public KSParserBase(IFormatHost host) : base(host)
         {
             scriptMark = new Script();
             Tag = new TAG();

@@ -1,11 +1,11 @@
 ﻿using TranslationHelper.Data;
-using TranslationHelper.Projects;
+using TranslationHelper.Formats.Abstractions;
 
 namespace TranslationHelper.Formats.WolfRPG
 {
     abstract class WolfRPGPatchBase : RPGMWolfTransPatchBase
     {
-        protected WolfRPGPatchBase(ProjectBase parentProject) : base(parentProject)
+        protected WolfRPGPatchBase(IFormatHost host) : base(host)
         {
         }
     }

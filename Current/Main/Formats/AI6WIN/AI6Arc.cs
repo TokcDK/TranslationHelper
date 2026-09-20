@@ -7,13 +7,13 @@ using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using MesArcLibCSharp;
 using MesScriptDissAssLib;
-using TranslationHelper.Projects;
+using TranslationHelper.Formats.Abstractions;
 
 namespace TranslationHelper.Formats.AI6WIN
 {
     internal class AI6Arc : FormatBinaryBase
     {
-        public AI6Arc(ProjectBase parentProject) : base(parentProject)
+        public AI6Arc(IFormatHost host) : base(host)
         {
         }
 

@@ -1,11 +1,11 @@
 ﻿using System.Collections.Generic;
-using TranslationHelper.Projects;
+using TranslationHelper.Formats.Abstractions;
 
 namespace TranslationHelper.Formats.LOFI.Kenshi
 {
     internal class KenshoModStrings : FormatStringBase
     {
-        public KenshoModStrings(ProjectBase parentProject) : base(parentProject)
+        public KenshoModStrings(IFormatHost host) : base(host)
         {
         }
 

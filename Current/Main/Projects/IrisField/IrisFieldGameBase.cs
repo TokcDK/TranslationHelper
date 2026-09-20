@@ -1,11 +1,12 @@
 ﻿using System;
 using System.IO;
 using TranslationHelper.Data;
+using TranslationHelper.Formats.Abstractions;
 using TranslationHelper.Functions;
 
 namespace TranslationHelper.Projects.IrisField
 {
-    abstract class IrisFieldGameBase : ProjectBase
+    abstract class IrisFieldGameBase : ProjectBase, ILineLengthProvider
     {
         public IrisFieldGameBase()
         {
@@ -27,6 +28,8 @@ namespace TranslationHelper.Projects.IrisField
         /// Maximum length of line
         /// </summary>
         internal virtual int MaxLineLength { get => 60; }
+
+        int ILineLengthProvider.MaxLineLength => MaxLineLength;
 
         internal override bool IsValid()
         {

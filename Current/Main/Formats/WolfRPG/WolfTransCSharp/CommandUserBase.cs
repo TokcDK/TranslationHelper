@@ -4,14 +4,14 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using TranslationHelper.Data;
-using TranslationHelper.Projects;
+using TranslationHelper.Formats.Abstractions;
 using WolfTrans.Net.Parsers.Events;
 
 namespace TranslationHelper.Formats.WolfRPG.WolfTransCSharp
 {
     internal abstract class CommandUserBase: WolftransCSharpBase
     {
-        protected CommandUserBase(ProjectBase parentProject) : base(parentProject)
+        protected CommandUserBase(IFormatHost host) : base(host)
         {
         }
 

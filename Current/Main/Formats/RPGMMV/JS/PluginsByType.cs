@@ -3,7 +3,7 @@ using RPGMVJsonParser;
 using System.Collections.Generic;
 using System.IO;
 using System.Text.RegularExpressions;
-using TranslationHelper.Projects;
+using TranslationHelper.Formats.Abstractions;
 
 namespace TranslationHelper.Formats.RPGMMV.JS
 {
@@ -12,7 +12,7 @@ namespace TranslationHelper.Formats.RPGMMV.JS
         public override string JSName => "plugins.js";
         public override string JSSubfolder => string.Empty;
 
-        public PluginsByType(ProjectBase parentProject) : base(parentProject)
+        public PluginsByType(IFormatHost host) : base(host)
         {
         }
 

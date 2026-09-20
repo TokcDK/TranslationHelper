@@ -2,7 +2,8 @@
 using System.Linq;
 using System.Text.RegularExpressions;
 using TranslationHelper.Data;
-using TranslationHelper.Projects;
+using TranslationHelper.Formats.Abstractions;
+using TranslationHelper.SimpleHelpers;
 
 namespace TranslationHelper.Formats.KiriKiri.Games
 {
@@ -53,10 +54,10 @@ namespace TranslationHelper.Formats.KiriKiri.Games
         };
 
         // Instance fields
-        private readonly ProjectHideRestoreVarsInstance _projectHideRestoreVarsInstance = new ProjectHideRestoreVarsInstance(null);
+        private readonly VarsHideRestore _projectHideRestoreVarsInstance = new VarsHideRestore(null);
         private bool _isScript;
 
-        protected KSBase(ProjectBase parentProject) : base(parentProject)
+        protected KSBase(IFormatHost host) : base(host)
         {
         }
 

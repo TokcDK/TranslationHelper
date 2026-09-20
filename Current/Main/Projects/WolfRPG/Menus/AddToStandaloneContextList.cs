@@ -1,27 +1,27 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Text;
 using System.Windows.Forms;
 using TranslationHelper.Data;
+using TranslationHelper.Formats.WolfRPG;
 using TranslationHelper.Menus;
 using TranslationHelper.Menus.FileRowMenus;
 using TranslationHelper.Menus.FilesListMenus;
 
 namespace TranslationHelper.Projects.WolfRPG.Menus
 {
+    /// <summary>
+    /// Menu item that lets a translator attach extra context lines to the selected rows.
+    /// The context list file itself is handled by <see cref="StandaloneContextList"/>, which the
+    /// WolfRPG patch formats read as well.
+    /// </summary>
     class AddToStandaloneContextList : FileRowMenuItemBase, IProjectSpecifiedMenuItem
     {
         public override string Text => "Add standalone context";
 
         public override string Description => "Adds entered context as standalone. Each string using the context path will be moved in separated text block in patch in time of open/save";
 
-        public static string BeginStringMarker = "> BEGIN STRING\r\n";
-        public static string EndStringMarker = "\r\n> END STRING\r\n";
-        public static string StandaloneContextFilePath = Path.Combine(AppData.CurrentProject.SelectedGameDir, "StandaloneContextList.thdata");
         public override void OnClick(object sender, EventArgs e)
         {
-            var standaloneContextList = LoadList(StandaloneContextFilePath);
+            var standaloneContextList = StandaloneContextList.LoadList(StandaloneContextList.StandaloneContextFilePath);
 
             using (var form = new AddToStandaloneContextListForm())
             {
@@ -47,79 +47,14 @@ namespace TranslationHelper.Projects.WolfRPG.Menus
                         continue;
                     }
 
-                    CleanContext(ref addedContextLine);
+                    StandaloneContextList.CleanContext(ref addedContextLine);
 
-                    AddPair(standaloneContextList, cellValue, addedContextLine);
+                    StandaloneContextList.Add(standaloneContextList, cellValue, addedContextLine);
                 }
 
                 if (standaloneContextList.Count > 0)
                 {
-                    var str = new StringBuilder();
-                    foreach (var val in standaloneContextList)
-                    {
-                        foreach (var context in val.Value)
-                        {
-                            str.AppendLine(context);
-                        }
-                        str.Append(BeginStringMarker + val.Key + EndStringMarker);
-                    }
-
-                    File.WriteAllText(StandaloneContextFilePath, str.ToString());
-                }
-            }
-        }
-
-        public static void CleanContext(ref string addedContextLine)
-        {
-            foreach (var mark in new[]
-            {
-                        '<',
-                        '#'
-                    })
-            {
-                var tag = " " + mark + " UNTRANSLATED";
-                if (addedContextLine.EndsWith(tag))
-                {
-                    addedContextLine = addedContextLine.Replace(tag, string.Empty);
-                }
-            }
-        }
-
-        public static Dictionary<string, HashSet<string>> LoadList(string standaloneContextFilePath)
-        {
-            var standaloneContextList = new Dictionary<string, HashSet<string>>();
-            if (File.Exists(standaloneContextFilePath))
-            {
-                // load exist
-                var blocks = File.ReadAllText(standaloneContextFilePath).Split(new[] { EndStringMarker }, StringSplitOptions.RemoveEmptyEntries);
-                foreach (var block in blocks)
-                {
-                    var keyvalue = block.Split(new[] { "\r\n" + BeginStringMarker }, StringSplitOptions.None);
-                    if (keyvalue.Length != 2) // dont load invalid
-                    {
-                        continue;
-                    }
-                    var context = keyvalue[0];
-                    var originalString = keyvalue[1];
-                    AddPair(standaloneContextList, originalString, context);
-                }
-            }
-
-            return standaloneContextList;
-        }
-
-        private static void AddPair(Dictionary<string, HashSet<string>> standaloneContextList, string stringValue, string contextLine)
-        {
-            if (!standaloneContextList.ContainsKey(stringValue))
-            {
-                standaloneContextList.Add(stringValue, new HashSet<string>());
-                standaloneContextList[stringValue].Add(contextLine);
-            }
-            else
-            {
-                if (!standaloneContextList[stringValue].Contains(contextLine)) // add only if context not in list
-                {
-                    standaloneContextList[stringValue].Add(contextLine);
+                    StandaloneContextList.SaveList(StandaloneContextList.StandaloneContextFilePath, standaloneContextList);
                 }
             }
         }

@@ -1,8 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.IO;
 using TranslationHelper.Data;
-using TranslationHelper.Projects;
-using TranslationHelper.Projects.WolfRPG.Menus;
+using TranslationHelper.Formats.Abstractions;
 
 namespace TranslationHelper.Formats.WolfRPG
 {
@@ -15,9 +14,9 @@ namespace TranslationHelper.Formats.WolfRPG
             unused = false;
 
             // check standalone context file exist
-            if (SaveFileMode && File.Exists(AddToStandaloneContextList.StandaloneContextFilePath))
+            if (SaveFileMode && File.Exists(StandaloneContextList.StandaloneContextFilePath))
             {
-                _contextSplitInfo = AddToStandaloneContextList.LoadList(AddToStandaloneContextList.StandaloneContextFilePath);
+                _contextSplitInfo = StandaloneContextList.LoadList(StandaloneContextList.StandaloneContextFilePath);
                 if (_contextSplitInfo.Count > 0)
                 {
                     _useContext = true;
@@ -365,7 +364,7 @@ namespace TranslationHelper.Formats.WolfRPG
         bool _useContext = false;
         Dictionary<string, HashSet<string>> _contextSplitInfo;
 
-        protected RPGMWolfTransPatchBase(ProjectBase parentProject) : base(parentProject)
+        protected RPGMWolfTransPatchBase(IFormatHost host) : base(host)
         {
         }
 
@@ -382,7 +381,7 @@ namespace TranslationHelper.Formats.WolfRPG
             foreach (var line in new List<string>(contextLines)/*iterate copy of context lines list because it will be changed*/)
             {
                 var line2check = line;
-                AddToStandaloneContextList.CleanContext(ref line2check); // clean context line from ntranslated tag
+                StandaloneContextList.CleanContext(ref line2check); // clean context line from ntranslated tag
                 if (_contextSplitInfo[original].Contains(line2check))
                 {
                     // split string's copy to standalone block with selected found context

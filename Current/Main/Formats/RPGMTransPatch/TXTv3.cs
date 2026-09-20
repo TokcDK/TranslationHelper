@@ -1,10 +1,10 @@
-﻿using TranslationHelper.Projects;
+﻿using TranslationHelper.Formats.Abstractions;
 
 namespace TranslationHelper.Formats.RPGMTransPatch
 {
     class TXTv3 : PatchTXTBase
     {
-        public TXTv3(ProjectBase parentProject) : base(parentProject)
+        public TXTv3(IFormatHost host) : base(host)
         {
         }
 

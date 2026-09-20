@@ -2,8 +2,8 @@
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
 using TranslationHelper.Data;
+using TranslationHelper.Formats.Abstractions;
 using TranslationHelper.Formats.TyranoBuilder.Extracted;
-using TranslationHelper.Projects;
 
 namespace TranslationHelper.Formats.KiriKiri.Games
 {
@@ -15,7 +15,7 @@ namespace TranslationHelper.Formats.KiriKiri.Games
 
         bool IsScript = false;
 
-        protected KSOther(ProjectBase parentProject) : base(parentProject)
+        protected KSOther(IFormatHost host) : base(host)
         {
         }
 

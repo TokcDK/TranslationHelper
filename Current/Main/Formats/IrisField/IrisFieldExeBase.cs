@@ -3,13 +3,13 @@ using System.IO;
 using System.Text;
 using TranslationHelper.Data;
 using TranslationHelper.Extensions;
-using TranslationHelper.Projects;
+using TranslationHelper.Formats.Abstractions;
 
 namespace TranslationHelper.Formats.IrisField
 {
     abstract class IrisFieldExeBase : FormatBinaryBase
     {
-        public IrisFieldExeBase(ProjectBase parentProject) : base(parentProject)
+        public IrisFieldExeBase(IFormatHost host) : base(host)
         {
         }
 

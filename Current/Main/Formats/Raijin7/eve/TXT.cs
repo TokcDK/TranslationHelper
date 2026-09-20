@@ -1,12 +1,12 @@
 ﻿using System;
 using TranslationHelper.Data;
-using TranslationHelper.Projects;
+using TranslationHelper.Formats.Abstractions;
 
 namespace TranslationHelper.Formats.Raijin7.eve
 {
     class TXT : Rajiin7Base
     {
-        public TXT(ProjectBase parentProject) : base(parentProject)
+        public TXT(IFormatHost host) : base(host)
         {
         }
 
@@ -86,13 +86,13 @@ namespace TranslationHelper.Formats.Raijin7.eve
                     if (IsValid(values[1], ref trans))
                     {
                         ParseData.Ret = true;
-                        values[1] = FixInvalidSymbols(ParentProject.TablesLinesDict[values[1]]);
+                        values[1] = FixInvalidSymbols(Host.TablesLinesDict[values[1]]);
                     }
 
                     if (IsValid(restOfText, ref trans))
                     {
                         ParseData.Ret = true;
-                        restOfText = FixInvalidSymbols(ParentProject.TablesLinesDict[restOfText]);
+                        restOfText = FixInvalidSymbols(Host.TablesLinesDict[restOfText]);
                     }
 
                     ParseData.Line = string.Join(",", values) + Environment.NewLine + restOfText;

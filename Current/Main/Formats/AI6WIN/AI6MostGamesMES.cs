@@ -5,13 +5,13 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using MesScriptDissAssLib;
-using TranslationHelper.Projects;
+using TranslationHelper.Formats.Abstractions;
 
 namespace TranslationHelper.Formats.AI6WIN
 {
     internal class AI6MostGamesMES : FormatBinaryBase
     {
-        public AI6MostGamesMES(ProjectBase parentProject) : base(parentProject)
+        public AI6MostGamesMES(IFormatHost host) : base(host)
         {
         }
 

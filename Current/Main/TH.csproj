@@ -122,6 +122,9 @@
     <Compile Include="Formats\Glitch Pitch\Idol Manager\Mod\Trivia_json.cs" />
     <Compile Include="Formats\Glitch Pitch\Idol Manager\Mod\Params_json.cs" />
     <Compile Include="Formats\Glitch Pitch\Idol Manager\Mod\Params_json_c.cs" />
+    <Compile Include="Formats\Abstractions\IFormatHost.cs" />
+    <Compile Include="Formats\Abstractions\ILineLengthProvider.cs" />
+    <Compile Include="Formats\Abstractions\ITranslationStore.cs" />
     <Compile Include="Formats\IFormat.cs" />
     <Compile Include="Formats\KiriKiri\Games\CSV\CSVDisplayName.cs" />
     <Compile Include="Formats\RimWorld\RimWorldLanguageDataXML.cs" />
@@ -310,6 +313,7 @@
     <Compile Include="Formats\TyranoBuilder\Extracted\KS.cs" />
     <Compile Include="Formats\WolfRPG\EvTextTXT.cs" />
     <Compile Include="Formats\WolfRPG\RPGMWolfTransPatchBase.cs" />
+    <Compile Include="Formats\WolfRPG\StandaloneContextList.cs" />
     <Compile Include="Formats\WolfRPG\WolfRPGPatchBase.cs" />
     <Compile Include="Formats\WolfRPG\WolfTransCSharp\CommandUserBase.cs" />
     <Compile Include="Formats\WolfRPG\WolfTransCSharp\CommonEvents.cs" />
@@ -552,7 +556,6 @@
     <Compile Include="Projects\NScript\NScriptBase.cs" />
     <Compile Include="Projects\NScript\NScriptGame.cs" />
     <Compile Include="Projects\ProjectBase.cs" />
-    <Compile Include="Projects\ProjectHideRestoreVarsInstance.cs" />
     <Compile Include="Projects\ProjectTools.cs" />
     <Compile Include="Projects\ProjectToolsBackup.cs" />
     <Compile Include="Projects\ProjectToolsOpenSave.cs" />
@@ -634,6 +637,7 @@
     <Compile Include="Projects\ZZZZFormats\ZZZZProjectByExtension.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SimpleHelpers\FileEncoding.cs" />
+    <Compile Include="SimpleHelpers\VarsHideRestore.cs" />
     <Compile Include="tests\xorfornscript.cs" />
     <Compile Include="Functions\FunctionsWeb.cs" />
     <EmbeddedResource Include="Forms\Search\SearchNew\ReplaceWhatWithUserControl.resx">

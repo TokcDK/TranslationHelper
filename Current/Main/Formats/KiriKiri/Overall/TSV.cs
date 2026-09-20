@@ -1,12 +1,12 @@
 ﻿using System;
 using TranslationHelper.Data;
-using TranslationHelper.Projects;
+using TranslationHelper.Formats.Abstractions;
 
 namespace TranslationHelper.Formats.KiriKiri
 {
     class TSV : FormatStringBase
     {
-        public TSV(ProjectBase parentProject) : base(parentProject)
+        public TSV(IFormatHost host) : base(host)
         {
         }
 

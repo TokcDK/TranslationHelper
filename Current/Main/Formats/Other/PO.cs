@@ -1,7 +1,7 @@
 ﻿using System.Text;
 using System.Text.RegularExpressions;
 using TranslationHelper.Data;
-using TranslationHelper.Projects;
+using TranslationHelper.Formats.Abstractions;
 
 namespace TranslationHelper.Formats.Other
 {
@@ -16,7 +16,7 @@ namespace TranslationHelper.Formats.Other
         /// </summary>
         readonly StringBuilder _info = new StringBuilder();
 
-        public PO(ProjectBase parentProject) : base(parentProject)
+        public PO(IFormatHost host) : base(host)
         {
         }
 

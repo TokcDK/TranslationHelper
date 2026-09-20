@@ -1,13 +1,13 @@
 ﻿using System;
 using System.Text;
 using System.Text.RegularExpressions;
-using TranslationHelper.Projects;
+using TranslationHelper.Formats.Abstractions;
 
 namespace TranslationHelper.Formats.RPGMMV.Other
 {
     internal class ExternMessageCSV : RPGMMVBase
     {
-        public ExternMessageCSV(ProjectBase parentProject) : base(parentProject)
+        public ExternMessageCSV(IFormatHost host) : base(host)
         {
         }
 

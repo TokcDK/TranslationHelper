@@ -6,13 +6,13 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using TranslationHelper.Data;
-using TranslationHelper.Projects;
+using TranslationHelper.Formats.Abstractions;
 
 namespace TranslationHelper.Formats.RPGMMV.JsonType
 {
     internal class JsonEnemies:JsonTypeBase
     {
-        public JsonEnemies(ProjectBase parentProject) : base(parentProject)
+        public JsonEnemies(IFormatHost host) : base(host)
         {
         }
 

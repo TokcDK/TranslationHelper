@@ -3,14 +3,14 @@ using Newtonsoft.Json.Linq;
 using System.Collections.Generic;
 using TranslationHelper.Data;
 using TranslationHelper.Extensions;
+using TranslationHelper.Formats.Abstractions;
 using TranslationHelper.Formats.RPGMMV.JsonParser;
-using TranslationHelper.Projects;
 
 namespace TranslationHelper.Formats.RPGMMV.JS
 {
     abstract class JSBase : RPGMMVBase, IUseJSLocationInfo, IUseJsonParser
     {
-        protected JSBase(ProjectBase parentProject) : base(parentProject)
+        protected JSBase(IFormatHost host) : base(host)
         {
             JsonParser = new JSJsonParser(this);
         }

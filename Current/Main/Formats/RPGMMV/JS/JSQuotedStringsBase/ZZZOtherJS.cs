@@ -1,10 +1,10 @@
-﻿using TranslationHelper.Projects;
+﻿using TranslationHelper.Formats.Abstractions;
 
 namespace TranslationHelper.Formats.RPGMMV.JS
 {
     class ZZZOtherJS : JSQuotedStringsBase
     {
-        public ZZZOtherJS(ProjectBase parentProject) : base(parentProject)
+        public ZZZOtherJS(IFormatHost host) : base(host)
         {
         }
 

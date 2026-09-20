@@ -3,8 +3,8 @@ using System.Collections.Generic;
 using System.IO;
 using System.Text;
 using TranslationHelper.Data;
+using TranslationHelper.Formats.Abstractions;
 using TranslationHelper.Main.Functions;
-using TranslationHelper.Projects;
 
 namespace TranslationHelper.Formats
 {
@@ -15,7 +15,7 @@ namespace TranslationHelper.Formats
         /// </summary>
         internal ParseFileData ParseData;
 
-        protected FormatBinaryBase(ProjectBase parentProject) : base(parentProject)
+        protected FormatBinaryBase(IFormatHost host) : base(host)
         {
         }
 

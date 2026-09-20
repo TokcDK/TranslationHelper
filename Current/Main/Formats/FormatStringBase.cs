@@ -3,14 +3,14 @@ using System.Collections.Generic;
 using System.IO;
 using System.Text;
 using System.Text.RegularExpressions;
+using TranslationHelper.Formats.Abstractions;
 using TranslationHelper.Main.Functions;
-using TranslationHelper.Projects;
 
 namespace TranslationHelper.Formats
 {
     abstract class FormatStringBase : FormatBase
     {
-        protected FormatStringBase(ProjectBase parentProject) : base(parentProject)
+        protected FormatStringBase(IFormatHost host) : base(host)
         {
             RowIndex = 0;
         }
@@ -308,8 +308,8 @@ namespace TranslationHelper.Formats
         {
             try
             {
-                filePath = filePath.Length > 0 ? filePath : ParentProject.IsSaveToSourceFile ? base.GetOpenFilePath() : GetSaveFilePath();
-                if (!ParentProject.IsSaveToSourceFile) Directory.CreateDirectory(Path.GetDirectoryName(filePath));
+                filePath = filePath.Length > 0 ? filePath : Host.IsSaveToSourceFile ? base.GetOpenFilePath() : GetSaveFilePath();
+                if (!Host.IsSaveToSourceFile) Directory.CreateDirectory(Path.GetDirectoryName(filePath));
                 var content = ParseData.ResultForWrite.ToString();
                 var encoding = WriteEncoding();
                 File.WriteAllText(filePath, content, encoding);

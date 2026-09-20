@@ -1,11 +1,11 @@
-﻿using TranslationHelper.Formats.TyranoBuilder.Extracted;
-using TranslationHelper.Projects;
+﻿using TranslationHelper.Formats.Abstractions;
+using TranslationHelper.Formats.TyranoBuilder.Extracted;
 
 namespace TranslationHelper.Formats.KiriKiri.Games.FGroup1.RJ297684GoblinsCave
 {
     class KS : KSParserBase
     {
-        public KS(ProjectBase parentProject) : base(parentProject)
+        public KS(IFormatHost host) : base(host)
         {
         }
     }

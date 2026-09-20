@@ -2,13 +2,13 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
-using TranslationHelper.Projects;
+using TranslationHelper.Formats.Abstractions;
 
 namespace TranslationHelper.Formats.RPGMMV.PluginsCustom
 {
     internal class QuestsTxt : FormatTxtFileBase
     {
-        public QuestsTxt(ProjectBase parentProject) : base(parentProject)
+        public QuestsTxt(IFormatHost host) : base(host)
         {
         }
 

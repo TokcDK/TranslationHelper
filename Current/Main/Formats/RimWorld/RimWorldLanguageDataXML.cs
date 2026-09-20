@@ -2,13 +2,13 @@
 using System.Linq;
 using System.Xml;
 using System.Xml.Linq;
-using TranslationHelper.Projects;
+using TranslationHelper.Formats.Abstractions;
 
 namespace TranslationHelper.Formats.RimWorld
 {
     internal class RimWorldLanguageDataXML : FormatStringBase
     {
-        public RimWorldLanguageDataXML(ProjectBase parentProject) : base(parentProject)
+        public RimWorldLanguageDataXML(IFormatHost host) : base(host)
         {
         }
 

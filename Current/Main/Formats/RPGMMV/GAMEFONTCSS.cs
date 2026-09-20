@@ -1,7 +1,7 @@
 ﻿using System;
 using System.IO;
 using System.Text.RegularExpressions;
-using TranslationHelper.Projects;
+using TranslationHelper.Formats.Abstractions;
 
 namespace TranslationHelper.Formats.RPGMMV
 {
@@ -9,7 +9,7 @@ namespace TranslationHelper.Formats.RPGMMV
     {
         public override string Extension => ".css";
 
-        public GAMEFONTCSS(ProjectBase parentProject) : base(parentProject)
+        public GAMEFONTCSS(IFormatHost host) : base(host)
         {
         }
 
@@ -102,7 +102,7 @@ namespace TranslationHelper.Formats.RPGMMV
                 return false;
             }
 
-            var targetFontsDirPath = Path.Combine(ParentProject.SelectedGameDir, "www", "Fonts");
+            var targetFontsDirPath = Path.Combine(Host.SelectedGameDir, "www", "Fonts");
 
             if (!Directory.Exists(Path.GetDirectoryName(targetFontsDirPath))) return ParseData.Ret;
 

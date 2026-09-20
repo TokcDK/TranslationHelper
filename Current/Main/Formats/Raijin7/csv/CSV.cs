@@ -1,12 +1,12 @@
 ﻿using System;
 using TranslationHelper.Data;
-using TranslationHelper.Projects;
+using TranslationHelper.Formats.Abstractions;
 
 namespace TranslationHelper.Formats.Raijin7
 {
     class CSV : Rajiin7Base
     {
-        public CSV(ProjectBase parentProject) : base(parentProject)
+        public CSV(IFormatHost host) : base(host)
         {
         }
 

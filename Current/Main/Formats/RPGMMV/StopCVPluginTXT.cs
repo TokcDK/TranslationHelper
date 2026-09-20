@@ -1,11 +1,11 @@
 ﻿using System.Collections.Generic;
-using TranslationHelper.Projects;
+using TranslationHelper.Formats.Abstractions;
 
 namespace TranslationHelper.Formats.RPGMMV
 {
     internal class StopCVPluginTXT : FormatStringBase
     {
-        public StopCVPluginTXT(ProjectBase parentProject) : base(parentProject)
+        public StopCVPluginTXT(IFormatHost host) : base(host)
         {
         }
 

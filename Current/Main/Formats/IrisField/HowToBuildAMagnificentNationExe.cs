@@ -1,10 +1,10 @@
-﻿using TranslationHelper.Projects;
+﻿using TranslationHelper.Formats.Abstractions;
 
 namespace TranslationHelper.Formats.IrisField
 {
     class HowToBuildAMagnificentNationExe : IrisFieldExeBase
     {
-        public HowToBuildAMagnificentNationExe(ProjectBase parentProject) : base(parentProject)
+        public HowToBuildAMagnificentNationExe(IFormatHost host) : base(host)
         {
         }
 

@@ -2,13 +2,13 @@
 using System.Text;
 using System.Text.RegularExpressions;
 using TranslationHelper.Data;
-using TranslationHelper.Projects;
+using TranslationHelper.Formats.Abstractions;
 
 namespace TranslationHelper.Formats.Raijin7
 {
     abstract class Rajiin7Base : FormatStringBase
     {
-        protected Rajiin7Base(ProjectBase parentProject) : base(parentProject)
+        protected Rajiin7Base(IFormatHost host) : base(host)
         {
         }
 

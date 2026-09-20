@@ -1,10 +1,10 @@
-﻿using TranslationHelper.Projects;
+﻿using TranslationHelper.Formats.Abstractions;
 
 namespace TranslationHelper.Formats.TyranoBuilder.Extracted
 {
     class KS : KSParserBase
     {
-        public KS(ProjectBase parentProject) : base(parentProject)
+        public KS(IFormatHost host) : base(host)
         {
         }
     }

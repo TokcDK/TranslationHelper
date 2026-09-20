@@ -1,10 +1,10 @@
-﻿using TranslationHelper.Projects;
+﻿using TranslationHelper.Formats.Abstractions;
 
 namespace TranslationHelper.Formats.zzzOtherFormat
 {
     internal class TXTStringPerLine : FormatTxtFileBase
     {
-        public TXTStringPerLine(ProjectBase parentProject) : base(parentProject)
+        public TXTStringPerLine(IFormatHost host) : base(host)
         {
         }
 

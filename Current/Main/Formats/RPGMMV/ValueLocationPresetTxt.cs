@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Text.RegularExpressions;
-using TranslationHelper.Projects;
+using TranslationHelper.Formats.Abstractions;
 
 namespace TranslationHelper.Formats.RPGMMV
 {
@@ -9,7 +9,7 @@ namespace TranslationHelper.Formats.RPGMMV
         public override string Description => "RPGMV www/valueLocationPreset.txt";
         public override string Extension => ".txt";
 
-        public ValueLocationPresetTxt(ProjectBase parentProject) : base(parentProject)
+        public ValueLocationPresetTxt(IFormatHost host) : base(host)
         {
         }
 

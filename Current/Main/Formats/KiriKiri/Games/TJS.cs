@@ -1,13 +1,13 @@
 ﻿using System.Text;
 using System.Text.RegularExpressions;
 using TranslationHelper.Data;
-using TranslationHelper.Projects;
+using TranslationHelper.Formats.Abstractions;
 
 namespace TranslationHelper.Formats.KiriKiri.Games
 {
     class TJS : KiriKiriBase
     {
-        public TJS(ProjectBase parentProject) : base(parentProject)
+        public TJS(IFormatHost host) : base(host)
         {
         }
 

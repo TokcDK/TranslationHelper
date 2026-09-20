@@ -1,6 +1,6 @@
 ﻿using RPGMVJsonParser;
 using System.IO;
-using TranslationHelper.Projects;
+using TranslationHelper.Formats.Abstractions;
 
 namespace TranslationHelper.Formats.RPGMMV.JsonType
 {
@@ -30,7 +30,7 @@ namespace TranslationHelper.Formats.RPGMMV.JsonType
 
         object JsonObject;
 
-        public JsonTypeBase(ProjectBase parentProject) : base(parentProject)
+        public JsonTypeBase(IFormatHost host) : base(host)
         {
         }
 

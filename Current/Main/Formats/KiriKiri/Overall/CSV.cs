@@ -4,8 +4,8 @@ using System.Text;
 using System.Windows.Forms;
 using TranslationHelper.Data;
 using TranslationHelper.Extensions;
+using TranslationHelper.Formats.Abstractions;
 using TranslationHelper.Main.Functions;
-using TranslationHelper.Projects;
 
 namespace TranslationHelper.Formats.KiriKiri
 {
@@ -13,7 +13,7 @@ namespace TranslationHelper.Formats.KiriKiri
     {
         public override string Extension => ".csv";
 
-        public CSV(ProjectBase parentProject) : base(parentProject)
+        public CSV(IFormatHost host) : base(host)
         {
         }
 
@@ -90,8 +90,8 @@ namespace TranslationHelper.Formats.KiriKiri
                                 }
                                 else
                                 {
-                                    _ = ParentProject.FilesContent.Tables[fileName].Rows.Add(columns[name]);
-                                    _ = ParentProject.FilesContentInfo.Tables[fileName].Rows.Add("name");
+                                    _ = Host.FilesContent.Tables[fileName].Rows.Add(columns[name]);
+                                    _ = Host.FilesContentInfo.Tables[fileName].Rows.Add("name");
                                 }
                             }
                             if (detail > -1)
@@ -101,8 +101,8 @@ namespace TranslationHelper.Formats.KiriKiri
                                 }
                                 else
                                 {
-                                    _ = ParentProject.FilesContent.Tables[fileName].Rows.Add(columns[detail]);
-                                    _ = ParentProject.FilesContentInfo.Tables[fileName].Rows.Add("detail");
+                                    _ = Host.FilesContent.Tables[fileName].Rows.Add(columns[detail]);
+                                    _ = Host.FilesContentInfo.Tables[fileName].Rows.Add("detail");
                                 }
                             }
                             if (type > -1)
@@ -112,8 +112,8 @@ namespace TranslationHelper.Formats.KiriKiri
                                 }
                                 else
                                 {
-                                    _ = ParentProject.FilesContent.Tables[fileName].Rows.Add(columns[type]);
-                                    _ = ParentProject.FilesContentInfo.Tables[fileName].Rows.Add("type");
+                                    _ = Host.FilesContent.Tables[fileName].Rows.Add(columns[type]);
+                                    _ = Host.FilesContentInfo.Tables[fileName].Rows.Add("type");
                                 }
                             }
                             if (field > -1)
@@ -123,8 +123,8 @@ namespace TranslationHelper.Formats.KiriKiri
                                 }
                                 else
                                 {
-                                    _ = ParentProject.FilesContent.Tables[fileName].Rows.Add(columns[field]);
-                                    _ = ParentProject.FilesContentInfo.Tables[fileName].Rows.Add("field");
+                                    _ = Host.FilesContent.Tables[fileName].Rows.Add(columns[field]);
+                                    _ = Host.FilesContentInfo.Tables[fileName].Rows.Add("field");
                                 }
                             }
                             if (comment > -1)
@@ -136,12 +136,12 @@ namespace TranslationHelper.Formats.KiriKiri
                                 {
                                     try
                                     {
-                                        _ = ParentProject.FilesContent.Tables[fileName].Rows.Add(columns[comment]);
-                                        _ = ParentProject.FilesContentInfo.Tables[fileName].Rows.Add("comment");
+                                        _ = Host.FilesContent.Tables[fileName].Rows.Add(columns[comment]);
+                                        _ = Host.FilesContentInfo.Tables[fileName].Rows.Add("comment");
                                     }
                                     catch
                                     {
-                                        MessageBox.Show("ProjectData.THFilesElementsDataset.Tables[fileName]=" + ParentProject.FilesContent.Tables[fileName] + "\r\ncolumns[comment]=" + columns[comment]);
+                                        MessageBox.Show("ProjectData.THFilesElementsDataset.Tables[fileName]=" + Host.FilesContent.Tables[fileName] + "\r\ncolumns[comment]=" + columns[comment]);
                                     }
                                 }
                             }

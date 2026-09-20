@@ -7,18 +7,26 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using TranslationHelper.Data;
+using TranslationHelper.Formats.Abstractions;
 using TranslationHelper.Functions;
 using TranslationHelper.Main.Functions;
 using TranslationHelper.Menus.FileRowMenus;
 using TranslationHelper.Menus.FilesListMenus;
 using TranslationHelper.Menus.MainMenus;
+using TranslationHelper.SimpleHelpers;
 
 namespace TranslationHelper.Projects
 {
     /// <summary>
     /// Base class for project implementations.
+    /// <para>
+    /// A project owns the translation data and decides which formats run over which files. It is
+    /// also the host a format runs in, which is what <see cref="IFormatHost"/> publishes; the
+    /// members below stay as they are and are exposed explicitly, so the host contract is a
+    /// deliberate list rather than "whatever happens to be visible".
+    /// </para>
     /// </summary>
-    public abstract class ProjectBase : IProject, IProjectBackupUser
+    public abstract class ProjectBase : IProject, IProjectBackupUser, IFormatHost
     {
         #region Fields
 
@@ -88,7 +96,7 @@ namespace TranslationHelper.Projects
         /// <summary>
         /// Contains the project's variable to be hidden/restored during translation actions.
         /// </summary>
-        ProjectHideRestoreVarsInstance HideRestoreVarsInstance;
+        VarsHideRestore HideRestoreVarsInstance;
 
         /// <summary>
         /// Holds dictionary of row original and translation values for saving.
@@ -459,7 +467,7 @@ namespace TranslationHelper.Projects
         /// <returns>The transformed original text with variables hidden.</returns>
         internal virtual string OnlineTranslationProjectSpecificPretranslationAction(string o, string t, int tind = -1, int rind = -1)
         {
-            HideRestoreVarsInstance = new ProjectHideRestoreVarsInstance(HideVarsBase);
+            HideRestoreVarsInstance = new VarsHideRestore(HideVarsBase);
             return HideRestoreVarsInstance.HideVARSBase(o);
         }
 
@@ -561,6 +569,53 @@ namespace TranslationHelper.Projects
         /// </summary>
         /// <returns>True if the project files were successfully saved; otherwise, false.</returns>
         protected abstract bool TrySave();
+
+        #endregion
+
+        #region IFormatHost (explicit implementation)
+
+        // A format is only allowed to know the members below. They are implemented explicitly so
+        // the rest of the project's state stays internal and no call site has to change.
+
+        DataSet ITranslationStore.FilesContent => FilesContent;
+
+        DataSet ITranslationStore.FilesContentInfo => FilesContentInfo;
+
+        int ITranslationStore.OriginalColumnIndex => OriginalColumnIndex;
+
+        int ITranslationStore.TranslationColumnIndex => TranslationColumnIndex;
+
+        bool ITranslationStore.DontLoadDuplicates => DontLoadDuplicates;
+
+        ConcurrentDictionary<string, string> ITranslationStore.TablesLinesDict
+        {
+            get => TablesLinesDict;
+            set => TablesLinesDict = value;
+        }
+
+        ConcurrentSet<string> ITranslationStore.Hashes
+        {
+            get => Hashes;
+            set => Hashes = value;
+        }
+
+        ConcurrentDictionary<string, ConcurrentDictionary<string, ConcurrentSet<int>>> ITranslationStore.OriginalsTableRowCoordinates
+            => OriginalsTableRowCoordinates;
+
+        void ITranslationStore.AddTable(DataTable dataTable, DataTable infoTable)
+            => AddTable(dataTable, infoTable);
+
+        string IFormatHost.SelectedGameDir => SelectedGameDir;
+
+        string IFormatHost.ProjectWorkDir => ProjectWorkDir;
+
+        string IFormatHost.OpenedFilesDir => OpenedFilesDir;
+
+        bool IFormatHost.SubpathInTableName => SubpathInTableName;
+
+        bool IFormatHost.IsSaveToSourceFile => IsSaveToSourceFile;
+
+        string IFormatHost.CleanStringForCheck(string str) => CleanStringForCheck(str);
 
         #endregion
     }

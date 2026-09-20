@@ -5,13 +5,13 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using TranslationHelper.Data;
 using TranslationHelper.Extensions;
-using TranslationHelper.Projects;
+using TranslationHelper.Formats.Abstractions;
 
 namespace TranslationHelper.Formats.NScriptGame.nscript.dat
 {
     internal class NSCRIPT : FormatStringBase
     {
-        public NSCRIPT(ProjectBase parentProject) : base(parentProject)
+        public NSCRIPT(IFormatHost host) : base(host)
         {
         }
 
@@ -199,21 +199,21 @@ namespace TranslationHelper.Formats.NScriptGame.nscript.dat
                     //ONSCRIPTER
                     {
                         //copy onscripter
-                        if (!Directory.Exists(Path.Combine(ParentProject.SelectedGameDir, "onscripter")))
-                            Path.Combine(THSettings.ResDirPath, "onscripter").CopyAll(Path.Combine(ParentProject.SelectedGameDir, "onscripter"));
+                        if (!Directory.Exists(Path.Combine(Host.SelectedGameDir, "onscripter")))
+                            Path.Combine(THSettings.ResDirPath, "onscripter").CopyAll(Path.Combine(Host.SelectedGameDir, "onscripter"));
 
                         //write run.bat
                         //onscripter -r "gamedir" --dll "dllpath" -f fontpath --window
-                        var g = Directory.GetFiles(ParentProject.SelectedGameDir, "*.dll");
-                        var ls = g.Select(fn => "--dll \"" + Path.Combine(ParentProject.SelectedGameDir, Path.GetFileName(fn)) + "\" ");
+                        var g = Directory.GetFiles(Host.SelectedGameDir, "*.dll");
+                        var ls = g.Select(fn => "--dll \"" + Path.Combine(Host.SelectedGameDir, Path.GetFileName(fn)) + "\" ");
                         string dlls = string.Join("", ls);
                         var batcontent = "ONScripter "
-                            + "-r \"" + ParentProject.SelectedGameDir + "\" "
+                            + "-r \"" + Host.SelectedGameDir + "\" "
                             + dlls
                             + "-f C:\\Windows\\Fonts\\msgothic.ttc "
                             + "--window"
                         ;
-                        File.WriteAllText(Path.Combine(ParentProject.SelectedGameDir, "onscripter", "Run.bat"), batcontent);
+                        File.WriteAllText(Path.Combine(Host.SelectedGameDir, "onscripter", "Run.bat"), batcontent);
                     }
                     return true;
                 }

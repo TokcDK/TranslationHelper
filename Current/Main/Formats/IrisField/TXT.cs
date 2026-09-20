@@ -5,18 +5,19 @@ using System.Text;
 using System.Text.RegularExpressions;
 using TranslationHelper.Data;
 using TranslationHelper.Extensions;
-using TranslationHelper.Projects;
-using TranslationHelper.Projects.IrisField;
+using TranslationHelper.Formats.Abstractions;
 
 namespace TranslationHelper.Formats.IrisField
 {
     class TXT : FormatStringBase
     {
-        public TXT(ProjectBase parentProject) : base(parentProject)
+        public TXT(IFormatHost host) : base(host)
         {
             if (SaveFileMode)
             {
-                MaxLineLength = (ParentProject as IrisFieldGameBase).MaxLineLength;
+                // TXT is only created by the IrisField projects, which are the hosts that publish
+                // a line length limit.
+                MaxLineLength = ((ILineLengthProvider)host).MaxLineLength;
             }
         }
 

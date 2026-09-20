@@ -3,14 +3,14 @@ using System.Collections.Generic;
 using System.Data;
 using System.IO;
 using TranslationHelper.Extensions;
+using TranslationHelper.Formats.Abstractions;
 using TranslationHelper.Formats.RPGMTrans;
-using TranslationHelper.Projects;
 
 namespace TranslationHelper.Formats.RPGMTransPatch
 {
     class RPGMKTRANSPATCH : RPGMTransPatchBase
     {
-        public RPGMKTRANSPATCH(ProjectBase parentProject) : base(parentProject)
+        public RPGMKTRANSPATCH(IFormatHost host) : base(host)
         {
         }
 
@@ -21,7 +21,7 @@ namespace TranslationHelper.Formats.RPGMTransPatch
 
         protected override bool TryOpen()
         {
-            var format = new TXTv3(ParentProject);
+            var format = new TXTv3(Host);
             bool result = format.Open(this.FilePath);
             if (!result)
             {
@@ -47,22 +47,22 @@ namespace TranslationHelper.Formats.RPGMTransPatch
                 "> RPGMAKER TRANS PATCH FILE VERSION 3.2"//v3
             };
 
-            var TablesCount = ParentProject.FilesContent.Tables.Count;
+            var TablesCount = Host.FilesContent.Tables.Count;
             for (int t = 0; t < TablesCount; t++)
             {
                 try
                 {
-                    var table = ParentProject.FilesContent.Tables[t];
+                    var table = Host.FilesContent.Tables[t];
                     var tableRowsCount = table.Rows.Count;
                     for (int r = 0; r < tableRowsCount; r++)
                     {
                         var row = table.Rows[r];
 
-                        var original = row.Field<string>(ParentProject.OriginalColumnIndex);
-                        var translation = row.Field<string>(ParentProject.TranslationColumnIndex);
+                        var original = row.Field<string>(Host.OriginalColumnIndex);
+                        var translation = row.Field<string>(Host.TranslationColumnIndex);
 
                         List<string> context = new List<string>();
-                        var infoRow = ParentProject.FilesContentInfo.Tables[t].Rows[r] + string.Empty;
+                        var infoRow = Host.FilesContentInfo.Tables[t].Rows[r] + string.Empty;
                         foreach (var line in infoRow.SplitToLines())
                         {
                             if (line.StartsWith("> CONTEXT"))
@@ -79,7 +79,7 @@ namespace TranslationHelper.Formats.RPGMTransPatch
                         LinesToWrite.Add("> END STRING");
                     }
 
-                    var path = Path.Combine(ParentProject.ProjectWorkDir, Path.GetFileName(ParentProject.ProjectWorkDir) + "_patch", "patch", table.TableName);
+                    var path = Path.Combine(Host.ProjectWorkDir, Path.GetFileName(Host.ProjectWorkDir) + "_patch", "patch", table.TableName);
                     File.WriteAllLines(path, LinesToWrite);
                     ret = true;
                 }

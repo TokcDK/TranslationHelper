@@ -1,10 +1,10 @@
-﻿using TranslationHelper.Projects;
+﻿using TranslationHelper.Formats.Abstractions;
 
 namespace TranslationHelper.Formats.IrisField
 {
     class HowToMakeTrueSlavesRiseofaDarkEmpireExe : IrisFieldExeBase
     {
-        public HowToMakeTrueSlavesRiseofaDarkEmpireExe(ProjectBase parentProject) : base(parentProject)
+        public HowToMakeTrueSlavesRiseofaDarkEmpireExe(IFormatHost host) : base(host)
         {
         }
 

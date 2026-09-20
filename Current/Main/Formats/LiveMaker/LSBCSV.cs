@@ -1,14 +1,14 @@
 ﻿using System.IO;
 using System.Text.RegularExpressions;
 using TranslationHelper.Data;
+using TranslationHelper.Formats.Abstractions;
 using TranslationHelper.Main.Functions;
-using TranslationHelper.Projects;
 
 namespace TranslationHelper.Formats.LiveMaker
 {
     class LSBCSV : LiveMakerBase
     {
-        public LSBCSV(ProjectBase parentProject) : base(parentProject)
+        public LSBCSV(IFormatHost host) : base(host)
         {
         }
 

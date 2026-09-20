@@ -4,13 +4,13 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using TranslationHelper.Projects;
+using TranslationHelper.Formats.Abstractions;
 
 namespace TranslationHelper.Formats.RPGMakerVXAce
 {
     internal class RGSS3A : FormatBinaryBase
     {
-        public RGSS3A(ProjectBase parentProject) : base(parentProject)
+        public RGSS3A(IFormatHost host) : base(host)
         {
         }
 

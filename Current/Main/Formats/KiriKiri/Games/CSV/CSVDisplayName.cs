@@ -1,13 +1,13 @@
 ﻿using System.Linq;
 using System.Text;
 using TranslationHelper.Extensions;
-using TranslationHelper.Projects;
+using TranslationHelper.Formats.Abstractions;
 
 namespace TranslationHelper.Formats.KiriKiri.Games.CSV
 {
     class CSVDisplayName : KiriKiriBase
     {
-        public CSVDisplayName(ProjectBase parentProject) : base(parentProject)
+        public CSVDisplayName(IFormatHost host) : base(host)
         {
         }
 

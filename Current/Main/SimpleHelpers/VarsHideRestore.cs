@@ -3,13 +3,17 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
 
-namespace TranslationHelper.Projects
+namespace TranslationHelper.SimpleHelpers
 {
     /// <summary>
-    /// A class that hides specified variables in strings using regex patterns and placeholders,
-    /// and restores them to their original values. Implements IDisposable to release resources.
+    /// Hides the variables matched by a set of regex patterns behind placeholders and restores
+    /// them afterwards. Implements IDisposable to release resources.
+    /// <para>
+    /// This is a self-contained string transform: it knows nothing about projects, formats or the
+    /// translation tables, which is why it lives here rather than next to the code that uses it.
+    /// </para>
     /// </summary>
-    public class ProjectHideRestoreVarsInstance : IDisposable
+    public class VarsHideRestore : IDisposable
     {
         /// <summary>
         /// Dictionary of patterns where keys are variable identifiers and values are regex patterns to match them.
@@ -43,10 +47,11 @@ namespace TranslationHelper.Projects
         private static readonly Regex _restorePlaceholderRegex = new Regex(@"\{VAR(\d{3})\}", RegexOptions.Compiled);
 
         /// <summary>
-        /// Initializes a new instance of the class with the specified hide patterns.
+        /// Initializes a new instance of the <see cref="VarsHideRestore"/> class with the specified
+        /// hide patterns.
         /// </summary>
         /// <param name="hidePatterns">Dictionary mapping variable identifiers to their regex patterns.</param>
-        public ProjectHideRestoreVarsInstance(Dictionary<string, string> hidePatterns)
+        public VarsHideRestore(Dictionary<string, string> hidePatterns)
         {
             _hidePatterns = hidePatterns;
 

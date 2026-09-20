@@ -1,12 +1,12 @@
 ﻿using System;
 using System.Web.UI.WebControls.WebParts;
-using TranslationHelper.Projects;
+using TranslationHelper.Formats.Abstractions;
 
 namespace TranslationHelper.Formats.RPGMMV.Other
 {
     internal class DobbyPluginDBCSV : FormatStringBase
     {
-        public DobbyPluginDBCSV(ProjectBase parentProject) : base(parentProject)
+        public DobbyPluginDBCSV(IFormatHost host) : base(host)
         {
         }
 

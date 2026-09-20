@@ -7,11 +7,16 @@ using System.IO;
 using System.Linq;
 using TranslationHelper.Data;
 using TranslationHelper.Extensions;
+using TranslationHelper.Formats.Abstractions;
 using TranslationHelper.Functions;
-using TranslationHelper.Projects;
 
 namespace TranslationHelper.Formats
 {
+    /// <summary>
+    /// Base class for a single file format: it turns one file into rows and rows back into the
+    /// file. It knows nothing about projects beyond <see cref="IFormatHost"/>, the environment it
+    /// is given to run in.
+    /// </summary>
     public abstract class FormatBase : IFormat
     {
         #region Fields
@@ -52,10 +57,10 @@ namespace TranslationHelper.Formats
         /// <summary>
         /// Initializes a new instance of the <see cref="FormatBase"/> class without a file path.
         /// </summary>
-        /// <param name="parentProject">The parent project. Must be open when will be using for open or save</param>
-        protected FormatBase(ProjectBase parentProject)
+        /// <param name="host">The host this format runs in. It must be open before open or save is used.</param>
+        protected FormatBase(IFormatHost host)
         {
-            ParentProject = parentProject;
+            Host = host;
             BaseInit();
         }
 
@@ -97,16 +102,17 @@ namespace TranslationHelper.Formats
 
         #region Internal Properties
 
-        private ProjectBase _parentProject;
+        private IFormatHost _host;
         /// <summary>
-        /// Gets the parent project.
+        /// Gets the host this format runs in: the translation store it reads from and writes to,
+        /// and the project settings that decide where its files live.
         /// </summary>
-        internal ProjectBase ParentProject
+        internal IFormatHost Host
         {
-            get => _parentProject ?? throw new InvalidOperationException("Parent project is not set.");
+            get => _host ?? throw new InvalidOperationException("Host is not set.");
             set
             {
-                _parentProject = value;
+                _host = value;
             }
         }
 
@@ -151,8 +157,8 @@ namespace TranslationHelper.Formats
                     }
                 }
 
-                string tableName = ParentProject.SubpathInTableName
-                    ? Path.GetDirectoryName(filePath).Replace(ParentProject.OpenedFilesDir, string.Empty) + Path.DirectorySeparatorChar
+                string tableName = Host.SubpathInTableName
+                    ? Path.GetDirectoryName(filePath).Replace(Host.OpenedFilesDir, string.Empty) + Path.DirectorySeparatorChar
                     : string.Empty;
 
                 tableName += UseTableNameWithoutExtension
@@ -219,7 +225,7 @@ namespace TranslationHelper.Formats
         /// <returns>True if the string is valid; otherwise, false.</returns>
         internal virtual bool IsValidString(string inputString)
         {
-            inputString = ParentProject.CleanStringForCheck(inputString);
+            inputString = Host.CleanStringForCheck(inputString);
             return !string.IsNullOrWhiteSpace(inputString) && !inputString.ForJPLangHaveMostOfRomajiOtherChars();
         }
 
@@ -310,14 +316,14 @@ namespace TranslationHelper.Formats
             string original = AddRowDataPreAddOriginalStringMod(values[0]);
             if (isCheckInput && !IsValidString(original)) return false;
 
-            if (ParentProject.DontLoadDuplicates)
+            if (Host.DontLoadDuplicates)
             {
-                if (ParentProject.Hashes?.Contains(original) ?? false) return false;
-                ParentProject.Hashes?.TryAdd(original);
+                if (Host.Hashes?.Contains(original) ?? false) return false;
+                Host.Hashes?.TryAdd(original);
             }
             else
             {
-                var originals = ParentProject.OriginalsTableRowCoordinates;
+                var originals = Host.OriginalsTableRowCoordinates;
                 originals.TryAdd(original, new ConcurrentDictionary<string, ConcurrentSet<int>>());
                 originals[original].TryAdd(tablename, new ConcurrentSet<int>());
 
@@ -349,7 +355,7 @@ namespace TranslationHelper.Formats
                 return false;
 
             string original = valueToTranslate;
-            bool letDuplicates = !ParentProject.DontLoadDuplicates;
+            bool letDuplicates = !Host.DontLoadDuplicates;
 
             if (letDuplicates)
             {
@@ -403,17 +409,17 @@ namespace TranslationHelper.Formats
         /// <param name="onlyOneTable">Whether to process only the specified table.</param>
         internal void SplitTableCellValuesAndTheirLinesToDictionary(string tableName, bool makeLinesCountEqual = false, bool onlyOneTable = false)
         {
-            if (!ParentProject.DontLoadDuplicates || !SaveFileMode) return;
+            if (!Host.DontLoadDuplicates || !SaveFileMode) return;
 
-            var dict = ParentProject.TablesLinesDict ?? new ConcurrentDictionary<string, string>();
-            if (onlyOneTable && !ParentProject.FilesContent.Tables.Contains(tableName)) return;
+            var dict = Host.TablesLinesDict ?? new ConcurrentDictionary<string, string>();
+            if (onlyOneTable && !Host.FilesContent.Tables.Contains(tableName)) return;
 
             lock (SplitTableCellValuesAndTheirLinesToDictionaryThreadsLock)
             {
                 if (TablesLinesDictFilled && !onlyOneTable) return;
                 if (onlyOneTable) dict.Clear();
 
-                foreach (DataTable table in ParentProject.FilesContent.Tables)
+                foreach (DataTable table in Host.FilesContent.Tables)
                 {
                     if (onlyOneTable && table.TableName != tableName) continue;
 
@@ -455,7 +461,7 @@ namespace TranslationHelper.Formats
         /// <returns>The original text.</returns>
         internal string GetRowOriginalText(DataRow dataRow)
         {
-            return dataRow.Field<string>(ParentProject.OriginalColumnIndex);
+            return dataRow.Field<string>(Host.OriginalColumnIndex);
         }
 
         /// <summary>
@@ -465,7 +471,7 @@ namespace TranslationHelper.Formats
         /// <returns>The translation text.</returns>
         internal string GetRowTranslationText(DataRow dataRow)
         {
-            return dataRow.Field<string>(ParentProject.TranslationColumnIndex);
+            return dataRow.Field<string>(Host.TranslationColumnIndex);
         }
 
         #endregion
@@ -524,7 +530,7 @@ namespace TranslationHelper.Formats
         protected virtual bool FilePreOpenActions()
         {
             if (!string.IsNullOrWhiteSpace(Extension) && Path.GetExtension(GetFilePath()) != Extension) return false;
-            if (SaveFileMode && !ParentProject.FilesContent.Tables.Contains(FileName)) return false;
+            if (SaveFileMode && !Host.FilesContent.Tables.Contains(FileName)) return false;
             if (OpenFileMode) InitTableContent();
             if (SaveFileMode) SplitTableCellValuesAndTheirLinesToDictionary(FileName, false, false);
             PreOpenExtraActions();
@@ -575,7 +581,7 @@ namespace TranslationHelper.Formats
             }
             if (Data.Rows.Count > 0)
             {
-                ParentProject.AddTable(Data, Info);
+                Host.AddTable(Data, Info);
                 return true;
             }
             return false;
@@ -632,15 +638,15 @@ namespace TranslationHelper.Formats
         /// </summary>
         private void SetupWhenDontLoadDuplicates()
         {
-            if (!ParentProject.DontLoadDuplicates) return;
+            if (!Host.DontLoadDuplicates) return;
 
             if (SaveFileMode)
             {
-                ParentProject.TablesLinesDict = ParentProject.TablesLinesDict ?? new ConcurrentDictionary<string, string>();
+                Host.TablesLinesDict = Host.TablesLinesDict ?? new ConcurrentDictionary<string, string>();
             }
             else
             {
-                ParentProject.Hashes = ParentProject.Hashes ?? new ConcurrentSet<string>();
+                Host.Hashes = Host.Hashes ?? new ConcurrentSet<string>();
             }
         }
 
@@ -668,11 +674,11 @@ namespace TranslationHelper.Formats
         /// <returns>True if there are translations; otherwise, false.</returns>
         private bool IsAnyTranslated()
         {
-            if (!ParentProject.FilesContent.Tables.Contains(FileName))
+            if (!Host.FilesContent.Tables.Contains(FileName))
             {
                 return false;
             }
-            return ParentProject.FilesContent.Tables[FileName].Rows.Cast<DataRow>()
+            return Host.FilesContent.Tables[FileName].Rows.Cast<DataRow>()
                 .Any(row => !string.IsNullOrEmpty(GetRowTranslationText(row)));
         }
 
@@ -692,11 +698,11 @@ namespace TranslationHelper.Formats
         /// </summary>
         private bool TryApplyTranslationWithDuplicatesAllowed(ref string valueToTranslate, string original, string existsTranslation)
         {
-            if (!ParentProject.OriginalsTableRowCoordinates.ContainsKey(original))
+            if (!Host.OriginalsTableRowCoordinates.ContainsKey(original))
                 return false;
 
             int rowIndex = RowIndex++;
-            var coordinates = ParentProject.OriginalsTableRowCoordinates[original];
+            var coordinates = Host.OriginalsTableRowCoordinates[original];
 
             if (TryApplyTranslationFromCurrentTable(ref valueToTranslate, original, existsTranslation, coordinates, rowIndex))
                 return true;
@@ -748,7 +754,7 @@ namespace TranslationHelper.Formats
         /// </summary>
         private bool TryApplyTranslationWithNoDuplicates(ref string valueToTranslate, string original, string existsTranslation)
         {
-            if (ParentProject.TablesLinesDict?.ContainsKey(original) == true)
+            if (Host.TablesLinesDict?.ContainsKey(original) == true)
             {
                 return ApplyTranslation(null, -1, original, existsTranslation, ref valueToTranslate);
             }
@@ -769,8 +775,8 @@ namespace TranslationHelper.Formats
             try
             {
                 valueToTranslate = tableName == null
-                    ? ParentProject.TablesLinesDict[original]
-                    : GetRowTranslationText(ParentProject.FilesContent.Tables[tableName].Rows[rowNumber]);
+                    ? Host.TablesLinesDict[original]
+                    : GetRowTranslationText(Host.FilesContent.Tables[tableName].Rows[rowNumber]);
             }
             catch (Exception ex)
             {
@@ -799,7 +805,7 @@ namespace TranslationHelper.Formats
         /// <param name="makeLinesCountEqual">Whether to equalize line counts.</param>
         private void AddMultiLineTranslations(string original, string translation, bool makeLinesCountEqual)
         {
-            var dict = ParentProject.TablesLinesDict;
+            var dict = Host.TablesLinesDict;
             string[] originalLines = original.GetAllLinesToArray();
             string[] translationLines = translation.GetAllLinesToArray();
             int originalCount = originalLines.Length;

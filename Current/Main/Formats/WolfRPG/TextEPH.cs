@@ -1,11 +1,11 @@
 ﻿using System.Collections.Generic;
-using TranslationHelper.Projects;
+using TranslationHelper.Formats.Abstractions;
 
 namespace TranslationHelper.Formats.WolfRPG
 {
     internal class TextEPH : FormatTxtFileBase
     {
-        public TextEPH(ProjectBase parentProject) : base(parentProject)
+        public TextEPH(IFormatHost host) : base(host)
         {
         }
 

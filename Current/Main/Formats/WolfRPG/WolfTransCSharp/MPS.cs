@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Linq;
 using TranslationHelper.Data;
-using TranslationHelper.Projects;
+using TranslationHelper.Formats.Abstractions;
 using WolfTrans.Net.Parsers;
 using WolfTrans.Net.Parsers.Events;
 
@@ -9,7 +9,7 @@ namespace TranslationHelper.Formats.WolfRPG.WolfTransCSharp
 {
     internal class MPS : CommandUserBase
     {
-        public MPS(ProjectBase parentProject) : base(parentProject)
+        public MPS(IFormatHost host) : base(host)
         {
         }
 

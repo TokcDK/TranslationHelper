@@ -6,13 +6,13 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using TranslationHelper.Data;
-using TranslationHelper.Projects;
+using TranslationHelper.Formats.Abstractions;
 
 namespace TranslationHelper.Formats.RPGMMV.JsonType
 {
     internal class JsonTroops : EventCommandParseBase
     {
-        public JsonTroops(ProjectBase parentProject) : base(parentProject)
+        public JsonTroops(IFormatHost host) : base(host)
         {
         }
 

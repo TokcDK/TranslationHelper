@@ -6,14 +6,14 @@ using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows;
 using Newtonsoft.Json;
+using TranslationHelper.Formats.Abstractions;
 using TranslationHelper.Formats.Glitch_Pitch.Idol_Manager.Mod;
-using TranslationHelper.Projects;
 
 namespace TranslationHelper.Formats.Glitch_Pitch.IdolManager.Mod
 {
     internal class Params_json : IdolManagerModBase
     {
-        public Params_json(ProjectBase parentProject) : base(parentProject)
+        public Params_json(IFormatHost host) : base(host)
         {
         }
 

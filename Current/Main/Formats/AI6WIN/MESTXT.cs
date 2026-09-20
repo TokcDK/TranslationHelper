@@ -1,11 +1,11 @@
 ﻿using System;
-using TranslationHelper.Projects;
+using TranslationHelper.Formats.Abstractions;
 
 namespace TranslationHelper.Formats.AI6WIN
 {
     internal class MESTXT : FormatTxtFileBase
     {
-        public MESTXT(ProjectBase parentProject) : base(parentProject)
+        public MESTXT(IFormatHost host) : base(host)
         {
         }
 

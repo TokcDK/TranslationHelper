@@ -7,9 +7,9 @@ using System.Text.RegularExpressions;
 using RPGMakerVXRVData2Assistant;
 using TranslationHelper.Data;
 using TranslationHelper.Extensions;
+using TranslationHelper.Formats.Abstractions;
 using TranslationHelper.Formats.RPGMMV;
 using TranslationHelper.Main.Functions;
-using TranslationHelper.Projects;
 using static System.Net.Mime.MediaTypeNames;
 
 namespace TranslationHelper.Formats.RPGMakerVX.RVData2
@@ -237,7 +237,7 @@ namespace TranslationHelper.Formats.RPGMakerVX.RVData2
 
         const string _codeInfoText = "Command code: ";
 
-        public RVDATA2(ProjectBase parentProject) : base(parentProject)
+        public RVDATA2(IFormatHost host) : base(host)
         {
         }
 

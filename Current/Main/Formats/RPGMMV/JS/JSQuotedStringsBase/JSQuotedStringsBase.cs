@@ -1,11 +1,11 @@
-﻿using TranslationHelper.Functions;
-using TranslationHelper.Projects;
+﻿using TranslationHelper.Formats.Abstractions;
+using TranslationHelper.Functions;
 
 namespace TranslationHelper.Formats.RPGMMV.JS
 {
     abstract class JSQuotedStringsBase : JSBase
     {
-        protected JSQuotedStringsBase(ProjectBase parentProject) : base(parentProject)
+        protected JSQuotedStringsBase(IFormatHost host) : base(host)
         {
         }
 

@@ -1,8 +1,8 @@
 ﻿using System.IO;
 using System.Text;
 using TranslationHelper.Data;
+using TranslationHelper.Formats.Abstractions;
 using TranslationHelper.Main.Functions;
-using TranslationHelper.Projects;
 
 namespace TranslationHelper.Formats.KiriKiri
 {
@@ -12,7 +12,7 @@ namespace TranslationHelper.Formats.KiriKiri
         /// overall kirikiri environment for all formats
         /// </summary>
         /// <param name="projectData"></param>
-        protected KiriKiriBase(ProjectBase parentProject) : base(parentProject)
+        protected KiriKiriBase(IFormatHost host) : base(host)
         {
         }
 
@@ -60,7 +60,7 @@ namespace TranslationHelper.Formats.KiriKiri
         protected override string GetSaveFilePath()
         {
             //write translated files to patch dir
-            return Path.Combine(ParentProject.ProjectWorkDir, PatchDirName, Path.GetFileName(FilePath));
+            return Path.Combine(Host.ProjectWorkDir, PatchDirName, Path.GetFileName(FilePath));
         }
         protected override Encoding DefaultEncoding()
         {

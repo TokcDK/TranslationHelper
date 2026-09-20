@@ -6,15 +6,15 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using Newtonsoft.Json;
+using TranslationHelper.Formats.Abstractions;
 using TranslationHelper.Formats.Glitch_Pitch.Idol_Manager.Mod;
 using TranslationHelper.Formats.RPGMMV;
-using TranslationHelper.Projects;
 
 namespace TranslationHelper.Formats.Glitch_Pitch.IdolManager.Mod
 {
     internal class Dialogues_json : IdolManagerModBase
     {
-        public Dialogues_json(ProjectBase parentProject) : base(parentProject)
+        public Dialogues_json(IFormatHost host) : base(host)
         {
         }
 
