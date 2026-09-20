@@ -16,8 +16,18 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
 {
     public interface ISelectionProvider
     {
+        /// <summary>
+        /// Table indexes of the selected entries. The "[ALL]" entry stands for every file, so it
+        /// comes back as all of them.
+        /// </summary>
         int[] GetSelectedTableIndexes();
-        int[] GetSelectedRowIndexes(TableData tableData);
+
+        /// <summary>
+        /// What a "selected rows" operation has to cover: the file tables the selected rows belong to
+        /// and, for each of them, the rows to apply the operation to.
+        /// </summary>
+        TableRowPlan[] GetSelectedRowsPlan();
+
         int GetSelectedTableIndex(); // For single selection.
     }
 
@@ -34,42 +44,58 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
 
         public int[] GetSelectedTableIndexes()
         {
-            if (_filesList.InvokeRequired)
+            var tableIndexes = new List<int>();
+
+            foreach (var listIndex in GetSelectedListIndexes())
             {
-                int[] indexes = Array.Empty<int>();
-                _filesList.Invoke((Action)(() => indexes = _filesList.CopySelectedIndexes()));
-                return indexes;
+                foreach (var tableIndex in AppData.FilesListContent.GetTableIndexes(listIndex))
+                {
+                    if (!tableIndexes.Contains(tableIndex)) tableIndexes.Add(tableIndex);
+                }
             }
-            return _filesList.CopySelectedIndexes();
+
+            return tableIndexes.ToArray();
         }
 
-        public int[] GetSelectedRowIndexes(TableData tableData)
+        public TableRowPlan[] GetSelectedRowsPlan()
         {
-            int[] selectedCells;
-            if (_dataGridView.InvokeRequired)
+            var listIndexes = GetSelectedListIndexes();
+            if (listIndexes.Length != 1) return Array.Empty<TableRowPlan>();
+
+            int listIndex = listIndexes[0];
+
+            // Grid row -> row of the entry's table -> the file table and row it was taken from. The
+            // last step is what lets the operation work on the "[ALL]" entry, whose rows come from
+            // several files at once.
+            var rowsByTable = new SortedDictionary<int, List<int>>();
+            foreach (var gridRowIndex in GetSelectedGridRowIndexes())
             {
-                selectedCells = null;
-                _dataGridView.Invoke((Action)(() =>
-                    selectedCells = _dataGridView.SelectedCells
-                        .Cast<DataGridViewCell>()
-                        .Select(c => c.RowIndex)
-                        .Distinct()
-                        .Select(r => FunctionsTable.GetRealRowIndex(tableData.SelectedTableIndex, r))
-                        .OrderBy(i => i)
-                        .ToArray()
-                ));
+                var entryRowIndex = FunctionsTable.GetRealRowIndex(listIndex, gridRowIndex);
+                if (entryRowIndex < 0) continue;
+
+                if (!AppData.FilesListContent.TryResolveRow(listIndex, entryRowIndex, out var tableIndex, out var sourceRowIndex)) continue;
+
+                if (!rowsByTable.TryGetValue(tableIndex, out var rows))
+                {
+                    rows = new List<int>();
+                    rowsByTable[tableIndex] = rows;
+                }
+
+                if (!rows.Contains(sourceRowIndex)) rows.Add(sourceRowIndex);
             }
-            else
+
+            var allTables = AppData.CurrentProject.FilesContent.Tables;
+            var plan = new List<TableRowPlan>(rowsByTable.Count);
+            foreach (var rowsOfTable in rowsByTable)
             {
-                selectedCells = _dataGridView.SelectedCells
-                    .Cast<DataGridViewCell>()
-                    .Select(c => c.RowIndex)
-                    .Distinct()
-                    .Select(r => FunctionsTable.GetRealRowIndex(tableData.SelectedTableIndex, r))
-                    .OrderBy(i => i)
-                    .ToArray();
+                if (rowsOfTable.Key < 0 || rowsOfTable.Key >= allTables.Count) continue;
+
+                var rows = rowsOfTable.Value;
+                rows.Sort();
+                plan.Add(new TableRowPlan(new TableData(allTables[rowsOfTable.Key], rowsOfTable.Key), rows.ToArray()));
             }
-            return selectedCells ?? Array.Empty<int>();
+
+            return plan.ToArray();
         }
 
         public int GetSelectedTableIndex()
@@ -82,6 +108,71 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
             }
             return _filesList.SelectedIndex;
         }
+
+        /// <summary>
+        /// Indexes of the entries selected in the files list.
+        /// </summary>
+        private int[] GetSelectedListIndexes()
+        {
+            if (_filesList.InvokeRequired)
+            {
+                int[] indexes = Array.Empty<int>();
+                _filesList.Invoke((Action)(() => indexes = _filesList.CopySelectedIndexes()));
+                return indexes;
+            }
+            return _filesList.CopySelectedIndexes();
+        }
+
+        /// <summary>
+        /// Indexes of the rows the selection in the work table grid touches.
+        /// </summary>
+        private int[] GetSelectedGridRowIndexes()
+        {
+            if (_dataGridView.InvokeRequired)
+            {
+                int[] indexes = null;
+                _dataGridView.Invoke((Action)(() => indexes = ReadSelectedGridRowIndexes()));
+                return indexes ?? Array.Empty<int>();
+            }
+            return ReadSelectedGridRowIndexes();
+        }
+
+        private int[] ReadSelectedGridRowIndexes()
+        {
+            return _dataGridView.SelectedCells
+                .Cast<DataGridViewCell>()
+                .Select(c => c.RowIndex)
+                .Distinct()
+                .OrderBy(i => i)
+                .ToArray();
+        }
+    }
+
+    /// <summary>
+    /// The tables an operation has to be applied to and, for each of them, the rows to apply it to.
+    /// A null <see cref="RowIndexes"/> means every row of the table.
+    /// <para>
+    /// A list of these is how an operation expresses its scope, because the entry selected in the
+    /// files list is not necessarily one table: the "[ALL]" entry is several files at once.
+    /// </para>
+    /// </summary>
+    public sealed class TableRowPlan
+    {
+        public TableRowPlan(TableData table, int[] rowIndexes)
+        {
+            Table = table;
+            RowIndexes = rowIndexes;
+        }
+
+        /// <summary>
+        /// The table to apply the operation to.
+        /// </summary>
+        public TableData Table { get; }
+
+        /// <summary>
+        /// The rows of that table to apply it to, or null for every row of it.
+        /// </summary>
+        public int[] RowIndexes { get; }
     }
 
     /// <summary>
@@ -184,13 +275,11 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
             public int SelectedRowsCount { get; set; }
             public int SelectedRowsCountRest { get; set; }
 
-            public void Reset(TableData[] tables, int[] specificRows)
+            public void Reset(TableRowPlan[] plan)
             {
                 ParsedCount = 0;
-                TablesCount = tables.Length;
-                SelectedRowsCount = specificRows == null 
-                    ? tables.Sum(t => t.SelectedTable.Rows.Count) 
-                    : specificRows.Length * tables.Length;
+                TablesCount = plan.Length;
+                SelectedRowsCount = plan.Sum(entry => entry.RowIndexes?.Length ?? entry.Table.SelectedTable.Rows.Count);
                 SelectedRowsCountRest = SelectedRowsCount;
             }
 
@@ -359,36 +448,34 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
             if (tableData == null || !IsOkSelected(tableData))
                 return false;
 
-            return await ExecutePerTableAsync(new[] { tableData }, new[] { realRowIdx }).ConfigureAwait(false);
+            return await ExecutePlanAsync(new[] { new TableRowPlan(tableData, new[] { realRowIdx }) }).ConfigureAwait(false);
         }
 
         /// <summary>
-        /// Process multiple selected rows in the currently selected table.
+        /// Process the rows selected in the work table grid.
         /// </summary>
         /// <returns>True if any Apply() succeeded.</returns>
         internal async Task<bool> Rows()
         {
-            var tableIndexes = GetSelectedTableIndexes();
-            if (tableIndexes.Length != 1)
+            var plan = SelectionProvider.GetSelectedRowsPlan();
+            if (plan.Length == 0)
                 return false;
 
-            var tableData = new TableData(AllFiles.Tables[tableIndexes[0]], tableIndexes[0]);
-            if (!IsOkSelected(tableData))
+            if (plan.Length == 1 && !IsOkSelected(plan[0].Table))
                 return false;
 
-            var rowIndexes = GetSelectedRowIndexes(tableData);
-            if (rowIndexes.Length == 0)
-                return false;
+            // a selection that covers every row of the one table it touches is the whole table
+            if (plan.Length == 1 && plan[0].RowIndexes != null && plan[0].RowIndexes.Length == plan[0].Table.SelectedTable.Rows.Count)
+            {
+                plan = new[] { new TableRowPlan(plan[0].Table, null) };
+            }
 
-            // full table if all rows are selected
-            if (rowIndexes.Length == tableData.SelectedTable.Rows.Count)
-                rowIndexes = null;
-
-            return await ExecutePerTableAsync(new[] { tableData }, rowIndexes).ConfigureAwait(false);
+            return await ExecutePlanAsync(plan).ConfigureAwait(false);
         }
 
         /// <summary>
-        /// Process one or more user-selected tables fully.
+        /// Process one or more user-selected entries fully. The "[ALL]" entry stands for every file,
+        /// so selecting it applies the operation to all of them.
         /// </summary>
         /// <returns>True if any Apply() succeeded.</returns>
         internal async Task<bool> Table()
@@ -396,22 +483,17 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
             if (!IsOkAll())
                 return false;
 
-            var tables = GetSelectedTableIndexes()
-                .Select(idx => new TableData(AllFiles.Tables[idx], idx))
-                .ToArray();
-            if (tables.Length == 0)
+            var plan = GetSelectedEntriesPlan();
+            if (plan.Length == 0)
                 return false;
 
-            return await ExecutePerTableAsync(tables, null).ConfigureAwait(false);
+            return await ExecutePlanAsync(plan).ConfigureAwait(false);
         }
 
         /// <summary>
         /// Async wrapper for Table().
         /// </summary>
-        internal async Task<bool> TableT() => await ExecutePerTableAsync(
-            GetSelectedTableIndexes()
-                .Select(idx => new TableData(AllFiles.Tables[idx], idx))
-                .ToArray(), null).ConfigureAwait(false);
+        internal async Task<bool> TableT() => await ExecutePlanAsync(GetSelectedEntriesPlan()).ConfigureAwait(false);
 
         /// <summary>
         /// Process every table in the DataSet.
@@ -422,46 +504,64 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
             if (!IsOkAll())
                 return false;
 
-            var all = Enumerable.Range(0, AllFiles.Tables.Count)
-                .Select(idx => new TableData(AllFiles.Tables[idx], idx))
-                .ToArray();
-            return await ExecutePerTableAsync(all, null).ConfigureAwait(false);
+            return await ExecutePlanAsync(GetAllTablesPlan()).ConfigureAwait(false);
         }
 
         /// <summary>
         /// Async wrapper for All().
         /// </summary>
-        internal async Task<bool> AllT() => await ExecutePerTableAsync(
-            Enumerable.Range(0, AllFiles.Tables.Count)
-                .Select(idx => new TableData(AllFiles.Tables[idx], idx))
-                .ToArray(), null).ConfigureAwait(false);
+        internal async Task<bool> AllT() => await ExecutePlanAsync(GetAllTablesPlan()).ConfigureAwait(false);
+
+        /// <summary>
+        /// Whole-table plan for the entries selected in the files list.
+        /// </summary>
+        private TableRowPlan[] GetSelectedEntriesPlan()
+        {
+            return SelectionProvider.GetSelectedTableIndexes()
+                .Where(idx => idx >= 0 && idx < AllFiles.Tables.Count)
+                .Select(idx => new TableRowPlan(new TableData(AllFiles.Tables[idx], idx), null))
+                .ToArray();
+        }
+
+        /// <summary>
+        /// Whole-table plan for every table of the DataSet.
+        /// </summary>
+        private TableRowPlan[] GetAllTablesPlan()
+        {
+            return Enumerable.Range(0, AllFiles.Tables.Count)
+                .Select(idx => new TableRowPlan(new TableData(AllFiles.Tables[idx], idx), null))
+                .ToArray();
+        }
         #endregion
 
         #region Core execution
         /// <summary>
         /// Drives processing per table and per row.
         /// </summary>
-        private async Task<bool> ExecutePerTableAsync(TableData[] tables, int[] specificRowIndexes)
+        private async Task<bool> ExecutePlanAsync(TableRowPlan[] plan)
         {
             Ret = false;
-            ResetCounters(tables, specificRowIndexes);
+            ResetCounters(plan);
 
-            IsAll = specificRowIndexes == null && tables.Length == AllFiles.Tables.Count;
-            IsTables = specificRowIndexes == null && tables.Length > 1;
-            IsTable = specificRowIndexes == null && tables.Length == 1;
+            // "every row of every table", "every row of several tables" and "every row of one table"
+            // are still told apart, because the hooks and the completion sound depend on that.
+            bool wholeTables = plan.All(entry => entry.RowIndexes == null);
+            IsAll = wholeTables && plan.Length == AllFiles.Tables.Count;
+            IsTables = wholeTables && plan.Length > 1;
+            IsTable = wholeTables && plan.Length == 1;
 
             await ActionsInit().ConfigureAwait(false);
             if (IsTables)
                 await ActionsPreTablesApply().ConfigureAwait(false);
 
-            foreach (var tableData in tables)
+            foreach (var entry in plan)
             {
-                if (specificRowIndexes == null && !IsOkTable(tableData))
+                if (entry.RowIndexes == null && !IsOkTable(entry.Table))
                     continue;
 
-                await ActionsPreTableApply(tableData).ConfigureAwait(false);
-                await ExecuteRowsAsync(tableData, specificRowIndexes).ConfigureAwait(false);
-                await ActionsPostTableApply(tableData).ConfigureAwait(false);
+                await ActionsPreTableApply(entry.Table).ConfigureAwait(false);
+                await ExecuteRowsAsync(entry.Table, entry.RowIndexes).ConfigureAwait(false);
+                await ActionsPostTableApply(entry.Table).ConfigureAwait(false);
             }
 
             if (IsTables)
@@ -568,55 +668,87 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
         #endregion
 
         #region Helpers
-        private void ResetCounters(TableData[] tables, int[] specificRows)
+        private void ResetCounters(TableRowPlan[] plan)
         {
-            State.Reset(tables, specificRows);
+            State.Reset(plan);
         }
 
-        private int[] GetSelectedTableIndexes() => SelectionProvider.GetSelectedTableIndexes();
-        private int[] GetSelectedRowIndexes(TableData tableData) => SelectionProvider.GetSelectedRowIndexes(tableData);
-
+        /// <summary>
+        /// Work out which file table and row a single-row operation has to work on.
+        /// </summary>
+        /// <param name="row">Unused; the row is identified by the indexes.</param>
+        /// <param name="tableIndex">
+        /// Index in the project content of the table to work on, or -1 to use the entry selected in
+        /// the files list. That entry may be the "[ALL]" entry, in which case the row is resolved to
+        /// the file it was taken from.
+        /// </param>
+        /// <param name="rowIndex">Row of the work table grid, or -1 to use the selected one.</param>
+        /// <param name="tableData">The file table to work on, or null when it could not be resolved.</param>
+        /// <param name="realRowIdx">Index of the row in that file table.</param>
         private void ResolveSingleContext(DataRow row, ref int tableIndex, ref int rowIndex,
             out TableData tableData, out int realRowIdx)
         {
             tableData = null;
             realRowIdx = -1;
+
+            if (rowIndex < 0 && !TryGetSingleSelectedGridRowIndex(out rowIndex)) return;
+
             if (tableIndex < 0)
             {
-                int i = -1;
+                int listIndex = -1;
                 if (FilesList.InvokeRequired)
                 {
-                    FilesList.Invoke((Action)(() => i = FilesList.SelectedIndex));
+                    FilesList.Invoke((Action)(() => listIndex = FilesList.SelectedIndex));
                 }
                 else
                 {
-                    i = FilesList.SelectedIndex;
+                    listIndex = FilesList.SelectedIndex;
                 }
-                if (i < 0) return;
-                tableIndex = i;
-            }
-            if (tableIndex < 0 || tableIndex >= AllFiles.Tables.Count)
-                return;
-            var table = AllFiles.Tables[tableIndex];
-            tableData = new TableData(table, tableIndex);
+                if (listIndex < 0) return;
 
-            if (rowIndex < 0)
+                var entryTable = AppData.FilesListContent?.GetTable(listIndex);
+                if (entryTable == null) return;
+
+                var entryRowIndex = entryTable.GetRealRowIndex(rowIndex);
+                if (entryRowIndex < 0) return;
+
+                if (!AppData.FilesListContent.TryResolveRow(listIndex, entryRowIndex, out tableIndex, out realRowIdx)) return;
+            }
+            else
             {
-                int[] selected;
-                if (WorkTableDatagridView.InvokeRequired)
-                {
-                    selected = null;
-                    WorkTableDatagridView.Invoke((Action)(() => selected = WorkTableDatagridView.GetSelectedRowsIndexes().ToArray()));
-                }
-                else
-                {
-                    selected = WorkTableDatagridView.GetSelectedRowsIndexes().ToArray();
-                }
-                if (selected == null || selected.Length != 1) return;
-                rowIndex = selected[0];
+                // a table was given, so the row index is already a row of it
+                if (tableIndex >= AllFiles.Tables.Count) return;
+
+                realRowIdx = AllFiles.Tables[tableIndex].GetRealRowIndex(rowIndex);
             }
 
-            realRowIdx = FunctionsTable.GetRealRowIndex(tableIndex, rowIndex);
+            if (tableIndex < 0 || tableIndex >= AllFiles.Tables.Count || realRowIdx < 0) return;
+
+            tableData = new TableData(AllFiles.Tables[tableIndex], tableIndex);
+        }
+
+        /// <summary>
+        /// The one row selected in the work table grid, when exactly one row is selected.
+        /// </summary>
+        private bool TryGetSingleSelectedGridRowIndex(out int gridRowIndex)
+        {
+            gridRowIndex = -1;
+
+            int[] selected;
+            if (WorkTableDatagridView.InvokeRequired)
+            {
+                selected = null;
+                WorkTableDatagridView.Invoke((Action)(() => selected = WorkTableDatagridView.GetSelectedRowsIndexes().ToArray()));
+            }
+            else
+            {
+                selected = WorkTableDatagridView.GetSelectedRowsIndexes().ToArray();
+            }
+
+            if (selected == null || selected.Length != 1) return false;
+
+            gridRowIndex = selected[0];
+            return true;
         }
         #endregion
     }

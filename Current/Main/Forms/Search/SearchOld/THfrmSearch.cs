@@ -327,13 +327,26 @@ namespace TranslationHelper
         private IEnumerable<(DataTable Table, DataRow Row)> GetRowsToSearch()
         {
             bool searchInSelected = SearchRangeSelectedRadioButton.Checked || SearchRangeVisibleRadioButton.Checked;
-            int startIndex = SearchRangeTableRadioButton.Checked || searchInSelected ? _filesList.SelectedIndex : 0;
-            int endIndex = SearchRangeTableRadioButton.Checked || searchInSelected ? _filesList.SelectedIndex + 1 : _tables.Count;
+
+            int startIndex = 0;
+            int endIndex = _tables.Count;
+
+            if (SearchRangeTableRadioButton.Checked || searchInSelected)
+            {
+                // The selection may be the "[ALL]" entry, which covers every file, or a file entry,
+                // which covers its own table. Both come back as table indexes from the content index.
+                var selectedTableIndexes = AppData.FilesListContent.GetTableIndexes(_filesList.SelectedIndex);
+                if (selectedTableIndexes.Length > 0)
+                {
+                    startIndex = selectedTableIndexes[0];
+                    endIndex = selectedTableIndexes[selectedTableIndexes.Length - 1] + 1;
+                }
+            }
 
             for (int i = startIndex; i < endIndex; i++)
             {
                 var table = _tables[i];
-                HashSet<int> selectedRowIndices = searchInSelected ? FunctionsTable.GetDGVRowsIndexesHashesInDT(i, SearchRangeVisibleRadioButton.Checked) : null;
+                HashSet<int> selectedRowIndices = searchInSelected ? FunctionsTable.GetDGVRowsIndexesHashesInDT(_filesList.SelectedIndex, SearchRangeVisibleRadioButton.Checked) : null;
 
                 foreach (DataRow row in table.Rows)
                 {
@@ -415,7 +428,7 @@ namespace TranslationHelper
         private void THSearch_Load(object sender, EventArgs e)
         {
             Height = SearchResultsWindowNormalHeight;
-            _selectedTableIndex = _filesList.SelectedIndex;
+            _selectedTableIndex = AppData.FilesListContent.GetTableIndex(_filesList.SelectedIndex);
             LoadSearchQueriesReplacers();
             chkbxDoNotTouchEqualOT.Checked = AppSettings.IgnoreOrigEqualTransLines;
         }
@@ -471,7 +484,7 @@ namespace TranslationHelper
                 tableDefaultView.Sort = string.Empty;
                 _workFileDgv.Refresh();
 
-                FunctionsTable.ShowSelectedRow(AppData.Main.THFileElementsDataGridView, _selectedTableIndex, _selectedRowIndex, SearchColumnIndex);
+                FunctionsTable.ShowSelectedRow(AppData.Main.THFileElementsDataGridView, AppData.FilesListContent.GetListIndex(_selectedTableIndex), _selectedRowIndex, SearchColumnIndex);
                 if (_workFileDgv.CurrentCell != null)
                 {
                     await Task.Run(() => SelectTextInTextBox(_workFileDgv.CurrentCell.Value.ToString())).ConfigureAwait(false);
@@ -504,7 +517,7 @@ namespace TranslationHelper
             }
 
             var foundRow = _foundRowsEnum.Current;
-            _filesList.SelectedIndex = foundRow.TableIndex;
+            _filesList.SelectedIndex = AppData.FilesListContent.GetListIndex(foundRow.TableIndex);
             _workFileDgv.DataSource = _tables[foundRow.TableIndex];
             _workFileDgv.CurrentCell = _workFileDgv[SearchColumnIndex, foundRow.RowIndex];
         }
@@ -574,9 +587,10 @@ namespace TranslationHelper
             var foundRowData = _foundRowsList[_startRowSearchIndex];
             (_selectedTableIndex, _selectedRowIndex) = (foundRowData.TableIndex, foundRowData.RowIndex);
 
-            if (_selectedTableIndex != _filesList.SelectedIndex)
+            var foundListIndex = AppData.FilesListContent.GetListIndex(_selectedTableIndex);
+            if (foundListIndex != _filesList.SelectedIndex)
             {
-                _filesList.SelectedIndex = _selectedTableIndex;
+                _filesList.SelectedIndex = foundListIndex;
                 _workFileDgv.DataSource = _tables[_selectedTableIndex];
             }
 

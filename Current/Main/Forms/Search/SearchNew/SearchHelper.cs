@@ -223,7 +223,7 @@ namespace TranslationHelper.Forms.Search
                 tableDefaultView.Sort = string.Empty;
                 _workFileDgv.Refresh();
 
-                FunctionsTable.ShowSelectedRow(AppData.Main.THFileElementsDataGridView, _selectedTableIndex, _selectedRowIndex, selectedCellColumnIndex);
+                FunctionsTable.ShowSelectedRow(AppData.Main.THFileElementsDataGridView, AppData.FilesListContent.GetListIndex(_selectedTableIndex), _selectedRowIndex, selectedCellColumnIndex);
                 //if (_workFileDgv.CurrentCell != null)
                 //{
                 //    await Task.Run(() => SelectTextInTextBox(_workFileDgv.CurrentCell.Value.ToString())).ConfigureAwait(false);

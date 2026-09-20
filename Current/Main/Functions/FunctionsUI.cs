@@ -67,19 +67,23 @@ namespace TranslationHelper.Functions
 
                 BindTextBoxesOriginalTranslation();
 
-                var tableIndex = AppSettings.THFilesListSelectedIndex = AppData.Main.THFilesList.GetSelectedIndex();
-                if (tableIndex == -1) return;
+                var listIndex = AppSettings.THFilesListSelectedIndex = AppData.Main.THFilesList.GetSelectedIndex();
+                if (listIndex == -1) return;
 
                 var columnIndex = AppSettings.DGVSelectedColumnIndex = AppData.Main.THFileElementsDataGridView.CurrentCell.ColumnIndex;
                 if (columnIndex == -1) return;
 
-                var rowIndex = AppSettings.DGVSelectedRowIndex = AppData.Main.THFileElementsDataGridView.CurrentCell.RowIndex;
-                if (rowIndex == -1) return;
+                var gridRowIndex = AppSettings.DGVSelectedRowIndex = AppData.Main.THFileElementsDataGridView.CurrentCell.RowIndex;
+                if (gridRowIndex == -1) return;
 
-                var realrowIndex = AppSettings.DGVSelectedRowRealIndex = FunctionsTable.GetRealRowIndex(tableIndex, rowIndex);
+                var realrowIndex = AppSettings.DGVSelectedRowRealIndex = FunctionsTable.GetRealRowIndex(listIndex, gridRowIndex);
                 if (realrowIndex == -1) return;
 
-                UpdateRowInfo(tableIndex, columnIndex, realrowIndex);
+                // The row info describes the file the row came from, which for the [ALL] entry is not
+                // the displayed table.
+                if (!AppData.FilesListContent.TryResolveRow(listIndex, realrowIndex, out var tableIndex, out var infoRowIndex)) return;
+
+                UpdateRowInfo(tableIndex, columnIndex, gridRowIndex, infoRowIndex);
             }
             catch (Exception ex)
             {
@@ -99,19 +103,36 @@ namespace TranslationHelper.Functions
             AppData.Main.THTargetRichTextBox.DataBindings.Add(new Binding("Text", AppData.Main.THFileElementsDataGridView[AppData.CurrentProject.TranslationColumnIndex, rowIndex], "Value", false));
         }
 
-        private static void UpdateRowInfo(int tableIndex, int columnIndex, int rowIndex)
+        /// <summary>
+        /// Show the info of the selected cell.
+        /// </summary>
+        /// <param name="tableIndex">
+        /// Index in <see cref="TranslationHelper.Projects.ProjectBase.FilesContentInfo"/> of the file
+        /// the selected row came from.
+        /// </param>
+        /// <param name="columnIndex">Column of the selected cell in the work table grid.</param>
+        /// <param name="gridRowIndex">Row of the selected cell in the work table grid.</param>
+        /// <param name="infoRowIndex">
+        /// Row of the cell in the file's own table. It differs from <paramref name="gridRowIndex"/>
+        /// when the grid shows the table sorted or filtered, and for the "[ALL]" entry it is always
+        /// resolved from the file the row was copied from.
+        /// </param>
+        private static void UpdateRowInfo(int tableIndex, int columnIndex, int gridRowIndex, int infoRowIndex)
         {
             string selectedCellValue;
-            if ((selectedCellValue = AppData.Main.THFileElementsDataGridView.Rows[rowIndex].Cells[columnIndex].Value + string.Empty).Length == 0)
+            if ((selectedCellValue = AppData.Main.THFileElementsDataGridView.Rows[gridRowIndex].Cells[columnIndex].Value + string.Empty).Length == 0)
             {
                 return;
             }
 
             AppData.Main.THInfoTextBox.Text = string.Empty;
 
-            if (AppData.CurrentProject.FilesContentInfo != null && AppData.CurrentProject.FilesContentInfo.Tables.Count > tableIndex && AppData.CurrentProject.FilesContentInfo.Tables[tableIndex].Rows.Count > rowIndex)
+            if (AppData.CurrentProject.FilesContentInfo != null
+                && tableIndex >= 0
+                && AppData.CurrentProject.FilesContentInfo.Tables.Count > tableIndex
+                && AppData.CurrentProject.FilesContentInfo.Tables[tableIndex].Rows.Count > infoRowIndex)
             {
-                AppData.Main.THInfoTextBox.Text += T._("rowinfo:") + Environment.NewLine + AppData.CurrentProject.FilesContentInfo.Tables[tableIndex].Rows[rowIndex][0];
+                AppData.Main.THInfoTextBox.Text += T._("rowinfo:") + Environment.NewLine + AppData.CurrentProject.FilesContentInfo.Tables[tableIndex].Rows[infoRowIndex][0];
             }
 
             AppData.Main.THInfoTextBox.Text += Environment.NewLine + T._("Selected bytes length") + ":" + " UTF8" + "=" + Encoding.UTF8.GetByteCount(selectedCellValue) + "/932" + "=" + Encoding.GetEncoding(932).GetByteCount(selectedCellValue);
@@ -280,9 +301,21 @@ namespace TranslationHelper.Functions
 
                 if (AppData.Main.THFilesList.GetSelectedIndex() > -1)
                 {
-                    AppSettings.THFilesListSelectedIndex = AppData.Main.THFilesList.GetSelectedIndex();
+                    var listIndex = AppSettings.THFilesListSelectedIndex = AppData.Main.THFilesList.GetSelectedIndex();
 
-                    BindToDataTableGridView(AppData.CurrentProject.FilesContent.Tables[AppSettings.THFilesListSelectedIndex]);
+                    // The [ALL] entry is a view over the files: its content is rebuilt from them
+                    // before it is shown, and kept in step with them while it stays shown.
+                    if (AppData.FilesListContent.IsAllEntry(listIndex))
+                    {
+                        AppData.FilesListContent.Refresh();
+                        AppData.FilesListContent.AttachToFiles();
+                    }
+                    else
+                    {
+                        AppData.FilesListContent.DetachFromFiles();
+                    }
+
+                    BindToDataTableGridView(AppData.FilesListContent.GetTable(listIndex));
                 }
 
                 FunctionsUI.ShowNonEmptyRowsCount(AppData.Main.TableCompleteInfoLabel);//Show how many rows have translation
@@ -320,44 +353,25 @@ namespace TranslationHelper.Functions
             }
         }
 
+        /// <summary>
+        /// Bind <paramref name="DT"/> to the work table grid. The table comes from
+        /// <see cref="FilesListContent"/>, so it is the file of the selected entry, or the aggregate
+        /// content of every file when the "[ALL]" entry is selected.
+        /// </summary>
+        /// <param name="DT"></param>
         public static void BindToDataTableGridView(DataTable DT)
         {
             if (AppData.Main.THFilesList != null && AppData.Main.THFilesList.GetSelectedIndex() > -1 && DT != null)//вторая попытка исправить исключение при выборе элемента списка
             {
                 try
                 {
-                    if (DT.TableName == "[ALL]" && AppData.CurrentProject.FilesContent.Tables.Count > 1)
-                    {
-                        //отображение содержимого всех таблиц в одной
-                        //https://stackoverflow.com/questions/11099619/how-to-bind-dataset-to-datagridview-in-windows-application
-                        //int ThisInd = THFilesList.GetSelectedIndex();
-                        //using (DataTable dtnew = ProjectData.THFilesElementsDataset.Tables[0].Copy())
-                        //{
-                        //    for (var i = 1; i < ProjectData.THFilesElementsDataset.Tables.Count; i++)
-                        //    {
-                        //        if (i!= ThisInd)
-                        //        {
-                        //            dtnew.Merge(ProjectData.THFilesElementsDataset.Tables[i]);
-                        //        }
-                        //    }
+                    AppData.Main.THFileElementsDataGridView.DataSource = DT;
 
-                        //    THFileElementsDataGridView.AutoGenerateColumns = true;
-
-                        //    DT.Clear();
-                        //    DT.Merge(dtnew);
-                        //    THFileElementsDataGridView.DataSource = DT;
-                        //}
-                    }
-                    else
-                    {
-                        AppData.Main.THFileElementsDataGridView.DataSource = DT;
-
-                        //во время прокрутки DGV чернела полоса прокрутки и в результате было получено исключение
-                        //добавил это для возможного фикса
-                        //https://fooobar.com/questions/1404812/datagridview-scrollbar-throwing-argumentoutofrange-exception
-                        //upd. не исправляет проблему для этого dgv. возможно это dgv фильтров
-                        AppData.Main.THFileElementsDataGridView.PerformLayout();
-                    }
+                    //во время прокрутки DGV чернела полоса прокрутки и в результате было получено исключение
+                    //добавил это для возможного фикса
+                    //https://fooobar.com/questions/1404812/datagridview-scrollbar-throwing-argumentoutofrange-exception
+                    //upd. не исправляет проблему для этого dgv. возможно это dgv фильтров
+                    AppData.Main.THFileElementsDataGridView.PerformLayout();
                 }
                 catch
                 {

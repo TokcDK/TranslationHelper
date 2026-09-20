@@ -273,9 +273,14 @@ namespace TranslationHelper.Functions
                 project.FilesContentInfo.Tables.Clear();
                 project.FilesContentInfo.Tables.AddRange(sortedtablesinfo);
 
-                foreach (DataTable table in project.FilesContent.Tables)
+                // The [ALL] entry presents every file at once and is always the first entry of the
+                // list, so the content index has to be built from the final table order before the
+                // list is filled.
+                AppData.FilesListContent.Initialize();
+
+                foreach (var entryName in AppData.FilesListContent.GetEntryNames())
                 {
-                    AppData.Main.THFilesList.AddItem(table.TableName);
+                    AppData.Main.THFilesList.AddItem(entryName);
                 }
             }
 

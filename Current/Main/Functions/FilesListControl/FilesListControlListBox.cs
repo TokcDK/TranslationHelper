@@ -135,6 +135,10 @@ namespace TranslationHelper.Functions.FilesListControl
                 string text = _listBox.GetItemNameWithIndex(index);
                 Graphics g = e.Graphics;
 
+                // the entry presents a file, or every file at once for the "[ALL]" entry
+                var table = AppData.FilesListContent?.GetTable(index);
+                bool isComplete = table != null && FunctionsTable.IsTableColumnCellsAll(table);
+
                 //background:
                 SolidBrush backgroundBrush;
                 if (selected)
@@ -143,25 +147,11 @@ namespace TranslationHelper.Functions.FilesListControl
                 }
                 else if ((index % 2) == 0)
                 {
-                    if (FunctionsTable.IsTableColumnCellsAll(AppData.CurrentProject.FilesContent.Tables[e.Index]))
-                    {
-                        backgroundBrush = ListBoxItemBackgroundBrush1Complete;
-                    }
-                    else
-                    {
-                        backgroundBrush = ListBoxItemBackgroundBrush1;
-                    }
+                    backgroundBrush = isComplete ? ListBoxItemBackgroundBrush1Complete : ListBoxItemBackgroundBrush1;
                 }
                 else
                 {
-                    if (FunctionsTable.IsTableColumnCellsAll(AppData.CurrentProject.FilesContent.Tables[e.Index]))
-                    {
-                        backgroundBrush = ListBoxItemBackgroundBrush2Complete;
-                    }
-                    else
-                    {
-                        backgroundBrush = ListBoxItemBackgroundBrush2;
-                    }
+                    backgroundBrush = isComplete ? ListBoxItemBackgroundBrush2Complete : ListBoxItemBackgroundBrush2;
                 }
 
                 g.FillRectangle(backgroundBrush, e.Bounds);

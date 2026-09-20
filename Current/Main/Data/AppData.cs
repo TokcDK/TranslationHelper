@@ -29,6 +29,10 @@ namespace TranslationHelper.Data
 
             FilesListControl = new FilesListControlListBox(); // set using files list control
 
+            // Relates the entries of the files list to the content they present. Reads the current
+            // project on every use, so one instance serves every project opened in this session.
+            FilesListContent = new FilesListContent(() => CurrentProject?.FilesContent);
+
             SelectedProjectFilePath = string.Empty;
 
             ProjectsList = ProjectTools.GetListOfProjectTypes();
@@ -117,6 +121,13 @@ namespace TranslationHelper.Data
         /// Files list using now control
         /// </summary>
         internal static FilesListControlBase FilesListControl;
+
+        /// <summary>
+        /// Relates an entry index of the files list to the content that entry presents. The list holds
+        /// one entry per file of the opened project, preceded by the "[ALL]" entry which presents all
+        /// of them at once.
+        /// </summary>
+        internal static FilesListContent FilesListContent;
 
         /// <summary>
         /// Files list

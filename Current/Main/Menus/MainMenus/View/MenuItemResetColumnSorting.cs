@@ -24,7 +24,10 @@ namespace TranslationHelper.Menus.MainMenus.Edit
 
         public override void OnClick(object sender, EventArgs e)
         {
-            AppData.CurrentProject.FilesContent.Tables[AppData.Main.THFilesList.GetSelectedIndex()].DefaultView.Sort = string.Empty;
+            var table = AppData.FilesListContent?.GetTable(AppData.Main.THFilesList.GetSelectedIndex());
+            if (table == null) return;
+
+            table.DefaultView.Sort = string.Empty;
         }
     }
 }

@@ -49,6 +49,7 @@ namespace TranslationHelper.Data
                 FunctionsUI.ControlsSwitchActivated = false;
 
                 //Clean data
+                AppData.FilesListContent.Reset(); // drop the [ALL] entry and its content
                 AppData.Main.THFilesList.Items.Clear();
                 //ProjectData.CurrentProject.FilesContent.Reset();
                 //ProjectData.CurrentProject.FilesContentInfo.Reset();

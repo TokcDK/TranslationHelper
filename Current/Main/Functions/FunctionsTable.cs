@@ -28,8 +28,8 @@ namespace TranslationHelper.Main.Functions
         {
             //int[] selindexes = new int[ProjectData.Main.THFileElementsDataGridView.GetCountOfRowsWithSelectedCellsCount()];
 
-            var tableIndex = 0;
-            AppData.Main.Invoke((Action)(() => tableIndex = AppData.Main.THFilesList.GetSelectedIndex()));
+            var listIndex = 0;
+            AppData.Main.Invoke((Action)(() => listIndex = AppData.Main.THFilesList.GetSelectedIndex()));
 
             int[] selindexes = GetRowIndexesOfSelectedDGVCells(AppData.Main.THFileElementsDataGridView.SelectedCells);
             var selindexesLength = selindexes.Length;
@@ -44,7 +44,7 @@ namespace TranslationHelper.Main.Functions
                 //DataGridViewRow to DataRow: https://stackoverflow.com/questions/1822314/how-do-i-get-a-datarow-from-a-row-in-a-datagridview
                 //DataRow row = ((DataRowView)THFileElementsDataGridView.SelectedCells[i].OwningRow.DataBoundItem).Row;
                 //int index = THFilesElementsDataset.Tables[tableindex].Rows.IndexOf(row);
-                selindexes[i] = GetRealRowIndex(tableIndex, selindexes[i]);
+                selindexes[i] = GetRealRowIndex(listIndex, selindexes[i]);
 
                 //selindexes[i] = THFileElementsDataGridView.SelectedCells[i].RowIndex;
             }
@@ -88,7 +88,7 @@ namespace TranslationHelper.Main.Functions
                     if (string.IsNullOrEmpty(cellValue))
                     {
                         int columnIndex = table.Columns.IndexOf(translationColumnName);
-                        ShowSelectedRow(AppData.Main.THFileElementsDataGridView, t, r, columnIndex);
+                        ShowSelectedRow(AppData.Main.THFileElementsDataGridView, AppData.FilesListContent.GetListIndex(t), r, columnIndex);
                         return;
                     }
                 }
@@ -98,36 +98,36 @@ namespace TranslationHelper.Main.Functions
         /// <summary>
         /// shows selected row in selected table
         /// </summary>
-        /// <param name="projectData"></param>s
-        /// <param name="tableIndex"></param>
-        /// <param name="selectedCellColumnIndex"></param>
+        /// <param name="dataGridView"></param>
+        /// <param name="listIndex">
+        /// Index of the entry in the files list whose table has to be shown, not an index in
+        /// <see cref="TranslationHelper.Projects.ProjectBase.FilesContent"/>.
+        /// </param>
         /// <param name="rowIndex"></param>
-        internal static void ShowSelectedRow(DataGridView dataGridView, int tableIndex, int rowIndex, int selectedCellColumnIndex = 0)
+        /// <param name="selectedCellColumnIndex"></param>
+        internal static void ShowSelectedRow(DataGridView dataGridView, int listIndex, int rowIndex, int selectedCellColumnIndex = 0)
         {
-            if (tableIndex < 0 || rowIndex < 0 || selectedCellColumnIndex < 0
-                || tableIndex >= AppData.CurrentProject.FilesContent.Tables.Count
-                || rowIndex >= AppData.CurrentProject.FilesContent.Tables[tableIndex].Rows.Count)
+            var table = AppData.FilesListContent?.GetTable(listIndex);
+            if (table == null || rowIndex < 0 || selectedCellColumnIndex < 0 || rowIndex >= table.Rows.Count)
             {
                 return;
             }
 
-            selectedCellColumnIndex = selectedCellColumnIndex < 0 || selectedCellColumnIndex > AppData.CurrentProject.FilesContent.Tables[tableIndex].Columns.Count 
-                ? 0 : selectedCellColumnIndex;
+            selectedCellColumnIndex = selectedCellColumnIndex > table.Columns.Count ? 0 : selectedCellColumnIndex;
 
             int rowsCount = 0;//for debug purposes
             try
             {
                 // reset any filters
-                var table = AppData.CurrentProject.FilesContent.Tables[tableIndex];
                 ResetDataTableFilters(table);
 
                 rowsCount = table.Rows.Count;
                 var filesList = AppData.Main.THFilesList;
 
-                if (tableIndex != filesList.GetSelectedIndex() || rowsCount == 0 || dataGridView.DataSource != table)
+                if (listIndex != filesList.GetSelectedIndex() || rowsCount == 0 || dataGridView.DataSource != table)
                 {
                     // bind the required datatable as selected table
-                    filesList.SetSelectedIndex(tableIndex);
+                    filesList.SetSelectedIndex(listIndex);
                     dataGridView.DataSource = table;
                 }
 
@@ -142,7 +142,7 @@ namespace TranslationHelper.Main.Functions
             }
             catch (Exception ex)
             {
-                string error = "Error:" + Environment.NewLine + ex + Environment.NewLine + "rowIndex=" + rowIndex + Environment.NewLine + "tableIndex=" + tableIndex + Environment.NewLine + "table rows count=" + rowsCount;
+                string error = "Error:" + Environment.NewLine + ex + Environment.NewLine + "rowIndex=" + rowIndex + Environment.NewLine + "listIndex=" + listIndex + Environment.NewLine + "table rows count=" + rowsCount;
                 Logger.Error(error);
             }
         }
@@ -236,21 +236,31 @@ namespace TranslationHelper.Main.Functions
         /// <summary>
         /// Return real row index in Datatable for Datagridviev cell
         /// </summary>
-        /// <param name="tableIndex"></param>
+        /// <param name="listIndex">
+        /// Index of the entry in the files list, not an index in
+        /// <see cref="TranslationHelper.Projects.ProjectBase.FilesContent"/>. The two are different
+        /// numbers because the list starts with the "[ALL]" entry.
+        /// </param>
         /// <param name="rowIndex"></param>
         /// <returns></returns>
-        public static int GetRealRowIndex(int tableIndex, int rowIndex)
+        public static int GetRealRowIndex(int listIndex, int rowIndex)
         {
-            return AppData.CurrentProject.FilesContent.Tables[tableIndex].GetRealRowIndex(rowIndex);
+            var table = AppData.FilesListContent?.GetTable(listIndex);
+            if (table == null) return -1;
+
+            return table.GetRealRowIndex(rowIndex);
         }
 
         /// <summary>
         /// get Hashes of row indexes for selected/visible rows
         /// </summary>
-        /// <param name="tableindex"></param>
+        /// <param name="listIndex">
+        /// Index of the entry in the files list whose table is displayed, not an index in
+        /// <see cref="TranslationHelper.Projects.ProjectBase.FilesContent"/>.
+        /// </param>
         /// <param name="isVisible">set to true if need to search in visible rows</param>
         /// <returns></returns>
-        internal static HashSet<int> GetDGVRowsIndexesHashesInDT(int tableindex, bool isVisible = false)
+        internal static HashSet<int> GetDGVRowsIndexesHashesInDT(int listIndex, bool isVisible = false)
         {
             DataGridView dgv = null;
             AppData.Main.Invoke((Action)(() => dgv = AppData.Main.THFileElementsDataGridView));
@@ -265,7 +275,7 @@ namespace TranslationHelper.Main.Functions
                         continue;
                     }
 
-                    selected.Add(GetRealRowIndex(tableindex, row.Index));
+                    selected.Add(GetRealRowIndex(listIndex, row.Index));
                 }
             }
             else
@@ -275,7 +285,7 @@ namespace TranslationHelper.Main.Functions
                     var rowindex = dgv.SelectedCells[i].RowIndex;
                     if (!selected.Contains(rowindex))
                     {
-                        selected.Add(GetRealRowIndex(tableindex, rowindex));
+                        selected.Add(GetRealRowIndex(listIndex, rowindex));
                     }
                 }
             }
