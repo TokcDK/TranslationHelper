@@ -341,3 +341,6 @@ healthchecksdb
 /TranslationHelper/scripter.cs
 /RPGRewriter.lnk
 /структура.png
+.workbuddy-ai/
+packages/
+/changes.md
