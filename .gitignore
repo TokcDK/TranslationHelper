@@ -343,5 +343,4 @@ healthchecksdb
 /структура.png
 .workbuddy-ai/
 packages/
-/changes.md
-/current-sor-changes.md
+/current-*-changes.md
