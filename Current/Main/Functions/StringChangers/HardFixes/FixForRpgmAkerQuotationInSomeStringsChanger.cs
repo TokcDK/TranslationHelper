@@ -20,6 +20,11 @@ namespace TranslationHelper.Functions.StringChangers.HardFixes
             bool cvalueStartsWith = newtransValue.StartsWith("\"");
             bool cvalueEndsWith = newtransValue.EndsWith("\"");
             var origValue = extraData as string;
+            if (origValue == null)
+            {
+                return inputString;
+            }
+
             if (
                  //если оригинал начинается и кончается на ", а в переводе " отсутствует на начале или конце
                  origValue.StartsWith("\"") && origValue.EndsWith("\"") && (!cvalueStartsWith || !cvalueEndsWith)

@@ -6,18 +6,25 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row.SearchIssueCheck
     {
         public override string Description => "Check internal quote unescaped";
 
+        /// <summary>
+        /// Quote characters the check looks for. Shared because the previous per call array allocation
+        /// happened once per row.
+        /// </summary>
+        private static readonly char[] Quotes = { '"', '\'' };
+
         public override bool IsHaveTheIssue(SearchIssueCheckerData data)
         {
-            return IsHaveInternalUnescapedQuote(data.Translation.Trim());
+            //A null translation (a DBNull cell) has no internal quote to report.
+            return IsHaveInternalUnescapedQuote((data.Translation ?? string.Empty).Trim());
         }
 
         private bool IsHaveInternalUnescapedQuote(string t)
         {
             var tLen = t.Length;
-            if (tLen < 3) return false; // atleast 4 chars   
+            if (tLen < 3) return false; // at least 3 chars   
 
             var tLastIndex = tLen - 1;
-            foreach (var quote in new[] { '"', '\'' })
+            foreach (var quote in Quotes)
             {
                 if (t[0] != quote || t[tLastIndex] != quote) continue;
 

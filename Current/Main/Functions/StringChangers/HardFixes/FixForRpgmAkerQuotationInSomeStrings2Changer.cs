@@ -40,6 +40,8 @@ namespace TranslationHelper.Functions.StringChangers.HardFixes
             };
 
             var original = extraData as string;
+            if (original == null) return inputString;
+
             foreach (var quote in quotes)
             {
                 if (original.TrimStart().StartsWith(quote[0]) && original.TrimEnd().EndsWith(quote[1]))
@@ -47,7 +49,10 @@ namespace TranslationHelper.Functions.StringChangers.HardFixes
                     string translationTrimStart = translation.TrimStart();
                     if (!translationTrimStart.StartsWith(quote[0]))
                     {
-                        string translationOnlyWhatWasTrimmedOnStart = translation.Replace(translationTrimStart, string.Empty);
+                        //The trimmed off part is exactly the prefix which TrimStart removed. Substring is
+                        //used instead of Replace because Replace throws ArgumentException for an empty
+                        //oldValue, which is what an empty or whitespace only translation produced.
+                        string translationOnlyWhatWasTrimmedOnStart = translation.Substring(0, translation.Length - translationTrimStart.Length);
                         if (translationTrimStart.StartsWith("''"))
                         {
                             translation = translationOnlyWhatWasTrimmedOnStart + quote[0] + translationTrimStart.Remove(0, 2);
@@ -67,19 +72,16 @@ namespace TranslationHelper.Functions.StringChangers.HardFixes
                     string translationTrimEnd = translation.TrimEnd();
                     if (!translationTrimEnd.EndsWith(quote[1]))
                     {
-                        string translationOnlyWhatWasTrimmedOnEnd = translation.Replace(translationTrimEnd, string.Empty);
+                        //The trimmed off part is exactly the suffix which TrimEnd removed; see the note above.
+                        string translationOnlyWhatWasTrimmedOnEnd = translation.Substring(translationTrimEnd.Length);
                         if (translationTrimEnd.EndsWith("''"))
                         {
                             translation = translationTrimEnd.Remove(translationTrimEnd.Length - 2, 2) + quote[1] + translationOnlyWhatWasTrimmedOnEnd;
                             ret = true;
                         }
-                        else if (translationTrimEnd.EndsWith("'") || translationTrimEnd.EndsWith("\"") || translationTrimEnd.EndsWith("“"))
-                        {
-                            translation = translationTrimEnd.Remove(translationTrimEnd.Length - 1, 1) + quote[1] + translationOnlyWhatWasTrimmedOnEnd;
-                            ret = true;
-                        }
                         else
                         {
+                            //ends with a single quote or with anything else: the last character is replaced
                             translation = translationTrimEnd.Remove(translationTrimEnd.Length - 1, 1) + quote[1] + translationOnlyWhatWasTrimmedOnEnd;
                             ret = true;
                         }

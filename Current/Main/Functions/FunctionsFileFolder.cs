@@ -9,13 +9,20 @@ namespace TranslationHelper.Main.Functions
     internal static class FunctionsFileFolder
     {
         /// <summary>
+        /// Characters which are not allowed in a file or folder name. Cached because
+        /// <see cref="Path.GetInvalidFileNameChars"/> builds a new array on every call.
+        /// </summary>
+        private static readonly char[] InvalidFileNameChars = Path.GetInvalidFileNameChars();
+
+        /// <summary>
         /// true when input text has invalid chars and cant be used in dir/file path
         /// </summary>
         /// <param name="text"></param>
         /// <returns></returns>
         internal static bool HasInvalidChars(string text)
         {
-            return text.Intersect(Path.GetInvalidFileNameChars()).Any();//invalid file/folder name;
+            //invalid file/folder name
+            return text.IndexOfAny(InvalidFileNameChars) != -1;
         }
 
         /// <summary>
@@ -25,8 +32,6 @@ namespace TranslationHelper.Main.Functions
         /// <returns></returns>
         internal static bool FileInUse(string path)
         {
-            //FileStream stream = null;
-
             if (!File.Exists(path)) return false;
 
             try
@@ -39,13 +44,6 @@ namespace TranslationHelper.Main.Functions
             {
                 return true;
             }
-            //finally
-            //{
-            //    if (stream != null)
-            //    {
-            //        stream.Close();
-            //    }
-            //}
 
             return false;
         }
@@ -114,10 +112,9 @@ namespace TranslationHelper.Main.Functions
                 det.Detect(stream);
             }
             var encoding = det.Complete();
-            var hasbom = det.HasByteOrderMark;
-            if (encoding == Encoding.UTF8 && !hasbom)
+            if (encoding == Encoding.UTF8 && !det.HasByteOrderMark)
             {
-                return new UTF8Encoding(hasbom);//UTF8 no bom
+                return new UTF8Encoding(false);//UTF8 without bom
             }
             return encoding;
         }

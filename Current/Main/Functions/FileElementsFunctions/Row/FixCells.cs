@@ -17,13 +17,18 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
             return CellFixes(rowData);
         }
 
-        private bool CellFixes(RowBaseRowData rowData)
+        /// <summary>
+        /// Maximum number of attempts when the rules collection changes while it is being iterated.
+        /// </summary>
+        private const int CellFixesMaxAttempts = 3;
+
+        private bool CellFixes(RowBaseRowData rowData, int attempt = 0)
         {
             try
             {
                 string cvalue = rowData.Translation;
                 //не трогать строку перевода, если она пустая
-                if (cvalue.Length > 0)
+                if (!string.IsNullOrEmpty(cvalue))
                 {
                     //Hardcoded rules
                     //cvalue = FunctionsStringFixes.ApplyHardFixes(row[0] + string.Empty, row[1] + string.Empty);
@@ -98,8 +103,11 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
             }
             catch (System.InvalidOperationException) // in case of collection was changed exception when rules was changed in time of iteration
             {
-                // retry fixes
-                return CellFixes(rowData);
+                // retry fixes, but only a bounded number of times: the previous unbounded retry
+                // recursed until the stack overflowed and killed the process
+                if (attempt + 1 >= CellFixesMaxAttempts) return false;
+
+                return CellFixes(rowData, attempt + 1);
             }
             return false;
         }

@@ -266,9 +266,14 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row.StringCaseMorph
         {
             if (string.IsNullOrWhiteSpace(inputString)) return inputString;
 
+            //original can be null, so every access to it below is bounds checked instead of relying on
+            //the caller.
+            original = original ?? string.Empty;
+
             if (char.IsLetter(inputString[0]))
             {
-                if (original[0] != inputString[0]) // skip if char in original equals char in translation with same index
+                //no original char to compare with means the case change applies
+                if (original.Length == 0 || original[0] != inputString[0]) // skip if char in original equals char in translation with same index
                 {
                     inputString = (isReverse ? char.ToLowerInvariant(inputString[0]) : char.ToUpperInvariant(inputString[0])) + inputString.Substring(1);
                 }
@@ -281,12 +286,12 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row.StringCaseMorph
                     char @char = inputString[c];
                     if (IsCustomSymbol(@char) || char.IsWhiteSpace(@char) || char.IsPunctuation(@char)) continue;
 
-                    string orig;
                     if ((c > 0 && (@char == 's' && inputString[c - 1] == '\'' || inputString[c - 1] == '\\')) // 's or \s
                         ||
-                        (orig = original).Length > c && orig[c] == inputString[c]) // skip if char in original equals char in translation with same index
+                        original.Length > c && original[c] == inputString[c]) // skip if char in original equals char in translation with same index
                     { }
-                    else inputString = inputString.Substring(0, c) + (isReverse ? char.ToLowerInvariant(inputString[c]) : char.ToUpperInvariant(inputString[c])) + (c == dsTransCellLength - 1 ? string.Empty : inputString.Substring(c + 1));
+                    //Substring(c + 1) already returns an empty string for the last character.
+                    else inputString = inputString.Substring(0, c) + (isReverse ? char.ToLowerInvariant(inputString[c]) : char.ToUpperInvariant(inputString[c])) + inputString.Substring(c + 1);
 
                     break;
                 }

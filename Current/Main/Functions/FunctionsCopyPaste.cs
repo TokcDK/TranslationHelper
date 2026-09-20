@@ -15,10 +15,7 @@ namespace TranslationHelper.Main.Functions
             {
                 //Copy to clipboard
                 DataObject dataObj = THFileElementsDataGridView.GetClipboardContent();
-                if (dataObj == null)
-                {
-                }
-                else
+                if (dataObj != null)
                 {
                     Clipboard.SetDataObject(dataObj);
                 }
@@ -79,10 +76,7 @@ namespace TranslationHelper.Main.Functions
                         origcellcurlines++;
                         OrigMaxEqualCurrent = origcellcurlines == origcellmaxlines;
 
-                        if (cell.ReadOnly)
-                        {
-                        }
-                        else
+                        if (!cell.ReadOnly)
                         {
                             if ((cell.Value + string.Empty).Length == 0)
                             {

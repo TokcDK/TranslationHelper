@@ -164,6 +164,22 @@ namespace TranslationHelper.Functions.FilesListControl
             e.DrawFocusRectangle();
         }
 
-        public void Dispose() { if (!_listBox.IsDisposed) _listBox.Dispose(); }
+        public void Dispose()
+        {
+            //The list box belongs to the main form (AppData.THFilesList), so this adapter must not
+            //dispose it; it only releases what it created itself: the event subscriptions and the
+            //brushes. The previous version disposed the app wide ListBox and leaked the brushes.
+            _listBox.DrawItem -= ListBox_DrawItem;
+            _listBox.MouseUp -= ListBox_MouseUp;
+            _listBox.SelectedIndexChanged -= ListBox_SelectedIndexChanged;
+
+            ListBoxItemForegroundBrushSelected.Dispose();
+            ListBoxItemForegroundBrush.Dispose();
+            ListBoxItemBackgroundBrushSelected.Dispose();
+            ListBoxItemBackgroundBrush1.Dispose();
+            ListBoxItemBackgroundBrush1Complete.Dispose();
+            ListBoxItemBackgroundBrush2.Dispose();
+            ListBoxItemBackgroundBrush2Complete.Dispose();
+        }
     }
 }

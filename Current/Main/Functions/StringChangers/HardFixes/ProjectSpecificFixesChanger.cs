@@ -14,13 +14,14 @@ namespace TranslationHelper.Functions.StringChangers.HardFixes
 
         internal override string Change(string inputString, object extraData)
         {
-            var str = inputString;
-            var newStr = AppData.CurrentProject.HardcodedFixes(inputString as string, str);
-            if (newStr != str)
-            {
-                return newStr;
-            }
-            else return str;
+            //extraData is the original cell value (see HardFixesBase.Apply). The previous code passed
+            //the translation as the original, so the project specific fixes never saw the original
+            //text they are supposed to inspect.
+            var original = extraData as string;
+            if (original == null) return inputString;
+
+            var newStr = AppData.CurrentProject.HardcodedFixes(original, inputString);
+            return newStr != inputString ? newStr : inputString;
         }
     }
 }

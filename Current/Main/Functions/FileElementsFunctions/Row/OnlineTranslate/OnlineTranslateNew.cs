@@ -292,7 +292,8 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
             {
                 if (WriteRowData(selectedRowData, selectedTableData.TableIndex))
                 {
-                    selectedRowData = null;
+                    //The row used to be nulled before it was removed, which made Remove(null) a silent
+                    //no-op: the entry stayed in the buffer and was processed again on every call.
                     selectedTableData.Rows.Remove(selectedRowData);
                     if (selectedTableData.Rows.Count == 0)
                     {

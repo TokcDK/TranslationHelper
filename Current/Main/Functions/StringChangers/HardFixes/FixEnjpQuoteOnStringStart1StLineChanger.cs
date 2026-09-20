@@ -23,27 +23,28 @@ namespace TranslationHelper.Functions.StringChangers.HardFixes
         {
             var transValue = inputString;
 
-            string[] quotes; ;
-            if (transValue.Length == 0 || !(quotes = new string[4] { "\"", "``", "`", "“" }).Contains(transValue.Substring(0, 1)))
+            var quotes = new string[4] { "\"", "``", "`", "“" };
+            if (transValue.Length == 0 || !quotes.Contains(transValue.Substring(0, 1)))
+            {
                 return inputString;
+            }
 
-            bool oStartsJp;
-            bool oEndsJp;
-            bool tStartsEn;
-            bool tStartsJp;
-            bool tEndsEn;
-            bool tEndsJp;
+            var original = extraData as string;
+            if (original == null)
+            {
+                return inputString;
+            }
+
+            var oStartsJp = original.StartsWith("「");
+            var oEndsJp = original.EndsWith("」");
 
             var ret = false;
             for (int i = 0; i < quotes.Length; i++)
             {
-                var origValue = extraData as string;
-                oStartsJp = origValue.StartsWith("「");
-                oEndsJp = origValue.EndsWith("」");
-                tStartsEn = transValue.StartsWith(quotes[i]);
-                tStartsJp = transValue.StartsWith("「");
-                tEndsEn = transValue.EndsWith(quotes[i]);
-                tEndsJp = transValue.EndsWith("」");
+                var tStartsEn = transValue.StartsWith(quotes[i]);
+                var tStartsJp = transValue.StartsWith("「");
+                var tEndsEn = transValue.EndsWith(quotes[i]);
+                var tEndsJp = transValue.EndsWith("」");
                 if (transValue.Length > quotes[i].Length * 2 && oStartsJp && !tStartsEn && !tStartsJp && oEndsJp && tEndsEn && !tEndsJp)
                 {
                     transValue = "「" + transValue.Substring(quotes[i].Length, transValue.Length - quotes[i].Length) + "」";

@@ -15,9 +15,14 @@ namespace TranslationHelper.Functions.StringChangers.HardFixes
         internal override string Change(string inputString, object extraData)
         {
             var translation = inputString;
+            var original = extraData as string;
+            if (original == null)
+            {
+                return inputString;
+            }
+
             if (Regex.IsMatch(translation, @"\\\\([0-9]{1,3})\[([0-9]{1,3})\]"))
             {
-                var original = extraData as string;
                 if (Regex.IsMatch(original, @"\\\\N\[[0-9]{1,3}\]"))
                 {
                     return Regex.Replace(translation, @"\\\\([0-9]{1,3})\[([0-9]{1,3})\]", @"\\N[$2]");

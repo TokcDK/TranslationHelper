@@ -15,7 +15,12 @@ namespace TranslationHelper.Functions.StringChangers.HardFixes
         {
             var translation = inputString;
             var original = extraData as string;
-            if (translation.Length > 1 && translation[translation.Length - 1] == '"' && original.Length > 0 && original[original.Length - 1] != '"')
+            if (original == null || original.Length == 0)
+            {
+                return inputString;
+            }
+
+            if (translation.Length > 1 && translation[translation.Length - 1] == '"' && original[original.Length - 1] != '"')
             {
                 return translation.Remove(translation.Length - 1, 1) + original[original.Length - 1];
 

@@ -1,9 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-//using System.Security.Cryptography.Pkcs;
 using System.Text.RegularExpressions;
-using System.Transactions;
 using TranslationHelper.Data;
 using TranslationHelper.Extensions;
 using TranslationHelper.Formats.RPGMMV;
@@ -206,8 +204,9 @@ namespace TranslationHelper.Functions
                             ind += substrLength;
                         }
                     }
-                    catch
+                    catch (ArgumentOutOfRangeException)
                     {
+                        //Substring is the only call here which can throw, so only that case is handled.
                         return Array.Empty<string>();
                     }
                 }
@@ -241,8 +240,9 @@ namespace TranslationHelper.Functions
             int StringAInWhichSearchLength = StringAWhereSearch.Length;
             if (StringAInWhichSearchLength > 0 && StringBToSearch.Length > 0)//safe check for empty values
             {
-                //if string A contains string B then string A with replaced stringB by empty will be
-                return StringAInWhichSearchLength > StringAWhereSearch.Replace(StringBToSearch, string.Empty).Length;
+                //An ordinal search gives the same answer as the old "replace B by an empty string and
+                //compare the lengths" trick, but without allocating a copy of the whole string.
+                return StringAWhereSearch.IndexOf(StringBToSearch, StringComparison.Ordinal) != -1;
             }
             return false;
 

@@ -7,23 +7,18 @@ namespace TranslationHelper.Functions.StringChangers.HardFixes
 {
     class FixInstancesOfNameChanger : StringChangerBase
     {
-        readonly Dictionary<string, string> _cache;
-        readonly bool needInit = true;
-
-        public FixInstancesOfNameChanger()
-        {
-            if (needInit)
-            {
-                needInit = false;
-                _cache = new Dictionary<string, string>(AppData.CurrentProject.FilesContent.GetRowsCount());
-            }
-        }
+        //The capacity used to be the row count of the whole project: an O(rows) computation and a full
+        //size bucket array, paid once per instance while a new instance is created for every row.
+        readonly Dictionary<string, string> _cache = new Dictionary<string, string>();
 
         internal override string Description => $"{nameof(FixInstancesOfNameChanger)}";
 
         internal override string Change(string inputString, object extraData)
         {
             var orig = extraData as string;
+
+            //A null original (a DBNull cell) used to throw inside IsMultiline; leave such a row alone.
+            if (orig == null) return inputString;
 
             if (orig.IsMultiline()) // skip multiline
             {

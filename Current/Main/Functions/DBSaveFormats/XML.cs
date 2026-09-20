@@ -1,17 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using NLog;
+using System;
 using System.Data;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
-using TranslationHelper.Data;
 
 namespace TranslationHelper.Functions.DBSaveFormats
 {
     class XML : IDataBaseFileFormat
     {
+        private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
+
         public virtual string Ext => "xml";
 
         public virtual string Description => "Uncompressed xml";
@@ -26,7 +23,6 @@ namespace TranslationHelper.Functions.DBSaveFormats
             ReadWrite(fileName, data, isRead: false);
         }
 
-        private readonly ReaderWriterLockSlim _writeXmlLocker = new ReaderWriterLockSlim();
         void ReadWrite(string fileName, object data, bool isRead = true)
         {
             if (!(data is DataSet dataSet))
@@ -36,34 +32,34 @@ namespace TranslationHelper.Functions.DBSaveFormats
 
             Directory.CreateDirectory(Path.GetDirectoryName(fileName));
             using (var fs = new FileStream(fileName, isRead ? FileMode.Open : FileMode.Create))
+            //The compression wrapper has to be disposed, not merely closed, so that its trailer is
+            //written. The previous code skipped the Close when ReadXml/WriteXml threw, which left a
+            //truncated or unfinished file behind.
+            //
+            //The former ReaderWriterLockSlim here guarded nothing: it was an instance field while a new
+            //XML is created per call. Writes are serialised by FunctionsDBFile's static lock instead.
+            using (Stream s = FileStreamMod(fs, isRead))
             {
-                Stream s;
-                //string fileExtension = Path.GetExtension(fileName);
-                s = FileStreamMod(fs, isRead);
-
                 if (isRead)
                 {
                     try
                     {
                         dataSet.ReadXml(s);
                     }
-                    catch (InvalidDataException) { }
-                    catch (IOException) { }
+                    catch (InvalidDataException ex)
+                    {
+                        //A broken file yields an empty DataSet; that is the intent, but it must be visible.
+                        Logger.Warn(ex, "Failed to read {0}", fileName);
+                    }
+                    catch (IOException ex)
+                    {
+                        Logger.Warn(ex, "Failed to read {0}", fileName);
+                    }
                 }
                 else
                 {
-                    _writeXmlLocker.EnterWriteLock();
-                    try
-                    {
-                        dataSet.WriteXml(s);
-                    }
-                    finally
-                    {
-                        _writeXmlLocker.ExitWriteLock();
-                    }
+                    dataSet.WriteXml(s);
                 }
-
-                s.Close();
             }
         }
 

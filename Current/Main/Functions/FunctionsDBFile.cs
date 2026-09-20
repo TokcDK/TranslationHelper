@@ -150,31 +150,54 @@ namespace TranslationHelper.Main.Functions
 
         internal static string GetDBFileName(bool saveAs = false)
         {
-            string fName = Path.GetFileName(AppData.CurrentProject.SelectedDir);
-            if (AppData.CurrentProject != null && AppData.CurrentProject.ProjectDBFileName.Length > 0)
+            var project = AppData.CurrentProject;
+
+            string fName = Path.GetFileName(project.SelectedDir);
+            if (project.ProjectDBFileName.Length > 0)
             {
-                fName = AppData.CurrentProject.ProjectDBFileName;
+                fName = project.ProjectDBFileName;
             }
-            else if (AppData.CurrentProject.Name.Contains(new RPGMMVGame().Name))
+            else if (project.Name.Contains(new RPGMMVGame().Name))
             {
-                if (AppData.Main.THFilesList.GetItemsCount() == 1 && AppData.Main.THFilesList.GetItemName(0) != null && !string.IsNullOrWhiteSpace(AppData.Main.THFilesList.GetItemName(0).ToString()))
+                var singleItemName = GetSingleFilesListItemName();
+                if (singleItemName != null)
                 {
                     if (fName == "data")
                     {
-                        fName = Path.GetFileName(Path.GetDirectoryName(Path.GetDirectoryName(AppData.CurrentProject.SelectedDir))) + "_" + Path.GetFileNameWithoutExtension(AppData.Main.THFilesList.GetItemName(0).ToString());
+                        fName = Path.GetFileName(Path.GetDirectoryName(Path.GetDirectoryName(project.SelectedDir))) + "_" + Path.GetFileNameWithoutExtension(singleItemName);
                     }
                     else
                     {
-                        fName = Path.GetFileNameWithoutExtension(AppData.Main.THFilesList.GetItemName(0).ToString());
+                        fName = Path.GetFileNameWithoutExtension(singleItemName);
                     }
                 }
             }
-            else if (AppData.Main.THFilesList.GetItemsCount() == 1 && AppData.Main.THFilesList.GetItemName(0) != null && !string.IsNullOrWhiteSpace(AppData.Main.THFilesList.GetItemName(0).ToString()))
+            else
             {
-                //dbfilename as name of single file in files list
-                fName = Path.GetFileNameWithoutExtension(AppData.Main.THFilesList.GetItemName(0).ToString());
+                var singleItemName = GetSingleFilesListItemName();
+                if (singleItemName != null)
+                {
+                    //dbfilename as name of single file in files list
+                    fName = Path.GetFileNameWithoutExtension(singleItemName);
+                }
             }
             return fName + (saveAs ? "_" + DateTime.Now.ToString("yyyy.MM.dd HH-mm-ss", CultureInfo.InvariantCulture) : string.Empty);
+        }
+
+        /// <summary>
+        /// Name of the only entry of the files list, or null when the list does not hold exactly one
+        /// usable entry.
+        /// </summary>
+        private static string GetSingleFilesListItemName()
+        {
+            var filesList = AppData.Main.THFilesList;
+            if (filesList.GetItemsCount() != 1) return null;
+
+            var itemName = filesList.GetItemName(0);
+            if (itemName == null) return null;
+
+            var name = itemName.ToString();
+            return string.IsNullOrWhiteSpace(name) ? null : name;
         }
 
         public static void WriteDictToXMLDB(Dictionary<string, string> db, string xmlPath)
@@ -252,28 +275,12 @@ namespace TranslationHelper.Main.Functions
             }
 
             using (FileStream fs = new FileStream(xmlPath, FileMode.Open))
+            //The StreamReader below disposes the stream it is given, so the compression wrapper is
+            //released as well.
+            using (Stream s = CreateCompressionStream(fs, xmlPath, CompressionMode.Decompress))
+            using (StreamReader sr = new StreamReader(s))
             {
-                Stream s;
-                string fileExtension = Path.GetExtension(xmlPath);
-                if (fileExtension == ".cmx")
-                {
-                    s = new GZipStream(fs, CompressionMode.Decompress);
-                }
-                else if (fileExtension == ".cmz")
-                {
-                    s = new DeflateStream(fs, CompressionMode.Decompress);
-                }
-                else
-                {
-                    s = fs;
-                }
-
-                string stringForReturn;
-                using (StreamReader sr = new StreamReader(s))
-                {
-                    stringForReturn = sr.ReadToEnd();
-                }
-                return stringForReturn;
+                return sr.ReadToEnd();
             }
         }
 
@@ -286,40 +293,44 @@ namespace TranslationHelper.Main.Functions
             try
             {
                 using (var fs = new FileStream(xmlPath, FileMode.Create))
+                //The compression stream has to be disposed, not merely closed, so its trailer is
+                //flushed. The previous code retried a failed save on the same stream, which could
+                //only produce a corrupt file, so a failure is logged instead.
+                using (var s = CreateCompressionStream(fs, xmlPath, CompressionMode.Compress))
                 {
-                    Stream s = null;
-                    try
-                    {
-                        string fileExtension = Path.GetExtension(xmlPath);
-                        if (fileExtension == ".cmx")
-                        {
-                            s = new GZipStream(fs, CompressionMode.Compress);
-                        }
-                        else if (fileExtension == ".cmz")
-                        {
-                            s = new DeflateStream(fs, CompressionMode.Compress);
-                        }
-                        else
-                        {
-                            s = fs;
-                        }
-                        el.Save(s);
-                        s.Close();
-                    }
-                    catch
-                    {
-                        if (el != null && s != null)
-                        {
-                            el.Save(s);
-                            s.Close();
-                        }
-                    }
+                    el.Save(s);
                 }
+            }
+            catch (Exception ex)
+            {
+                //Callers (the translation cache and a menu command) do not handle exceptions, so a
+                //failed write stays a logged no-op rather than tearing the app down.
+                Logger.Warn(ex, "Failed to write {0}", xmlPath);
             }
             finally
             {
                 _writeXElementToXMLFileLocker.ExitWriteLock();
             }
+        }
+
+        /// <summary>
+        /// Wraps <paramref name="fileStream"/> into the compression stream matching the extension of
+        /// <paramref name="path"/>, or returns the stream itself for an uncompressed file.
+        /// </summary>
+        internal static Stream CreateCompressionStream(Stream fileStream, string path, CompressionMode mode)
+        {
+            string fileExtension = Path.GetExtension(path);
+            if (fileExtension == ".cmx")
+            {
+                return new GZipStream(fileStream, mode);
+            }
+
+            if (fileExtension == ".cmz")
+            {
+                return new DeflateStream(fileStream, mode);
+            }
+
+            return fileStream;
         }
 
         /// <summary>
@@ -374,8 +385,9 @@ namespace TranslationHelper.Main.Functions
                         }
                     }
                 }
-                catch
+                catch (Exception ex)
                 {
+                    Logger.Warn(ex, "Failed to read the rows of table '{0}' into a dictionary", dbDataSet.Tables[t].TableName);
                 }
             }
 
@@ -384,15 +396,22 @@ namespace TranslationHelper.Main.Functions
 
         private static void AddRecordToDictionary(Dictionary<string, string> db, DataRow row, bool dontAddEmptyTranslation, bool dontAddEqualTranslation)
         {
-            if (!db.ContainsKey(row.Field<string>(THSettings.OriginalColumnName)))
-            {
-                if ((dontAddEmptyTranslation && (row[THSettings.TranslationColumnName] == null || string.IsNullOrEmpty(row.Field<string>(THSettings.TranslationColumnName)))) || (dontAddEqualTranslation && row.Field<string>(THSettings.TranslationColumnName) == row.Field<string>(THSettings.OriginalColumnName)))
-                {
-                    return;
-                }
+            var original = row.Field<string>(THSettings.OriginalColumnName);
 
-                db.Add(row.Field<string>(THSettings.OriginalColumnName), row.Field<string>(THSettings.TranslationColumnName));
+            //A null original cannot be used as a dictionary key (Dictionary throws
+            //ArgumentNullException), and the old code let that exception abort the rest of the table.
+            if (original == null) return;
+
+            if (db.ContainsKey(original)) return;
+
+            var translation = row.Field<string>(THSettings.TranslationColumnName);
+            if ((dontAddEmptyTranslation && string.IsNullOrEmpty(translation))
+                || (dontAddEqualTranslation && translation == original))
+            {
+                return;
             }
+
+            db.Add(original, translation);
         }
 
         /// <summary>
@@ -432,21 +451,30 @@ namespace TranslationHelper.Main.Functions
                         var row = table.Rows[r];
                         var O = row.Field<string>(THSettings.OriginalColumnName);
 
-                        if (!db.ContainsKey(O))
+                        //A null original cannot be used as a dictionary key (Dictionary throws
+                        //ArgumentNullException), and the old code let that exception abort the rest
+                        //of the table.
+                        if (O == null) continue;
+
+                        if (!db.TryGetValue(O, out var tablesByOriginal))
                         {
-                            db.Add(O, new Dictionary<string, Dictionary<int, string>>());
+                            tablesByOriginal = new Dictionary<string, Dictionary<int, string>>();
+                            db.Add(O, tablesByOriginal);
                         }
 
-                        if (db[O].Values.Count == 0 || !db[O].ContainsKey(table.TableName))
+                        //An empty inner dictionary is the same thing as a missing table name.
+                        if (!tablesByOriginal.TryGetValue(table.TableName, out var rowsByIndex))
                         {
-                            db[O].Add(table.TableName, new Dictionary<int, string>());
+                            rowsByIndex = new Dictionary<int, string>();
+                            tablesByOriginal.Add(table.TableName, rowsByIndex);
                         }
 
-                        db[O][table.TableName].Add(r, row.Field<string>(THSettings.TranslationColumnName));
+                        rowsByIndex.Add(r, row.Field<string>(THSettings.TranslationColumnName));
                     }
                 }
-                catch
+                catch (Exception ex)
                 {
+                    Logger.Warn(ex, "Failed to read the rows of table '{0}' into a coordinates dictionary", dbDataSet.Tables[t].TableName);
                 }
             }
 
@@ -486,16 +514,21 @@ namespace TranslationHelper.Main.Functions
                 for (int r = 0; r < rowsCount; r++)
                 {
                     var row = dbDataSet.Tables[t].Rows[r];
-                    if (db.ContainsKey(row.Field<string>(0)))
+                    var original = row.Field<string>(0);
+
+                    //A null original cannot be used as a dictionary key.
+                    if (original == null) continue;
+
+                    if (db.TryGetValue(original, out var coordinates))
                     {
-                        if (row[1] == null || string.IsNullOrEmpty(row.Field<string>(1)))
+                        if (string.IsNullOrEmpty(row.Field<string>(1)))
                         {
-                            db[row.Field<string>(0)] = db[row.Field<string>(0)] + "|" + t + "!" + r;
+                            db[original] = coordinates + "|" + t + "!" + r;
                         }
                     }
                     else
                     {
-                        db.Add(row.Field<string>(0), t + "!" + r);
+                        db.Add(original, t + "!" + r);
                     }
                 }
             }
@@ -527,8 +560,9 @@ namespace TranslationHelper.Main.Functions
                             dbDataSet.ToDictionary(inputDB: AppData.AllDBmerged, dontAddEmptyTranslation: true, dontAddEqualTranslation: true, _dbDataSetToDictionaryAddLocker);
                         }
                     }
-                    catch
+                    catch (Exception ex)
                     {
+                        Logger.Warn(ex, "Failed to merge {0} into the combined dictionary", dbFile.Value.FullName);
                     }
                 }
             }
@@ -648,9 +682,11 @@ namespace TranslationHelper.Main.Functions
 
         public static async Task WriteDBFileLite(DataSet ds, string[] fileNames)
         {
+            if (ds == null) return;
+
             foreach (var fileName in fileNames)
             {
-                if (fileName.Length == 0 || ds == null) return;
+                if (string.IsNullOrEmpty(fileName)) return;
 
                 try
                 {
@@ -680,22 +716,30 @@ namespace TranslationHelper.Main.Functions
             if (FunctionsUI.IsOpeningInProcess) return;
 
             FunctionsUI.IsOpeningInProcess = true;
-            using (OpenFileDialog openBD = new OpenFileDialog())
+            try
             {
-                openBD.Filter = FunctionsDBFile.GetDBFormatsFilters();
-
-                openBD.InitialDirectory = FunctionsDBFile.GetProjectDBFolder();
-
-                if (openBD.ShowDialog() == DialogResult.OK)
+                using (OpenFileDialog openBD = new OpenFileDialog())
                 {
-                    if (openBD.FileName.Length > 0)
+                    openBD.Filter = FunctionsDBFile.GetDBFormatsFilters();
+
+                    openBD.InitialDirectory = FunctionsDBFile.GetProjectDBFolder();
+
+                    if (openBD.ShowDialog() == DialogResult.OK)
                     {
-                        if (forced) await new ClearCells().AllT().ConfigureAwait(true);
-                        await Task.Run(() => FunctionsDBFile.LoadTranslationFromDB(openBD.FileName, false, forced)).ConfigureAwait(true);
+                        if (openBD.FileName.Length > 0)
+                        {
+                            if (forced) await new ClearCells().AllT().ConfigureAwait(true);
+                            await Task.Run(() => FunctionsDBFile.LoadTranslationFromDB(openBD.FileName, false, forced)).ConfigureAwait(true);
+                        }
                     }
                 }
             }
-            FunctionsUI.IsOpeningInProcess = false;
+            finally
+            {
+                //Must be cleared even when the dialog or the load fails, otherwise the Open menu
+                //would stay blocked for the rest of the session.
+                FunctionsUI.IsOpeningInProcess = false;
+            }
         }
 
         internal static void UnLockDBLoad(bool unlock = true)
@@ -713,10 +757,15 @@ namespace TranslationHelper.Main.Functions
             if (AppData.CurrentProject.IsLoadingDB) return;
 
             AppData.CurrentProject.IsLoadingDB = true;
-
-            await FunctionsLoadTranslationDB.LoadTranslationIfNeed(forceLoad: force, askIfLoadDB: false);
-
-            AppData.CurrentProject.IsLoadingDB = false;
+            try
+            {
+                await FunctionsLoadTranslationDB.LoadTranslationIfNeed(forceLoad: force, askIfLoadDB: false);
+            }
+            finally
+            {
+                //Must be cleared even when loading fails, otherwise no later load could start.
+                AppData.CurrentProject.IsLoadingDB = false;
+            }
         }
 
         static bool LoadTranslationToolStripMenuItem_ClickIsBusy;
@@ -727,30 +776,37 @@ namespace TranslationHelper.Main.Functions
                 return;
             }
             LoadTranslationToolStripMenuItem_ClickIsBusy = true;
-
-            if (UseAllDB)
+            try
             {
-                Logger.Info("Get all databases");
-                await FunctionsDBFile.MergeAllDBtoOne();
-                FunctionsLoadTranslationDB.THLoadDBCompareFromDictionaryParallellTables(AppData.AllDBmerged);
-            }
-            else
-            {
-                using (DataSet DBDataSet = new DataSet())
+                if (UseAllDB)
                 {
-
-                    //https://ru.stackoverflow.com/questions/222414/%d0%9a%d0%b0%d0%ba-%d0%bf%d1%80%d0%b0%d0%b2%d0%b8%d0%bb%d1%8c%d0%bd%d0%be-%d0%b2%d1%8b%d0%bf%d0%be%d0%bb%d0%bd%d0%b8%d1%82%d1%8c-%d0%bc%d0%b5%d1%82%d0%be%d0%b4-%d0%b2-%d0%be%d1%82%d0%b4%d0%b5%d0%bb%d1%8c%d0%bd%d0%be%d0%bc-%d0%bf%d0%be%d1%82%d0%be%d0%ba%d0%b5 
-                    await Task.Run(() => ReadDBAndLoadDBCompare(DBDataSet, sPath, forced)).ConfigureAwait(true);
+                    Logger.Info("Get all databases");
+                    await FunctionsDBFile.MergeAllDBtoOne();
+                    FunctionsLoadTranslationDB.THLoadDBCompareFromDictionaryParallellTables(AppData.AllDBmerged);
                 }
+                else
+                {
+                    using (DataSet DBDataSet = new DataSet())
+                    {
+
+                        //https://ru.stackoverflow.com/questions/222414/%d0%9a%d0%b0%d0%ba-%d0%bf%d1%80%d0%b0%d0%b2%d0%b8%d0%bb%d1%8c%d0%bd%d0%be-%d0%b2%d1%8b%d0%bf%d0%be%d0%bb%d0%bd%d0%b8%d1%82%d1%8c-%d0%bc%d0%b5%d1%82%d0%be%d0%b4-%d0%b2-%d0%be%d1%82%d0%b4%d0%b5%d0%bb%d1%8c%d0%bd%d0%be%d0%bc-%d0%bf%d0%be%d1%82%d0%be%d0%ba%d0%b5 
+                        await Task.Run(() => ReadDBAndLoadDBCompare(DBDataSet, sPath, forced)).ConfigureAwait(true);
+                    }
+                }
+
+
+                _ = AppData.Main.THFileElementsDataGridView.Invoke((Action)(() => AppData.Main.THFileElementsDataGridView.Refresh()));
+
+
+                FunctionsSounds.LoadDBCompleted();
+                _ = AppData.Main.THFilesList.Invoke((Action)(() => AppData.Main.THFilesList.Refresh()));
             }
-
-
-            _ = AppData.Main.THFileElementsDataGridView.Invoke((Action)(() => AppData.Main.THFileElementsDataGridView.Refresh()));
-
-
-            LoadTranslationToolStripMenuItem_ClickIsBusy = false;
-            FunctionsSounds.LoadDBCompleted();
-            _ = AppData.Main.THFilesList.Invoke((Action)(() => AppData.Main.THFilesList.Refresh()));
+            finally
+            {
+                //Must be cleared even when loading fails, otherwise every later load would be
+                //rejected as a re-entrant one.
+                LoadTranslationToolStripMenuItem_ClickIsBusy = false;
+            }
         }
 
         public static async Task ReadDBAndLoadDBCompare(DataSet dbDataSet, string sPath, bool forceOverwriteTranslations = false)

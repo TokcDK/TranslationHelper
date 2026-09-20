@@ -330,8 +330,9 @@ namespace TranslationHelper.Functions
 
                 FunctionsUI.BindTextBoxesOriginalTranslation();
             }
-            catch (Exception)
+            catch (Exception ex)
             {
+                Logger.Error(ex, "Failed to show the selected files list element content");
             }
 
             THFilesListBox_MouseClickBusy = false;
@@ -373,8 +374,9 @@ namespace TranslationHelper.Functions
                     //upd. не исправляет проблему для этого dgv. возможно это dgv фильтров
                     AppData.Main.THFileElementsDataGridView.PerformLayout();
                 }
-                catch
+                catch (Exception ex)
                 {
+                    Logger.Warn(ex, "Failed to bind the table to the files elements grid");
                 }
             }
         }
@@ -399,12 +401,13 @@ namespace TranslationHelper.Functions
             if (!AppSettings.ProjectIsOpened || AppData.Main.THFilesList.GetSelectedIndex() == -1)
                 return;
 
-            var grid = sender as DataGridView;
+            if (!(sender is DataGridView grid)) return;
 
             int rowIdx = FunctionsTable.GetRealRowIndex(AppData.Main.THFilesList.GetSelectedIndex(), e.RowIndex);//здесь получаю реальный индекс из Datatable
             //string rowIdx = (e.RowIndex + 1) + string.Empty;
 
-            if (grid.Rows.Count <= rowIdx) return;
+            //GetRealRowIndex returns -1 for an unresolvable row; the old test then passed and painted "0".
+            if (rowIdx < 0 || grid.Rows.Count <= rowIdx) return;
 
             using (StringFormat centerFormat = new StringFormat()
             {
@@ -505,18 +508,26 @@ namespace TranslationHelper.Functions
             if (!SystemInformation.TerminalServerSession)
             {
                 //THFileElementsDataGridView
-                Type dgvType = AppData.Main.THFileElementsDataGridView.GetType();
-                PropertyInfo pi = dgvType.GetProperty("DoubleBuffered",
-                  BindingFlags.Instance | BindingFlags.NonPublic);
-                pi.SetValue(AppData.Main.THFileElementsDataGridView, value, null);
+                SetDoubleBufferedProperty(AppData.Main.THFileElementsDataGridView, value);
 
                 //THFilesList
                 //вроде не пашет для listbox
-                Type lbxType = AppData.Main.THFilesList.GetType();
-                PropertyInfo pi1 = lbxType.GetProperty("DoubleBuffered",
-                  BindingFlags.Instance | BindingFlags.NonPublic);
-                pi1.SetValue(AppData.Main.THFilesList, value, null);
+                SetDoubleBufferedProperty(AppData.Main.THFilesList, value);
             }
+        }
+
+        /// <summary>
+        /// Sets the protected <c>DoubleBuffered</c> property of <paramref name="control"/>.
+        /// </summary>
+        private static void SetDoubleBufferedProperty(System.Windows.Forms.Control control, bool value)
+        {
+            PropertyInfo pi = control.GetType().GetProperty("DoubleBuffered",
+              BindingFlags.Instance | BindingFlags.NonPublic);
+
+            //Not every control type declares it, so a null property is expected and must be skipped.
+            if (pi == null) return;
+
+            pi.SetValue(control, value, null);
         }
 
         internal static string THTranslationCachePath

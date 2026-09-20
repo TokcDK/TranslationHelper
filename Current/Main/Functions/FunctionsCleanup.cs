@@ -1,4 +1,5 @@
-﻿using System;
+﻿using NLog;
+using System;
 using System.Runtime;
 using TranslationHelper.Functions;
 using TranslationHelper.Menus.MainMenus.Edit;
@@ -7,6 +8,8 @@ namespace TranslationHelper.Data
 {
     class FunctionsCleanup
     {
+        private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
+
         internal static void THCleanupThings()
         {
             try
@@ -144,9 +147,10 @@ namespace TranslationHelper.Data
                 GCSettings.LargeObjectHeapCompactionMode = GCLargeObjectHeapCompactionMode.CompactOnce;
                 GC.Collect();
             }
-            catch
+            catch (Exception ex)
             {
-
+                //The cleanup has to continue whatever happens, but a failure must not be invisible.
+                Logger.Error(ex, "Failed to clean up the previously opened project");
             }
         }
     }

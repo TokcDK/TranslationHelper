@@ -14,17 +14,29 @@ namespace TranslationHelper.Functions
             {
                 return;
             }
-            FunctionsUI.SaveInAction = true;
-            FunctionsUI.FileDataWasChanged = false;
-            AppData.CurrentProject.SaveFileMode = true;
 
-            if (AppData.CurrentProject != null)
+            var project = AppData.CurrentProject;
+            if (project == null)
             {
-                AppData.CurrentProject.BakCreate();
-                await Task.Run(() => AppData.CurrentProject.Save(fileIndexesToWrite)).ConfigureAwait(true);
+                return;
             }
 
-            FunctionsUI.SaveInAction = false;
+            FunctionsUI.SaveInAction = true;
+            try
+            {
+                FunctionsUI.FileDataWasChanged = false;
+                project.SaveFileMode = true;
+
+                project.BakCreate();
+                await Task.Run(() => project.Save(fileIndexesToWrite)).ConfigureAwait(true);
+            }
+            finally
+            {
+                //Must be cleared even when the save throws, otherwise every later save would be
+                //rejected as a re-entrant one.
+                FunctionsUI.SaveInAction = false;
+            }
+
             FunctionsSounds.PlayAsterisk();
         }
 
@@ -52,8 +64,12 @@ namespace TranslationHelper.Functions
                 {
                     foreach (var pair in AppData.Settings.THConfigINI.GetSectionKeyValuePairs(codesData.Key))
                     {
-                        var intKey = int.Parse(pair.Key);
-                        var intValue = int.Parse(pair.Value);
+                        if (!int.TryParse(pair.Key, out int intKey) || !int.TryParse(pair.Value, out int intValue))
+                        {
+                            //Skip a malformed entry instead of aborting the whole stats write.
+                            continue;
+                        }
+
                         if (codesData.Value.TryGetValue(intKey, out int foundValue))
                         {
                             codesData.Value[intKey] = foundValue + intValue;

@@ -29,6 +29,11 @@ namespace TranslationHelper.Functions.StringChangers.HardFixes
             try
             {
                 var originalValue = extraData as string;
+                if (originalValue == null)
+                {
+                    return inputString;
+                }
+
                 if (originalValue.IsMultiline())
                 {
                     string origSecondLine = string.Empty;
@@ -214,9 +219,9 @@ namespace TranslationHelper.Functions.StringChangers.HardFixes
                     }
                 }
             }
-            catch
+            catch (Exception ex)
             {
-
+                Logger.Warn(ex, "Failed to move the quote to the start of the second line");
             }
 
             return inputString;

@@ -159,14 +159,15 @@ namespace TranslationHelper.Main.Functions
         }
 
         /// <summary>
-        /// When table not exists it will create table with table ProjectData.TempPath name and Original Column<br>
+        /// When table not exists it will create table with table file name and Original Column<br>
         /// When table is exists it will remove table if no rows there else will create Translation column
         /// </summary>
-        /// <param name="projectData"></param>
+        /// <param name="filePath"></param>
+        /// <param name="add"></param>
         /// <returns></returns>
         public static bool SetTableAndColumns(string filePath, bool add = true)
         {
-            if (filePath.Length == 0)
+            if (string.IsNullOrEmpty(filePath))
                 return false;
 
             string fileName = Path.GetFileName(filePath);
@@ -282,11 +283,9 @@ namespace TranslationHelper.Main.Functions
             {
                 for (int i = 0; i < dgv.SelectedCells.Count; i++)
                 {
-                    var rowindex = dgv.SelectedCells[i].RowIndex;
-                    if (!selected.Contains(rowindex))
-                    {
-                        selected.Add(GetRealRowIndex(listIndex, rowindex));
-                    }
+                    //A HashSet ignores a repeated value, so no separate duplicate test is needed
+                    //(and testing the grid row index would have tested the wrong value anyway).
+                    selected.Add(GetRealRowIndex(listIndex, dgv.SelectedCells[i].RowIndex));
                 }
             }
 
@@ -411,11 +410,7 @@ namespace TranslationHelper.Main.Functions
             {
                 var cell = table.Rows[r].Field<string>(columnName);
 
-                if (string.IsNullOrEmpty(cell))
-                {
-                    //LogToFile("\r\nIsTableRowsCompleted=false");
-                }
-                else
+                if (!string.IsNullOrEmpty(cell))
                 {
                     nonEmptyRowsCount++;
                 }
@@ -499,8 +494,7 @@ namespace TranslationHelper.Main.Functions
 
         internal static void PaintDigitInFrontOfRow(object sender, DataGridViewRowPostPaintEventArgs e, Font font)
         {
-            var grid = sender as DataGridView;
-            //var rowIdx = (e.RowIndex + 1).ToString();
+            if (!(sender is DataGridView grid)) return;
 
             using (var centerFormat = new StringFormat()
             {

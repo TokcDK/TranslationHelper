@@ -137,12 +137,14 @@ namespace TranslationHelper.Functions
 
             _ = Parallel.ForEach(tables.Cast<DataTable>(), (table, _, tableIndex) =>
             {
-                var isTableReset = ResetDGVDataSource(tableIndex, filesList, workTableDatagridview);
-
                 if (!forceOverwriteTranslations && FunctionsTable.IsTableColumnCellsAll(table))
                 {
                     return;
                 }
+
+                //Only reset the grid for tables which are really processed: the early return above
+                //would otherwise leave the grid unbound, because its DataSource stays null.
+                var isTableReset = ResetDGVDataSource(tableIndex, filesList, workTableDatagridview);
 
                 //var tableProgressMessage = $"{progressMessage} {table.TableName}>{tableIndex + 1}/{tables.Count}";
                 //Logger.Info(tableProgressMessage);

@@ -8,7 +8,7 @@ namespace TranslationHelper.Main.Functions
     {
         public static string GetExeDescription(string exepath)
         {
-            if (exepath.Length == 0)
+            if (string.IsNullOrEmpty(exepath))
             {
                 return string.Empty;
             }
@@ -102,15 +102,15 @@ namespace TranslationHelper.Main.Functions
         /// </summary>
         internal static void OpenProjectsDir()
         {
-            string folder;
-            if (Directory.Exists(folder = AppData.CurrentProject.ProjectWorkDir))
-            {
-            }
-            else
+            var folder = AppData.CurrentProject.ProjectWorkDir;
+            if (!Directory.Exists(folder))
             {
                 folder = AppData.CurrentProject.SelectedDir;
             }
-            Process.Start("explorer.exe", "\"" + folder + "\"");
+
+            using (Process.Start("explorer.exe", "\"" + folder + "\""))
+            {
+            }
         }
 
         /// <summary>
@@ -128,21 +128,20 @@ namespace TranslationHelper.Main.Functions
         }
 
         /// <summary>
-        /// execute with cmd.exe
+        /// execute the given command line with cmd.exe
         /// </summary>
-        /// <param name="programexe"></param>
-        /// <param name="arguments"></param>
+        /// <param name="cmdline">Command line which cmd.exe has to run</param>
         /// <param name="workdir"></param>
         /// <param name="CreateNoWindow"></param>
         /// <param name="UseShellExecute"></param>
         /// <returns></returns>
         internal static bool RunBat(string cmdline, string workdir, bool CreateNoWindow = false, bool UseShellExecute = true)
         {
-            return RunProcess("cmd.exe", "\\C " + cmdline, workdir, CreateNoWindow, UseShellExecute);
+            return RunProcess("cmd.exe", "/C " + cmdline, workdir, CreateNoWindow, UseShellExecute);
         }
 
         /// <summary>
-        /// execute with cmd.exe
+        /// execute <paramref name="programexe"/> with <paramref name="arguments"/> through cmd.exe
         /// </summary>
         /// <param name="programexe"></param>
         /// <param name="arguments"></param>
@@ -152,7 +151,7 @@ namespace TranslationHelper.Main.Functions
         /// <returns></returns>
         internal static bool RunBat(string programexe, string arguments, string workdir, bool CreateNoWindow = false, bool UseShellExecute = true)
         {
-            arguments = "\\C \"\"" + programexe + "\"\" " + arguments;
+            arguments = "/C \"\"" + programexe + "\"\" " + arguments;
             return RunProcess("cmd.exe", arguments, workdir, CreateNoWindow, UseShellExecute);
         }
     }

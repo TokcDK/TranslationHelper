@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using TranslationHelper.Data;
@@ -52,10 +53,18 @@ namespace TranslationHelper.Functions.RowParsersParallel
         /// <summary>
         /// Parse all rows in selected table[s]
         /// </summary>
-        public async void Tables()
+        public async Task Tables()
         {
-            var tables = AllTables.Tables;
-            await Task.Run(() => ParseSelectedTables(AppData.FilesListControl.GetSelectedIndexes().Select(i => tables[i]))).ConfigureAwait(false);
+            //GetSelectedIndexes returns indexes in the files list, which are not table indexes: the
+            //list starts with the "[ALL]" entry. The mapping has to be asked for, otherwise the wrong
+            //file is parsed and the last index is out of range.
+            var tableIndexes = AppData.FilesListControl
+                .GetSelectedIndexes()
+                .SelectMany(AppData.FilesListContent.GetTableIndexes)
+                .Distinct()
+                .ToArray();
+
+            await Task.Run(() => ParseSelectedTables(tableIndexes.Select(i => AllTables.Tables[i]))).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -120,7 +129,8 @@ namespace TranslationHelper.Functions.RowParsersParallel
 
         bool Parse(DataRow row)
         {
-            IsLastRow = --_rowsLeftToProcess == 0;
+            //Reached from Parallel.ForEach, so the read-modify-write has to be atomic.
+            IsLastRow = Interlocked.Decrement(ref _rowsLeftToProcess) == 0;
 
             var rowData = new DataRowData(row);
             return IsValidRow(rowData) && Process(rowData);

@@ -97,10 +97,13 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row.OnlineTranslate
         {
             value = null;
 
+            //The last test used to be inverted ('!string.IsNullOrWhiteSpace(s)'), so this method only
+            //ever returned true for an empty cached value and never for a real translation, which made
+            //the whole online translation cache unusable for reading.
             if (string.IsNullOrWhiteSpace(keyString)
                || dictionary == null
                || !dictionary.TryGetValue(keyString, out string s)
-               || !string.IsNullOrWhiteSpace(s))
+               || string.IsNullOrWhiteSpace(s))
             {
                 return false;
             }
@@ -169,8 +172,15 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row.OnlineTranslate
 
             foreach (var el in rootElement.Elements())
             {
-                string key = el.Element(THSettings.OriginalColumnName).Value;
-                if (!cache.ContainsKey(key)) cache.Add(key, el.Element(THSettings.TranslationColumnName).Value);
+                var originalElement = el.Element(THSettings.OriginalColumnName);
+                var translationElement = el.Element(THSettings.TranslationColumnName);
+
+                //A malformed entry must be skipped, not abort the whole cache read with a
+                //NullReferenceException.
+                if (originalElement == null || translationElement == null) continue;
+
+                string key = originalElement.Value;
+                if (!cache.ContainsKey(key)) cache.Add(key, translationElement.Value);
             }
         }
 
@@ -180,9 +190,15 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row.OnlineTranslate
             if (string.IsNullOrWhiteSpace(value)) return;
             if (string.Equals(key, value)) return;
             if (key.GetLinesCount() != value.GetLinesCount()) return;
-            if (Cache.ContainsKey(key)) return;
 
-            Cache.Add(key, value);
+            //Reached from Parallel.ForEach, so the test and the write have to be a single operation;
+            //the previous ContainsKey + Add pair could throw or corrupt the dictionary.
+            lock (_translationCacheLocker)
+            {
+                if (Cache.ContainsKey(key)) return;
+
+                Cache.Add(key, value);
+            }
         }
 
         static string TryGetValueByKey(string key)

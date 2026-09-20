@@ -119,7 +119,7 @@ namespace TranslationHelper.Functions
                 // check category
                 item = TryGetCategoryMenu(item, menuData, menusListDictionary);
 
-                if (!menusListDictionary.ContainsKey(item.Text)) menusListDictionary.Add(item.Text, item);
+                menusListDictionary.TryAdd(item.Text, item);
             }
 
             var sortedMenusList = SortByPriority(menusListDictionary.Values);
@@ -235,24 +235,32 @@ namespace TranslationHelper.Functions
         {
             foreach (var menuData in menusList)
             {
-                //Create new menu
-                var menu = new ToolStripMenuItem
-                {
-                    Text = menuData.Text,
-                    ToolTipText = menuData.Menu.Description,
-                    ShortcutKeys = menuData.Menu.ShortcutKeys
-                };
-
-                //Register click event
-                menu.Click += menuData.Menu.OnClick;
-
-                foreach (var child in menuData.Childs)
-                {
-                    menu.DropDownItems.Add(SetChilds(child.Value));
-                }
-
-                menuItems.Add(menu);
+                menuItems.Add(CreateMenuItem(menuData));
             }
+        }
+
+        /// <summary>
+        /// Creates the menu item of <paramref name="menuData"/>, including its whole child tree.
+        /// </summary>
+        private static ToolStripMenuItem CreateMenuItem(MenuData menuData)
+        {
+            //Create new menu
+            var menu = new ToolStripMenuItem
+            {
+                Text = menuData.Text,
+                ToolTipText = menuData.Menu.Description,
+                ShortcutKeys = menuData.Menu.ShortcutKeys
+            };
+
+            //Register click event
+            menu.Click += menuData.Menu.OnClick;
+
+            foreach (var child in menuData.Childs)
+            {
+                menu.DropDownItems.Add(CreateMenuItem(child.Value));
+            }
+
+            return menu;
         }
 
         private static List<MenuData> SortByPriority(IEnumerable<MenuData> menus)
@@ -285,27 +293,6 @@ namespace TranslationHelper.Functions
             //}
 
             //return (m.Childs.Count * 1000);
-        }
-
-        private static ToolStripMenuItem SetChilds(MenuData menuData)
-        {
-            //Create new menu
-            var subMenu = new ToolStripMenuItem
-            {
-                Text = menuData.Text,
-                ToolTipText = menuData.Menu.Description,
-                ShortcutKeys = menuData.Menu.ShortcutKeys
-            };
-
-            //Register click event
-            subMenu.Click += menuData.Menu.OnClick;
-
-            foreach (var child in menuData.Childs)
-            {
-                subMenu.DropDownItems.Add(SetChilds(child.Value));
-            }
-
-            return subMenu;
         }
 
         //public static ToolStripMenuItem GetToolStripMenuItem(this MenuStrip toolStripMenuItem, string itemWithText)

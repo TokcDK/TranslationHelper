@@ -6,7 +6,7 @@ namespace TranslationHelper.Functions.DBSaveFormats
     /// <summary>
     /// XML compressed using Deflate
     /// </summary>
-    class CMZ : XML, IDataBaseFileFormat
+    class CMZ : XML
     {
         public override string Ext => "cmz";
 

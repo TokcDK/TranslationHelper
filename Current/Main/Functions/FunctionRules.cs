@@ -1,9 +1,7 @@
-﻿using System;
+﻿using NLog;
+using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using TranslationHelper.Data;
 using TranslationHelper.Extensions;
 
@@ -11,111 +9,82 @@ namespace TranslationHelper.Functions
 {
     internal class FunctionRules
     {
+        private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
+
         internal static void ReloadTranslationRegexRules()
         {
-            // make temp dict
-            var ProjectDataTranslationRegexRules = new Dictionary<string, string>();
-
-            //если файл с правилами существует
-            if (System.IO.File.Exists(THSettings.TranslationRegexRulesFilePath))
-            {
-                //читать файл с правилами
-                using (var rules = new StreamReader(THSettings.TranslationRegexRulesFilePath))
-                {
-                    //regex правило и результат из файла
-                    var regexPattern = string.Empty;
-                    var regexReplacement = string.Empty;
-                    var ReadRule = true;
-                    while (!rules.EndOfStream)
-                    {
-                        try
-                        {
-                            //читать правило и результат
-                            if (ReadRule)
-                            {
-                                regexPattern = rules.ReadLine();
-                                if (string.IsNullOrWhiteSpace(regexPattern) || regexPattern.TrimStart().StartsWith(";"))//игнорировать комментарии
-                                {
-                                    continue;
-                                }
-                                ReadRule = !ReadRule;
-                                continue;
-                            }
-                            else
-                            {
-                                regexReplacement = rules.ReadLine();
-                                if (string.IsNullOrWhiteSpace(regexPattern) || regexReplacement.TrimStart().StartsWith(";") || !FunctionsString.IsStringAContainsStringB(regexReplacement, "$"))//игнорировать комментарии
-                                {
-                                    continue;
-                                }
-                                ReadRule = !ReadRule;
-                            }
-
-                            ProjectDataTranslationRegexRules.TryAdd(regexPattern, regexReplacement);
-                        }
-                        catch
-                        {
-
-                        }
-                    }
-                }
-            }
-
             // re:Set rules
-            AppData.TranslationRegexRules = ProjectDataTranslationRegexRules;
+            AppData.TranslationRegexRules = LoadRegexRules(THSettings.TranslationRegexRulesFilePath, requireDollarPlaceholder: true);
         }
 
         internal static void ReloadCellFixesRegexRules()
         {
-            var ProjectDataCellFixesRegexRules = new Dictionary<string, string>();
+            // re:Set rules
+            AppData.CellFixesRegexRules = LoadRegexRules(THSettings.CellFixesRegexRulesFilePath, requireDollarPlaceholder: false);
+        }
+
+        /// <summary>
+        /// Reads a rules file where every rule occupies two consecutive lines: the regex pattern
+        /// and its replacement.
+        /// </summary>
+        /// <param name="rulesFilePath">File to read. When it does not exist an empty rule set is returned.</param>
+        /// <param name="requireDollarPlaceholder">
+        /// When true a replacement line is only accepted when it contains a '$' placeholder.
+        /// </param>
+        private static Dictionary<string, string> LoadRegexRules(string rulesFilePath, bool requireDollarPlaceholder)
+        {
+            var rulesDictionary = new Dictionary<string, string>();
 
             //если файл с правилами существует
-            if (System.IO.File.Exists(THSettings.CellFixesRegexRulesFilePath))
+            if (!File.Exists(rulesFilePath))
             {
-                //читать файл с правилами
-                using (var rules = new StreamReader(THSettings.CellFixesRegexRulesFilePath))
+                return rulesDictionary;
+            }
+
+            //читать файл с правилами
+            using (var rules = new StreamReader(rulesFilePath))
+            {
+                //regex правило и результат из файла
+                var regexPattern = string.Empty;
+                var readPattern = true;
+                while (!rules.EndOfStream)
                 {
-                    //regex правило и результат из файла
-                    var regexPattern = string.Empty;
-                    var regexReplacement = string.Empty;
-                    var ReadRule = true;
-                    while (!rules.EndOfStream)
+                    try
                     {
-                        try
+                        //читать правило
+                        if (readPattern)
                         {
-                            //читать правило и результат
-                            if (ReadRule)
+                            regexPattern = rules.ReadLine();
+                            if (string.IsNullOrWhiteSpace(regexPattern) || regexPattern.TrimStart().StartsWith(";"))//игнорировать комментарии
                             {
-                                regexPattern = rules.ReadLine();
-                                if (string.IsNullOrEmpty(regexPattern) || regexPattern.TrimStart().StartsWith(";"))//игнорировать комментарии
-                                {
-                                    continue;
-                                }
-                                ReadRule = !ReadRule;
                                 continue;
                             }
-                            else
-                            {
-                                regexReplacement = rules.ReadLine();
-                                if (string.IsNullOrEmpty(regexPattern) || regexReplacement.TrimStart().StartsWith(";"))//игнорировать комментарии
-                                {
-                                    continue;
-                                }
-                                ReadRule = !ReadRule;
-                            }
 
-                            ProjectDataCellFixesRegexRules.TryAdd(regexPattern, regexReplacement);
+                            readPattern = false;
+                            continue;
                         }
-                        catch
+
+                        //читать результат
+                        //(the old code also tested regexPattern here, but it is always non blank at
+                        //this point, so that test could never be true)
+                        var regexReplacement = rules.ReadLine();
+                        if (regexReplacement.TrimStart().StartsWith(";")//игнорировать комментарии
+                            || (requireDollarPlaceholder && !FunctionsString.IsStringAContainsStringB(regexReplacement, "$")))
                         {
-
+                            continue;
                         }
+
+                        readPattern = true;
+                        rulesDictionary.TryAdd(regexPattern, regexReplacement);
+                    }
+                    catch (Exception ex)
+                    {
+                        Logger.Warn("Failed to read a rule from {0}. Error: {1}", rulesFilePath, ex);
                     }
                 }
             }
 
-            // re:Set rules
-            AppData.CellFixesRegexRules = ProjectDataCellFixesRegexRules;
+            return rulesDictionary;
         }
     }
 }

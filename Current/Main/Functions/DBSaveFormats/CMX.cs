@@ -1,5 +1,4 @@
-﻿using System;
-using System.IO;
+﻿using System.IO;
 using System.IO.Compression;
 
 namespace TranslationHelper.Functions.DBSaveFormats
@@ -7,7 +6,7 @@ namespace TranslationHelper.Functions.DBSaveFormats
     /// <summary>
     /// XML compressed using GZip
     /// </summary>
-    class CMX : XML, IDataBaseFileFormat
+    class CMX : XML
     {
         public override string Ext => "cmx";
 

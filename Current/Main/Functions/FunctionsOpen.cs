@@ -137,9 +137,9 @@ namespace TranslationHelper.Functions
             return $"{filtersFromFormats}|{filtersFromFormatsSplitted}|RPGMakerTrans patch|RPGMKTRANSPATCH|Application EXE|*.exe|KiriKiri engine files|*.scn;*.ks|Txt file|*.txt|All|*.*";
         }
 
-        private static string GetCorrectedGameDIr(string tHSelectedGameDir)
+        private static string GetCorrectedGameDir(string tHSelectedGameDir)
         {
-            if (tHSelectedGameDir.Length == 0) tHSelectedGameDir = AppData.CurrentProject.SelectedDir;
+            if (string.IsNullOrEmpty(tHSelectedGameDir)) tHSelectedGameDir = AppData.CurrentProject.SelectedDir;
 
             string pFolderName = Path.GetFileName(tHSelectedGameDir);
             if (string.Compare(pFolderName, "data", true, CultureInfo.InvariantCulture) == 0) return Path.GetDirectoryName(Path.GetDirectoryName(tHSelectedGameDir));
@@ -188,19 +188,18 @@ namespace TranslationHelper.Functions
                 Logger.Info(T._("Found {0} projects to open with."), foundTypes.Count);
             }
 
-                int selectedIndex = -1;
-            var foundForm = new FoundTypesbyExtensionForm();
-            foreach (var type in foundTypes)
+            int selectedIndex = -1;
+            using (var foundForm = new FoundTypesbyExtensionForm())
             {
-                var inst = (IProject)Activator.CreateInstance(type);
-                var instName = !string.IsNullOrWhiteSpace(inst.Name) ? inst.Name + " (" + type.FullName + ")" : type.FullName;
-                foundForm.SelectTypeListBox.Items.Add(instName);
+                foreach (var type in foundTypes)
+                {
+                    var inst = (IProject)Activator.CreateInstance(type);
+                    var instName = !string.IsNullOrWhiteSpace(inst.Name) ? inst.Name + " (" + type.FullName + ")" : type.FullName;
+                    foundForm.SelectTypeListBox.Items.Add(instName);
+                }
+
+                if (foundForm.ShowDialog() == DialogResult.OK) selectedIndex = foundForm.SelectedTypeIndex;
             }
-
-            var result = foundForm.ShowDialog();
-            if (result == DialogResult.OK) selectedIndex = foundForm.SelectedTypeIndex;
-
-            foundForm.Dispose();
 
             if (selectedIndex > -1) return TryOpenSelectedProject(foundTypes[selectedIndex], projectPath, dir);
 
@@ -250,11 +249,7 @@ namespace TranslationHelper.Functions
 
         private static bool TryGetValidProject(ProjectBase project)
         {
-            if (project.IsValid())
-            {
-                return true;
-            }
-            return false;
+            return project.IsValid();
         }
 
         internal static async Task AfterOpenActions(ProjectBase project)
@@ -287,7 +282,7 @@ namespace TranslationHelper.Functions
             FunctionsMenus.CreateMainMenus();
             FunctionsMenus.CreateFilesListMenus();
 
-            project.SelectedGameDir = GetCorrectedGameDIr(project.SelectedGameDir);
+            project.SelectedGameDir = GetCorrectedGameDir(project.SelectedGameDir);
 
             if (project.Name.Contains("RPG Maker game with RPGMTransPatch") || project.Name.Contains("KiriKiri game"))
             {
@@ -313,7 +308,10 @@ namespace TranslationHelper.Functions
             {
                 AppData.Main.Text += AppData.Main.FVariant;
             }
-            catch { }
+            catch (Exception ex)
+            {
+                Logger.Warn(ex, "Failed to append the project name to the window title");
+            }
 
             AppSettings.ProjectNewLineSymbol = (AppData.CurrentProject != null)
                 ? project.NewlineSymbol

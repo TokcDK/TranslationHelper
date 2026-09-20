@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.Text.RegularExpressions;
 using System.Windows.Forms;
 using TranslationHelper.Data;
@@ -12,6 +13,20 @@ namespace TranslationHelper.Functions.StringChangers
         public FixCellsChanger()
         {
         }
+
+        /// <summary>
+        /// Rules, keyed by their pattern. A pattern is an immutable string and the rule collection is
+        /// replaced as a whole when it is reloaded, so a cached entry can never become stale. The cache
+        /// exists because this method used to build a new <see cref="Regex"/> for every rule of every
+        /// cell.
+        /// </summary>
+        static readonly ConcurrentDictionary<string, Regex> RegexCache = new ConcurrentDictionary<string, Regex>();
+
+        /// <summary>
+        /// Maximum number of attempts when the rules collection changes while it is being iterated.
+        /// </summary>
+        const int CellFixesMaxAttempts = 3;
+
         internal override string Description => $"{nameof(FixCellsChanger)}";
 
 
@@ -20,7 +35,7 @@ namespace TranslationHelper.Functions.StringChangers
             return CellFixes(extraData as string, inputString);
         }
 
-        private string CellFixes(string original, string translation)
+        private string CellFixes(string original, string translation, int attempt = 0)
         {
             //не трогать строку перевода, если она пустая
             if (string.IsNullOrEmpty(translation))
@@ -59,7 +74,7 @@ namespace TranslationHelper.Functions.StringChangers
                     try
                     {
                         //задать правило
-                        regexrule = new Regex(rule);
+                        regexrule = RegexCache.GetOrAdd(rule, r => new Regex(r, RegexOptions.Compiled));
 
                         //найти совпадение с заданным правилом в выбранной ячейке
                         mc = regexrule.Matches(cvalue);
@@ -84,8 +99,9 @@ namespace TranslationHelper.Functions.StringChangers
 
                             //LogToFile("7 Result THFilesElementsDataset.Tables[" + t + "].Rows[" + rowindex + "][" + cind + "].ToString()=" + THFilesElementsDataset.Tables[t].Rows[rowindex][cind].ToString());
                         }
-                        catch
+                        catch (Exception ex)
                         {
+                            Logger.Error(ex, "Failed to apply the cell fix rule '{0}'", rule);
                             MessageBox.Show(T._("Error in") + " TranslationHelperCellFixesRegexRules.txt" + Environment.NewLine + "Regex: " + rule);
                         }
                     }
@@ -104,8 +120,11 @@ namespace TranslationHelper.Functions.StringChangers
             }
             catch (InvalidOperationException) // in case of collection was changed exception when rules was changed in time of iteration
             {
-                // retry fixes
-                return CellFixes(original, translation);
+                // retry fixes, but only a bounded number of times: the previous unbounded retry
+                // recursed until the stack overflowed and killed the process
+                if (attempt + 1 >= CellFixesMaxAttempts) return translation;
+
+                return CellFixes(original, translation, attempt + 1);
             }
         }
     }
