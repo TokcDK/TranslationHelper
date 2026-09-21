@@ -544,7 +544,7 @@ namespace TranslationHelper.Functions
 
             FunctionsHotkeys.BindShortCuts();
 
-            AppData.SetSettings();
+            AppData.InitSettings();
 
             FunctionsMenus.CreateMainMenus();
 

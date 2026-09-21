@@ -138,24 +138,40 @@ namespace TranslationHelper.Projects.RimWorld
 
         /// <summary>
         /// Manages temporary changes to application settings during file processing.
+        /// <para>
+        /// The overrides are an implementation detail of this import, not a change the user asked
+        /// for, so writing to the INI file is suspended for the lifetime of the scope. Without that,
+        /// a stop or a crash halfway through the import would leave the overridden values on disk as
+        /// if the user had chosen them.
+        /// </para>
+        /// <para>
+        /// This used to reach into the settings form and flip two check boxes; it now changes the
+        /// settings themselves, which is what the rest of the application reads.
+        /// </para>
         /// </summary>
-        private class SettingsScope : IDisposable
+        private sealed class SettingsScope : IDisposable
         {
+            private readonly IDisposable writeSuspension;
             private readonly bool originalDontLoadDups;
             private readonly bool originalDontLoadStringIfRomajiPercent;
 
             public SettingsScope()
             {
-                originalDontLoadDups = Data.AppData.Settings.THOptionDontLoadDuplicates.Checked;
-                originalDontLoadStringIfRomajiPercent = Data.AppData.Settings.THOptionDontLoadStringIfRomajiPercentCheckBox.Checked;
-                Data.AppData.Settings.THOptionDontLoadDuplicates.Checked = true;
-                Data.AppData.Settings.THOptionDontLoadStringIfRomajiPercentCheckBox.Checked = false;
+                writeSuspension = Settings.SettingsIniStore.SuspendWriting();
+
+                originalDontLoadDups = Data.AppSettings.DontLoadDuplicates;
+                originalDontLoadStringIfRomajiPercent = Data.AppSettings.DontLoadStringIfRomajiPercent;
+
+                Data.AppSettings.DontLoadDuplicates = true;
+                Data.AppSettings.DontLoadStringIfRomajiPercent = false;
             }
 
             public void Dispose()
             {
-                Data.AppData.Settings.THOptionDontLoadDuplicates.Checked = originalDontLoadDups;
-                Data.AppData.Settings.THOptionDontLoadStringIfRomajiPercentCheckBox.Checked = originalDontLoadStringIfRomajiPercent;
+                Data.AppSettings.DontLoadDuplicates = originalDontLoadDups;
+                Data.AppSettings.DontLoadStringIfRomajiPercent = originalDontLoadStringIfRomajiPercent;
+
+                writeSuspension.Dispose();
             }
         }
 

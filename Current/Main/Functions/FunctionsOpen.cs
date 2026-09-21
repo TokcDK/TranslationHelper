@@ -28,7 +28,7 @@ namespace TranslationHelper.Functions
             {
                 using (var THFOpen = new OpenFileDialog())
                 {
-                    THFOpen.InitialDirectory = AppData.Settings.THConfigINI.GetKey("Paths", "LastPath");
+                    THFOpen.InitialDirectory = AppData.ConfigIni.GetKey("Paths", "LastPath");
 
                     THFOpen.Filter = GetFilters();
 
@@ -286,13 +286,13 @@ namespace TranslationHelper.Functions
 
             if (project.Name.Contains("RPG Maker game with RPGMTransPatch") || project.Name.Contains("KiriKiri game"))
             {
-                AppData.Settings.THConfigINI.SetKey("Paths", "LastPath", project.SelectedGameDir);
+                AppData.ConfigIni.SetKey("Paths", "LastPath", project.SelectedGameDir);
             }
             else
             {
                 try
                 {
-                    AppData.Settings.THConfigINI.SetKey("Paths", "LastPath", project.SelectedDir);
+                    AppData.ConfigIni.SetKey("Paths", "LastPath", project.SelectedDir);
                 }
                 catch (Exception ex)
                 {

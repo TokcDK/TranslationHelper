@@ -5,18 +5,24 @@ using System.Windows.Forms;
 using TranslationHelper.Functions;
 using TranslationHelper.Functions.FilesListControl;
 using TranslationHelper.Projects;
+using TranslationHelper.Settings;
 
 namespace TranslationHelper.Data
 {
     public static class AppData
     {
-        internal static THfrmSettings Settings;
-
-        //Settings
-        internal static void SetSettings()
+        /// <summary>
+        /// Reads every setting and writes any entry the INI file does not have yet.
+        /// <para>
+        /// This replaces the old "create the settings form and let it load its own controls" step.
+        /// Settings no longer live in a form, so there is nothing to construct here: the form is
+        /// created only when the user opens it, and it reads the same settings the rest of the
+        /// application reads.
+        /// </para>
+        /// </summary>
+        internal static void InitSettings()
         {
-            Settings = new THfrmSettings();
-            Settings.GetSettings();
+            SettingsRegistry.EnsureLoaded();
         }
 
         /// <summary>
@@ -39,9 +45,15 @@ namespace TranslationHelper.Data
         }
 
         /// <summary>
-        /// Application's loaded config ini
+        /// Application's loaded config ini.
+        /// <para>
+        /// This is the same file the settings are stored in. It is owned by
+        /// <see cref="SettingsIniStore"/>, which keeps it open for the whole session, so reading it
+        /// here cannot create a second handle on the file and cannot overwrite a setting that was
+        /// just changed.
+        /// </para>
         /// </summary>
-        internal static INIFileMan.INIFile ConfigIni { get => Settings.THConfigINI; set => Settings.THConfigINI = value; }
+        internal static INIFileMan.INIFile ConfigIni { get => SettingsIniStore.Ini; }
 
         /// <summary>
         /// regex rules which appling to original to show what need to translate
@@ -83,16 +95,6 @@ namespace TranslationHelper.Data
         /// все баз данных в кучу здесь
         /// </summary>
         internal static Dictionary<string, string> AllDBmerged;// = new Dictionary<string, string>();
-
-        /// <summary>
-        /// Buffer temp value. String type.
-        /// </summary>
-        internal static string BufferValueString; // used in settings
-
-        /// <summary>
-        /// true when settings is loading
-        /// </summary>
-        internal static bool SettingsIsLoading;
 
         /// <summary>
         /// The program session online translation cookies

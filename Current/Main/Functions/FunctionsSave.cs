@@ -60,9 +60,9 @@ namespace TranslationHelper.Functions
                     }
             )
             {
-                if (AppData.Settings.THConfigINI.SectionExistsAndNotEmpty(codesData.Key))
+                if (AppData.ConfigIni.SectionExistsAndNotEmpty(codesData.Key))
                 {
-                    foreach (var pair in AppData.Settings.THConfigINI.GetSectionKeyValuePairs(codesData.Key))
+                    foreach (var pair in AppData.ConfigIni.GetSectionKeyValuePairs(codesData.Key))
                     {
                         if (!int.TryParse(pair.Key, out int intKey) || !int.TryParse(pair.Value, out int intValue))
                         {
@@ -83,11 +83,11 @@ namespace TranslationHelper.Functions
 
                 foreach (var pair in codesData.Value)
                 {
-                    AppData.Settings.THConfigINI.SetKey(codesData.Key, pair.Key + "", pair.Value + "");
+                    AppData.ConfigIni.SetKey(codesData.Key, pair.Key + "", pair.Value + "");
                 }
             }
 
-            AppData.Settings.THConfigINI.WriteFile();
+            AppData.ConfigIni.WriteFile();
         }
     }
 }

@@ -89,26 +89,6 @@
     <Reference Include="WindowsFormsIntegration" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="appSettings\Sections\General\ComboBox\STargetLanguage.cs" />
-    <Compile Include="appSettings\Sections\General\ComboBox\SSourceLanguage.cs" />
-    <Compile Include="appSettings\Sections\Optimizations\CheckBox\SDontLoadDuplicates.cs" />
-    <Compile Include="appSettings\Sections\Optimizations\CheckBox\SIgnoreOrigEqualTransLines.cs" />
-    <Compile Include="appSettings\Sections\Tools\CheckBox\SSearchRowIssueOptionsCheckProjectSpecific.cs" />
-    <Compile Include="appSettings\Sections\Tools\CheckBox\SSearchRowIssueOptionsCheckAnyLineTranslatable.cs" />
-    <Compile Include="appSettings\Sections\Tools\CheckBox\SSearchRowIssueOptionsCheckActors.cs" />
-    <Compile Include="appSettings\Sections\Tools\CheckBox\SSearchRowIssueOptionsCheckNonRomaji.cs" />
-    <Compile Include="appSettings\Sections\Tools\CheckBox\SEnableTranslationCache.cs" />
-    <Compile Include="appSettings\Sections\Tools\TextBox\SDBAutosaveTimeout.cs" />
-    <Compile Include="appSettings\Sections\Tools\CheckBox\SEnableAutosave.cs" />
-    <Compile Include="appSettings\Sections\Tools\TextBox\SWebTranslationLink.cs" />
-    <Compile Include="appSettings\Sections\Optimizations\ComboBox\SDBCompressionExt.cs" />
-    <Compile Include="appSettings\Sections\Optimizations\TextBox\SDontLoadStringIfRomajiPercentNumber.cs" />
-    <Compile Include="appSettings\Sections\Optimizations\CheckBox\SDBCompression.cs" />
-    <Compile Include="appSettings\Sections\Optimizations\CheckBox\SDontLoadStringIfRomajiPercentForOpen.cs" />
-    <Compile Include="appSettings\Sections\Optimizations\CheckBox\SDontLoadStringIfRomajiPercentForTranslation.cs" />
-    <Compile Include="appSettings\Sections\Optimizations\CheckBox\SDontLoadStringIfRomajiPercent.cs" />
-    <Compile Include="appSettings\Sections\General\CheckBox\SLineCharLimit.cs" />
-    <Compile Include="appSettings\Sections\General\CheckBox\SFullComprasionDBload.cs" />
     <Compile Include="Data\AppSettings.cs" />
     <Compile Include="Data\AppMethods.cs" />
     <Compile Include="Formats\AI6WIN\AI6Arc.cs" />
@@ -161,6 +141,7 @@
     <Compile Include="Forms\Search\SearchNew\SearchHelper.cs" />
     <Compile Include="Forms\Search\SearchNew\Data\SearchResultsData.cs" />
     <Compile Include="Forms\Search\SearchSharedHelpers.cs" />
+    <Compile Include="Forms\Search\SearchSettings.cs" />
     <Compile Include="Functions\FileElementsFunctions\Row\OnlineTranslate\ITranslationCache.cs" />
     <Compile Include="Functions\FileElementsFunctions\Row\OnlineTranslate\OnlineTranslateTEST.cs" />
     <Compile Include="Functions\FileElementsFunctions\Row\OnlineTranslate\StringsTranslatorGoogle.cs" />
@@ -328,6 +309,7 @@
     <Compile Include="Functions\DBSaveFormats\CMX.cs" />
     <Compile Include="Functions\DBSaveFormats\IDataBaseFileFormat.cs" />
     <Compile Include="Functions\DBSaveFormats\XML.cs" />
+    <Compile Include="Functions\DBSaveFormats\DataSettings.cs" />
     <Compile Include="Functions\FileElementsFunctions\Row\ApplyAfterFillBufferWithOriginalsBase.cs" />
     <Compile Include="Functions\FileElementsFunctions\Row\AutoSameForSimular\AutoSameForSimularForce.cs" />
     <Compile Include="Functions\FileElementsFunctions\Row\AutoSameForSimular\AutoSameForSimular.cs" />
@@ -346,6 +328,7 @@
     <Compile Include="Functions\FileElementsFunctions\Row\OnlineTranslate\OnlineTranslateNew.cs" />
     <Compile Include="Functions\FileElementsFunctions\Row\OnlineTranslate\RowData.cs" />
     <Compile Include="Functions\FileElementsFunctions\Row\OnlineTranslate\RowTranslationInfo.cs" />
+    <Compile Include="Functions\FileElementsFunctions\Row\OnlineTranslate\TranslationSettings.cs" />
     <Compile Include="Functions\FileElementsFunctions\Row\OpenInWeb.cs" />
     <Compile Include="Functions\FileElementsFunctions\Row\PasteTranslation.cs" />
     <Compile Include="Functions\FileElementsFunctions\Row\RowBase.cs" />
@@ -389,14 +372,10 @@
     <Compile Include="Functions\FunctionsStringExtensions.cs" />
     <Compile Include="Functions\FunctionsOpen.cs" />
     <Compile Include="Functions\FunctionsSave.cs" />
+    <Compile Include="Functions\TextSettings.cs" />
     <Compile Include="Functions\FileElementsFunctions\Row\OnlineTranslate\TranslationCacheBase.cs" />
     <Compile Include="Functions\FunctionsSounds.cs" />
     <Compile Include="Functions\FunctionsStringsFixes.cs" />
-    <Compile Include="appSettings\Sections\General\CheckBox\SAutotranslationForSimular.cs" />
-    <Compile Include="appSettings\SettingsBase.cs" />
-    <Compile Include="appSettings\Sections\Tools\Tools.cs" />
-    <Compile Include="appSettings\Sections\General\General.cs" />
-    <Compile Include="appSettings\Sections\Optimizations\Optimizations.cs" />
     <Compile Include="Functions\FunctionTest.cs" />
     <Compile Include="Functions\RowParsersParallel\ClearCellsParallel.cs" />
     <Compile Include="Functions\RowParsersParallel\RowParallelParserBase.cs" />
@@ -624,6 +603,11 @@
     <Compile Include="Program.cs" />
     <Compile Include="Projects\zzzOtherProject\DummyProject.cs" />
     <Compile Include="Projects\zzzOtherProject\OtherProjectBase.cs" />
+    <Compile Include="Settings\Setting.cs" />
+    <Compile Include="Settings\SettingBase.cs" />
+    <Compile Include="Settings\SettingTypes.cs" />
+    <Compile Include="Settings\SettingsIniStore.cs" />
+    <Compile Include="Settings\SettingsRegistry.cs" />
     <Compile Include="Projects\ZZZZFormats\Form1.cs">
       <SubType>Form</SubType>
     </Compile>

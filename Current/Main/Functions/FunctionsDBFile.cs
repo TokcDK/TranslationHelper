@@ -697,7 +697,7 @@ namespace TranslationHelper.Main.Functions
                         await FunctionsDBFile.WriteDBFile(liteds, fileName).ConfigureAwait(false);
                     }
 
-                    //AppData.Settings.THConfigINI.SetKey("Paths", "LastAutoSavePath", lastautosavepath);
+                    //AppData.ConfigIni.SetKey("Paths", "LastAutoSavePath", lastautosavepath);
                 }
                 catch (Exception ex) {
                     Logger.Warn("Error writing DB file: {0}", ex);
@@ -813,7 +813,7 @@ namespace TranslationHelper.Main.Functions
         {
             if (sPath.Length == 0)
             {
-                sPath = AppData.Settings.THConfigINI.GetKey("Paths", "LastAutoSavePath");
+                sPath = AppData.ConfigIni.GetKey("Paths", "LastAutoSavePath");
             }
 
             if (!File.Exists(sPath))

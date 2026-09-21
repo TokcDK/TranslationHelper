@@ -24,17 +24,24 @@ namespace TranslationHelper.Menus.MainMenus.Edit
 
         public override string Description => Text;
 
+        /// <summary>
+        /// The one settings window of this session. It lives here rather than in <c>AppData</c>
+        /// because only this menu opens it, and because the settings themselves are no longer held
+        /// by the form: the window is a view over <c>SettingsRegistry</c> and nothing more.
+        /// </summary>
+        private static THfrmSettings _settingsForm;
+
         public override void OnClick(object sender, EventArgs e)
         {
             try
             {
-                if (AppData.Settings == null || AppData.Settings.IsDisposed) AppData.Settings = new THfrmSettings();
+                if (_settingsForm == null || _settingsForm.IsDisposed) _settingsForm = new THfrmSettings();
 
-                if (AppData.Settings.Visible)
+                if (_settingsForm.Visible)
                 {
-                    AppData.Settings.Activate();
+                    _settingsForm.Activate();
                 }
-                else AppData.Settings.Show();
+                else _settingsForm.Show();
             }
             catch
             {

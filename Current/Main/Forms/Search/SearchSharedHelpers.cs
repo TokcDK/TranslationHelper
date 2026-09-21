@@ -55,7 +55,7 @@ namespace TranslationHelper.Forms.Search
             var list = new List<string>();
             try
             {
-                var savedQueries = AppData.Settings.THConfigINI.GetSectionValues(sectionName)?.ToArray();
+                var savedQueries = AppData.ConfigIni.GetSectionValues(sectionName)?.ToArray();
                 if (savedQueries?.Length > 0)
                 {
                     list.Clear();
@@ -85,7 +85,7 @@ namespace TranslationHelper.Forms.Search
                     list = list.Where(s => !string.IsNullOrEmpty(s)).Take(maxEntriesCount).ToList();
                     SearchSharedHelpers.AddQuotesToWritingSearchValues(list);
                     SearchSharedHelpers.UnEscapeSearchValues(list, false);
-                    AppData.Settings.THConfigINI.SetArrayToSectionValues(sectionName, list.ToArray());
+                    AppData.ConfigIni.SetArrayToSectionValues(sectionName, list.ToArray());
                 }
 
                 return list;
