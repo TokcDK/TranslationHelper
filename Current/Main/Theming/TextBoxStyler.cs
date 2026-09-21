@@ -5,9 +5,14 @@ namespace TranslationHelper.Theming
     /// <summary>
     /// Paints a text box or a rich text box.
     /// <para>
-    /// The text keeps the ordinary colour even when the control is disabled, because a disabled text
-    /// box is drawn with the system's disabled colour whatever colour it is given, and a control that
-    /// is enabled again keeps readable text this way.
+    /// One shape cannot be painted at all while it is disabled. A disabled rich text box draws its own
+    /// background in the system's button colour and ignores everything that can be thrown at it:
+    /// <c>BackColor</c>, <c>SetWindowTheme</c>, <c>EM_SETBKGNDCOLOR</c>, a filled
+    /// <c>WM_ERASEBKGND</c>, and the parent's colouring message — all five were measured, and the
+    /// background stayed #F0F0F0 through every one. A plain text box does not have that problem, and
+    /// neither does a read-only rich text box, so an editor that is not to be edited is held
+    /// <c>ReadOnly</c> rather than <c>Enabled = false</c>. See
+    /// <c>FunctionsUI.SetOnTHFileElementsDataGridViewWasLoaded</c>.
     /// </para>
     /// <para>
     /// The log window is a rich text box, and this is the styler that makes it follow the theme. The

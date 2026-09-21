@@ -427,10 +427,10 @@ namespace TranslationHelper
             // 
             this.THTargetRichTextBox.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.THTargetRichTextBox.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.THTargetRichTextBox.Enabled = false;
             this.THTargetRichTextBox.Location = new System.Drawing.Point(0, 0);
             this.THTargetRichTextBox.Margin = new System.Windows.Forms.Padding(0);
             this.THTargetRichTextBox.Name = "THTargetRichTextBox";
+            this.THTargetRichTextBox.ReadOnly = true;
             this.THTargetRichTextBox.Size = new System.Drawing.Size(350, 89);
             this.THTargetRichTextBox.TabIndex = 1;
             this.THTargetRichTextBox.Text = "";

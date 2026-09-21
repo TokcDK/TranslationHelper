@@ -392,7 +392,12 @@ namespace TranslationHelper.Functions
                 AppData.Main.THFileElementsDataGridView.Columns[THSettings.TranslationColumnName].HeaderText = T._(THSettings.TranslationColumnName);
                 AppData.Main.THFileElementsDataGridView.Columns[THSettings.OriginalColumnName].ReadOnly = true;
                 AppData.Main.THSourceRichTextBox.Enabled = true;
-                AppData.Main.THTargetRichTextBox.Enabled = true;
+
+                // The target box is held read-only until a file is selected, rather than disabled. A
+                // disabled rich text box paints the system's light background whatever colour it is
+                // given, which leaves a white block on a dark window; a read-only one keeps the
+                // colour. Measured, and it is the same reason the source box above is read-only.
+                AppData.Main.THTargetRichTextBox.ReadOnly = false;
             }
         }
 
