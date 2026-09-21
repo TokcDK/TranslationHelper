@@ -338,7 +338,9 @@ ASALocalRun/
 
 # BeatPulse healthcheck temp database
 healthchecksdb
+
 /TranslationHelper/scripter.cs
 /RPGRewriter.lnk
 /структура.png
-/current-allitem-changes.md
+/current-*-changes.md
+.*/

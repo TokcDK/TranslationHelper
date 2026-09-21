@@ -45,12 +45,16 @@ namespace TranslationHelper.Functions
             PlayExclamation();
         }
 
-        static object _soundLocker = new object();
+        static readonly object _soundLocker = new object();
         internal static void PlayBeep()
         {
             lock (_soundLocker)
             {
-                new System.Media.SoundPlayer(Data.THSettings.ResDirPath + @"\sounds\complete.wav").Play();
+                string soundFilePath = Path.GetFullPath(Data.THSettings.ResDirPath + @"\sounds\complete.wav");
+                if (File.Exists(soundFilePath))
+                {
+                    new System.Media.SoundPlayer(soundFilePath).Play();
+                }
             }
         }
 
