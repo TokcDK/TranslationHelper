@@ -63,7 +63,7 @@ namespace TranslationHelper.Functions
 
                 if (_completeSoundPlayer == null)
                 {
-                    _completeSoundPlayer = new System.Media.SoundPlayer(soundFilePath");
+                    _completeSoundPlayer = new System.Media.SoundPlayer(soundFilePath);
                 }
 
                 _completeSoundPlayer.Play();
