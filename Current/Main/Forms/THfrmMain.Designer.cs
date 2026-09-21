@@ -32,6 +32,10 @@ namespace TranslationHelper
         {
             this.components = new System.ComponentModel.Container();
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle3 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle4 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle5 = new System.Windows.Forms.DataGridViewCellStyle();
             this.MainMenus = new System.Windows.Forms.MenuStrip();
             this.mainMenusHereToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.editToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -269,7 +273,7 @@ namespace TranslationHelper
             this.tlpFileElements.Name = "tlpFileElements";
             this.tlpFileElements.RowCount = 1;
             this.tlpFileElements.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tlpFileElements.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
+            this.tlpFileElements.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 308F));
             this.tlpFileElements.Size = new System.Drawing.Size(657, 308);
             this.tlpFileElements.TabIndex = 5;
             // 
@@ -277,6 +281,11 @@ namespace TranslationHelper
             // 
             this.THFileElementsDataGridView.AllowUserToAddRows = false;
             this.THFileElementsDataGridView.AllowUserToDeleteRows = false;
+            dataGridViewCellStyle1.BackColor = System.Drawing.SystemColors.Window;
+            dataGridViewCellStyle1.ForeColor = System.Drawing.SystemColors.WindowText;
+            dataGridViewCellStyle1.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle1.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            this.THFileElementsDataGridView.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle1;
             this.THFileElementsDataGridView.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
@@ -284,7 +293,23 @@ namespace TranslationHelper
             this.THFileElementsDataGridView.AutoSizeRowsMode = System.Windows.Forms.DataGridViewAutoSizeRowsMode.DisplayedCells;
             this.THFileElementsDataGridView.BackgroundColor = System.Drawing.SystemColors.ButtonHighlight;
             this.THFileElementsDataGridView.BorderStyle = System.Windows.Forms.BorderStyle.None;
+            dataGridViewCellStyle2.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle2.BackColor = System.Drawing.SystemColors.Control;
+            dataGridViewCellStyle2.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            dataGridViewCellStyle2.ForeColor = System.Drawing.SystemColors.ControlText;
+            dataGridViewCellStyle2.SelectionBackColor = System.Drawing.SystemColors.Control;
+            dataGridViewCellStyle2.SelectionForeColor = System.Drawing.SystemColors.ControlText;
+            dataGridViewCellStyle2.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
+            this.THFileElementsDataGridView.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle2;
             this.THFileElementsDataGridView.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            dataGridViewCellStyle3.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle3.BackColor = System.Drawing.SystemColors.Window;
+            dataGridViewCellStyle3.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            dataGridViewCellStyle3.ForeColor = System.Drawing.SystemColors.WindowText;
+            dataGridViewCellStyle3.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle3.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle3.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
+            this.THFileElementsDataGridView.DefaultCellStyle = dataGridViewCellStyle3;
             this.THFileElementsDataGridView.EditMode = System.Windows.Forms.DataGridViewEditMode.EditOnKeystroke;
             this.THFileElementsDataGridView.FilterAndSortEnabled = true;
             this.THFileElementsDataGridView.FilterStringChangedInvokeBeforeDatasourceUpdate = true;
@@ -293,8 +318,20 @@ namespace TranslationHelper
             this.THFileElementsDataGridView.MaxFilterButtonImageHeight = 23;
             this.THFileElementsDataGridView.Name = "THFileElementsDataGridView";
             this.THFileElementsDataGridView.RightToLeft = System.Windows.Forms.RightToLeft.No;
-            dataGridViewCellStyle1.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
-            this.THFileElementsDataGridView.RowsDefaultCellStyle = dataGridViewCellStyle1;
+            dataGridViewCellStyle4.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle4.BackColor = System.Drawing.SystemColors.Control;
+            dataGridViewCellStyle4.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            dataGridViewCellStyle4.ForeColor = System.Drawing.SystemColors.ControlText;
+            dataGridViewCellStyle4.SelectionBackColor = System.Drawing.SystemColors.Control;
+            dataGridViewCellStyle4.SelectionForeColor = System.Drawing.SystemColors.ControlText;
+            dataGridViewCellStyle4.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
+            this.THFileElementsDataGridView.RowHeadersDefaultCellStyle = dataGridViewCellStyle4;
+            dataGridViewCellStyle5.BackColor = System.Drawing.SystemColors.Window;
+            dataGridViewCellStyle5.ForeColor = System.Drawing.SystemColors.WindowText;
+            dataGridViewCellStyle5.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle5.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle5.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
+            this.THFileElementsDataGridView.RowsDefaultCellStyle = dataGridViewCellStyle5;
             this.THFileElementsDataGridView.RowTemplate.Height = 23;
             this.THFileElementsDataGridView.Size = new System.Drawing.Size(653, 306);
             this.THFileElementsDataGridView.SortStringChangedInvokeBeforeDatasourceUpdate = true;
@@ -543,11 +580,11 @@ namespace TranslationHelper
             this.LogTableLayoutPanel.Controls.Add(this.rtbLog, 0, 0);
             this.LogTableLayoutPanel.Controls.Add(this.OpenCurrentLogFileButton, 1, 0);
             this.LogTableLayoutPanel.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.LogTableLayoutPanel.Location = new System.Drawing.Point(0, 3);
+            this.LogTableLayoutPanel.Location = new System.Drawing.Point(0, 0);
             this.LogTableLayoutPanel.Name = "LogTableLayoutPanel";
             this.LogTableLayoutPanel.RowCount = 1;
             this.LogTableLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.LogTableLayoutPanel.Size = new System.Drawing.Size(790, 53);
+            this.LogTableLayoutPanel.Size = new System.Drawing.Size(790, 56);
             this.LogTableLayoutPanel.TabIndex = 2;
             // 
             // rtbLog
@@ -557,7 +594,7 @@ namespace TranslationHelper
             this.rtbLog.Margin = new System.Windows.Forms.Padding(0);
             this.rtbLog.Name = "rtbLog";
             this.rtbLog.ReadOnly = true;
-            this.rtbLog.Size = new System.Drawing.Size(775, 53);
+            this.rtbLog.Size = new System.Drawing.Size(775, 56);
             this.rtbLog.TabIndex = 1;
             this.rtbLog.Text = "";
             // 
@@ -567,7 +604,7 @@ namespace TranslationHelper
             this.OpenCurrentLogFileButton.Location = new System.Drawing.Point(775, 0);
             this.OpenCurrentLogFileButton.Margin = new System.Windows.Forms.Padding(0);
             this.OpenCurrentLogFileButton.Name = "OpenCurrentLogFileButton";
-            this.OpenCurrentLogFileButton.Size = new System.Drawing.Size(15, 53);
+            this.OpenCurrentLogFileButton.Size = new System.Drawing.Size(15, 56);
             this.OpenCurrentLogFileButton.TabIndex = 2;
             this.OpenCurrentLogFileButton.Text = ">";
             this.OpenCurrentLogFileButton.UseVisualStyleBackColor = true;
@@ -589,6 +626,7 @@ namespace TranslationHelper
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.THMain_FormClosing);
             this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.THfrmMain_FormClosed);
             this.Load += new System.EventHandler(this.THMain_Load);
+            this.Shown += new System.EventHandler(this.FormMain_Shown);
             this.MainMenus.ResumeLayout(false);
             this.MainMenus.PerformLayout();
             this.frmMainPanel.ResumeLayout(false);

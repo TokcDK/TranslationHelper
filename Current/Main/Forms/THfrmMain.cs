@@ -33,7 +33,6 @@ namespace TranslationHelper
         {
             AppHelper.SetupLogging(this);
             FunctionsUI.THMain_Load();
-            Logger.Info(T._($"Application started"));
         }
         private void THFilesListBox_MouseClick(object sender, MouseEventArgs e)
         {
@@ -325,6 +324,11 @@ namespace TranslationHelper
         private void OpenCurrentLogFileButton_Click(object sender, EventArgs e)
         {
             AppHelper.OpenCurrentFileLogFile();
+        }
+
+        private void FormMain_Shown(object sender, EventArgs e)
+        {
+            Logger.Info(T._($"Application started"));
         }
 
         //Материалы
