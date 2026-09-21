@@ -754,18 +754,11 @@ namespace TranslationHelper.Main.Functions
 
         internal static async Task LoadDB(bool force = true)
         {
-            if (AppData.CurrentProject.IsLoadingDB) return;
+            // The load itself reports the state from inside LoadTranslationIfNeed; asking here is
+            // what keeps a second load from starting on top of a running one.
+            if (ProjectReadiness.IsDatabaseLoading) return;
 
-            AppData.CurrentProject.IsLoadingDB = true;
-            try
-            {
-                await FunctionsLoadTranslationDB.LoadTranslationIfNeed(forceLoad: force, askIfLoadDB: false);
-            }
-            finally
-            {
-                //Must be cleared even when loading fails, otherwise no later load could start.
-                AppData.CurrentProject.IsLoadingDB = false;
-            }
+            await FunctionsLoadTranslationDB.LoadTranslationIfNeed(forceLoad: force, askIfLoadDB: false);
         }
 
         static bool LoadTranslationToolStripMenuItem_ClickIsBusy;
@@ -776,36 +769,43 @@ namespace TranslationHelper.Main.Functions
                 return;
             }
             LoadTranslationToolStripMenuItem_ClickIsBusy = true;
-            try
+
+            // This is the single place every database read goes through, so it is also the single
+            // place that reports the project content as "being written into": the rows are replaced
+            // one at a time from here, and an automatic operation must stay out until it is done.
+            using (ProjectReadiness.BeginDatabaseLoad())
             {
-                if (UseAllDB)
+                try
                 {
-                    Logger.Info("Get all databases");
-                    await FunctionsDBFile.MergeAllDBtoOne();
-                    FunctionsLoadTranslationDB.THLoadDBCompareFromDictionaryParallellTables(AppData.AllDBmerged);
-                }
-                else
-                {
-                    using (DataSet DBDataSet = new DataSet())
+                    if (UseAllDB)
                     {
-
-                        //https://ru.stackoverflow.com/questions/222414/%d0%9a%d0%b0%d0%ba-%d0%bf%d1%80%d0%b0%d0%b2%d0%b8%d0%bb%d1%8c%d0%bd%d0%be-%d0%b2%d1%8b%d0%bf%d0%be%d0%bb%d0%bd%d0%b8%d1%82%d1%8c-%d0%bc%d0%b5%d1%82%d0%be%d0%b4-%d0%b2-%d0%be%d1%82%d0%b4%d0%b5%d0%bb%d1%8c%d0%bd%d0%be%d0%bc-%d0%bf%d0%be%d1%82%d0%be%d0%ba%d0%b5 
-                        await Task.Run(() => ReadDBAndLoadDBCompare(DBDataSet, sPath, forced)).ConfigureAwait(true);
+                        Logger.Info("Get all databases");
+                        await FunctionsDBFile.MergeAllDBtoOne();
+                        FunctionsLoadTranslationDB.THLoadDBCompareFromDictionaryParallellTables(AppData.AllDBmerged);
                     }
+                    else
+                    {
+                        using (DataSet DBDataSet = new DataSet())
+                        {
+
+                            //https://ru.stackoverflow.com/questions/222414/%d0%9a%d0%b0%d0%ba-%d0%bf%d1%80%d0%b0%d0%b2%d0%b8%d0%bb%d1%8c%d0%bd%d0%be-%d0%b2%d1%8b%d0%bf%d0%be%d0%bb%d0%bd%d0%b8%d1%82%d1%8c-%d0%bc%d0%b5%d1%82%d0%be%d0%b4-%d0%b2-%d0%be%d1%82%d0%b4%d0%b5%d0%bb%d1%8c%d0%bd%d0%be%d0%bc-%d0%bf%d0%be%d1%82%d0%be%d0%ba%d0%b5 
+                            await Task.Run(() => ReadDBAndLoadDBCompare(DBDataSet, sPath, forced)).ConfigureAwait(true);
+                        }
+                    }
+
+
+                    _ = AppData.Main.THFileElementsDataGridView.Invoke((Action)(() => AppData.Main.THFileElementsDataGridView.Refresh()));
+
+
+                    FunctionsSounds.LoadDBCompleted();
+                    _ = AppData.Main.THFilesList.Invoke((Action)(() => AppData.Main.THFilesList.Refresh()));
                 }
-
-
-                _ = AppData.Main.THFileElementsDataGridView.Invoke((Action)(() => AppData.Main.THFileElementsDataGridView.Refresh()));
-
-
-                FunctionsSounds.LoadDBCompleted();
-                _ = AppData.Main.THFilesList.Invoke((Action)(() => AppData.Main.THFilesList.Refresh()));
-            }
-            finally
-            {
-                //Must be cleared even when loading fails, otherwise every later load would be
-                //rejected as a re-entrant one.
-                LoadTranslationToolStripMenuItem_ClickIsBusy = false;
+                finally
+                {
+                    //Must be cleared even when loading fails, otherwise every later load would be
+                    //rejected as a re-entrant one.
+                    LoadTranslationToolStripMenuItem_ClickIsBusy = false;
+                }
             }
         }
 

@@ -51,7 +51,6 @@ namespace TranslationHelper.Data
         public static string ProjectNewLineSymbol { get; set; } = "\r\n";
         public static string NewLine { get; set; } = "\r\n";
         public static string THProjectWorkDir { get; set; } = "";
-        public static bool THAutoSetSameTranslationForSimularIsBusy { get; set; } = false;
         public static int DGVSelectedRowIndex { get; set; } = -1;
         public static int DGVSelectedRowRealIndex { get; set; } = -1;
         public static int DGVSelectedColumnIndex { get; set; } = -1;

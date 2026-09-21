@@ -32,11 +32,6 @@ namespace TranslationHelper.Projects
 
         // Public Fields
         /// <summary>
-        /// Indicates whether the database is currently loading.
-        /// </summary>
-        public bool IsLoadingDB = false;
-
-        /// <summary>
         /// True when file is in open mode.
         /// </summary>
         public bool OpenFileMode = true;

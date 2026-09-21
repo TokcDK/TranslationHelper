@@ -444,6 +444,13 @@ namespace TranslationHelper.Functions
 
             if (!AppSettings.ProjectIsOpened) return;
 
+            // Not while the project is still opening and not while its translation database is being
+            // read: during a load every row that is written raises this event, and starting the
+            // operation on each of them would spread translations read from a database that is only
+            // half loaded. The operation checks the same state again, so a caller that does not ask
+            // is still safe; asking here is what keeps a run's hooks and log out of a load.
+            if (!ProjectReadiness.IsReady) return;
+
             await new AutoSameForSimular().Rows().ConfigureAwait(true);
             //await Task.Run(() => FunctionAutoSave.Autosave()).ConfigureAwait(true);// save on each change is killing system..       
 

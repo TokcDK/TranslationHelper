@@ -39,8 +39,10 @@ namespace TranslationHelper.Data
                 //    ProjectData.Main.Settings = null;
                 //}
 
-                //to prevent some autooperations while project will not be opened
-                //AppSettings.ProjectIsOpened = false;
+                // A different project is about to be opened, so the content that is about to be
+                // replaced must not be worked on any more. MarkProjectOpened is called again once
+                // the new project's content is complete.
+                ProjectReadiness.MarkProjectClosed();
 
                 //Reset vars
                 AppData.Main.Text = "Translation Helper";

@@ -321,6 +321,11 @@ namespace TranslationHelper.Functions
 
             FunctionsSounds.OpenProjectComplete();
 
+            // The content is complete from here on: the files are parsed, the files list is filled
+            // and the menus exist. Automatic operations may work on it now; reading the translation
+            // database is the next step and has its own state, which keeps them out while it runs.
+            ProjectReadiness.MarkProjectOpened();
+
             await FunctionsLoadTranslationDB.LoadTranslationIfNeed().ConfigureAwait(true);
         }
 

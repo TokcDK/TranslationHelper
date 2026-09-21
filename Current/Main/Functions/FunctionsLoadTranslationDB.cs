@@ -264,21 +264,27 @@ namespace TranslationHelper.Functions
 
         internal async static Task LoadTranslationIfNeed(bool forceLoad = false, bool askIfLoadDB = true, bool askIfLoadAllDB = true)
         {
-            var dbPath = Path.Combine(FunctionsDBFile.GetProjectDBFolder(), FunctionsDBFile.GetDBFileName() + FunctionsDBFile.GetDBCompressionExt());
-            dbPath = FunctionsDBFile.SearchByAllDBFormatExtensions(dbPath);
-
-            if (File.Exists(dbPath) && (!askIfLoadDB || (askIfLoadDB && MessageBox.Show(T._("Found translation DB. Load it?"), T._("Load translation DB"), MessageBoxButtons.YesNo, MessageBoxIcon.Warning) == DialogResult.Yes)))
+            // The whole step is reported as a load, not just the read: a forced load clears the
+            // translations first, and the window in which the project holds cleared translations is
+            // exactly the window an automatic operation must stay out of.
+            using (ProjectReadiness.BeginDatabaseLoad())
             {
-                if (forceLoad) await new ClearCells().AllT().ConfigureAwait(true);
+                var dbPath = Path.Combine(FunctionsDBFile.GetProjectDBFolder(), FunctionsDBFile.GetDBFileName() + FunctionsDBFile.GetDBCompressionExt());
+                dbPath = FunctionsDBFile.SearchByAllDBFormatExtensions(dbPath);
 
-                await Task.Run(() => FunctionsDBFile.LoadTranslationFromDB(sPath: dbPath, UseAllDB: false, forced: true)).ConfigureAwait(false);
-            }
-            else if (askIfLoadAllDB)
-            {
-                var loadTranslationsFromAllDBQuestion = MessageBox.Show(T._("Try to find translations in all avalaible DB? (Can take some time)"), T._("Load all DB"), MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
-                if (loadTranslationsFromAllDBQuestion != DialogResult.Yes) return;
+                if (File.Exists(dbPath) && (!askIfLoadDB || (askIfLoadDB && MessageBox.Show(T._("Found translation DB. Load it?"), T._("Load translation DB"), MessageBoxButtons.YesNo, MessageBoxIcon.Warning) == DialogResult.Yes)))
+                {
+                    if (forceLoad) await new ClearCells().AllT().ConfigureAwait(true);
 
-                await Task.Run(() => FunctionsDBFile.LoadTranslationFromDB(sPath: string.Empty, UseAllDB: true)).ConfigureAwait(false);
+                    await Task.Run(() => FunctionsDBFile.LoadTranslationFromDB(sPath: dbPath, UseAllDB: false, forced: true)).ConfigureAwait(false);
+                }
+                else if (askIfLoadAllDB)
+                {
+                    var loadTranslationsFromAllDBQuestion = MessageBox.Show(T._("Try to find translations in all avalaible DB? (Can take some time)"), T._("Load all DB"), MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
+                    if (loadTranslationsFromAllDBQuestion != DialogResult.Yes) return;
+
+                    await Task.Run(() => FunctionsDBFile.LoadTranslationFromDB(sPath: string.Empty, UseAllDB: true)).ConfigureAwait(false);
+                }
             }
         }
     }
