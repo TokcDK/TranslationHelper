@@ -1,7 +1,6 @@
 ﻿using NLog;
 using System;
 using System.Text.RegularExpressions;
-using System.Windows.Forms;
 using TranslationHelper.Data;
 
 namespace TranslationHelper.Functions.FileElementsFunctions.Row
@@ -84,7 +83,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
                             }
                             catch
                             {
-                                MessageBox.Show(T._("Error in") + " TranslationHelperCellFixesRegexRules.txt" + Environment.NewLine + "Regex: " + rule);
+                                UiUpdater.ShowMessage(T._("Error in") + " TranslationHelperCellFixesRegexRules.txt" + Environment.NewLine + "Regex: " + rule);
                             }
                         }
                     }

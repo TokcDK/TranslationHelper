@@ -154,7 +154,7 @@
     <Compile Include="Functions\DBSaveFormats\Bin.cs" />
     <Compile Include="Functions\FileElementsFunctions\Row\EnQuotesToJp2.cs" />
     <Compile Include="Functions\FileElementsFunctions\Row\ExportFormats\ExcelTablesFormat.cs" />
-    <Compile Include="Functions\FileElementsFunctions\Row\ExtractedByTranslationRulesParserRowBase.cs" />
+    <Compile Include="Functions\FileElementsFunctions\Row\ExtractedParser\ExtractedByTranslationRulesParserRowBase.cs" />
     <Compile Include="Data\Interfaces\IOriginalTranslationUser.cs" />
     <Compile Include="Functions\FileElementsFunctions\Row\OnlineTranslate\OnlineTranslateNewEmpty.cs" />
     <Compile Include="Functions\FileElementsFunctions\Row\RowFunctionSelectedRowNewWIP\RowFunctionSelectedRowNewWIP.cs" />
@@ -319,6 +319,7 @@
     <Compile Include="Functions\FileElementsFunctions\Row\CopyOriginals.cs" />
     <Compile Include="Functions\FileElementsFunctions\Row\ExportFormats\ExportFormatsBase.cs" />
     <Compile Include="Functions\FileElementsFunctions\Row\ExportFormats\RPGMakerLikeTXT.cs" />
+    <Compile Include="Functions\FileElementsFunctions\Row\ExportFormats\RowExportFormat.cs" />
     <Compile Include="Functions\FileElementsFunctions\Row\FillEmptyTablesLinesDict\FillEmptyTablesLinesDictBase.cs" />
     <Compile Include="Functions\FileElementsFunctions\Row\FillEmptyTablesLinesDict\FillEmptyTablesLinesDictForce.cs" />
     <Compile Include="Functions\FileElementsFunctions\Row\FillEmptyTablesLinesDict\FillEmptyTablesLinesDictSaveModeNoDups.cs" />
@@ -331,7 +332,18 @@
     <Compile Include="Functions\FileElementsFunctions\Row\OnlineTranslate\TranslationSettings.cs" />
     <Compile Include="Functions\FileElementsFunctions\Row\OpenInWeb.cs" />
     <Compile Include="Functions\FileElementsFunctions\Row\PasteTranslation.cs" />
-    <Compile Include="Functions\FileElementsFunctions\Row\RowBase.cs" />
+    <Compile Include="Functions\FileElementsFunctions\Row\Base\RowBase.cs" />
+    <Compile Include="Functions\FileElementsFunctions\Row\Base\ISelectionProvider.cs" />
+    <Compile Include="Functions\FileElementsFunctions\Row\Base\IUiUpdater.cs" />
+    <Compile Include="Functions\FileElementsFunctions\Row\Base\ProcessingState.cs" />
+    <Compile Include="Functions\FileElementsFunctions\Row\Base\RowBaseRowData.cs" />
+    <Compile Include="Functions\FileElementsFunctions\Row\Base\RowPlanFactory.cs" />
+    <Compile Include="Functions\FileElementsFunctions\Row\Base\RowTargetResolver.cs" />
+    <Compile Include="Functions\FileElementsFunctions\Row\Base\TableData.cs" />
+    <Compile Include="Functions\FileElementsFunctions\Row\Base\TableRowPlan.cs" />
+    <Compile Include="Functions\FileElementsFunctions\Row\Adapters\RowServices.cs" />
+    <Compile Include="Functions\FileElementsFunctions\Row\Adapters\WinFormsSelectionProvider.cs" />
+    <Compile Include="Functions\FileElementsFunctions\Row\Adapters\WinFormsUiUpdater.cs" />
     <Compile Include="Functions\FileElementsFunctions\Row\ENQuotesToJP.cs" />
     <Compile Include="Functions\FileElementsFunctions\Row\FixCells.cs" />
     <Compile Include="Functions\FileElementsFunctions\Row\FixJPMessagesTranslation.cs" />
@@ -352,6 +364,7 @@
     <Compile Include="Functions\FileElementsFunctions\Row\ShowIfSounds.cs" />
     <Compile Include="Functions\FileElementsFunctions\Row\SplitLongLinesSpec.cs" />
     <Compile Include="Functions\FileElementsFunctions\Row\SplitLongLines.cs" />
+    <Compile Include="Functions\FileElementsFunctions\Row\StringCaseMorph\CaseMorpher.cs" />
     <Compile Include="Functions\FileElementsFunctions\Row\StringCaseMorph\StringCaseMorphBase.cs" />
     <Compile Include="Functions\FileElementsFunctions\Row\StringCaseMorph\ToLowerCaseAll.cs" />
     <Compile Include="Functions\FileElementsFunctions\Row\StringCaseMorph\ToUpperCaseAll.cs" />

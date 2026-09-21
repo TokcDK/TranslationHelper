@@ -1,64 +1,48 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.IO;
-using System.Text;
 using System.Windows.Forms;
 
 namespace TranslationHelper.Functions.FileElementsFunctions.Row.ExportFormats
 {
+    /// <summary>
+    /// Collects one record per row and writes them all out once the table is done.
+    /// <para>
+    /// It owns the accumulation, the "where to save" question and the write; how the file is laid out
+    /// is <see cref="RowExportFormat"/>'s business, and a subclass normally only supplies a format.
+    /// </para>
+    /// </summary>
     abstract class ExportFormatsBase : RowBase
     {
-        protected ExportFormatsBase()
-        {
-            AllRows = new List<string>(SelectedRowsCount);
-        }
+        /// <summary>
+        /// Layout of the file this operation writes.
+        /// </summary>
+        protected abstract RowExportFormat Format { get; }
 
         protected override bool IsParallelRows => false;
-        protected override bool IsParallelTables => false;
 
         /// <summary>
-        /// contains all table rows original translation values
+        /// Records collected so far, written out when the last row of the table has been added.
         /// </summary>
-        protected List<string> AllRows;
-        /// <summary>
-        /// file save dialog filter
-        /// determines file's extension
-        /// </summary>
-        protected abstract string Filter { get; }
-        /// <summary>
-        /// will be placed in first line of file
-        /// </summary>
-        protected virtual string MarkerFileStart { get => ""; }
-        /// <summary>
-        /// will be placed before new record
-        /// </summary>
-        protected virtual string MarkerStart { get => ""; }
-        /// <summary>
-        /// will be placed before original
-        /// </summary>
-        protected abstract string MarkerOiginal { get; }
-        /// <summary>
-        /// will be placed after original and before translation
-        /// </summary>
-        protected abstract string MarkerTranslation { get; }
-        /// <summary>
-        /// will be placed after record
-        /// </summary>
-        protected virtual string MarkerEnd { get => "\r\n\r\n"; }
-        /// <summary>
-        /// Encoding with which file will be saved
-        /// </summary>
-        protected virtual Encoding SaveEncoding { get => Encoding.UTF8; }
+        private readonly List<string> _records = new List<string>();
 
         protected override bool Apply(RowBaseRowData rowData)
         {
-            AllRows.Add(OriginalMod(rowData.Original) + MarkerTranslation + TranslationMod(rowData.Translation));
+            _records.Add(OriginalMod(rowData.Original) + Format.MarkerTranslation + TranslationMod(rowData.Translation));
 
             if (!rowData.IsLastRow) return true;
 
+            return Save();
+        }
+
+        /// <summary>
+        /// Asks where to save and writes the file. Cancelling is not a failure: the rows were still
+        /// collected, so it reports success the way the old code did.
+        /// </summary>
+        private bool Save()
+        {
             using (var save = new SaveFileDialog())
             {
-                save.Filter = Filter;
+                save.Filter = Format.Filter;
                 if (save.ShowDialog() != DialogResult.OK || string.IsNullOrWhiteSpace(save.FileName))
                 {
                     return true;
@@ -68,36 +52,27 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row.ExportFormats
             }
         }
 
+        /// <summary>
+        /// Writes the collected records. Overridden by formats that do not write text.
+        /// </summary>
         protected virtual bool WriteFile(string fileName)
         {
-            File.WriteAllText(fileName,
-                MarkerFileStart
-                + MarkerStart
-                + MarkerOiginal
-                + string.Join(MarkerEnd + MarkerStart + MarkerOiginal, AllRows)
-                + MarkerEnd
-                , SaveEncoding);
+            File.WriteAllText(fileName, Format.Serialize(_records), Format.SaveEncoding);
 
             return true;
         }
 
         /// <summary>
-        /// modification of translation before add
-        /// no modification by default
+        /// Modification of the translation before it is added. No modification by default.
         /// </summary>
-        /// <param name=THSettings.TranslationColumnName></param>
-        /// <returns></returns>
         protected virtual string TranslationMod(string translation)
         {
             return translation;
         }
 
         /// <summary>
-        /// modification of original before add
-        /// no modification by default
+        /// Modification of the original before it is added. No modification by default.
         /// </summary>
-        /// <param name="original"></param>
-        /// <returns></returns>
         protected virtual string OriginalMod(string original)
         {
             return original;

@@ -10,7 +10,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row.ExtractedParser
         /// </summary>
         /// <param name="extractOrigValueInfo">Value for check purposes</param>
         /// <param name="extractedTransValueInfo">value which will be changed</param>
-        /// <returns>String which will be set to translation of <seealso cref="extractedTransValueInfo"/></returns>
+        /// <returns>String which will be set to translation of <paramref name="extractedTransValueInfo"/></returns>
         protected abstract string ActionWithExtractedTranslation(ExtractRegexValueInfo extractOrigValueInfo, ExtractRegexValueInfo extractedTransValueInfo);
         protected abstract string ActionWithOriginalIfNoExtracted(string original, string translation);
 

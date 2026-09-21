@@ -2,14 +2,9 @@
 {
     class RpgMakerLikeTxt : ExportFormatsBase
     {
-        public RpgMakerLikeTxt()
-        {
-        }
-
-        protected override string Filter => "TXT file|*.txt";
-
-        protected override string MarkerOiginal => "[ORIGINAL]\r\n";
-
-        protected override string MarkerTranslation => "\r\n[TRANSLATION]\r\n";
+        protected override RowExportFormat Format { get; } = new RowExportFormat(
+            filter: "TXT file|*.txt",
+            markerOriginal: "[ORIGINAL]\r\n",
+            markerTranslation: "\r\n[TRANSLATION]\r\n");
     }
 }

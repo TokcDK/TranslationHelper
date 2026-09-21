@@ -22,7 +22,6 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
     {
         public override string Name => T._("Translator");
 
-        protected override bool IsParallelTables => false;
         protected override bool IsParallelRows => false;
         protected virtual bool IsTranslateAll => true;
 

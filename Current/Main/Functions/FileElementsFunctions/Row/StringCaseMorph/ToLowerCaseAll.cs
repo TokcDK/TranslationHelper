@@ -1,13 +1,12 @@
-﻿using TranslationHelper.Data;
-
-namespace TranslationHelper.Functions.FileElementsFunctions.Row.StringCaseMorph
+﻿namespace TranslationHelper.Functions.FileElementsFunctions.Row.StringCaseMorph
 {
     class ToLowerCaseAll : StringCaseMorphBase
     {
-        protected override VariantCase Variant => VariantCase.lower;
+        protected override CaseMorphVariant Variant => CaseMorphVariant.lower;
     }
+
     class ToLowerCaseFirst : StringCaseMorphBase
     {
-        protected override VariantCase Variant => VariantCase.lower1st;
+        protected override CaseMorphVariant Variant => CaseMorphVariant.lower1st;
     }
 }

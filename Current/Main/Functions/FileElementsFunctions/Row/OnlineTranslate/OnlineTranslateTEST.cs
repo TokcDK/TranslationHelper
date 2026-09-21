@@ -108,11 +108,6 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row.OnlineTranslate
         public override string Name => T._("TranslatorTEST");
 
         /// <summary>
-        /// Flag: whether to use parallel processing for tables.
-        /// </summary>
-        protected override bool IsParallelTables => false;
-
-        /// <summary>
         /// Flag: whether to use parallel processing for rows.
         /// </summary>
         protected override bool IsParallelRows => false;

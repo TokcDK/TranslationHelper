@@ -10,12 +10,20 @@ using TranslationHelper.Main.Functions;
 
 namespace TranslationHelper.Functions.FileElementsFunctions.Row
 {
+    /// <summary>
+    /// Copies a translation to every row whose original is "the same but for the numbers and symbols"
+    /// as the row being processed.
+    /// <para>
+    /// The operation is reached through <see cref="Apply"/>; everything else in this class exists to
+    /// find the similar rows. Writes to rows other than the current one go through
+    /// <see cref="RowBase.UiUpdater"/>, so this class does not know about the grid.
+    /// </para>
+    /// </summary>
     abstract class AutoSameForSimularBase : RowBase
     {
-        public AutoSameForSimularBase()
+        protected AutoSameForSimularBase()
         {
-            _anyNumSymbolRegexPattern = GetStringSimularityRegexPattern();
-            _anyNumSymbolRegex = new Regex(_anyNumSymbolRegexPattern, RegexOptions.Compiled); //reg равняется любым цифрам
+            _anyNumSymbolRegex = new Regex(GetStringSimularityRegexPattern(), RegexOptions.Compiled); //reg равняется любым цифрам
             _simpleNumRegex = new Regex(@"\d+", RegexOptions.Compiled); //reg равняется любым цифрам, простое сравнение
         }
 
@@ -25,6 +33,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
         }
 
         protected virtual bool IsForce => false;
+
         protected override bool Apply(RowBaseRowData rowData)
         {
             if (Project == null) return false;
@@ -35,13 +44,17 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
             return true;
         }
 
+        /// <summary>
+        /// NOTE: fire-and-forget on purpose. The spreading scan is long and the caller does not wait
+        /// for it, which is also why every write it makes has to marshal to the UI thread itself.
+        /// Making it awaitable would change when a run reports itself as finished.
+        /// </summary>
         private async void Set(RowBaseRowData rowData)
         {
             await Task.Run(() => Set(inputTableIndex: rowData.SelectedTableIndex, inputRowIndex: rowData.SelectedRowIndex, inputForceSetValue: IsForce)).ConfigureAwait(false);
-
         }
 
-        public static string GetStringSimularityRegexPattern()
+        private static string GetStringSimularityRegexPattern()
         {
             //http://www.cyberforum.ru/csharp-beginners/thread244709.html
             string regexPatternQuotationMark = "\"";
@@ -59,16 +72,11 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
         }
 
         /// <summary>
-        /// Set same translation values for rows with simular original
+        /// Rows already spread from during this run, as "table|row|force". Guards against a row
+        /// re-triggering the scan for itself.
         /// </summary>
-        public void Set(DataRow dataRow, bool inputForceSetValue = false)
-        {
-            var table = dataRow.Table;
-            Set(inputTableIndex: Project.FilesContent.Tables.IndexOf(table), inputRowIndex: table.Rows.IndexOf(dataRow), inputForceSetValue: inputForceSetValue);
-        }
+        private readonly HashSet<string> _autoSame4SimilarStack = new HashSet<string>();
 
-        public HashSet<string> _autoSame4SimilarStack = new HashSet<string>();
-        readonly string _anyNumSymbolRegexPattern;
         readonly Regex _anyNumSymbolRegex;
         readonly Regex _simpleNumRegex;
 
@@ -78,7 +86,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
         /// <param name="inputTableIndex"></param>
         /// <param name="inputRowIndex"></param>
         /// <param name="inputForceSetValue"></param>
-        public void Set(int inputTableIndex, int inputRowIndex, bool inputForceSetValue = false)
+        private void Set(int inputTableIndex, int inputRowIndex, bool inputForceSetValue = false)
         {
             if (!AppSettings.ProjectIsOpened) return;
             if (inputTableIndex == -1) return;
@@ -261,7 +269,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
             _autoSame4SimilarStack.Remove(inputRowDataForStack);
         }
 
-        public void SetSameIfUseDups(DataTable inputTable, string inputOriginalValue, int inputRowIndex, bool inputForceSetValue, string inputTranslationValue)
+        private void SetSameIfUseDups(DataTable inputTable, string inputOriginalValue, int inputRowIndex, bool inputForceSetValue, string inputTranslationValue)
         {
             if (!Project.OriginalsTableRowCoordinates.TryGetValue(inputOriginalValue, out var storedTableNames)) return;
 
@@ -281,13 +289,14 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
 
                     //skip if same table\row as input or row translation is not empty
                     if (storedTableName.Key == inputTableName && storedRowIndex == inputRowIndex) continue;
-                    if (!inputForceSetValue 
+                    if (!inputForceSetValue
                         && !string.IsNullOrEmpty(row.Field<string>(THSettings.TranslationColumnName)))
                     {
                         continue;
                     }
 
-                    AppData.Main.Invoke((Action)(() => row.SetField(Project.TranslationColumnIndex, inputTranslationValue)));
+                    // Goes through the UI adapter, which marshals: this runs on a thread pool thread.
+                    UiUpdater.SetTranslation(row, Project.TranslationColumnIndex, inputTranslationValue);
                 }
             }
         }
@@ -350,7 +359,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
             return false;
         }
 
-        public static bool IsAllMatchesInIdenticalPlaces(MatchCollection mc, MatchCollection mc0)
+        private static bool IsAllMatchesInIdenticalPlaces(MatchCollection mc, MatchCollection mc0)
         {
             try
             {

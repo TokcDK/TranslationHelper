@@ -11,7 +11,6 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
         {
         }
 
-        protected override bool IsParallelTables => true;
         protected override bool IsParallelRows => true;
 
         bool _dataSourceClear = false;
