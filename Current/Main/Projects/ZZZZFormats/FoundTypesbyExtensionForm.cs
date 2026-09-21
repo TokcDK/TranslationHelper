@@ -8,10 +8,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using TranslationHelper.Theming;
 
 namespace TranslationHelper.Projects.ZZZZFormats
 {
-    public partial class FoundTypesbyExtensionForm : Form
+    public partial class FoundTypesbyExtensionForm : ThemableForm
     {
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
 

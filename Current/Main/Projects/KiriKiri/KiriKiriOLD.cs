@@ -9,6 +9,7 @@ using System.Windows.Forms;
 using TranslationHelper.Data;
 using TranslationHelper.Extensions;
 using TranslationHelper.Formats.KiriKiri;
+using MessageBox = TranslationHelper.Theming.ThemedMessageBox;
 
 namespace TranslationHelper.Projects.KiriKiri
 {

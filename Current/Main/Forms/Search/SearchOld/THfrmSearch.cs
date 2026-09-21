@@ -15,12 +15,13 @@ using TranslationHelper.Forms.Search.Data;
 using TranslationHelper.Functions;
 using TranslationHelper.Functions.FileElementsFunctions.Row.SearchIssueCheckers;
 using TranslationHelper.Main.Functions;
+using TranslationHelper.Theming;
 using Zuby.ADGV;
 
 namespace TranslationHelper
 {
 
-    public partial class THfrmSearch : Form
+    public partial class THfrmSearch : ThemableForm
     {
         private const string DoubleSearchMarker = "|<OT>|";
         private const int SearchResultsWindowExpandedHeight = 589;

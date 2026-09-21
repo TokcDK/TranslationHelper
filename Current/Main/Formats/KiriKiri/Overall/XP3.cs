@@ -3,6 +3,7 @@ using System.IO;
 using System.Windows.Forms;
 using NLog;
 using TranslationHelper.Main.Functions;
+using MessageBox = TranslationHelper.Theming.ThemedMessageBox;
 
 namespace TranslationHelper.Formats.KiriKiri
 {

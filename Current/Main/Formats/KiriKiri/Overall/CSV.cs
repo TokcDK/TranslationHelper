@@ -6,6 +6,7 @@ using TranslationHelper.Data;
 using TranslationHelper.Extensions;
 using TranslationHelper.Formats.Abstractions;
 using TranslationHelper.Main.Functions;
+using MessageBox = TranslationHelper.Theming.ThemedMessageBox;
 
 namespace TranslationHelper.Formats.KiriKiri
 {

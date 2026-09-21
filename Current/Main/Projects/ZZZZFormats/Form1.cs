@@ -7,10 +7,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using TranslationHelper.Theming;
 
 namespace TranslationHelper.Projects.ZZZZFormats
 {
-    public partial class Form1 : Form
+    public partial class Form1 : ThemableForm
     {
         public Form1()
         {

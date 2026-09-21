@@ -1,5 +1,6 @@
 ﻿using System.Windows.Forms;
 using TranslationHelper.Settings;
+using TranslationHelper.Theming;
 
 namespace TranslationHelper
 {
@@ -18,7 +19,7 @@ namespace TranslationHelper
     /// change its own settings without the settings window being touched at all.
     /// </para>
     /// </summary>
-    public partial class THfrmSettings : Form
+    public partial class THfrmSettings : ThemableForm
     {
         /// <summary>Width of the column that holds the setting names.</summary>
         private const int LabelColumnWidth = 280;
@@ -36,6 +37,24 @@ namespace TranslationHelper
             Text = T._("Settings");
 
             BuildSettingsPages();
+        }
+
+        /// <summary>
+        /// Themes the tooltip.
+        /// <para>
+        /// A tooltip is a component rather than a control, so it is not in the control tree the theme
+        /// is applied to and it has to be done here. This is also why the theme can be changed from
+        /// inside this very window and take effect at once: the window is one of the windows
+        /// <see cref="ThemeManager"/> repaints, so the tooltip is refreshed by the same change that
+        /// repainted the rest of the window.
+        /// </para>
+        /// </summary>
+        protected internal override void OnThemeApplied()
+        {
+            var theme = ThemeManager.Instance.CurrentTheme;
+
+            THSettingsToolTip.BackColor = theme.EditorBack;
+            THSettingsToolTip.ForeColor = theme.EditorText;
         }
 
         /// <summary>

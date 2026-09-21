@@ -5,6 +5,7 @@ using System.Windows.Forms;
 using TranslationHelper.Data;
 using TranslationHelper.Functions.FileElementsFunctions.Row;
 using TranslationHelper.Functions.StringChangers.HardFixes;
+using MessageBox = TranslationHelper.Theming.ThemedMessageBox;
 
 namespace TranslationHelper.Functions.StringChangers
 {

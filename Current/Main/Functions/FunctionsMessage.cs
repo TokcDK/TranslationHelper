@@ -1,4 +1,5 @@
 ﻿using System.Windows.Forms;
+using MessageBox = TranslationHelper.Theming.ThemedMessageBox;
 
 namespace TranslationHelper.Functions
 {

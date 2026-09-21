@@ -1,9 +1,10 @@
 ﻿using System;
 using System.Windows.Forms;
+using TranslationHelper.Theming;
 
 namespace TranslationHelper.Projects.WolfRPG.Menus
 {
-    public partial class AddToStandaloneContextListForm : Form
+    public partial class AddToStandaloneContextListForm : ThemableForm
     {
         public AddToStandaloneContextListForm()
         {

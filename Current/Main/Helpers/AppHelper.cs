@@ -37,7 +37,16 @@ namespace TranslationHelper.Helpers
                 FormName = mainForm.Name,
                 MaxLines = 500,
                 AutoScroll = true,
-                UseDefaultRowColoringRules = true,
+
+                // The target is deliberately left to write every line in the colour the box already
+                // has, rather than colouring each line itself. Its own rules name one colour per level
+                // and no theme can reach them — it draws info in black, which is invisible on the dark
+                // background and is what made the first line unreadable. Without rules the text takes
+                // the box's ForeColor, which the theme sets, so the log is legible in both themes and
+                // follows the theme when it changes: assigning ForeColor to a rich text box recolours
+                // what is already in it, so the lines written before the theme was applied are put
+                // right by the same change.
+                UseDefaultRowColoringRules = false,
                 Layout = generalLayout
             };
 

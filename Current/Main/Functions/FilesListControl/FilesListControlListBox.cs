@@ -4,6 +4,7 @@ using System.Windows.Forms;
 using TranslationHelper.Data;
 using TranslationHelper.Extensions;
 using TranslationHelper.Main.Functions;
+using TranslationHelper.Theming;
 
 namespace TranslationHelper.Functions.FilesListControl
 {
@@ -25,6 +26,13 @@ namespace TranslationHelper.Functions.FilesListControl
             _listBox.DrawItem += ListBox_DrawItem;
             _listBox.MouseUp += ListBox_MouseUp;
             _listBox.SelectedIndexChanged += ListBox_SelectedIndexChanged;
+
+            // The rows are painted here rather than by the framework, so the colours have to come from
+            // the theme and be rebuilt whenever it changes. This is the one part of the files list
+            // the theme applicator cannot reach: the list itself is a control, but the code that
+            // decides what colour each row is drawn in is not.
+            ThemeManager.Instance.ThemeChanged += ListBox_ThemeChanged;
+            ApplyTheme(ThemeManager.Instance.CurrentTheme);
         }
 
         public override string GetItemName(int index)
@@ -112,14 +120,55 @@ namespace TranslationHelper.Functions.FilesListControl
             }
         }
 
-        //global brushes with ordinary/selected colors
-        private readonly SolidBrush ListBoxItemForegroundBrushSelected = new SolidBrush(Color.White);
-        private readonly SolidBrush ListBoxItemForegroundBrush = new SolidBrush(Color.Black);
-        private readonly SolidBrush ListBoxItemBackgroundBrushSelected = new SolidBrush(Color.FromKnownColor(KnownColor.Highlight));
-        private readonly SolidBrush ListBoxItemBackgroundBrush1 = new SolidBrush(Color.White);
-        private readonly SolidBrush ListBoxItemBackgroundBrush1Complete = new SolidBrush(Color.FromArgb(235, 255, 235));
-        private readonly SolidBrush ListBoxItemBackgroundBrush2 = new SolidBrush(Color.FromArgb(235, 240, 235));
-        private readonly SolidBrush ListBoxItemBackgroundBrush2Complete = new SolidBrush(Color.FromArgb(225, 255, 225));
+        // Row colours, rebuilt when the theme changes rather than created per item: every visible row
+        // is drawn again on every scroll, and a list can hold thousands of entries.
+        private SolidBrush _foregroundSelected;
+        private SolidBrush _foreground;
+        private SolidBrush _backgroundSelected;
+        private SolidBrush _backgroundRow1;
+        private SolidBrush _backgroundRow1Complete;
+        private SolidBrush _backgroundRow2;
+        private SolidBrush _backgroundRow2Complete;
+
+        /// <summary>
+        /// Rebuilds the row brushes from <paramref name="theme"/>.
+        /// <para>
+        /// The brushes of the theme being left behind are released here, so the theme can be changed
+        /// any number of times without the previous one's brushes being kept alive.
+        /// </para>
+        /// </summary>
+        private void ApplyTheme(ITheme theme)
+        {
+            DisposeBrushes();
+
+            _foregroundSelected = new SolidBrush(theme.ListRowSelectedText);
+            _foreground = new SolidBrush(theme.ListRowText);
+            _backgroundSelected = new SolidBrush(theme.ListRowSelectedBack);
+            _backgroundRow1 = new SolidBrush(theme.ListRowBack);
+            _backgroundRow1Complete = new SolidBrush(theme.ListRowBackComplete);
+            _backgroundRow2 = new SolidBrush(theme.ListRowAlternateBack);
+            _backgroundRow2Complete = new SolidBrush(theme.ListRowAlternateBackComplete);
+
+            // Repaint the rows already on screen in the colours that were just installed.
+            _listBox?.Invalidate();
+        }
+
+        private void ListBox_ThemeChanged(object sender, ITheme theme)
+        {
+            ApplyTheme(theme);
+        }
+
+        private void DisposeBrushes()
+        {
+            _foregroundSelected?.Dispose();
+            _foreground?.Dispose();
+            _backgroundSelected?.Dispose();
+            _backgroundRow1?.Dispose();
+            _backgroundRow1Complete?.Dispose();
+            _backgroundRow2?.Dispose();
+            _backgroundRow2Complete?.Dispose();
+        }
+
         //custom method to draw the items, don't forget to set DrawMode of the ListBox to OwnerDrawFixed
         public void ListBox_DrawItem(object sender, DrawItemEventArgs e)
         {
@@ -143,21 +192,21 @@ namespace TranslationHelper.Functions.FilesListControl
                 SolidBrush backgroundBrush;
                 if (selected)
                 {
-                    backgroundBrush = ListBoxItemBackgroundBrushSelected;
+                    backgroundBrush = _backgroundSelected;
                 }
                 else if ((index % 2) == 0)
                 {
-                    backgroundBrush = isComplete ? ListBoxItemBackgroundBrush1Complete : ListBoxItemBackgroundBrush1;
+                    backgroundBrush = isComplete ? _backgroundRow1Complete : _backgroundRow1;
                 }
                 else
                 {
-                    backgroundBrush = isComplete ? ListBoxItemBackgroundBrush2Complete : ListBoxItemBackgroundBrush2;
+                    backgroundBrush = isComplete ? _backgroundRow2Complete : _backgroundRow2;
                 }
 
                 g.FillRectangle(backgroundBrush, e.Bounds);
 
                 //text:
-                SolidBrush foregroundBrush = (selected) ? ListBoxItemForegroundBrushSelected : ListBoxItemForegroundBrush;
+                SolidBrush foregroundBrush = (selected) ? _foregroundSelected : _foreground;
                 g.DrawString(text, e.Font, foregroundBrush, AppData.THFilesList.GetItemRectangle(index).Location);
             }
 
@@ -172,14 +221,9 @@ namespace TranslationHelper.Functions.FilesListControl
             _listBox.DrawItem -= ListBox_DrawItem;
             _listBox.MouseUp -= ListBox_MouseUp;
             _listBox.SelectedIndexChanged -= ListBox_SelectedIndexChanged;
+            ThemeManager.Instance.ThemeChanged -= ListBox_ThemeChanged;
 
-            ListBoxItemForegroundBrushSelected.Dispose();
-            ListBoxItemForegroundBrush.Dispose();
-            ListBoxItemBackgroundBrushSelected.Dispose();
-            ListBoxItemBackgroundBrush1.Dispose();
-            ListBoxItemBackgroundBrush1Complete.Dispose();
-            ListBoxItemBackgroundBrush2.Dispose();
-            ListBoxItemBackgroundBrush2Complete.Dispose();
+            DisposeBrushes();
         }
     }
 }

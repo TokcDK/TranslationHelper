@@ -12,6 +12,7 @@ using TranslationHelper.Extensions;
 using TranslationHelper.Functions;
 using TranslationHelper.Functions.FileElementsFunctions.Row;
 using TranslationHelper.Projects;
+using TranslationHelper.Theming;
 
 namespace TranslationHelper.Main.Functions
 {
@@ -504,7 +505,13 @@ namespace TranslationHelper.Main.Functions
             })
             {
                 var headerBounds = new Rectangle(e.RowBounds.Left, e.RowBounds.Top, grid.RowHeadersWidth, e.RowBounds.Height);
-                e.Graphics.DrawString("F", font, SystemBrushes.ControlText, headerBounds, centerFormat);
+
+                // Drawn in the theme's header text colour rather than the system's text colour, which
+                // would be invisible on a header painted for a dark theme.
+                using (var brush = new SolidBrush(ThemeManager.Instance.CurrentTheme.GridHeaderText))
+                {
+                    e.Graphics.DrawString("F", font, brush, headerBounds, centerFormat);
+                }
             }
         }
     }

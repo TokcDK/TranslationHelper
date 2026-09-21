@@ -5,6 +5,7 @@ using System.Windows.Forms;
 using TranslationHelper.Data;
 using TranslationHelper.Formats.EAGLS.SCPACK;
 using TranslationHelper.Main.Functions;
+using MessageBox = TranslationHelper.Theming.ThemedMessageBox;
 
 namespace TranslationHelper.Projects.EAGLS
 {

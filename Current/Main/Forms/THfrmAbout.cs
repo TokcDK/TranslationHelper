@@ -1,9 +1,10 @@
 ﻿using System;
 using System.Windows.Forms;
+using TranslationHelper.Theming;
 
 namespace TranslationHelper
 {
-    public partial class THfrmAbout : Form
+    public partial class THfrmAbout : ThemableForm
     {
         public THfrmAbout()
         {

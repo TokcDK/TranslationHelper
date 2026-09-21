@@ -6,10 +6,11 @@ using System.Windows.Forms;
 using TranslationHelper.Forms.Search.Data;
 using TranslationHelper.Forms.Search.SearchNew.Data;
 using TranslationHelper.Projects;
+using TranslationHelper.Theming;
 
 namespace TranslationHelper.Forms.Search.SearchNew
 {
-    public partial class SearchForm : Form
+    public partial class SearchForm : ThemableForm
     {
         private static readonly Logger _logger = LogManager.GetCurrentClassLogger();
 

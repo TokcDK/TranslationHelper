@@ -9,10 +9,11 @@ using TranslationHelper.Functions;
 using TranslationHelper.Functions.FileElementsFunctions.Row;
 using TranslationHelper.Helpers;
 using TranslationHelper.Main.Functions;
+using TranslationHelper.Theming;
 
 namespace TranslationHelper
 {
-    public partial class FormMain : Form
+    public partial class FormMain : ThemableForm
     {
         internal string extractedpatchpath = string.Empty;
 
