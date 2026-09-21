@@ -58,9 +58,12 @@ namespace TranslationHelper.Functions
         {
             lock (_soundLocker)
             {
+                string soundFilePath = Path.GetFullPath(Data.THSettings.ResDirPath + @"\sounds\complete.wav");
+				if (!File.Exists(soundFilePath)) return;
+
                 if (_completeSoundPlayer == null)
                 {
-                    _completeSoundPlayer = new System.Media.SoundPlayer(Data.THSettings.ResDirPath + @"\sounds\complete.wav");
+                    _completeSoundPlayer = new System.Media.SoundPlayer(soundFilePath");
                 }
 
                 _completeSoundPlayer.Play();
