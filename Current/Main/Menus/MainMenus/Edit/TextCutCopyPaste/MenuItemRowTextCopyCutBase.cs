@@ -1,11 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 using TranslationHelper.Data;
-using TranslationHelper.Main.Functions;
 
 namespace TranslationHelper.Menus.MainMenus.Edit.TextCutCopyPaste
 {
@@ -13,11 +8,16 @@ namespace TranslationHelper.Menus.MainMenus.Edit.TextCutCopyPaste
     {
         public override void OnClick(object sender, EventArgs e)
         {
-            foreach (Control control in new[]
+            //The controls of the project on screen. The shortcut acts on whatever holds the focus, and
+            //the focused control is one of the selected project's, so the text boxes and the grid of
+            //another open project are not candidates for it.
+            var fileWorkspace = AppData.ActiveWorkspace?.ActiveFileWorkspace;
+
+            foreach (Control control in new Control[]
             {
-                AppData.Main.THInfoTextBox,
-                AppData.Main.THSourceRichTextBox,
-                AppData.Main.THFileElementsDataGridView.EditingControl,
+                fileWorkspace?.THInfoTextBox,
+                fileWorkspace?.SourceRichTextBox,
+                fileWorkspace?.ElementsDataGridView?.EditingControl,
             })
             {
                 if (!(control is TextBoxBase tb)) continue;

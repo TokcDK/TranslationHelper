@@ -113,8 +113,8 @@ namespace TranslationHelper.Projects.RJ263914
                         AppData.CurrentProject.FilesContent.Tables[tableName].Columns.Add(THSettings.OriginalColumnName);
 
                         AppData.CurrentProject.FilesContent.Tables[tableName].Columns.Add(THSettings.TranslationColumnName);
-                        AppData.Main.THFilesList.Invoke((Action)(() => AppData.Main.THFilesList.AddItem(tableName)));
-
+                        //The files list is built by the project's workspace from FilesContent once the
+                        //project is parsed, so it is not filled from here.
                         AppData.CurrentProject.FilesContentInfo.Tables.Add(tableName);
                         AppData.CurrentProject.FilesContentInfo.Tables[tableName].Columns.Add(THSettings.OriginalColumnName);
                     }

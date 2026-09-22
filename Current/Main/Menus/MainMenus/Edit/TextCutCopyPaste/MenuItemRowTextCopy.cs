@@ -28,7 +28,8 @@ namespace TranslationHelper.Menus.MainMenus.Edit.TextCutCopyPaste
         {
             if (!IsValidToCopy()) return;
 
-            FunctionsCopyPaste.CopyToClipboard(AppData.Main.THFileElementsDataGridView);
+            //IsValidToCopy has established that the project on screen has a grid with a selection.
+            FunctionsCopyPaste.CopyToClipboard(AppData.ActiveWorkspace.ActiveFileWorkspace.ElementsDataGridView);
         }
 
         protected override bool ActionForTextBoxObject(TextBoxBase tb)
@@ -46,7 +47,9 @@ namespace TranslationHelper.Menus.MainMenus.Edit.TextCutCopyPaste
         {
             if (AppSettings.DGVCellInEditMode) FunctionsUI.ControlsSwitch(); // если ячейка в режиме редактирования вылючение действий для ячеек при выходе из режима редактирования
 
-            return AppData.Main.THFileElementsDataGridView != null && AppData.Main.THFileElementsDataGridView.SelectedCells.Count > 0;
+            //The grid of the project on screen, not a single application-wide one.
+            var grid = AppData.ActiveWorkspace?.ActiveFileWorkspace?.ElementsDataGridView;
+            return grid != null && grid.SelectedCells.Count > 0;
         }
         public override Keys ShortcutKeys => Keys.Control | Keys.C;
 

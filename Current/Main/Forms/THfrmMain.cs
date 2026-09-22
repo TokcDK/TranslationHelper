@@ -1,18 +1,32 @@
 ﻿using NLog;
 using System;
-using System.Globalization;
 using System.Windows.Forms;
 using TranslationHelper.Data;
-using TranslationHelper.Extensions;
-using TranslationHelper.Forms.Search.SearchNew;
 using TranslationHelper.Functions;
+using TranslationHelper.Forms.Search.SearchNew;
 using TranslationHelper.Functions.FileElementsFunctions.Row;
 using TranslationHelper.Helpers;
 using TranslationHelper.Main.Functions;
 using TranslationHelper.Theming;
+using TranslationHelper.Workspace;
 
 namespace TranslationHelper
 {
+    /// <summary>
+    /// The application window: the menus, the log, and the workspace of the open projects.
+    /// <para>
+    /// The window owns <see cref="Workspace"/> and nothing else about a project. Everything that
+    /// presents a project — its files list, its opened files, the grid and the text boxes of the file
+    /// being worked on — lives in that project's own workspace, in a tab of the projects tab control.
+    /// That is what lets two projects be open at once: there is no longer a single set of controls whose
+    /// contents have to be swapped when the user changes project.
+    /// </para>
+    /// <para>
+    /// The handlers that used to be here and worked on those controls are gone with them; they are
+    /// methods of the control that owns the data now, and forward to the function that owns the
+    /// behaviour.
+    /// </para>
+    /// </summary>
     public partial class FormMain : ThemableForm
     {
         internal string extractedpatchpath = string.Empty;
@@ -20,11 +34,22 @@ namespace TranslationHelper
         internal string FVariant = string.Empty;
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
 
+        /// <summary>
+        /// The open projects and their controls. Created once, and the control it presents is hosted
+        /// by <c>frmMainPanel</c>.
+        /// </summary>
+        internal MainWorkspace Workspace { get; }
+
         public FormMain()
         {
             InitializeComponent();
 
             AppData.Init(this);
+
+            // The workspace is built after the projects collection it is bound to, and before anything
+            // can open a project. Its control is the only thing the window hosts for a project.
+            Workspace = new MainWorkspace(AppData.ProjectsData);
+            frmMainPanel.Controls.Add(Workspace.Control);
 
             FunctionsUI.Init(this);
         }
@@ -34,98 +59,51 @@ namespace TranslationHelper
             AppHelper.SetupLogging(this);
             FunctionsUI.THMain_Load();
         }
-        private void THFilesListBox_MouseClick(object sender, MouseEventArgs e)
-        {
-        }
-
-        private void THFileElementsDataGridView_CellEnter(object sender, DataGridViewCellEventArgs e)
-        {
-            //_ = this.Invoke((Action)(() => CellEnterActions(sender, e)));
-        }
-
-        private void CellEnterActions(object sender, DataGridViewCellEventArgs e)
-        {
-            //UpdateTextboxes(sender, e);
-        }
-
-        private void THTargetTextBox_KeyDown(object sender, KeyEventArgs e)
-        {
-            FunctionsUI.THTargetTextBox_KeyDown(sender, e);
-        }
-
-        private void THFiltersDataGridView_CellValueChanged(object sender, DataGridViewCellEventArgs e)
-        {
-        }
-
-        //http://qaru.site/questions/180337/show-row-number-in-row-header-of-a-datagridview
-        private void THFileElementsDataGridView_RowPostPaint(object sender, DataGridViewRowPostPaintEventArgs e)
-        {
-            FunctionsUI.PaintDigitInFrontOfRow(sender, e); // temp disabled to check crash app scrool related
-        }
-
-        //Пример виртуального режима
-        //http://www.cyberforum.ru/post9306711.html
-
-        private async void THFileElementsDataGridView_CellValueChanged(object sender, DataGridViewCellEventArgs e)
-        {
-            await FunctionsUI.THFileElementsDataGridView_CellValueChangedAsync(sender, e);
-        }
 
         private async void LoadTranslationToolStripMenuItem_Click(object sender, EventArgs e)
         {
             FunctionsDBFile.UnLockDBLoad(false);
             await FunctionsDBFile.LoadDB();
-            //Invoke((Action)(() => LoadTranslationToolStripMenuItem.Enabled = true));
         }
 
         private void LoadTrasnlationAsToolStripMenuItem_Click(object sender, EventArgs e)
         {
         }
 
-        private void THFileElementsDataGridView_CellValidated(object sender, DataGridViewCellEventArgs e)
-        {
-        }
-
         [Obsolete]
         internal bool IsTranslating;
-
-        private void THTargetTextBox_Leave(object sender, EventArgs e)
-        {
-            FunctionsUI.THTargetTextBox_Leave(sender, e);
-        }
-
-        private void THFiltersDataGridView_RowPostPaint(object sender, DataGridViewRowPostPaintEventArgs e)
-        {
-            FunctionsTable.PaintDigitInFrontOfRow(sender, e, this.Font);
-        }
 
         private void CellFixesSelectedToolStripMenuItem_Click(object sender, EventArgs e)
         {
             _ = new FixCells().Rows();
         }
 
-        private void THFileElementsDataGridView_CellMouseDown(object sender, DataGridViewCellMouseEventArgs e)
+        private void SetAsDatasourceAllToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            FunctionsTable.CellMouseDown(THFileElementsDataGridView, THFilesList, e, RowMenus);
-        }
+            // The grid of the file being worked on, rather than the window's single grid: there is one
+            // grid per open file now, and this menu acts on the one the user is looking at.
+            var workspace = AppData.ActiveWorkspace;
+            var grid = workspace?.ActiveFileWorkspace?.ElementsDataGridView;
+            if (grid == null) return;
 
-        /// <summary>
-        /// remember last selected real rowindex
-        /// used materials:https://stackoverflow.com/questions/4819573/selected-rows-when-sorting-datagridview-in-winform-application
-        /// </summary>
-        private void RememberLastCellSelection()
-        {
-            FunctionsTable.RememberLastCellSelection(THFilesList, THFileElementsDataGridView);
+            grid.DataSource = workspace.Project.FilesContentAll;
         }
 
         private void SetColumnSortingToolStripMenuItem_Click(object sender, EventArgs e)
         {
-
         }
 
-        public void IndicateSaveProcess(string infoText = "")
+        private void AddToCustomDBToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            Logger.Info(infoText);
+        }
+
+        private void THInfolabel_Click(object sender, EventArgs e)
+        {
+        }
+
+        private void OpenCurrentLogFileButton_Click(object sender, EventArgs e)
+        {
+            AppHelper.OpenCurrentFileLogFile();
         }
 
         private void THMain_FormClosing(object sender, FormClosingEventArgs e)
@@ -133,28 +111,18 @@ namespace TranslationHelper
             FunctionsUI.THMain_FormClosing(sender, e);
         }
 
-        private void SetAsDatasourceAllToolStripMenuItem_Click(object sender, EventArgs e)
+        private void THfrmMain_FormClosed(object sender, FormClosedEventArgs e)
         {
-            THFileElementsDataGridView.DataSource = AppData.CurrentProject.FilesContentAll;
+        }
 
-            //смотрел тут но в данном случае пришел к тому что отображает все также только одну таблицу
-            //https://social.msdn.microsoft.com/Forums/en-US/f63f612f-20be-4bad-a91c-474396941800/display-dataset-data-in-gridview-from-multiple-data-tables?forum=adodotnetdataset
-            //if (THFilesElementsDataset.Relations.Contains("ALL"))
-            //{
+        private void FormMain_Shown(object sender, EventArgs e)
+        {
+            Logger.Info(T._($"Application started"));
+        }
 
-            //}
-            //else
-            //{
-            //    DataRelation dr = new DataRelation("ALL",
-            //         new DataColumn[] { THFilesElementsDataset.Tables[0].Columns[THSettings.OriginalColumnName], THFilesElementsDataset.Tables[0].Columns[THSettings.TranslationColumnName] },
-            //         new DataColumn[] { THFilesElementsDataset.Tables[1].Columns[THSettings.OriginalColumnName], THFilesElementsDataset.Tables[1].Columns[THSettings.TranslationColumnName] },
-            //         false
-            //                                        );
-
-            //    THFilesElementsDataset.Relations.Add(dr);
-            //}
-
-            //THFileElementsDataGridView.DataSource = THFilesElementsDataset.Relations["ALL"].ParentTable;
+        public void IndicateSaveProcess(string infoText = "")
+        {
+            Logger.Info(infoText);
         }
 
         internal THfrmSearch search;
@@ -163,172 +131,6 @@ namespace TranslationHelper
         internal static bool DGVCellInEditMode
         {
             get => AppSettings.DGVCellInEditMode;
-            //set => AppSettings.DGVCellInEditMode = value;
-        }
-
-        private void THFileElementsDataGridView_CellBeginEdit(object sender, DataGridViewCellCancelEventArgs e)
-        {
-            //DGVCellInEditMode = true;
-            //отключение действий для ячеек при входе в режим редктирования
-            //ControlsSwitch();
-        }
-
-        private void THFileElementsDataGridView_CellEndEdit(object sender, DataGridViewCellEventArgs e)
-        {
-            //DGVCellInEditMode = false;
-            //влючение действий для ячеек при выходе из режима редктирования
-            //ControlsSwitch(true);
-        }
-
-        private void THSourceRichTextBox_MouseEnter(object sender, EventArgs e)
-        {
-            if (DGVCellInEditMode) return;
-
-            //отключение действий для ячеек при входе
-            FunctionsUI.ControlsSwitch();
-            //https://stackoverflow.com/questions/12780961/disable-copy-and-paste-in-datagridview
-            THFileElementsDataGridView.ClipboardCopyMode = DataGridViewClipboardCopyMode.Disable;
-
-        }
-
-        private void THSourceRichTextBox_MouseLeave(object sender, EventArgs e)
-        {
-            if (DGVCellInEditMode) return;
-
-            //влючение действий для ячеек при выходе из режима редктирования
-            //ControlsSwitch(true);
-            THFileElementsDataGridView.ClipboardCopyMode = DataGridViewClipboardCopyMode.EnableWithoutHeaderText;
-        }
-
-        private void THTargetRichTextBox_MouseEnter(object sender, EventArgs e)
-        {
-            //отключение действий для ячеек при входе в текстбокс
-            FunctionsUI.ControlsSwitch();
-
-        }
-
-        private void THTargetRichTextBox_MouseLeave(object sender, EventArgs e)
-        {
-            //влючение действий для ячеек при выходе из текстбокса
-            //ControlsSwitch(true);
-        }
-
-        private void THFiltersDataGridView_MouseEnter(object sender, EventArgs e)
-        {
-            FunctionsUI.ControlsSwitch();
-        }
-
-        private void THFiltersDataGridView_MouseLeave(object sender, EventArgs e)
-        {
-            FunctionsUI.ControlsSwitch(true);
-        }
-
-        private void THSourceRichTextBox_MouseClick(object sender, MouseEventArgs e)
-        {
-            FunctionsUI.ControlsSwitch();
-        }
-
-        private void THFiltersDataGridView_CellClick(object sender, DataGridViewCellEventArgs e)
-        {
-            FunctionsUI.ControlsSwitch();
-        }
-
-        private void THFileElementsDataGridView_CellClick(object sender, DataGridViewCellEventArgs e)
-        {
-            if (!AppSettings.ProjectIsOpened) return;
-            if (FunctionsUI.ControlsSwitchActivated) return;
-
-            FunctionsUI.ControlsSwitch(true);//не включалось копирование в ячейку, при копировании с гугла назад
-
-            FunctionsUI.ShowNonEmptyRowsCount(TableCompleteInfoLabel);//Show how many rows have translation
-        }
-
-        //int SelectedRowIndexWhenFilteredDGW = 0;
-        private void THFileElementsDataGridView_CellMouseClick(object sender, DataGridViewCellMouseEventArgs e)
-        {
-            FunctionsUI.THFileElementsDataGridView_CellMouseClick(sender, e);
-        }
-
-        private void TableCompleteInfoLabel_Click(object sender, EventArgs e)
-        {
-            FunctionsTable.ShowFirstRowWithEmptyTranslation();
-        }
-
-        private void THTargetRichTextBox_TextChanged(object sender, EventArgs e)
-        {
-            //if (!AppSettings.DGVCellInEditMode && (sender as RichTextBox).Focused && THFileElementsDataGridView.CurrentRow.Index > -1)
-            //{
-            //    THFileElementsDataGridView.Rows[AppSettings.DGVSelectedRowIndex].Cells[THSettings.TranslationColumnName].Value = (sender as RichTextBox).Text;
-            //}
-
-            TranslationLongestLineLenghtLabel.Text = FunctionsString.GetLongestLineLength((sender as RichTextBox).Text).ToString(CultureInfo.InvariantCulture);
-            if (!tlpTextLenPosInfo.Visible)
-                tlpTextLenPosInfo.Visible = true;
-        }
-
-        private void THFileElementsDataGridView_SelectionChanged(object sender, EventArgs e)
-        {
-            FunctionsUI.UpdateTextboxes();
-        }
-
-        private void THTargetRichTextBox_SelectionChanged(object sender, EventArgs e)
-        {
-            TargetTextBoxLinePositionLabelData.Text = (sender as RichTextBox).CurrentCharacterPosition().X.ToString(CultureInfo.InvariantCulture);
-            TargetTextBoxColumnPositionLabelData.Text = (sender as RichTextBox).CurrentCharacterPosition().Y.ToString(CultureInfo.InvariantCulture);
-            TranslationLongestLineLenghtLabel.Text = (sender as RichTextBox).CurrentSelectedTextLength().ToString(CultureInfo.InvariantCulture);
-            if (!tlpTextLenPosInfo.Visible)
-                tlpTextLenPosInfo.Visible = true;
-        }
-
-        private void THFileElementsDataGridView_Sorted(object sender, EventArgs e)
-        {
-            ReselectCellSelectedBeforeSorting();
-        }
-
-        /// <summary>
-        /// reselect cell which was selected before column was sorted
-        /// used materials:https://stackoverflow.com/questions/4819573/selected-rows-when-sorting-datagridview-in-winform-application
-        /// </summary>
-        private void ReselectCellSelectedBeforeSorting()
-        {
-            FunctionsTable.ReselectCellSelectedBeforeSorting(THFilesList, THFileElementsDataGridView);
-        }
-
-        private void THInfolabel_Click(object sender, EventArgs e)
-        {
-
-        }
-
-        private void THSourceRichTextBox_SelectionChanged(object sender, EventArgs e)
-        {
-            if (!tlpTextLenPosInfo.Visible) tlpTextLenPosInfo.Visible = true;
-        }
-
-        private void THfrmMain_FormClosed(object sender, FormClosedEventArgs e)
-        {
-            //if (THFileElementsDataGridViewOriginalToTranslationHotkey == null) return;
-
-            //THFileElementsDataGridViewOriginalToTranslationHotkey.Dispose();
-            //THFileElementsDataGridViewOriginalToTranslationHotkey = null;
-        }
-
-        private void AddToCustomDBToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-        }
-
-        private void splitContainer1_Panel2_Paint(object sender, PaintEventArgs e)
-        {
-
-        }
-
-        private void OpenCurrentLogFileButton_Click(object sender, EventArgs e)
-        {
-            AppHelper.OpenCurrentFileLogFile();
-        }
-
-        private void FormMain_Shown(object sender, EventArgs e)
-        {
-            Logger.Info(T._($"Application started"));
         }
 
         //Материалы

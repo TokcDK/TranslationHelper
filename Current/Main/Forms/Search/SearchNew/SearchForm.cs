@@ -7,23 +7,44 @@ using TranslationHelper.Forms.Search.Data;
 using TranslationHelper.Forms.Search.SearchNew.Data;
 using TranslationHelper.Projects;
 using TranslationHelper.Theming;
+using TranslationHelper.Workspace;
 
 namespace TranslationHelper.Forms.Search.SearchNew
 {
-    public partial class SearchForm : ThemableForm
+    /// <summary>
+    /// The search window of one project.
+    /// <para>
+    /// It is internal along with <see cref="IProjectWorkspace"/>, which is the scope it is built from:
+    /// the workspace is the application's own way of naming a project and its controls, and a public
+    /// type may not take one as a parameter.
+    /// </para>
+    /// </summary>
+    internal partial class SearchForm : ThemableForm
     {
         private static readonly Logger _logger = LogManager.GetCurrentClassLogger();
+
+        /// <summary>
+        /// The project the search works on, and the controls to show a found row in.
+        /// </summary>
+        private readonly IProjectWorkspace _workspace;
 
         private readonly ProjectBase _project;
         private readonly DataSet _dataSet;
         private readonly DataSet _dataSetInfo;
         private Manina.Windows.Forms.TabControl _searchConditionsTabControl;
 
-        public SearchForm(ProjectBase project)
+        /// <summary>
+        /// </summary>
+        /// <param name="workspace">
+        /// The project to search. The form works on the project it was given rather than on the
+        /// selected one, so a search keeps searching the files it was started for.
+        /// </param>
+        internal SearchForm(IProjectWorkspace workspace)
         {
-            _project = project;
-            _dataSet = project.FilesContent ?? throw new ArgumentNullException(nameof(project));
-            _dataSetInfo = project.FilesContentInfo ?? throw new ArgumentNullException(nameof(project));
+            _workspace = workspace ?? throw new ArgumentNullException(nameof(workspace));
+            _project = workspace.Project;
+            _dataSet = _project.FilesContent ?? throw new ArgumentNullException(nameof(workspace));
+            _dataSetInfo = _project.FilesContentInfo ?? throw new ArgumentNullException(nameof(workspace));
 
             InitializeComponent();
 
@@ -52,7 +73,7 @@ namespace TranslationHelper.Forms.Search.SearchNew
 
             SearchHelpers.SaveSearchResults(searchResults, isReplace);
 
-            SearchHelpers.BindSearchResults(searchResults, FoundRowsPanel, _project);
+            SearchHelpers.BindSearchResults(searchResults, FoundRowsPanel, _workspace);
         }
 
         private void ReplaceAllButton_Click(object sender, EventArgs e)

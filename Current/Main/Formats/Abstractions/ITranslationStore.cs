@@ -65,5 +65,17 @@ namespace TranslationHelper.Formats.Abstractions
         /// <param name="dataTable">The table holding the parsed strings.</param>
         /// <param name="infoTable">The info table belonging to <paramref name="dataTable"/>.</param>
         void AddTable(DataTable dataTable, DataTable infoTable);
+
+        /// <summary>
+        /// Records which format produced <paramref name="dataTable"/>.
+        /// <para>
+        /// A table on its own says nothing about how to write the file it came from, so the format
+        /// that parsed it is kept beside it. That is what lets an opened file be written back by the
+        /// same format that read it, without a second lookup by extension.
+        /// </para>
+        /// </summary>
+        /// <param name="dataTable">A table that was just added by <see cref="AddTable"/>.</param>
+        /// <param name="format">The format that parsed the file <paramref name="dataTable"/> came from.</param>
+        void RegisterFormat(DataTable dataTable, FormatBase format);
     }
 }

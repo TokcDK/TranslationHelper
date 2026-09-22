@@ -19,27 +19,44 @@ namespace TranslationHelper.Menus.MainMenus.File
 
         public override async void OnClick(object sender, EventArgs e)
         {
-            if (AppData.CurrentProject.DontLoadDuplicates
-                && AppData.CurrentProject.TablesLinesDict != null
-                && !AppData.CurrentProject.TablesLinesDict.IsEmpty)
+            //The project the menu acts on, taken once: the write runs in the background and must not
+            //follow the user to another project half way through.
+            var project = AppData.CurrentProject;
+            if (project == null) return;
+
+            if (project.DontLoadDuplicates
+                && project.TablesLinesDict != null
+                && !project.TablesLinesDict.IsEmpty)
             {
-                AppData.CurrentProject.TablesLinesDict.Clear();
+                project.TablesLinesDict.Clear();
             }
 
-            if (WriteSelected && AppData.THFilesList.SelectedIndices.Count == 0)
+            //The files list holds one entry per file, preceded by the "[ALL]" entry, so what is
+            //selected are entry indexes while the save works in table indexes. Selecting "[ALL]" means
+            //every file, which is the same as not restricting the save at all.
+            HashSet<int> fileIndexesToWrite = null;
+            if (WriteSelected)
             {
-                Logger.Debug("No files selected for writing translation.");
-                return;
-            }
+                var selectedEntries = AppData.ActiveWorkspace?.FilesList?.GetSelectedIndexes() ?? Array.Empty<int>();
+                if (selectedEntries.Length == 0)
+                {
+                    Logger.Debug("No files selected for writing translation.");
+                    return;
+                }
 
-            HashSet<int> fileIndexesToWrite = WriteSelected ? 
-                new HashSet<int>(AppData.THFilesList.SelectedIndices.Cast<int>()) : 
-                null;
+                if (!selectedEntries.Any(project.FilesListContent.IsAllEntry))
+                {
+                    fileIndexesToWrite = selectedEntries
+                        .Select(project.FilesListContent.GetTableIndex)
+                        .Where(tableIndex => tableIndex >= 0)
+                        .ToHashSet();
+                }
+            }
 
             await Task.Run(() => FunctionsSave.PrepareToWrite(fileIndexesToWrite)).ConfigureAwait(true);
-            AppData.CurrentProject.AfterTranslationWriteActions();
+            project.AfterTranslationWriteActions();
 
-            if (AppData.CurrentProject.DontLoadDuplicates) AppData.CurrentProject.TablesLinesDict = null;
+            if (project.DontLoadDuplicates) project.TablesLinesDict = null;
         }
         protected virtual bool WriteSelected { get; } = false;
     }

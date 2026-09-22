@@ -180,7 +180,6 @@
     <Compile Include="Extensions\ExtensionsDataSet.cs" />
     <Compile Include="Extensions\ExtensionsList.cs" />
     <Compile Include="Extensions\ExtensionsFileFolder.cs" />
-    <Compile Include="Extensions\ExtensionsListBox.cs" />
     <Compile Include="Extensions\ExtensionsString.cs" />
     <Compile Include="Extensions\ExtensionsTable.cs" />
     <Compile Include="Extensions\ExtensionsElements.cs" />
@@ -498,7 +497,6 @@
     <Compile Include="Menus\MainMenus\View\MenuItemResetColumnSorting.cs" />
     <Compile Include="Menus\MainMenus\View\MenuItemSetAsDatasourceAll.cs" />
     <Compile Include="Menus\MenuItemBase.cs" />
-    <Compile Include="Menus\MenusCreator.cs" />
     <Compile Include="Menus\MenusExtensions.cs" />
     <Compile Include="Menus\FileRowMenus\IFileRowItemMenu.cs" />
     <Compile Include="Menus\MainMenus\IMainMenuItem.cs" />
@@ -619,6 +617,38 @@
     <Compile Include="Forms\THfrmMain.Designer.cs">
       <DependentUpon>THfrmMain.cs</DependentUpon>
     </Compile>
+    <Compile Include="Models\ObservableObject.cs" />
+    <Compile Include="Models\OpenedFileData.cs" />
+    <Compile Include="Models\OpenedFilesData.cs" />
+    <Compile Include="Models\ProjectsData.cs" />
+    <Compile Include="Workspace\IProjectWorkspace.cs" />
+    <Compile Include="Workspace\MainWorkspace.cs" />
+    <Compile Include="Workspace\TabControlBinder.cs" />
+    <Compile Include="Workspace\OpenedFileWorkspace.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Workspace\OpenedFileWorkspace.Designer.cs">
+      <DependentUpon>OpenedFileWorkspace.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Workspace\OpenedFilesTabControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Workspace\OpenedFilesTabControl.Designer.cs">
+      <DependentUpon>OpenedFilesTabControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Workspace\ProjectFilesWorkspacePanel.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Workspace\ProjectFilesWorkspacePanel.Designer.cs">
+      <DependentUpon>ProjectFilesWorkspacePanel.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Workspace\ProjectsTabControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Workspace\ProjectsTabControl.Designer.cs">
+      <DependentUpon>ProjectsTabControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Workspace\ProjectWorkspace.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Projects\zzzOtherProject\DummyProject.cs" />
     <Compile Include="Projects\zzzOtherProject\OtherProjectBase.cs" />

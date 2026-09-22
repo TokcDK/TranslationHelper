@@ -139,16 +139,5 @@ namespace TranslationHelper.Extensions
             var dataBoundItem = (DataRowView)dataGridViewRow.DataBoundItem;
             return table.Rows.IndexOf(dataBoundItem.Row);
         }
-
-        /// <summary>
-        /// Return real row index in Datatable for Datagridviev selected cell index. For case when row filter or sort is activated
-        /// </summary>
-        /// <param name="table"></param>
-        /// <param name="rowIndex"></param>
-        /// <returns></returns>
-        public static int GetRealRowIndex(this DataTable table, int rowIndex)
-        {
-            return table.GetRealRowIndex(AppData.Main.THFileElementsDataGridView, rowIndex);
-        }
     }
 }

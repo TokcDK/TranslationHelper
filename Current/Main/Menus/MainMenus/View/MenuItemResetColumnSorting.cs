@@ -1,18 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using TranslationHelper.Data;
-using TranslationHelper.Extensions;
-using TranslationHelper.Formats.RPGMaker.Functions;
-using TranslationHelper.Functions;
-using TranslationHelper.Functions.FileElementsFunctions.Row;
-using TranslationHelper.Main.Functions;
-using TranslationHelper.Menus.FileRowMenus;
-using TranslationHelper.Menus.MainMenus.File;
-using TranslationHelper.Projects.RPGMTrans;
 
 namespace TranslationHelper.Menus.MainMenus.Edit
 {
@@ -24,7 +11,9 @@ namespace TranslationHelper.Menus.MainMenus.Edit
 
         public override void OnClick(object sender, EventArgs e)
         {
-            var table = AppData.FilesListContent?.GetTable(AppData.Main.THFilesList.GetSelectedIndex());
+            // The entry being shown owns its table, so the sorting is reset on what the user is looking
+            // at rather than on whatever index the files list of some project happens to hold.
+            var table = AppData.ActiveWorkspace?.OpenedFilesData?.SelectedOpenedFileData?.Table;
             if (table == null) return;
 
             table.DefaultView.Sort = string.Empty;

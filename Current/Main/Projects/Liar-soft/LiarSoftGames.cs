@@ -32,10 +32,10 @@ namespace TranslationHelper.Projects.Liar_soft
         bool OpenSaveXFL()
         {
             //set vars
-            var scrxfl = Path.Combine(AppData.CurrentProject.SelectedGameDir, "scr.xfl");
+            var scrxfl = Path.Combine(SelectedGameDir, "scr.xfl");
             var archive = XflArchive.FromFile(scrxfl);
-            AppData.CurrentProject.ProjectWorkDir = Path.Combine(THSettings.WorkDirPath, ProjectDBFolderName, Path.GetFileName(AppData.CurrentProject.SelectedGameDir));
-            var dir = AppData.CurrentProject.ProjectWorkDir;
+            ProjectWorkDir = Path.Combine(THSettings.WorkDirPath, ProjectDBFolderName, Path.GetFileName(SelectedGameDir));
+            var dir = ProjectWorkDir;
 
             archive.ExtractToDirectory(dir);//extract all gsc to work dir
 
@@ -71,12 +71,12 @@ namespace TranslationHelper.Projects.Liar_soft
 
         public override bool BakCreate()
         {
-            return ProjectToolsBackup.BackupRestorePaths(new[] { @".\scr.xfl" });
+            return ProjectToolsBackup.BackupRestorePaths(this, new[] { @".\scr.xfl" });
         }
 
         public override bool BakRestore()
         {
-            return ProjectToolsBackup.BackupRestorePaths(new[] { @".\scr.xfl" }, false);
+            return ProjectToolsBackup.BackupRestorePaths(this, new[] { @".\scr.xfl" }, false);
         }
     }
 }

@@ -5,17 +5,28 @@ using System.Collections.Generic;
 using System.Data;
 using System.Drawing;
 using System.IO;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 using TranslationHelper.Data;
 using TranslationHelper.Extensions;
 using TranslationHelper.Functions;
-using TranslationHelper.Functions.FileElementsFunctions.Row;
 using TranslationHelper.Projects;
 using TranslationHelper.Theming;
+using TranslationHelper.Workspace;
 
 namespace TranslationHelper.Main.Functions
 {
+    /// <summary>
+    /// Questions about a project's tables and about where a row of one of them sits.
+    /// <para>
+    /// The members that have to reach a control take the workspace the control belongs to. There is one
+    /// files list and one grid per open project now, so a member that read "the" list would answer about
+    /// whichever project happened to be in front instead of the one it was asked about.
+    /// </para>
+    /// <para>
+    /// The rest of the class works on a <see cref="DataSet"/> or a <see cref="DataTable"/> it is given
+    /// and touches no control at all, which is what lets a row operation use it off the UI thread.
+    /// </para>
+    /// </summary>
     static class FunctionsTable
     {
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
@@ -23,31 +34,28 @@ namespace TranslationHelper.Main.Functions
         /// <summary>
         /// Will return array with real indexes of rows in dataset which currently selected in datagridview
         /// </summary>
-        /// <param name="selectedRowsCount"></param>
+        /// <param name="workspace">The project whose grid and files list hold the selection.</param>
         /// <returns></returns>
-        internal static int[] GetDGVRowIndexsesInDataSetTable()
+        internal static int[] GetDGVRowIndexsesInDataSetTable(IProjectWorkspace workspace)
         {
-            //int[] selindexes = new int[ProjectData.Main.THFileElementsDataGridView.GetCountOfRowsWithSelectedCellsCount()];
+            var grid = workspace?.ActiveFileWorkspace?.ElementsDataGridView;
+            var listIndex = workspace?.FilesList?.GetSelectedIndex() ?? -1;
+            if (grid == null || listIndex == -1)
+            {
+                return Array.Empty<int>();
+            }
 
-            var listIndex = 0;
-            AppData.Main.Invoke((Action)(() => listIndex = AppData.Main.THFilesList.GetSelectedIndex()));
-
-            int[] selindexes = GetRowIndexesOfSelectedDGVCells(AppData.Main.THFileElementsDataGridView.SelectedCells);
+            int[] selindexes = GetRowIndexesOfSelectedDGVCells(grid.SelectedCells);
             var selindexesLength = selindexes.Length;
             for (int i = 0; i < selindexesLength; i++)
             {
                 //по нахождению верного индекса строки
                 //https://stackoverflow.com/questions/50999121/displaying-original-rowindex-after-filter-in-datagridview
                 //https://stackoverflow.com/questions/27125494/get-index-of-selected-row-in-filtered-datagrid
-                //DataRow r = ((DataRowView)BindingContext[THFileElementsDataGridView.DataSource].).Row;
-                //selindexes[i] = r.Table.Rows.IndexOf(r); //находит верный но только длявыбранной ячейки
                 //
-                //DataGridViewRow to DataRow: https://stackoverflow.com/questions/1822314/how-do-i-get-a-datarow-from-a-row-in-a-datagridview
-                //DataRow row = ((DataRowView)THFileElementsDataGridView.SelectedCells[i].OwningRow.DataBoundItem).Row;
-                //int index = THFilesElementsDataset.Tables[tableindex].Rows.IndexOf(row);
-                selindexes[i] = GetRealRowIndex(listIndex, selindexes[i]);
-
-                //selindexes[i] = THFileElementsDataGridView.SelectedCells[i].RowIndex;
+                //The grid may be showing the entry's table sorted or filtered, so the grid row index is
+                //not the table row index; the files list index is the one the entry sits at.
+                selindexes[i] = GetRealRowIndex(workspace, listIndex, selindexes[i]);
             }
 
             Array.Sort(selindexes);//сортировка номеров строк, для порядка
@@ -72,9 +80,13 @@ namespace TranslationHelper.Main.Functions
         /// <summary>
         /// shows first row where translation cell is empty
         /// </summary>
-        internal static void ShowFirstRowWithEmptyTranslation()
+        /// <param name="workspace">The project whose first untranslated row has to be shown.</param>
+        internal static void ShowFirstRowWithEmptyTranslation(IProjectWorkspace workspace)
         {
-            var tables = AppData.CurrentProject.FilesContent.Tables;
+            var project = workspace?.Project;
+            if (project?.FilesContent == null) return;
+
+            var tables = project.FilesContent.Tables;
             int tablesCount = tables.Count;
             string translationColumnName = THSettings.TranslationColumnName;
             for (int t = 0; t < tablesCount; t++)
@@ -89,7 +101,7 @@ namespace TranslationHelper.Main.Functions
                     if (string.IsNullOrEmpty(cellValue))
                     {
                         int columnIndex = table.Columns.IndexOf(translationColumnName);
-                        ShowSelectedRow(AppData.Main.THFileElementsDataGridView, AppData.FilesListContent.GetListIndex(t), r, columnIndex);
+                        ShowSelectedRow(workspace, project.FilesListContent.GetListIndex(t), r, columnIndex);
                         return;
                     }
                 }
@@ -99,47 +111,62 @@ namespace TranslationHelper.Main.Functions
         /// <summary>
         /// shows selected row in selected table
         /// </summary>
-        /// <param name="dataGridView"></param>
+        /// <param name="workspace">The project whose entry has to be shown.</param>
         /// <param name="listIndex">
         /// Index of the entry in the files list whose table has to be shown, not an index in
         /// <see cref="TranslationHelper.Projects.ProjectBase.FilesContent"/>.
         /// </param>
         /// <param name="rowIndex"></param>
         /// <param name="selectedCellColumnIndex"></param>
-        internal static void ShowSelectedRow(DataGridView dataGridView, int listIndex, int rowIndex, int selectedCellColumnIndex = 0)
+        internal static void ShowSelectedRow(IProjectWorkspace workspace, int listIndex, int rowIndex, int selectedCellColumnIndex = 0)
         {
-            var table = AppData.FilesListContent?.GetTable(listIndex);
+            if (workspace == null) return;
+
+            var entries = workspace.OpenedFilesData?.OpenedFilesList;
+            if (entries == null || listIndex < 0 || listIndex >= entries.Count) return;
+
+            var table = workspace.Project?.FilesListContent?.GetTable(listIndex);
             if (table == null || rowIndex < 0 || selectedCellColumnIndex < 0 || rowIndex >= table.Rows.Count)
             {
                 return;
             }
 
-            selectedCellColumnIndex = selectedCellColumnIndex > table.Columns.Count ? 0 : selectedCellColumnIndex;
+            //A column index equal to the count is one past the last column, so the last column is
+            //index Count - 1. The test is >= rather than > so that case falls back to column 0 instead
+            //of raising.
+            selectedCellColumnIndex = selectedCellColumnIndex >= table.Columns.Count ? 0 : selectedCellColumnIndex;
 
             int rowsCount = 0;//for debug purposes
             try
             {
                 // reset any filters
-                ResetDataTableFilters(table);
+                ResetDataTableFilters(workspace, table);
 
                 rowsCount = table.Rows.Count;
-                var filesList = AppData.Main.THFilesList;
 
-                if (listIndex != filesList.GetSelectedIndex() || rowsCount == 0 || dataGridView.DataSource != table)
+                //The entry is made the shown one first, because the entry owns the controls: the grid to
+                //work with only exists once that entry's tab is up. Selecting it is also what the files
+                //list would have done, so the list, the tabs and the model stay in step.
+                workspace.OpenedFilesData.SelectedOpenedFileData = entries[listIndex];
+
+                var fileWorkspace = workspace.ActiveFileWorkspace;
+                var grid = fileWorkspace?.ElementsDataGridView;
+                if (grid == null) return;
+
+                if (!ReferenceEquals(grid.DataSource, table))
                 {
-                    // bind the required datatable as selected table
-                    filesList.SetSelectedIndex(listIndex);
-                    dataGridView.DataSource = table;
+                    //bind the required datatable as selected table
+                    fileWorkspace.RefreshBinding();
                 }
 
-                dataGridView.CurrentCell = dataGridView[selectedCellColumnIndex, rowIndex];
+                grid.CurrentCell = grid[selectedCellColumnIndex, rowIndex];
 
-                if (dataGridView.Rows.Count > rowIndex && rowIndex >= 0)
+                if (grid.Rows.Count > rowIndex && rowIndex >= 0)
                 {
-                    dataGridView.FirstDisplayedScrollingRowIndex = rowIndex;
+                    grid.FirstDisplayedScrollingRowIndex = rowIndex;
                 }
 
-                FunctionsUI.UpdateTextboxes();
+                FunctionsUI.UpdateTextboxes(workspace);
             }
             catch (Exception ex)
             {
@@ -148,51 +175,56 @@ namespace TranslationHelper.Main.Functions
             }
         }
 
-        private static void ResetDataTableFilters(DataTable table)
+        /// <summary>
+        /// Clear the sorting and filtering of <paramref name="table"/> and of the grid showing it, so a
+        /// row index taken from the grid is the row's own index again.
+        /// </summary>
+        private static void ResetDataTableFilters(IProjectWorkspace workspace, DataTable table)
         {
-            if (!string.IsNullOrEmpty(table.DefaultView.RowFilter))
-            {
-                AppData.Main.THFileElementsDataGridView.CleanFilter();
-                table.DefaultView.RowFilter = string.Empty;
-                table.DefaultView.Sort = string.Empty;
-                AppData.Main.THFileElementsDataGridView.Refresh();
-            }
+            if (string.IsNullOrEmpty(table.DefaultView.RowFilter)) return;
+
+            var grid = workspace.ActiveFileWorkspace?.ElementsDataGridView;
+            grid?.CleanFilter();
+            table.DefaultView.RowFilter = string.Empty;
+            table.DefaultView.Sort = string.Empty;
+            grid?.Refresh();
         }
 
         /// <summary>
-        /// When table not exists it will create table with table file name and Original Column<br>
-        /// When table is exists it will remove table if no rows there else will create Translation column
+        /// When table not exists it will create table with table file name and Original Column.
+        /// When table is exists it will remove table if no rows there else will create Translation column.
         /// </summary>
         /// <param name="filePath"></param>
         /// <param name="add"></param>
         /// <returns></returns>
         public static bool SetTableAndColumns(string filePath, bool add = true)
         {
-            if (string.IsNullOrEmpty(filePath))
+            var project = AppData.CurrentProject;
+            if (string.IsNullOrEmpty(filePath) || project?.FilesContent == null)
                 return false;
 
             string fileName = Path.GetFileName(filePath);
 
-            if (add && !AppData.CurrentProject.FilesContent.Tables.Contains(fileName))
+            if (add && !project.FilesContent.Tables.Contains(fileName))
             {
-                _ = AppData.CurrentProject.FilesContent.Tables.Add(fileName);
-                _ = AppData.CurrentProject.FilesContent.Tables[fileName].Columns.Add(THSettings.OriginalColumnName);
-                _ = AppData.CurrentProject.FilesContentInfo.Tables.Add(fileName);
-                _ = AppData.CurrentProject.FilesContentInfo.Tables[fileName].Columns.Add(THSettings.OriginalColumnName);
+                _ = project.FilesContent.Tables.Add(fileName);
+                _ = project.FilesContent.Tables[fileName].Columns.Add(THSettings.OriginalColumnName);
+                _ = project.FilesContentInfo.Tables.Add(fileName);
+                _ = project.FilesContentInfo.Tables[fileName].Columns.Add(THSettings.OriginalColumnName);
 
                 return true;
             }
             else
             {
-                if (AppData.CurrentProject.FilesContent.Tables[fileName].Rows.Count == 0)
+                if (project.FilesContent.Tables[fileName].Rows.Count == 0)
                 {
-                    AppData.CurrentProject.FilesContent.Tables.Remove(fileName);
-                    AppData.CurrentProject.FilesContentInfo.Tables.Remove(fileName);
+                    project.FilesContent.Tables.Remove(fileName);
+                    project.FilesContentInfo.Tables.Remove(fileName);
                     return false;
                 }
                 else
                 {
-                    _ = AppData.CurrentProject.FilesContent.Tables[fileName].Columns.Add(THSettings.TranslationColumnName);
+                    _ = project.FilesContent.Tables[fileName].Columns.Add(THSettings.TranslationColumnName);
                     return true;
                 }
             }
@@ -238,6 +270,11 @@ namespace TranslationHelper.Main.Functions
         /// <summary>
         /// Return real row index in Datatable for Datagridviev cell
         /// </summary>
+        /// <param name="workspace">
+        /// The project whose entry is displayed. Its grid is the one the row index belongs to: a grid
+        /// row index is only meaningful against the grid that is showing that table, so reading
+        /// another project's grid would resolve the row against the wrong content.
+        /// </param>
         /// <param name="listIndex">
         /// Index of the entry in the files list, not an index in
         /// <see cref="TranslationHelper.Projects.ProjectBase.FilesContent"/>. The two are different
@@ -245,29 +282,34 @@ namespace TranslationHelper.Main.Functions
         /// </param>
         /// <param name="rowIndex"></param>
         /// <returns></returns>
-        public static int GetRealRowIndex(int listIndex, int rowIndex)
+        public static int GetRealRowIndex(IProjectWorkspace workspace, int listIndex, int rowIndex)
         {
-            var table = AppData.FilesListContent?.GetTable(listIndex);
+            var table = workspace?.Project?.FilesListContent?.GetTable(listIndex);
             if (table == null) return -1;
 
-            return table.GetRealRowIndex(rowIndex);
+            var grid = workspace.ActiveFileWorkspace?.ElementsDataGridView;
+            if (grid == null) return -1;
+
+            return table.GetRealRowIndex(grid, rowIndex);
         }
 
         /// <summary>
         /// get Hashes of row indexes for selected/visible rows
         /// </summary>
+        /// <param name="workspace">The project whose grid holds the rows.</param>
         /// <param name="listIndex">
         /// Index of the entry in the files list whose table is displayed, not an index in
         /// <see cref="TranslationHelper.Projects.ProjectBase.FilesContent"/>.
         /// </param>
         /// <param name="isVisible">set to true if need to search in visible rows</param>
         /// <returns></returns>
-        internal static HashSet<int> GetDGVRowsIndexesHashesInDT(int listIndex, bool isVisible = false)
+        internal static HashSet<int> GetDGVRowsIndexesHashesInDT(IProjectWorkspace workspace, int listIndex, bool isVisible = false)
         {
-            DataGridView dgv = null;
-            AppData.Main.Invoke((Action)(() => dgv = AppData.Main.THFileElementsDataGridView));
-
             var selected = new HashSet<int>();
+
+            var dgv = workspace?.ActiveFileWorkspace?.ElementsDataGridView;
+            if (dgv == null) return selected;
+
             if (isVisible)
             {
                 foreach (DataGridViewRow row in dgv.Rows)
@@ -277,7 +319,7 @@ namespace TranslationHelper.Main.Functions
                         continue;
                     }
 
-                    selected.Add(GetRealRowIndex(listIndex, row.Index));
+                    selected.Add(GetRealRowIndex(workspace, listIndex, row.Index));
                 }
             }
             else
@@ -286,7 +328,7 @@ namespace TranslationHelper.Main.Functions
                 {
                     //A HashSet ignores a repeated value, so no separate duplicate test is needed
                     //(and testing the grid row index would have tested the wrong value anyway).
-                    selected.Add(GetRealRowIndex(listIndex, dgv.SelectedCells[i].RowIndex));
+                    selected.Add(GetRealRowIndex(workspace, listIndex, dgv.SelectedCells[i].RowIndex));
                 }
             }
 
@@ -301,7 +343,8 @@ namespace TranslationHelper.Main.Functions
         public static DataSet GetDataSetWithoutEmptyTableRows(DataSet dataSet)
         {
             var retDS = new DataSet();
-            int translationColumnIndex = AppData.CurrentProject.TranslationColumnIndex;
+            var project = AppData.CurrentProject;
+            int translationColumnIndex = project.TranslationColumnIndex;
             int tablesCount = dataSet.Tables.Count;
             for (int t = 0; t < tablesCount; t++)
             {
@@ -434,62 +477,83 @@ namespace TranslationHelper.Main.Functions
 
         public static int SelectedRowRealIndex = -1;
 
-        internal static void ReselectCellSelectedBeforeSorting(ListBox thFilesList, DataGridView thFileElementsDataGridView)
+        /// <summary>
+        /// After the grid has been sorted, show the row that was selected before the sort.
+        /// </summary>
+        /// <param name="workspace">The project whose grid was sorted.</param>
+        internal static void ReselectCellSelectedBeforeSorting(IProjectWorkspace workspace)
         {
             if (SelectedRowRealIndex == -1) return;
 
-            int fileIndex = AppSettings.THFilesListSelectedIndex;
-            foreach (DataGridViewRow row in thFileElementsDataGridView.Rows)
+            var listIndex = workspace?.FilesList?.GetSelectedIndex() ?? -1;
+            if (listIndex == -1) return;
+
+            var grid = workspace.ActiveFileWorkspace?.ElementsDataGridView;
+            if (grid == null) return;
+
+            foreach (DataGridViewRow row in grid.Rows)
             {
-                int realrowindex = FunctionsTable.GetRealRowIndex(fileIndex, row.Index);
+                int realrowindex = GetRealRowIndex(workspace, listIndex, row.Index);
                 if (SelectedRowRealIndex != realrowindex) continue;
 
                 int rowindex;
                 AppSettings.DGVSelectedRowIndex = rowindex = row.Index;
                 AppSettings.DGVSelectedRowRealIndex = realrowindex;
-                FunctionsTable.ShowSelectedRow(AppData.Main.THFileElementsDataGridView, thFilesList.GetSelectedIndex(), rowindex, AppSettings.DGVSelectedColumnIndex);
+                ShowSelectedRow(workspace, listIndex, rowindex, AppSettings.DGVSelectedColumnIndex);
                 SelectedRowRealIndex = realrowindex;
                 break;
             }
         }
 
-        internal static void RememberLastCellSelection(ListBox thFilesList, DataGridView thFileElementsDataGridView)
+        /// <summary>
+        /// Remember which row of the project's content is selected, so a sort can show it again.
+        /// </summary>
+        /// <param name="workspace">The project whose selection has to be remembered.</param>
+        internal static void RememberLastCellSelection(IProjectWorkspace workspace)
         {
-            if (thFileElementsDataGridView.SelectedCells.Count > 0)
-            {
-                SelectedRowRealIndex = FunctionsTable.GetRealRowIndex
-                    (
-                    thFilesList.GetSelectedIndex(),
-                    thFileElementsDataGridView.SelectedCells[0].RowIndex
-                    );
-            }
+            var grid = workspace?.ActiveFileWorkspace?.ElementsDataGridView;
+            if (grid == null || grid.SelectedCells.Count == 0) return;
+
+            var listIndex = workspace.FilesList?.GetSelectedIndex() ?? -1;
+            if (listIndex == -1) return;
+
+            SelectedRowRealIndex = GetRealRowIndex(workspace, listIndex, grid.SelectedCells[0].RowIndex);
         }
 
-        internal static void CellMouseDown(DataGridView thFileElementsDataGridView, ListBox thFilesList, DataGridViewCellMouseEventArgs e, ContextMenuStrip rowMenus)
+        /// <summary>
+        /// Show the row menu of the file <paramref name="fileWorkspace"/> shows.
+        /// </summary>
+        /// <param name="fileWorkspace">The file whose grid was clicked.</param>
+        /// <param name="e"></param>
+        /// <param name="rowMenus">The row menu of the project's files.</param>
+        internal static void CellMouseDown(OpenedFileWorkspace fileWorkspace, DataGridViewCellMouseEventArgs e, ContextMenuStrip rowMenus)
         {
+            var grid = fileWorkspace?.ElementsDataGridView;
+            if (grid == null) return;
+
             //использован код отсюда:https://stackoverflow.com/a/22912594
             //но модифицирован для ситуации когда выбрана только ячейка, а не строка полностью
             if (e.RowIndex != -1 && e.ColumnIndex != -1)
             {
                 if (e.Button == MouseButtons.Right)
                 {
-                    DataGridViewRow clickedRow = thFileElementsDataGridView.Rows[e.RowIndex];
+                    DataGridViewRow clickedRow = grid.Rows[e.RowIndex];
                     if (!clickedRow.Cells[e.ColumnIndex].Selected && !clickedRow.Selected)//вот это модифицировано
                     {
-                        thFileElementsDataGridView.CurrentCell = clickedRow.Cells[e.ColumnIndex];
+                        grid.CurrentCell = clickedRow.Cells[e.ColumnIndex];
                     }
 
                     if (!clickedRow.Cells[e.ColumnIndex].IsInEditMode)//не вызывать меню, когда ячейка в режиме редактирования
                     {
-                        var mousePosition = thFileElementsDataGridView.PointToClient(Cursor.Position);
+                        var mousePosition = grid.PointToClient(Cursor.Position);
 
-                        rowMenus.Show(thFileElementsDataGridView, mousePosition);
+                        rowMenus?.Show(grid, mousePosition);
                     }
                 }
             }
             if (e.RowIndex == -1)
             {
-                RememberLastCellSelection(thFilesList, thFileElementsDataGridView);
+                RememberLastCellSelection(fileWorkspace.Workspace);
             }
         }
 

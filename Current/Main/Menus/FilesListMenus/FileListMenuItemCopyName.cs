@@ -1,20 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 using TranslationHelper.Data;
-using TranslationHelper.Extensions;
-using TranslationHelper.Formats.RPGMaker.Functions;
-using TranslationHelper.Functions;
-using TranslationHelper.Functions.FileElementsFunctions.Row;
-using TranslationHelper.Main.Functions;
-using TranslationHelper.Menus.FileRowMenus;
 using TranslationHelper.Menus.FilesListMenus;
-using TranslationHelper.Menus.MainMenus.File;
-using TranslationHelper.Projects.RPGMTrans;
 
 namespace TranslationHelper.Menus.MainMenus.Edit
 {
@@ -26,7 +13,9 @@ namespace TranslationHelper.Menus.MainMenus.Edit
 
         public override void OnClick(object sender, EventArgs e)
         {
-            Clipboard.SetText(AppData.Main.THFilesList.CopySelectedNames());
+            // The menu belongs to a project's list, so the names come from that project's list rather
+            // than from a single application-wide one.
+            Clipboard.SetText(AppData.ActiveWorkspace?.FilesList?.GetSelectedItemNames() ?? string.Empty);
         }
     }
 }

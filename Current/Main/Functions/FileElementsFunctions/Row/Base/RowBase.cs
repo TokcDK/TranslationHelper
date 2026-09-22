@@ -6,6 +6,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using TranslationHelper.Data;
 using TranslationHelper.Projects;
+using TranslationHelper.Workspace;
 
 namespace TranslationHelper.Functions.FileElementsFunctions.Row
 {
@@ -42,7 +43,20 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
 
         protected static readonly Logger Logger = LogManager.GetCurrentClassLogger();
 
-        protected ProjectBase Project { get; } = AppData.CurrentProject;
+        /// <summary>
+        /// The project the run works on. It is resolved when the operation is built, so a run covers
+        /// the project it was started for even if the user selects another one while it runs.
+        /// </summary>
+        protected ProjectBase Project { get; }
+
+        /// <summary>
+        /// The project's controls, when the run was started from the application's own menus.
+        /// <para>
+        /// The engine itself does not use this — it reaches the selection and the cells through the two
+        /// contracts below — but an operation that has to follow the project's window can.
+        /// </para>
+        /// </summary>
+        protected IProjectWorkspace Workspace { get; }
 
         /// <summary>
         /// Where the selection a run works on comes from.
@@ -64,7 +78,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
         /// <summary>
         /// The project content the operations work on.
         /// </summary>
-        private readonly DataSet AllFiles = AppData.CurrentProject.FilesContent;
+        private readonly DataSet AllFiles;
 
         private readonly RowTargetResolver TargetResolver;
 
@@ -82,10 +96,41 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
         /// How cells are written, or null to use the application's own.
         /// </param>
         internal RowBase(ISelectionProvider selectionProvider = null, IUiUpdater uiUpdater = null)
+            : this(null, null, selectionProvider, uiUpdater)
         {
-            SelectionProvider = selectionProvider ?? RowServices.CreateSelectionProvider();
-            UiUpdater = uiUpdater ?? RowServices.CreateUiUpdater();
-            TargetResolver = new RowTargetResolver(SelectionProvider, AllFiles);
+        }
+
+        /// <summary>
+        /// Build a run over one project.
+        /// </summary>
+        /// <param name="project">
+        /// The project to work on, or null for the selected one. A caller that drives a project other
+        /// than the one on screen — a batch import, or a test — names it here, which is what makes a
+        /// run independent of what the user happens to be looking at.
+        /// </param>
+        /// <param name="workspace">
+        /// The project's controls, or null for the selected project's. Only the two adapters below use
+        /// it, and a caller that supplies its own <paramref name="selectionProvider"/> and
+        /// <paramref name="uiUpdater"/> does not need it at all.
+        /// </param>
+        /// <param name="selectionProvider">Where the selection comes from, or null to read the workspace.</param>
+        /// <param name="uiUpdater">How cells are written, or null to write through the workspace.</param>
+        internal RowBase(ProjectBase project, IProjectWorkspace workspace,
+            ISelectionProvider selectionProvider = null, IUiUpdater uiUpdater = null)
+        {
+            Project = project ?? AppData.CurrentProject
+                ?? throw new InvalidOperationException("A row operation needs a project, and none is open.");
+
+            Workspace = workspace ?? AppData.ActiveWorkspace;
+
+            AllFiles = Project.FilesContent;
+
+            SelectionProvider = selectionProvider ?? RowServices.CreateSelectionProvider(Workspace);
+            UiUpdater = uiUpdater ?? RowServices.CreateUiUpdater(Workspace);
+
+            // The resolver reads which content a files list entry presents, which is the project's own
+            // relation: it is what turns a row of the "[ALL]" entry back into the file row it came from.
+            TargetResolver = new RowTargetResolver(SelectionProvider, AllFiles, Project.FilesListContent);
         }
         #endregion
 

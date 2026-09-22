@@ -2,8 +2,10 @@
 using TranslationHelper.Functions;
 using TranslationHelper.Functions.DBSaveFormats;
 using TranslationHelper.Functions.FileElementsFunctions.Row.OnlineTranslate;
+using TranslationHelper.Functions.FilesListControl;
 using TranslationHelper.Forms.Search;
 using TranslationHelper.Settings;
+using Zuby.ADGV;
 
 namespace TranslationHelper.Data
 {
@@ -60,14 +62,28 @@ namespace TranslationHelper.Data
         public static bool ApplyFixesOnTranslation { get; set; } = true;
         public static bool UseAllDBFilesForOnlineTranslationForAll { get; set; } = true;
         public static string ApplicationProductName { get; set; } = "";
-        public static bool IsFileOpened { get => AppData.Main.THFileElementsDataGridView.DataSource != null; }
-        public static bool IsFileContentFocused { get => AppData.Main.THFileElementsDataGridView.Focused; }
-        public static bool IsEditTextBoxFocused { get => AppData.Main.THTargetRichTextBox.Focused; }
-        public static bool IsRowInEditMode { get => (IsFileContentFocused && AppData.Main.THFileElementsDataGridView.IsCurrentCellInEditMode) || IsEditTextBoxFocused; }
-        public static bool IsFilesListFocused { get => AppData.FilesListControl.Focused; }
+        public static bool IsFileOpened { get => FileGrid?.DataSource != null; }
+        public static bool IsFileContentFocused { get => FileGrid?.Focused == true; }
+        public static bool IsEditTextBoxFocused { get => AppData.ActiveWorkspace?.ActiveFileWorkspace?.TargetRichTextBox?.Focused == true; }
+        public static bool IsRowInEditMode { get => (IsFileContentFocused && FileGrid.IsCurrentCellInEditMode) || IsEditTextBoxFocused; }
+        public static bool IsFilesListFocused { get => FilesList?.Focused == true; }
         public static bool IsParseRow { get => IsFileOpened && IsFileContentFocused; }
-        public static bool IsParseFile { get => !IsFileContentFocused && IsFilesListFocused && AppData.THFilesList.SelectedItems.Count > 0; }
-        public static bool IsParseAllFiles { get => !IsFileContentFocused && IsFilesListFocused && AppData.THFilesList.SelectedItems.Count == AppData.THFilesList.Items.Count; }
+        public static bool IsParseFile { get => !IsFileContentFocused && IsFilesListFocused && (FilesList?.GetSelectedItemsCount() ?? 0) > 0; }
+        public static bool IsParseAllFiles { get => !IsFileContentFocused && IsFilesListFocused && FilesList != null && FilesList.GetSelectedItemsCount() == FilesList.GetItemsCount(); }
+
+        /// <summary>
+        /// The work grid of the entry being shown, or null while no entry is.
+        /// <para>
+        /// Every predicate above asks about the project the user is working in, so they all resolve
+        /// through the selected project's workspace instead of an application-wide grid and list.
+        /// </para>
+        /// </summary>
+        private static AdvancedDataGridView FileGrid => AppData.ActiveWorkspace?.ActiveFileWorkspace?.ElementsDataGridView;
+
+        /// <summary>
+        /// The files list of the project on screen, or null while no project is.
+        /// </summary>
+        private static FilesListControlBase FilesList => AppData.ActiveWorkspace?.FilesList;
 
         ////////////////////////////////////////////////////////////////////////////////////////////
         // Settings. Every one of these is stored in, and owned by, the setting it forwards to.

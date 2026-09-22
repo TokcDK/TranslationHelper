@@ -50,7 +50,7 @@ namespace TranslationHelper.Projects.IrisField
         private bool OpenFiles()
         {
             OpenFilesSerial();
-            return AppData.CurrentProject.FilesContent.Tables.Count > 0;
+            return FilesContent.Tables.Count > 0;
         }
 
         private bool OpenFilesSerial()
@@ -93,12 +93,12 @@ namespace TranslationHelper.Projects.IrisField
 
         public override bool BakCreate()
         {
-            return ProjectToolsBackup.BackupRestorePaths(BackupPaths);
+            return ProjectToolsBackup.BackupRestorePaths(this, BackupPaths);
         }
 
         public override bool BakRestore()
         {
-            return ProjectToolsBackup.BackupRestorePaths(BackupPaths, false);
+            return ProjectToolsBackup.BackupRestorePaths(this, BackupPaths, false);
         }
     }
 }

@@ -1,5 +1,5 @@
 ﻿using System.Data;
-using TranslationHelper.Data;
+using TranslationHelper.Functions.FilesListControl;
 
 namespace TranslationHelper.Functions.FileElementsFunctions.Row
 {
@@ -17,10 +17,17 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
         private readonly ISelectionProvider _selection;
         private readonly DataSet _filesContent;
 
-        internal RowTargetResolver(ISelectionProvider selection, DataSet filesContent)
+        /// <summary>
+        /// The project's relation between a files list entry and the content it presents. It is the
+        /// project's own, so a run addresses the files of the project it was started for.
+        /// </summary>
+        private readonly FilesListContent _filesListContent;
+
+        internal RowTargetResolver(ISelectionProvider selection, DataSet filesContent, FilesListContent filesListContent)
         {
             _selection = selection;
             _filesContent = filesContent;
+            _filesListContent = filesListContent;
         }
 
         /// <summary>
@@ -72,7 +79,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
             var listIndex = _selection.GetSelectedListIndex();
             if (listIndex < 0) return false;
 
-            var filesListContent = AppData.FilesListContent;
+            var filesListContent = _filesListContent;
             var entryTable = filesListContent?.GetTable(listIndex);
             if (entryTable == null) return false;
 

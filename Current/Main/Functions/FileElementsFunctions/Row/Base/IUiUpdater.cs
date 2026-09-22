@@ -26,5 +26,24 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
         /// implementation; an operation only says that the user has to be told.
         /// </summary>
         void ShowMessage(string message);
+
+        /// <summary>
+        /// Announce that <paramref name="table"/> is about to be changed row by row, so a view showing
+        /// it can stop following it for the duration.
+        /// <para>
+        /// This is what an operation that rewrites every row uses to avoid a repaint per row. It is
+        /// deliberately not "clear the grid": which control shows the table, and whether any does, is
+        /// the implementation's business.
+        /// </para>
+        /// </summary>
+        /// <param name="table">The table the run is about to change.</param>
+        void BeginBulkChange(DataTable table);
+
+        /// <summary>
+        /// Announce that the changes to <paramref name="table"/> are done, so a view showing it can
+        /// follow it again. The counterpart of <see cref="BeginBulkChange"/>.
+        /// </summary>
+        /// <param name="table">The table the run has finished changing.</param>
+        void EndBulkChange(DataTable table);
     }
 }

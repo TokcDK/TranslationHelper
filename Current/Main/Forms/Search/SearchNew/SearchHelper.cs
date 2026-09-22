@@ -11,6 +11,7 @@ using TranslationHelper.Forms.Search.SearchNew.Data;
 using TranslationHelper.Forms.Search.SearchNew.OptionsNew;
 using TranslationHelper.Main.Functions;
 using TranslationHelper.Projects;
+using TranslationHelper.Workspace;
 using static Manina.Windows.Forms.TabControl;
 
 namespace TranslationHelper.Forms.Search
@@ -169,7 +170,7 @@ namespace TranslationHelper.Forms.Search
             return false;
         }
 
-        internal static void BindSearchResults(SearchResultsData searchResults, Control foundRowsControl, ProjectBase project)
+        internal static void BindSearchResults(SearchResultsData searchResults, Control foundRowsControl, IProjectWorkspace workspace)
         {
             var foundRowsDatagridView = new DataGridView
             {
@@ -182,7 +183,7 @@ namespace TranslationHelper.Forms.Search
             };
             foundRowsDatagridView.CellClick += (sender, e) =>
             {
-                SearchHelpers.ShowSelectedCellInMainTable(project, searchResults.FoundRows, e.RowIndex, e.ColumnIndex);
+                ShowSelectedCellInMainTable(workspace, searchResults.FoundRows, e.RowIndex, e.ColumnIndex);
             };
             foundRowsControl.Controls.Add(foundRowsDatagridView);
         }
@@ -208,26 +209,24 @@ namespace TranslationHelper.Forms.Search
             return result;
         }
 
-        internal static void ShowSelectedCellInMainTable(ProjectBase project, List<FoundRowData> _foundRowsList, int foundRowIndex, int selectedCellColumnIndex)
+        internal static void ShowSelectedCellInMainTable(IProjectWorkspace workspace, List<FoundRowData> _foundRowsList, int foundRowIndex, int selectedCellColumnIndex)
         {
-            var _workFileDgv = AppData.Main.THFileElementsDataGridView;
+            if (workspace == null) return;
+
+            var project = workspace.Project;
             try
             {
                 var foundRowData = _foundRowsList[foundRowIndex];
                 var (_selectedTableIndex, _selectedRowIndex) = (foundRowData.TableIndex, foundRowData.RowIndex);
 
-                AppData.Main.THFileElementsDataGridView.CleanFilter();
+                workspace.ActiveFileWorkspace?.ElementsDataGridView?.CleanFilter();
 
                 var tableDefaultView = project.FilesContent.Tables[_selectedTableIndex].DefaultView;
                 tableDefaultView.RowFilter = string.Empty;
                 tableDefaultView.Sort = string.Empty;
-                _workFileDgv.Refresh();
+                workspace.ActiveFileWorkspace?.ElementsDataGridView?.Refresh();
 
-                FunctionsTable.ShowSelectedRow(AppData.Main.THFileElementsDataGridView, AppData.FilesListContent.GetListIndex(_selectedTableIndex), _selectedRowIndex, selectedCellColumnIndex);
-                //if (_workFileDgv.CurrentCell != null)
-                //{
-                //    await Task.Run(() => SelectTextInTextBox(_workFileDgv.CurrentCell.Value.ToString())).ConfigureAwait(false);
-                //}
+                FunctionsTable.ShowSelectedRow(workspace, project.FilesListContent.GetListIndex(_selectedTableIndex), _selectedRowIndex, selectedCellColumnIndex);
             }
             catch (ArgumentException) { }
             catch (InvalidOperationException) { }

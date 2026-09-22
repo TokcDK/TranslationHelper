@@ -18,7 +18,9 @@ namespace TranslationHelper.Projects.RPGMMV.Menus
         public override void OnClick(object sender, EventArgs e)
         {
             //read and check the name
-            var names = AppData.THFilesList.CopySelectedNames();
+            //The menu is a files list menu, so the names are the selected entries of the project whose
+            //list it was opened from.
+            var names = AppData.ActiveWorkspace?.FilesList?.GetSelectedItemNames() ?? string.Empty;
             if (string.IsNullOrWhiteSpace(names) || names.ToUpperInvariant().IndexOf(".JS") == -1)
             {
                 return;

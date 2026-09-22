@@ -582,6 +582,10 @@ namespace TranslationHelper.Formats
             if (Data.Rows.Count > 0)
             {
                 Host.AddTable(Data, Info);
+
+                // The store keeps the format beside the table, so the file can later be written back by
+                // the same format that read it rather than by one looked up from the extension again.
+                Host.RegisterFormat(Data, this);
                 return true;
             }
             return false;

@@ -2,7 +2,6 @@
 using System;
 using System.Data;
 using System.Drawing;
-using System.Globalization;
 using System.IO;
 using System.Reflection;
 using System.Text;
@@ -13,16 +12,33 @@ using TranslationHelper.Extensions;
 using TranslationHelper.Functions.FileElementsFunctions.Row.AutoSameForSimular;
 using TranslationHelper.Main.Functions;
 using TranslationHelper.Menus.MainMenus.File;
+using TranslationHelper.Projects;
+using TranslationHelper.Workspace;
 
 namespace TranslationHelper.Functions
 {
+    /// <summary>
+    /// What the window does with one project's files: which entry is shown, what the text boxes hold,
+    /// what the grid looks like, and what an edit to a cell means.
+    /// <para>
+    /// Every member that touches a control takes the workspace it belongs to. That is what makes the
+    /// same function work for whichever project the user is looking at: it reads the controls of the
+    /// workspace it was given rather than the controls of "the" project, so two open projects cannot
+    /// be confused with one another.
+    /// </para>
+    /// </summary>
     internal class FunctionsUI
     {
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
 
-        internal static void ShowNonEmptyRowsCount(System.Windows.Forms.Label tableCompleteInfoLabel)
+        /// <summary>
+        /// Show how much of <paramref name="project"/> is translated.
+        /// </summary>
+        internal static void ShowNonEmptyRowsCount(ProjectBase project, Label tableCompleteInfoLabel)
         {
-            int RowsCount = FunctionsTable.GetDatasetRowsCount(AppData.CurrentProject.FilesContent);
+            if (tableCompleteInfoLabel == null) return;
+
+            int RowsCount = FunctionsTable.GetDatasetRowsCount(project?.FilesContent);
             if (RowsCount == 0)
             {
                 tableCompleteInfoLabel.Visible = false;
@@ -30,7 +46,7 @@ namespace TranslationHelper.Functions
             else
             {
                 tableCompleteInfoLabel.Visible = true;
-                tableCompleteInfoLabel.Text = FunctionsTable.GetDatasetNonEmptyRowsCount(AppData.CurrentProject.FilesContent) + "/" + RowsCount;
+                tableCompleteInfoLabel.Text = FunctionsTable.GetDatasetNonEmptyRowsCount(project.FilesContent) + "/" + RowsCount;
             }
         }
 
@@ -43,47 +59,46 @@ namespace TranslationHelper.Functions
                 if (switchon && !ControlsSwitchIsOn)
                 {
                     ControlsSwitchIsOn = switchon;
-                    //System.Media.SystemSounds.Asterisk.Play();
-                    //CutToolStripMenuItem1.ShortcutKeys = Keys.Control | Keys.X;
-                    //CopyCellValuesToolStripMenuItem.ShortcutKeys = Keys.Control | Keys.C;
-                    //PasteCellValuesToolStripMenuItem.ShortcutKeys = Keys.Control | Keys.V;
                 }
                 else if (ControlsSwitchIsOn)
                 {
                     ControlsSwitchIsOn = switchon;
-                    //System.Media.SystemSounds.Hand.Play();
-                    //CutToolStripMenuItem1.ShortcutKeys = Keys.None;
-                    //CopyCellValuesToolStripMenuItem.ShortcutKeys = Keys.None;
-                    //PasteCellValuesToolStripMenuItem.ShortcutKeys = Keys.None;
                 }
             }
         }
 
-        internal static void UpdateTextboxes()
+        /// <summary>
+        /// Show the selected row of <paramref name="workspace"/> in its text boxes and info box.
+        /// </summary>
+        internal static void UpdateTextboxes(IProjectWorkspace workspace)
         {
+            if (!(workspace?.ActiveFileWorkspace is OpenedFileWorkspace fileWorkspace)) return;
+
             try
             {
-                if (AppData.Main.THFileElementsDataGridView.CurrentCell == null) return;
+                var grid = fileWorkspace.ElementsDataGridView;
+                if (grid.CurrentCell == null) return;
 
-                BindTextBoxesOriginalTranslation();
+                BindTextBoxesOriginalTranslation(fileWorkspace);
 
-                var listIndex = AppSettings.THFilesListSelectedIndex = AppData.Main.THFilesList.GetSelectedIndex();
+                var listIndex = AppSettings.THFilesListSelectedIndex = workspace.FilesList?.GetSelectedIndex() ?? -1;
                 if (listIndex == -1) return;
 
-                var columnIndex = AppSettings.DGVSelectedColumnIndex = AppData.Main.THFileElementsDataGridView.CurrentCell.ColumnIndex;
+                var columnIndex = AppSettings.DGVSelectedColumnIndex = grid.CurrentCell.ColumnIndex;
                 if (columnIndex == -1) return;
 
-                var gridRowIndex = AppSettings.DGVSelectedRowIndex = AppData.Main.THFileElementsDataGridView.CurrentCell.RowIndex;
+                var gridRowIndex = AppSettings.DGVSelectedRowIndex = grid.CurrentCell.RowIndex;
                 if (gridRowIndex == -1) return;
 
-                var realrowIndex = AppSettings.DGVSelectedRowRealIndex = FunctionsTable.GetRealRowIndex(listIndex, gridRowIndex);
+                var realrowIndex = AppSettings.DGVSelectedRowRealIndex =
+                    FunctionsTable.GetRealRowIndex(workspace, listIndex, gridRowIndex);
                 if (realrowIndex == -1) return;
 
                 // The row info describes the file the row came from, which for the [ALL] entry is not
                 // the displayed table.
-                if (!AppData.FilesListContent.TryResolveRow(listIndex, realrowIndex, out var tableIndex, out var infoRowIndex)) return;
+                if (!workspace.Project.FilesListContent.TryResolveRow(listIndex, realrowIndex, out var tableIndex, out var infoRowIndex)) return;
 
-                UpdateRowInfo(tableIndex, columnIndex, gridRowIndex, infoRowIndex);
+                UpdateRowInfo(fileWorkspace, tableIndex, columnIndex, gridRowIndex, infoRowIndex);
             }
             catch (Exception ex)
             {
@@ -91,24 +106,36 @@ namespace TranslationHelper.Functions
             }
         }
 
-        internal static void BindTextBoxesOriginalTranslation()
+        /// <summary>
+        /// Point the source and target boxes of one file's workspace at the selected row of its grid.
+        /// </summary>
+        internal static void BindTextBoxesOriginalTranslation(OpenedFileWorkspace workspace)
         {
+            if (workspace == null) return;
+
+            var grid = workspace.ElementsDataGridView;
+            var project = workspace.Workspace?.Project;
+            if (project == null) return;
+
             // this way binding on each selected row changed event, it prevents errors with threads of bound dataset to dgv and seems not causing slowdown
-            var selected = AppData.Main.THFileElementsDataGridView.SelectedCells;
+            var selected = grid.SelectedCells;
             if (selected.Count == 0) return;
+
             var rowIndex = selected[0].RowIndex;
-            AppData.Main.THSourceRichTextBox.DataBindings.Clear();
-            AppData.Main.THSourceRichTextBox.DataBindings.Add(new Binding("Text", AppData.Main.THFileElementsDataGridView[AppData.CurrentProject.OriginalColumnIndex, rowIndex], "Value", false));
-            AppData.Main.THTargetRichTextBox.DataBindings.Clear();
-            AppData.Main.THTargetRichTextBox.DataBindings.Add(new Binding("Text", AppData.Main.THFileElementsDataGridView[AppData.CurrentProject.TranslationColumnIndex, rowIndex], "Value", false));
+
+            workspace.SourceRichTextBox.DataBindings.Clear();
+            workspace.SourceRichTextBox.DataBindings.Add(new Binding("Text", grid[project.OriginalColumnIndex, rowIndex], "Value", false));
+
+            workspace.TargetRichTextBox.DataBindings.Clear();
+            workspace.TargetRichTextBox.DataBindings.Add(new Binding("Text", grid[project.TranslationColumnIndex, rowIndex], "Value", false));
         }
 
         /// <summary>
-        /// Show the info of the selected cell.
+        /// Show the info of the selected cell in the info box of <paramref name="workspace"/>.
         /// </summary>
+        /// <param name="workspace">The file the selected cell belongs to.</param>
         /// <param name="tableIndex">
-        /// Index in <see cref="TranslationHelper.Projects.ProjectBase.FilesContentInfo"/> of the file
-        /// the selected row came from.
+        /// Index in <see cref="ProjectBase.FilesContentInfo"/> of the file the selected row came from.
         /// </param>
         /// <param name="columnIndex">Column of the selected cell in the work table grid.</param>
         /// <param name="gridRowIndex">Row of the selected cell in the work table grid.</param>
@@ -117,72 +144,37 @@ namespace TranslationHelper.Functions
         /// when the grid shows the table sorted or filtered, and for the "[ALL]" entry it is always
         /// resolved from the file the row was copied from.
         /// </param>
-        private static void UpdateRowInfo(int tableIndex, int columnIndex, int gridRowIndex, int infoRowIndex)
+        private static void UpdateRowInfo(OpenedFileWorkspace workspace, int tableIndex, int columnIndex, int gridRowIndex, int infoRowIndex)
         {
+            var grid = workspace.ElementsDataGridView;
+            var project = workspace.Workspace?.Project;
+            if (project == null) return;
+
             string selectedCellValue;
-            if ((selectedCellValue = AppData.Main.THFileElementsDataGridView.Rows[gridRowIndex].Cells[columnIndex].Value + string.Empty).Length == 0)
+            if ((selectedCellValue = grid.Rows[gridRowIndex].Cells[columnIndex].Value + string.Empty).Length == 0)
             {
                 return;
             }
 
-            AppData.Main.THInfoTextBox.Text = string.Empty;
+            workspace.THInfoTextBox.Text = string.Empty;
 
-            if (AppData.CurrentProject.FilesContentInfo != null
+            if (project.FilesContentInfo != null
                 && tableIndex >= 0
-                && AppData.CurrentProject.FilesContentInfo.Tables.Count > tableIndex
-                && AppData.CurrentProject.FilesContentInfo.Tables[tableIndex].Rows.Count > infoRowIndex)
+                && project.FilesContentInfo.Tables.Count > tableIndex
+                && project.FilesContentInfo.Tables[tableIndex].Rows.Count > infoRowIndex)
             {
-                AppData.Main.THInfoTextBox.Text += T._("rowinfo:") + Environment.NewLine + AppData.CurrentProject.FilesContentInfo.Tables[tableIndex].Rows[infoRowIndex][0];
+                workspace.THInfoTextBox.Text += T._("rowinfo:") + Environment.NewLine + project.FilesContentInfo.Tables[tableIndex].Rows[infoRowIndex][0];
             }
 
-            AppData.Main.THInfoTextBox.Text += Environment.NewLine + T._("Selected bytes length") + ":" + " UTF8" + "=" + Encoding.UTF8.GetByteCount(selectedCellValue) + "/932" + "=" + Encoding.GetEncoding(932).GetByteCount(selectedCellValue);
+            workspace.THInfoTextBox.Text += Environment.NewLine + T._("Selected bytes length") + ":" + " UTF8" + "=" + Encoding.UTF8.GetByteCount(selectedCellValue) + "/932" + "=" + Encoding.GetEncoding(932).GetByteCount(selectedCellValue);
 
-            if (AppData.CurrentProject.Name == "RPG Maker MV")
+            if (project.Name == "RPG Maker MV")
             {
-                AppData.Main.THInfoTextBox.Text += Environment.NewLine + Environment.NewLine + T._("Several strings also can be in Plugins.js in 'www\\js' folder and referred plugins in plugins folder.");
+                workspace.THInfoTextBox.Text += Environment.NewLine + Environment.NewLine + T._("Several strings also can be in Plugins.js in 'www\\js' folder and referred plugins in plugins folder.");
             }
-            AppData.Main.THInfoTextBox.Text += Environment.NewLine + Environment.NewLine;
+            workspace.THInfoTextBox.Text += Environment.NewLine + Environment.NewLine;
 
-
-            AppData.Main.THInfoTextBox.Text += FunctionsRomajiKana.GetLangsOfString(selectedCellValue, "all"); //Show all detected languages count info
-                                                                                                  //--------Считывание значения ячейки в текстовое поле 1
-        }
-
-        //https://stackoverflow.com/a/31150444
-        private static void FormatTextBox()
-        {
-            if (AppData.Main.THTargetRichTextBox == null) return;
-
-            int tl = 0;
-            _ = AppData.Main.Invoke((Action)(() => tl = AppData.Main.THTargetRichTextBox.Text.Length));
-            if (tl == 0) return;
-
-
-            // Loop over each line
-            int THTargetRichTextBoxLinesCount = 0;
-            _ = AppData.Main.Invoke((Action)(() => THTargetRichTextBoxLinesCount = AppData.Main.THTargetRichTextBox.Lines.Length));
-            for (int i = 0; i < THTargetRichTextBoxLinesCount; i++)
-            {
-                // Current line text
-                string currentLine = string.Empty;
-                _ = AppData.Main.Invoke((Action)(() => currentLine = AppData.Main.THTargetRichTextBox.Lines[i]));
-
-                // Ignore the non-assembly lines
-                if (currentLine.Length <= AppSettings.THOptionLineCharLimit) continue;
-
-                // Start position
-                int start = AppSettings.THOptionLineCharLimit;
-
-                // Length
-                int length = currentLine.Length - start;
-
-                // Make the selection
-                AppData.Main.THTargetRichTextBox.SelectionStart = start;
-                AppData.Main.THTargetRichTextBox.SelectionLength = length;
-
-                // Change the colour
-                AppData.Main.THTargetRichTextBox.SelectionColor = Color.DarkRed;
-            }
+            workspace.THInfoTextBox.Text += FunctionsRomajiKana.GetLangsOfString(selectedCellValue, "all"); //Show all detected languages count info
         }
 
         internal static volatile bool SaveInAction;
@@ -196,139 +188,46 @@ namespace TranslationHelper.Functions
             }
         }
 
-        internal static void UpdateTranslationTextBoxValue(object sender, DataGridViewCellEventArgs e)
+        /// <summary>
+        /// Copy the edited cell into the target box of the file it belongs to.
+        /// </summary>
+        internal static void UpdateTranslationTextBoxValue(OpenedFileWorkspace workspace, DataGridViewCellEventArgs e)
         {
-            if (AppSettings.DGVCellInEditMode && sender is DataGridView DGV)
-            {
-                AppData.Main.THTargetRichTextBox.Text = DGV.Rows[e.RowIndex].Cells[e.ColumnIndex].Value + string.Empty;
-            }
+            if (workspace == null) return;
+            if (!AppSettings.DGVCellInEditMode) return;
+            if (e.RowIndex < 0 || e.ColumnIndex < 0) return;
+
+            var grid = workspace.ElementsDataGridView;
+            workspace.TargetRichTextBox.Text = grid.Rows[e.RowIndex].Cells[e.ColumnIndex].Value + string.Empty;
         }
 
-
-        //int numberOfRows=500;
         private static bool THFilesListBox_MouseClickBusy;
-        internal static void ActionsOnTHFIlesListElementSelected()
-        {
-            if (THFilesListBox_MouseClickBusy || AppData.Main.THFilesList.GetSelectedIndex() == -1) //THFilesList.GetSelectedIndex() == -1 return - фикс исключения сразу после загрузки таблицы, когда индекс выбранной таблицы равен -1 
-            {
-                return;
-            }
 
-            //http://www.sql.ru/forum/1149655/kak-peredat-parametr-s-metodom-delegatom
-            //int index = THFilesListBox.SelectedIndex;
-            //Thread actions = new Thread(new ParameterizedThreadStart((obj) => THFilesListBoxMouseClickEventActions(index)));
-            //actions.Start();
+        /// <summary>
+        /// The entry of <paramref name="workspace"/> that is shown has changed: bring the window up to
+        /// date with it.
+        /// <para>
+        /// The grid is not rebound here. Each entry owns its own controls now, so showing another entry
+        /// means showing another tab whose grid is already bound to that entry's table.
+        /// </para>
+        /// </summary>
+        internal static void ActionsOnTHFIlesListElementSelected(IProjectWorkspace workspace)
+        {
+            if (workspace == null) return;
+            if (THFilesListBox_MouseClickBusy) return;
+            if (workspace.FilesList == null || workspace.FilesList.GetSelectedIndex() == -1) return;
 
             THFilesListBox_MouseClickBusy = true;
 
-            //Пример с присваиванием Dataset. Они вроде быстро открываются, в отличие от List. Проверка не подтвердила ускорения, всё также
-            //https://stackoverflow.com/questions/11099619/how-to-bind-dataset-to-datagridview-in-windows-application
-
-            //THFileElementsDataGridView.DataSource = null;
-            //THFileElementsDataGridView.RowCount = 100;
-
-            //Пробовал также отсюда через BindingList
-            //https://stackoverflow.com/questions/44433428/how-to-use-virtual-mode-for-large-data-in-datagridview
-            //не помогает
-            //var dataPopulateList = new BindingList<Block>(THRPGMTransPatchFiles[THFilesListBox.SelectedIndex].blocks);
-            //THFileElementsDataGridView.DataSource = dataPopulateList;
-
-            //Еще источник с рекомендацией ниже, но тоже от нее не заметил эффекта
-            //https://stackoverflow.com/questions/3580237/best-way-to-fill-datagridview-with-large-amount-of-data
-            //THFileElementsDataGridView.RowHeadersWidthSizeMode = DataGridViewRowHeadersWidthSizeMode.EnableResizing;
-            //or even better .DisableResizing.
-            //Most time consumption enum is DataGridViewRowHeadersWidthSizeMode.AutoSizeToAllHeaders
-            //THFileElementsDataGridView.RowHeadersVisible = false; // set it to false if not needed
-
-            //https://www.codeproject.com/Questions/784355/How-to-solve-performance-issue-in-Datagridview-Min
-            // Поменял List на BindingList и вроде чуть быстрее стало загружаться
             try
             {
-                //ProgressInfo(true);
+                ShowNonEmptyRowsCount(workspace.Project, workspace.CompletionLabel);
 
-                /*
-                if (THSelectedSourceType.Contains("RPGMakerTransPatch"))
-                {
-                }
-                else if (THSelectedSourceType.Contains("RPG Maker MV"))
-                {
-                    THFileElementsDataGridView.DataSource = THFilesElementsDataset.Tables[THFilesListBox.SelectedIndex];
-
-                    //https://10tec.com/articles/why-datagridview-slow.aspx
-                    //ds.Tables[THFilesListBox.SelectedIndex].DefaultView.RowFilter = string.Format("Text LIKE '%{0}%'", "FIltering string");
-
-                }
-                */
-
-                //THFiltersDataGridView.Columns.Clear();
-
-                //сунул под try так как один раз здесь была ошибка о выходе за диапахон
-
-
-                //https://www.youtube.com/watch?v=wZ4BkPyZllY
-                //Thread t = new Thread(new ThreadStart(StartLoadingForm));
-                //t.Start();
-                //Thread.Sleep(100);
-
-                //this.Cursor = Cursors.WaitCursor; // Поменять курсор на часики
-
-                //измерение времени выполнения
-                //http://www.cyberforum.ru/csharp-beginners/thread1090236.html
-                //System.Diagnostics.Stopwatch swatch = new System.Diagnostics.Stopwatch();
-                //swatch.Start();
-
-                //https://stackoverflow.com/questions/778095/windows-forms-using-backgroundimage-slows-down-drawing-of-the-forms-controls
-                //THFileElementsDataGridView.SuspendDrawing();//используются оба SuspendDrawing и SuspendLayout для возможного ускорения
-                //THFileElementsDataGridView.SuspendLayout();//с этим вроде побыстрее чем с SuspendDrawing из ControlHelper
-
-                //THsplitContainerFilesElements.Panel2.Visible = false;//сделать невидимым родительский элемент на время
-
-                //Советы, после которых отображение ячеек стало во много раз быстрее, 
-                //https://docs.microsoft.com/en-us/dotnet/framework/winforms/controls/best-practices-for-scaling-the-windows-forms-datagridview-control
-                //Конкретно, поменял режим отображения строк(Rows) c AllCells на DisplayerCells, что ускорило отображение 3400к. строк в таблице в 100 раз, с 9с. до 0.09с. !
-
-                //THBS.DataSource = THRPGMTransPatchFiles[THFilesListBox.SelectedIndex].blocks;
-                //THFileElementsDataGridView.DataSource = THBS;
-
-                //THFileElementsDataGridView.RowsDefaultCellStyle.WrapMode = DataGridViewTriState.True;
-
-                //THFileElementsDataGridView.Invoke((Action)(() => THFileElementsDataGridView.DataSource = THRPGMTransPatchFiles[THFilesListBox.SelectedIndex].blocks));
-                //THFileElementsDataGridView.DataSource = THRPGMTransPatchFiles[THFilesListBox.SelectedIndex].blocks;//.GetRange(0, THRPGMTransPatchFilesFGetCellCount());
-                //if (THFilesListBox.SelectedIndex >= 0)//предотвращает исключение "Невозможно найти таблицу -1"
-                //{
-                //    THFileElementsDataGridView.DataSource = THFilesElementsDataset.Tables[THFilesListBox.SelectedIndex];//.GetRange(0, THRPGMTransPatchFilesFGetCellCount());
-                //}
-
-                if (AppData.Main.THFilesList.GetSelectedIndex() > -1)
-                {
-                    var listIndex = AppSettings.THFilesListSelectedIndex = AppData.Main.THFilesList.GetSelectedIndex();
-
-                    // The [ALL] entry is a view over the files: its content is rebuilt from them
-                    // before it is shown, and kept in step with them while it stays shown.
-                    if (AppData.FilesListContent.IsAllEntry(listIndex))
-                    {
-                        AppData.FilesListContent.Refresh();
-                        AppData.FilesListContent.AttachToFiles();
-                    }
-                    else
-                    {
-                        AppData.FilesListContent.DetachFromFiles();
-                    }
-
-                    BindToDataTableGridView(AppData.FilesListContent.GetTable(listIndex));
-                }
-
-                FunctionsUI.ShowNonEmptyRowsCount(AppData.Main.TableCompleteInfoLabel);//Show how many rows have translation
-
-                HideAllColumnsExceptOriginalAndTranslation();
-
-                SetOnTHFileElementsDataGridViewWasLoaded(); //Additional actions when elements of file was loaded in datagridview
-
-                FunctionsUI.UpdateTextboxes();
+                UpdateTextboxes(workspace);
 
                 FunctionsMenus.CreateFileRowMenus();
 
-                FunctionsUI.BindTextBoxesOriginalTranslation();
+                BindTextBoxesOriginalTranslation(workspace.ActiveFileWorkspace);
             }
             catch (Exception ex)
             {
@@ -338,78 +237,84 @@ namespace TranslationHelper.Functions
             THFilesListBox_MouseClickBusy = false;
         }
 
-        private static void HideAllColumnsExceptOriginalAndTranslation()
+        /// <summary>
+        /// Get one file's workspace ready to be worked in: hide the columns that are not the original
+        /// or the translation, name the two that are, and let the text boxes be used.
+        /// </summary>
+        internal static void PrepareElementsGrid(OpenedFileWorkspace workspace)
         {
-            if (AppData.Main.THFileElementsDataGridView.Columns.Count == 2)
+            if (workspace == null) return;
+
+            var grid = workspace.ElementsDataGridView;
+
+            if (grid.Columns.Count > 2)
             {
-                return;
+                foreach (DataGridViewColumn Column in grid.Columns)
+                {
+                    if (Column.Name != THSettings.TranslationColumnName && Column.Name != THSettings.OriginalColumnName)
+                    {
+                        Column.Visible = false;
+                    }
+                }
             }
 
-            foreach (DataGridViewColumn Column in AppData.Main.THFileElementsDataGridView.Columns)
+            ControlsSwitchActivated = true;
+
+            if (grid.Columns.Count <= 1) return;
+
+            grid.Columns[THSettings.OriginalColumnName].HeaderText = T._(THSettings.OriginalColumnName);
+            grid.Columns[THSettings.TranslationColumnName].HeaderText = T._(THSettings.TranslationColumnName);
+            grid.Columns[THSettings.OriginalColumnName].ReadOnly = true;
+            workspace.SourceRichTextBox.Enabled = true;
+
+            // The target box is held read-only until a file is selected, rather than disabled. A
+            // disabled rich text box paints the system's light background whatever colour it is
+            // given, which leaves a white block on a dark window; a read-only one keeps the
+            // colour. Measured, and it is the same reason the source box above is read-only.
+            workspace.TargetRichTextBox.ReadOnly = false;
+
+            SetDoubleBufferedProperty(grid, true);
+        }
+
+        /// <summary>
+        /// Bind <paramref name="DT"/> to the grid of the file <paramref name="workspace"/> shows.
+        /// </summary>
+        /// <param name="workspace">The project whose grid has to show the table.</param>
+        /// <param name="DT">The table to show.</param>
+        internal static void BindToDataTableGridView(IProjectWorkspace workspace, DataTable DT)
+        {
+            var grid = workspace?.ActiveFileWorkspace?.ElementsDataGridView;
+            if (grid == null || DT == null) return;
+
+            try
             {
-                if (Column.Name != THSettings.TranslationColumnName && Column.Name != THSettings.OriginalColumnName)
-                {
-                    Column.Visible = false;
-                }
+                grid.DataSource = DT;
+
+                //во время прокрутки DGV чернела полоса прокрутки и в результате было получено исключение
+                //добавил это для возможного фикса
+                //https://fooobar.com/questions/1404812/datagridview-scrollbar-throwing-argumentoutofrange-exception
+                grid.PerformLayout();
+            }
+            catch (Exception ex)
+            {
+                Logger.Warn(ex, "Failed to bind the table to the files elements grid");
             }
         }
 
         /// <summary>
-        /// Bind <paramref name="DT"/> to the work table grid. The table comes from
-        /// <see cref="FilesListContent"/>, so it is the file of the selected entry, or the aggregate
-        /// content of every file when the "[ALL]" entry is selected.
+        /// Draw the row number in front of a row of <paramref name="workspace"/>'s grid.
         /// </summary>
-        /// <param name="DT"></param>
-        public static void BindToDataTableGridView(DataTable DT)
+        internal static void PaintDigitInFrontOfRow(OpenedFileWorkspace workspace, DataGridViewRowPostPaintEventArgs e)
         {
-            if (AppData.Main.THFilesList != null && AppData.Main.THFilesList.GetSelectedIndex() > -1 && DT != null)//вторая попытка исправить исключение при выборе элемента списка
-            {
-                try
-                {
-                    AppData.Main.THFileElementsDataGridView.DataSource = DT;
+            if (workspace == null) return;
+            if (!AppSettings.ProjectIsOpened) return;
 
-                    //во время прокрутки DGV чернела полоса прокрутки и в результате было получено исключение
-                    //добавил это для возможного фикса
-                    //https://fooobar.com/questions/1404812/datagridview-scrollbar-throwing-argumentoutofrange-exception
-                    //upd. не исправляет проблему для этого dgv. возможно это dgv фильтров
-                    AppData.Main.THFileElementsDataGridView.PerformLayout();
-                }
-                catch (Exception ex)
-                {
-                    Logger.Warn(ex, "Failed to bind the table to the files elements grid");
-                }
-            }
-        }
+            var filesList = workspace.Workspace?.FilesList;
+            if (filesList == null || filesList.GetSelectedIndex() == -1) return;
 
-        private static void SetOnTHFileElementsDataGridViewWasLoaded()
-        {
-            FunctionsUI.ControlsSwitchActivated = true;
-            //ControlsSwitchIsOn = (CutToolStripMenuItem1.ShortcutKeys != Keys.None);
+            var grid = workspace.ElementsDataGridView;
 
-            if (AppData.Main.THFileElementsDataGridView != null && AppData.Main.THFileElementsDataGridView.Columns.Count > 1)
-            {
-                AppData.Main.THFileElementsDataGridView.Columns[THSettings.OriginalColumnName].HeaderText = T._(THSettings.OriginalColumnName);
-                AppData.Main.THFileElementsDataGridView.Columns[THSettings.TranslationColumnName].HeaderText = T._(THSettings.TranslationColumnName);
-                AppData.Main.THFileElementsDataGridView.Columns[THSettings.OriginalColumnName].ReadOnly = true;
-                AppData.Main.THSourceRichTextBox.Enabled = true;
-
-                // The target box is held read-only until a file is selected, rather than disabled. A
-                // disabled rich text box paints the system's light background whatever colour it is
-                // given, which leaves a white block on a dark window; a read-only one keeps the
-                // colour. Measured, and it is the same reason the source box above is read-only.
-                AppData.Main.THTargetRichTextBox.ReadOnly = false;
-            }
-        }
-
-        internal static void PaintDigitInFrontOfRow(object sender, DataGridViewRowPostPaintEventArgs e)
-        {
-            if (!AppSettings.ProjectIsOpened || AppData.Main.THFilesList.GetSelectedIndex() == -1)
-                return;
-
-            if (!(sender is DataGridView grid)) return;
-
-            int rowIdx = FunctionsTable.GetRealRowIndex(AppData.Main.THFilesList.GetSelectedIndex(), e.RowIndex);//здесь получаю реальный индекс из Datatable
-            //string rowIdx = (e.RowIndex + 1) + string.Empty;
+            int rowIdx = FunctionsTable.GetRealRowIndex(workspace.Workspace, filesList.GetSelectedIndex(), e.RowIndex);
 
             //GetRealRowIndex returns -1 for an unresolvable row; the old test then passed and painted "0".
             if (rowIdx < 0 || grid.Rows.Count <= rowIdx) return;
@@ -421,17 +326,24 @@ namespace TranslationHelper.Functions
                 LineAlignment = StringAlignment.Center
             })
             {
-
                 Rectangle headerBounds = new Rectangle(e.RowBounds.Left, e.RowBounds.Top, grid.RowHeadersWidth, e.RowBounds.Height);
                 e.Graphics.DrawString((rowIdx + 1) + string.Empty, AppData.Main.Font, SystemBrushes.ControlText, headerBounds, centerFormat);
             }
         }
 
-        internal static async Task THFileElementsDataGridView_CellValueChangedAsync(object sender, DataGridViewCellEventArgs e)
+        /// <summary>
+        /// A translation cell of <paramref name="workspace"/>'s grid was edited: keep the project's
+        /// translations consistent with it.
+        /// </summary>
+        internal static async Task THFileElementsDataGridView_CellValueChangedAsync(OpenedFileWorkspace workspace, DataGridViewCellEventArgs e)
         {
-            if (AppData.CurrentProject == null) return;
-            if (e.ColumnIndex != AppData.CurrentProject.TranslationColumnIndex) return;
-            if(!(sender is DataGridView dgv)) return;
+            var project = workspace?.Workspace?.Project;
+            if (project == null) return;
+
+            if (e.RowIndex < 0 || e.ColumnIndex < 0) return;
+            if (e.ColumnIndex != project.TranslationColumnIndex) return;
+
+            var dgv = workspace.ElementsDataGridView;
 
             // Get the new value of the cell
             DataGridViewCell cell = dgv.Rows[e.RowIndex].Cells[e.ColumnIndex];
@@ -456,15 +368,19 @@ namespace TranslationHelper.Functions
             // is still safe; asking here is what keeps a run's hooks and log out of a load.
             if (!ProjectReadiness.IsReady) return;
 
-            await new AutoSameForSimular().Rows().ConfigureAwait(true);
-            //await Task.Run(() => FunctionAutoSave.Autosave()).ConfigureAwait(true);// save on each change is killing system..       
+            await new AutoSameForSimular(project, workspace.Workspace).Rows().ConfigureAwait(true);
 
-            FunctionsUI.UpdateTranslationTextBoxValue(sender, e);
-            FunctionsUI.CellChangedRegistration(e.ColumnIndex);
+            UpdateTranslationTextBoxValue(workspace, e);
+            CellChangedRegistration(e.ColumnIndex);
         }
 
-        internal static void THTargetTextBox_KeyDown(object sender, KeyEventArgs e)
+        /// <summary>
+        /// Ctrl+Del in a file's target box: delete the word before the caret.
+        /// </summary>
+        internal static void THTargetTextBox_KeyDown(OpenedFileWorkspace workspace, KeyEventArgs e)
         {
+            if (workspace == null) return;
+
             //Ctrl+Del function
             //https://stackoverflow.com/questions/18543198/why-cant-i-press-ctrla-or-ctrlbackspace-in-my-textbox
             if (!e.Control || e.KeyCode != Keys.Back)
@@ -472,29 +388,34 @@ namespace TranslationHelper.Functions
                 return;
             }
 
+            var target = workspace.TargetRichTextBox;
+
             e.SuppressKeyPress = true;
-            int selStart = AppData.Main.THTargetRichTextBox.SelectionStart;
-            while (selStart > 0 && AppData.Main.THTargetRichTextBox.Text.Substring(selStart - 1, 1) == " ")
+            int selStart = target.SelectionStart;
+            while (selStart > 0 && target.Text.Substring(selStart - 1, 1) == " ")
             {
                 selStart--;
             }
             int prevSpacePos = -1;
             if (selStart != 0)
             {
-                prevSpacePos = AppData.Main.THTargetRichTextBox.Text.LastIndexOf(' ', selStart - 1);
+                prevSpacePos = target.Text.LastIndexOf(' ', selStart - 1);
             }
-            AppData.Main.THTargetRichTextBox.Select(prevSpacePos + 1, AppData.Main.THTargetRichTextBox.SelectionStart - prevSpacePos - 1);
-            AppData.Main.THTargetRichTextBox.SelectedText = string.Empty;
+            target.Select(prevSpacePos + 1, target.SelectionStart - prevSpacePos - 1);
+            target.SelectedText = string.Empty;
         }
 
-        static ToolTip THToolTip;
-        internal static void SetTooltips()
+        /// <summary>
+        /// Give the label that shows how much of a project is translated its tooltip. Called once per
+        /// project, because the label belongs to the project's panel.
+        /// </summary>
+        internal static void SetTooltips(Label completionLabel)
         {
-            //http://qaru.site/questions/47162/c-how-do-i-add-a-tooltip-to-a-control
-            //THMainResetTableButton
-            THToolTip = new ToolTip
-            {
+            if (completionLabel == null) return;
 
+            //http://qaru.site/questions/47162/c-how-do-i-add-a-tooltip-to-a-control
+            var toolTip = new ToolTip
+            {
                 // Set up the delays for the ToolTip.
                 AutoPopDelay = 32000,
                 InitialDelay = 1000,
@@ -505,34 +426,21 @@ namespace TranslationHelper.Functions
                 ShowAlways = true
             };
 
-            //Main
-            //THToolTip.SetToolTip(AppData.Main.THbtnMainResetTable, T._("Resets filters and tab sorting"));
-            //THToolTip.SetToolTip(AppData.Main.THFiltersDataGridView, T._("Filters for columns of main table"));
-            THToolTip.SetToolTip(AppData.Main.TableCompleteInfoLabel, T._("Shows overal number of completed lines.\nClick to show first untranslated."));
-            ////////////////////////////
+            toolTip.SetToolTip(completionLabel, T._("Shows overal number of completed lines.\nClick to show first untranslated."));
         }
 
         internal static volatile bool IsOpeningInProcess;
 
-        internal static void SetDoublebuffered(bool value)
-        {
-            // Double buffering can make DGV slow in remote desktop
-            if (!SystemInformation.TerminalServerSession)
-            {
-                //THFileElementsDataGridView
-                SetDoubleBufferedProperty(AppData.Main.THFileElementsDataGridView, value);
-
-                //THFilesList
-                //вроде не пашет для listbox
-                SetDoubleBufferedProperty(AppData.Main.THFilesList, value);
-            }
-        }
-
         /// <summary>
         /// Sets the protected <c>DoubleBuffered</c> property of <paramref name="control"/>.
         /// </summary>
-        private static void SetDoubleBufferedProperty(System.Windows.Forms.Control control, bool value)
+        internal static void SetDoubleBufferedProperty(Control control, bool value)
         {
+            if (control == null) return;
+
+            // Double buffering can make DGV slow in remote desktop
+            if (SystemInformation.TerminalServerSession) return;
+
             PropertyInfo pi = control.GetType().GetProperty("DoubleBuffered",
               BindingFlags.Instance | BindingFlags.NonPublic);
 
@@ -560,13 +468,8 @@ namespace TranslationHelper.Functions
 
             FunctionsMenus.CreateMainMenus();
 
-            //https://stackoverflow.com/questions/91747/background-color-of-a-listbox-item-winforms
-            AppData.Main.THFilesList.SetDrawMode(DrawMode.OwnerDrawFixed);
-
             THTranslationCachePath = THSettings.THTranslationCacheFilePath;
 
-            //THFileElementsDataGridView set doublebuffered to true
-            FunctionsUI.SetDoublebuffered(true);
             if (File.Exists(THSettings.THLogPath) && new FileInfo(THSettings.THLogPath).Length > 1000000)
             {
                 File.Delete(THSettings.THLogPath);
@@ -578,79 +481,27 @@ namespace TranslationHelper.Functions
 
         internal static void THTargetTextBox_Leave(object sender, EventArgs e)
         {
-            //int sel = dataGridView1.CurrentRow.Index; //присвоить перевенной номер выбранной строки в таблице
-            //if (THSourceRichTextBox.Text.Length == 0)
-            //{
-            //}
-            //else//если текстовое поле 2 не пустое
-            //{
-            //    //не менять, если значение текстбокса не поменялось
-            //    if (THTargetRichTextBox.Text != ProjectData.TargetTextBoxPreValue)
-            //    {
-            //        THFileElementsDataGridView.CurrentRow.Cells[THSettings.TranslationColumnName].Value = THTargetRichTextBox.Text;// Присвоить ячейке в ds.Tables[0] значение из TextBox2                   
-            //    }
-            //}
+            //The target box writes through the grid binding, so leaving it needs no commit step.
         }
 
         internal static void THMain_FormClosing(object sender, FormClosingEventArgs e)
         {
-
             AppSettings.IsTranslationHelperWasClosed = true;
             AppSettings.InterruptTtanslation = true;
             InteruptTranslation = true;
-            //THToolTip.Dispose();
-            //ProjectData.THFilesElementsDataset.Dispose();
-            //ProjectData.THFilesElementsDatasetInfo.Dispose();
-            //ProjectData.THFilesElementsALLDataTable.Dispose();
-            //Settings.Dispose();
-
-            //global brushes with ordinary/selected colors
-            //ListBoxItemForegroundBrushSelected.Dispose();
-            //ListBoxItemForegroundBrush.Dispose();
-            //ListBoxItemBackgroundBrushSelected.Dispose();
-            //ListBoxItemBackgroundBrush1.Dispose();
-            //ListBoxItemBackgroundBrush1Complete.Dispose();
-            //ListBoxItemBackgroundBrush2.Dispose();
-            //ListBoxItemBackgroundBrush2Complete.Dispose();
 
             FunctionsSave.WriteRPGMakerMVStats();
         }
 
         internal static void THFileElementsDataGridView_CellMouseClick(object sender, DataGridViewCellMouseEventArgs e)
         {
-            //здесь добавить запоминание индекса выбранной  строки в отфильтрованном DGW
-            //bool IsOneOfFiltersHasValue = false;
-            //for (int s = 0; s < THFiltersDataGridView.Columns.Count; s++)
-            //{
-            //    if ((THFiltersDataGridView.Rows[0].Cells[s].Value + string.Empty).Length > 0)
-            //    {
-            //        IsOneOfFiltersHasValue = true;
-            //        break;
-            //    }
-            //}
-
-            //if (IsOneOfFiltersHasValue)
-            //{
-            //    //по нахождению верного индекса строки
-            //    //https://stackoverflow.com/questions/50999121/displaying-original-rowindex-after-filter-in-datagridview
-            //    //https://stackoverflow.com/questions/27125494/get-index-of-selected-row-in-filtered-datagrid
-            //    var r = ((DataRowView)BindingContext[THFileElementsDataGridView.DataSource].Current).Row;
-            //    SelectedRowIndexWhenFilteredDGW = r.Table.Rows.IndexOf(r); //находит верный но только для выбранной ячейки
-            //}
+            //Reserved: the index of the selected row in a filtered grid was never needed here.
         }
 
         internal static void THMain_Load()
         {
-            FunctionsUI.SetTooltips();
-
-            //Disable links detection in edition textboxes
-            AppData.Main.THSourceRichTextBox.DetectUrls = false;
-            //DetectUrls = false;
-
-            //Hide some items 
-            AppData.Main.tlpTextLenPosInfo.Visible = false;
+            //Hide the workspace until a project is opened.
             AppData.Main.frmMainPanel.Visible = false;
-
 
             MenuItemRecent.UpdateRecentFiles();
         }

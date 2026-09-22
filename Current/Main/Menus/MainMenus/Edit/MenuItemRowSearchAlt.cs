@@ -16,6 +16,7 @@ using TranslationHelper.Main.Functions;
 using TranslationHelper.Menus.FileRowMenus;
 using TranslationHelper.Menus.MainMenus.File;
 using TranslationHelper.Projects.RPGMTrans;
+using TranslationHelper.Workspace;
 
 namespace TranslationHelper.Menus.MainMenus.Edit
 {
@@ -29,13 +30,14 @@ namespace TranslationHelper.Menus.MainMenus.Edit
 
         public override void OnClick(object sender, EventArgs e)
         {
-            if (AppData.Main.THFilesList.GetSelectedIndex() == -1) return;
+            var workspace = AppData.ActiveWorkspace;
+            if (workspace?.FilesList == null || workspace.FilesList.GetSelectedIndex() == -1) return;
 
             try
             {
                 if (AppData.Main.searchformNew == null || AppData.Main.searchformNew.IsDisposed)
                 {
-                    AppData.Main.searchformNew = new SearchForm(AppData.CurrentProject);
+                    AppData.Main.searchformNew = new SearchForm(workspace);
                     AppData.Main.searchformNew.Show();
                 }
             }

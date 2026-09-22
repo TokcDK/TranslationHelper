@@ -15,6 +15,8 @@ using TranslationHelper.Forms.Search.Data;
 using TranslationHelper.Functions;
 using TranslationHelper.Functions.FileElementsFunctions.Row.SearchIssueCheckers;
 using TranslationHelper.Main.Functions;
+using TranslationHelper.Projects;
+using TranslationHelper.Workspace;
 using TranslationHelper.Theming;
 using Zuby.ADGV;
 
@@ -29,10 +31,25 @@ namespace TranslationHelper
         private const string ReplaceToEqualMarker = "=";
         private const string NothingFoundMessage = "Nothing Found.";
 
-        private readonly ListBox _filesList;
-        private readonly AdvancedDataGridView _workFileDgv;
-        private readonly DataTableCollection _tables;
-        private readonly RichTextBox _translationTextBox;
+        /// <summary>
+        /// The project the search works on, and the controls it reads and writes.
+        /// <para>
+        /// The controls are read from the workspace rather than captured when the form is created,
+        /// because showing a found row switches the entry being worked on, and each entry owns its own
+        /// grid and text boxes. A captured reference would keep pointing at the file that was shown
+        /// first.
+        /// </para>
+        /// </summary>
+        private readonly IProjectWorkspace _workspace;
+
+        private readonly ProjectBase _project;
+
+        private ListBox FilesList => _workspace?.FilesList?.FilesListControl as ListBox;
+        private AdvancedDataGridView WorkFileDgv => _workspace?.ActiveFileWorkspace?.ElementsDataGridView;
+        private RichTextBox TranslationTextBox => _workspace?.ActiveFileWorkspace?.TargetRichTextBox;
+        private RichTextBox SourceRichTextBox => _workspace?.ActiveFileWorkspace?.SourceRichTextBox;
+        private RichTextBox TargetRichTextBox => _workspace?.ActiveFileWorkspace?.TargetRichTextBox;
+        private DataTableCollection ContentTables => _project?.FilesContent?.Tables;
 
         private int _startRowSearchIndex; // Tracks the current position in search results
         private int _selectedTableIndex;
@@ -43,8 +60,8 @@ namespace TranslationHelper
         private IEnumerator<FoundRowData> _foundRowsEnum;
         private string _lastSearchString;
 
-        private static readonly int _originalColumnIndex = AppData.CurrentProject.OriginalColumnIndex;
-        private static readonly int _translationColumnIndex = AppData.CurrentProject.TranslationColumnIndex;
+        private readonly int _originalColumnIndex;
+        private readonly int _translationColumnIndex;
         private int SearchColumnIndex { get => SearchMethodTranslationRadioButton.Checked ? _translationColumnIndex : _originalColumnIndex; }
         
         #region Nested Classes
@@ -76,13 +93,22 @@ namespace TranslationHelper
         /// <summary>
         /// Initializes a new instance of the search form.
         /// </summary>
-        internal THfrmSearch(object[] args)
+        /// <param name="workspace">
+        /// The project to search, and the controls to show a found row in. The form works on the project
+        /// it was given rather than on the selected one, so a search started for one project keeps
+        /// searching that project's files while the user looks at another.
+        /// </param>
+        internal THfrmSearch(IProjectWorkspace workspace)
         {
             InitializeComponent();
-            _filesList = args[0] as ListBox;
-            _workFileDgv = args[1] as AdvancedDataGridView;
-            _tables = AppData.CurrentProject.FilesContent.Tables;
-            _translationTextBox = args[2] as RichTextBox;
+
+            _workspace = workspace ?? throw new ArgumentNullException(nameof(workspace));
+            _project = workspace.Project;
+
+            // The column indexes are the project's, so they are read from it rather than from whichever
+            // project happened to be selected when this type was first loaded.
+            _originalColumnIndex = _project.OriginalColumnIndex;
+            _translationColumnIndex = _project.TranslationColumnIndex;
 
             InitializeTranslations();
             if (SearchAlwaysOnTopCheckBox.Checked)
@@ -119,19 +145,19 @@ namespace TranslationHelper
         /// </summary>
         internal void GetSelectedText()
         {
-            if (AppData.Main.THFileElementsDataGridView.CurrentCell?.IsInEditMode == true &&
-                AppData.Main.THFileElementsDataGridView.EditingControl is TextBox textBox &&
+            if (WorkFileDgv.CurrentCell?.IsInEditMode == true &&
+                WorkFileDgv.EditingControl is TextBox textBox &&
                 !string.IsNullOrEmpty(textBox.SelectedText))
             {
                 SearchFormFindWhatComboBox.Text = textBox.SelectedText;
             }
-            else if (!string.IsNullOrEmpty(AppData.Main.THSourceRichTextBox.SelectedText))
+            else if (!string.IsNullOrEmpty(SourceRichTextBox?.SelectedText))
             {
-                SearchFormFindWhatComboBox.Text = AppData.Main.THSourceRichTextBox.SelectedText;
+                SearchFormFindWhatComboBox.Text = SourceRichTextBox.SelectedText;
             }
-            else if (!string.IsNullOrEmpty(AppData.Main.THTargetRichTextBox.SelectedText))
+            else if (!string.IsNullOrEmpty(TargetRichTextBox?.SelectedText))
             {
-                SearchFormFindWhatComboBox.Text = AppData.Main.THTargetRichTextBox.SelectedText;
+                SearchFormFindWhatComboBox.Text = TargetRichTextBox.SelectedText;
             }
         }
 
@@ -224,7 +250,7 @@ namespace TranslationHelper
         #region Search Logic
         private void SearchAllButton_Click(object sender, EventArgs e)
         {
-            if (AppData.CurrentProject.FilesContent == null ||
+            if (_project.FilesContent == null ||
                 (!SearchFindLinesWithPossibleIssuesCheckBox.Checked && !SearchEmptyCheckBox.Checked && string.IsNullOrEmpty(SearchFormFindWhatComboBox.Text)))
                 return;
 
@@ -252,7 +278,7 @@ namespace TranslationHelper
         private void GetSearchResults()
         {
             lblSearchMsg.Visible = false;
-            if (_tables.Count == 0) return;
+            if (ContentTables.Count == 0) return;
 
             _foundRowsList = EnumerateFoundRows().ToList();
         }
@@ -260,7 +286,7 @@ namespace TranslationHelper
         private IEnumerable<FoundRowData> EnumerateAndFillSearchResults()
         {
             lblSearchMsg.Visible = false;
-            if (_tables.Count == 0) yield break;
+            if (ContentTables.Count == 0) yield break;
 
             if (_foundRowsList == null)
                 _foundRowsList = new List<FoundRowData>();
@@ -277,7 +303,7 @@ namespace TranslationHelper
         /// </summary>
         private IEnumerable<FoundRowData> EnumerateFoundRows()
         {
-            if (_tables.Count == 0) yield break;
+            if (ContentTables.Count == 0) yield break;
 
             string[] searchQueries = SearchFormFindWhatComboBox.Text.Split(new[] { DoubleSearchMarker }, StringSplitOptions.None);
             if (searchQueries.Length == 2 && string.IsNullOrEmpty(searchQueries[1]))
@@ -330,13 +356,13 @@ namespace TranslationHelper
             bool searchInSelected = SearchRangeSelectedRadioButton.Checked || SearchRangeVisibleRadioButton.Checked;
 
             int startIndex = 0;
-            int endIndex = _tables.Count;
+            int endIndex = ContentTables.Count;
 
             if (SearchRangeTableRadioButton.Checked || searchInSelected)
             {
                 // The selection may be the "[ALL]" entry, which covers every file, or a file entry,
                 // which covers its own table. Both come back as table indexes from the content index.
-                var selectedTableIndexes = AppData.FilesListContent.GetTableIndexes(_filesList.SelectedIndex);
+                var selectedTableIndexes = _project.FilesListContent.GetTableIndexes(FilesList.SelectedIndex);
                 if (selectedTableIndexes.Length > 0)
                 {
                     startIndex = selectedTableIndexes[0];
@@ -346,8 +372,8 @@ namespace TranslationHelper
 
             for (int i = startIndex; i < endIndex; i++)
             {
-                var table = _tables[i];
-                HashSet<int> selectedRowIndices = searchInSelected ? FunctionsTable.GetDGVRowsIndexesHashesInDT(_filesList.SelectedIndex, SearchRangeVisibleRadioButton.Checked) : null;
+                var table = ContentTables[i];
+                HashSet<int> selectedRowIndices = searchInSelected ? FunctionsTable.GetDGVRowsIndexesHashesInDT(_workspace, FilesList.SelectedIndex, SearchRangeVisibleRadioButton.Checked) : null;
 
                 foreach (DataRow row in table.Rows)
                 {
@@ -376,7 +402,7 @@ namespace TranslationHelper
                 : text.IndexOf(searchPattern, isCaseSensitive ? StringComparison.Ordinal : StringComparison.OrdinalIgnoreCase) >= 0;
         }
 
-        private static bool IsMatchingDoubleSearch(DataRow row, string originalPattern, string translationPattern, bool isRegex, bool isCaseSensitive)
+        private bool IsMatchingDoubleSearch(DataRow row, string originalPattern, string translationPattern, bool isRegex, bool isCaseSensitive)
         {
             string originalText = row.Field<string>(_originalColumnIndex);
             string translationText = row.Field<string>(_translationColumnIndex);
@@ -391,8 +417,8 @@ namespace TranslationHelper
 
         private bool IsMatchingInfoSearch(DataRow row, string searchPattern, bool isRegex, bool isCaseSensitive)
         {
-            int tableIndex = _tables.IndexOf(row.Table);
-            string infoText = AppData.CurrentProject.FilesContentInfo.Tables[tableIndex].Rows[row.Table.Rows.IndexOf(row)].Field<string>(0);
+            int tableIndex = ContentTables.IndexOf(row.Table);
+            string infoText = _project.FilesContentInfo.Tables[tableIndex].Rows[row.Table.Rows.IndexOf(row)].Field<string>(0);
             if (string.IsNullOrEmpty(infoText)) return false;
 
             return isRegex
@@ -402,7 +428,7 @@ namespace TranslationHelper
 
         private bool IsEmptyTranslation(DataRow row) => string.IsNullOrEmpty(row.Field<string>(_translationColumnIndex));
 
-        private static bool OriginalEqualTranslation(DataRow row) => row.Field<string>(_originalColumnIndex).Equals(row.Field<string>(_translationColumnIndex));
+        private bool OriginalEqualTranslation(DataRow row) => row.Field<string>(_originalColumnIndex).Equals(row.Field<string>(_translationColumnIndex));
 
         private readonly List<ISearchIssueChecker> _issueCheckers = new List<ISearchIssueChecker>
         {
@@ -429,7 +455,7 @@ namespace TranslationHelper
         private void THSearch_Load(object sender, EventArgs e)
         {
             Height = SearchResultsWindowNormalHeight;
-            _selectedTableIndex = AppData.FilesListContent.GetTableIndex(_filesList.SelectedIndex);
+            _selectedTableIndex = _project.FilesListContent.GetTableIndex(FilesList.SelectedIndex);
             LoadSearchQueriesReplacers();
             chkbxDoNotTouchEqualOT.Checked = AppSettings.IgnoreOrigEqualTransLines;
         }
@@ -438,7 +464,7 @@ namespace TranslationHelper
         {
             Invoke((Action)(() =>
             {
-                if (string.IsNullOrEmpty(_translationTextBox.Text)) return;
+                if (string.IsNullOrEmpty(TranslationTextBox.Text)) return;
 
                 bool isRegex = SearchModeRegexRadioButton.Checked;
                 bool matchCase = THSearchMatchCaseCheckBox.Checked;
@@ -447,18 +473,18 @@ namespace TranslationHelper
 
                 if (isRegex)
                 {
-                    foreach (Match match in Regex.Matches(_translationTextBox.Text, searchWord, matchCase ? RegexOptions.None : RegexOptions.IgnoreCase))
+                    foreach (Match match in Regex.Matches(TranslationTextBox.Text, searchWord, matchCase ? RegexOptions.None : RegexOptions.IgnoreCase))
                     {
-                        _translationTextBox.Select(match.Index, match.Length);
-                        _translationTextBox.SelectionBackColor = Color.Yellow;
+                        TranslationTextBox.Select(match.Index, match.Length);
+                        TranslationTextBox.SelectionBackColor = Color.Yellow;
                     }
                 }
                 else
                 {
                     int start = 0;
-                    while ((start = _translationTextBox.Find(searchWord, start, options)) != -1)
+                    while ((start = TranslationTextBox.Find(searchWord, start, options)) != -1)
                     {
-                        _translationTextBox.SelectionBackColor = Color.Yellow;
+                        TranslationTextBox.SelectionBackColor = Color.Yellow;
                         start += SearchFormFindWhatComboBox.Text.Length;
                     }
                 }
@@ -478,17 +504,17 @@ namespace TranslationHelper
                 var foundRowData = _foundRowsList[rowIndex];
                 (_selectedTableIndex, _selectedRowIndex) = (foundRowData.TableIndex, foundRowData.RowIndex);
 
-                _workFileDgv.CleanFilter();
+                WorkFileDgv.CleanFilter();
 
-                var tableDefaultView = _tables[_selectedTableIndex].DefaultView;
+                var tableDefaultView = ContentTables[_selectedTableIndex].DefaultView;
                 tableDefaultView.RowFilter = string.Empty;
                 tableDefaultView.Sort = string.Empty;
-                _workFileDgv.Refresh();
+                WorkFileDgv.Refresh();
 
-                FunctionsTable.ShowSelectedRow(AppData.Main.THFileElementsDataGridView, AppData.FilesListContent.GetListIndex(_selectedTableIndex), _selectedRowIndex, SearchColumnIndex);
-                if (_workFileDgv.CurrentCell != null)
+                FunctionsTable.ShowSelectedRow(_workspace, _project.FilesListContent.GetListIndex(_selectedTableIndex), _selectedRowIndex, SearchColumnIndex);
+                if (WorkFileDgv.CurrentCell != null)
                 {
-                    await Task.Run(() => SelectTextInTextBox(_workFileDgv.CurrentCell.Value.ToString())).ConfigureAwait(false);
+                    await Task.Run(() => SelectTextInTextBox(WorkFileDgv.CurrentCell.Value.ToString())).ConfigureAwait(false);
                 }
             }
             catch (ArgumentException) { }
@@ -497,7 +523,7 @@ namespace TranslationHelper
 
         private void SearchFormFindNextButton_Click(object sender, EventArgs e)
         {
-            if (string.IsNullOrEmpty(SearchFormFindWhatComboBox.Text) || AppData.CurrentProject.FilesContent == null)
+            if (string.IsNullOrEmpty(SearchFormFindWhatComboBox.Text) || _project.FilesContent == null)
                 return;
 
             lblSearchMsg.Visible = false;
@@ -518,14 +544,14 @@ namespace TranslationHelper
             }
 
             var foundRow = _foundRowsEnum.Current;
-            _filesList.SelectedIndex = AppData.FilesListContent.GetListIndex(foundRow.TableIndex);
-            _workFileDgv.DataSource = _tables[foundRow.TableIndex];
-            _workFileDgv.CurrentCell = _workFileDgv[SearchColumnIndex, foundRow.RowIndex];
+            FilesList.SelectedIndex = _project.FilesListContent.GetListIndex(foundRow.TableIndex);
+            WorkFileDgv.DataSource = ContentTables[foundRow.TableIndex];
+            WorkFileDgv.CurrentCell = WorkFileDgv[SearchColumnIndex, foundRow.RowIndex];
         }
 
         private void SearchFormReplaceButton_Click(object sender, EventArgs e)
         {
-            if (string.IsNullOrEmpty(SearchFormFindWhatComboBox.Text) || AppData.CurrentProject.FilesContent == null)
+            if (string.IsNullOrEmpty(SearchFormFindWhatComboBox.Text) || _project.FilesContent == null)
                 return;
 
             bool inputEqualWithLatest = THSearchMatchCaseCheckBox.Checked
@@ -559,10 +585,10 @@ namespace TranslationHelper
 
         private void ReplaceCurrentRow()
         {
-            if (_selectedTableIndex >= 0 && _selectedTableIndex < _filesList.Items.Count &&
-                _selectedRowIndex >= 0 && _selectedRowIndex < _workFileDgv.Rows.Count)
+            if (_selectedTableIndex >= 0 && _selectedTableIndex < FilesList.Items.Count &&
+                _selectedRowIndex >= 0 && _selectedRowIndex < WorkFileDgv.Rows.Count)
             {
-                string value = _workFileDgv[SearchColumnIndex, _selectedRowIndex].Value?.ToString() ?? string.Empty;
+                string value = WorkFileDgv[SearchColumnIndex, _selectedRowIndex].Value?.ToString() ?? string.Empty;
                 if (string.IsNullOrEmpty(value)) return;
 
                 bool isRegex = SearchModeRegexRadioButton.Checked;
@@ -573,8 +599,8 @@ namespace TranslationHelper
                     !isRegex && value.IndexOf(findText, StringComparison.OrdinalIgnoreCase) != -1)
                 {
                     StoreFoundValueToComboBox(findText, replaceText);
-                    string translation = _workFileDgv[THSettings.TranslationColumnName, _selectedRowIndex].Value?.ToString() ?? value;
-                    _workFileDgv[THSettings.TranslationColumnName, _selectedRowIndex].Value = isRegex
+                    string translation = WorkFileDgv[THSettings.TranslationColumnName, _selectedRowIndex].Value?.ToString() ?? value;
+                    WorkFileDgv[THSettings.TranslationColumnName, _selectedRowIndex].Value = isRegex
                         ? Regex.Replace(translation, findText, replaceText, RegexOptions.IgnoreCase)
                         : ReplaceEx.Replace(translation, findText, replaceText, StringComparison.OrdinalIgnoreCase);
                 }
@@ -588,21 +614,21 @@ namespace TranslationHelper
             var foundRowData = _foundRowsList[_startRowSearchIndex];
             (_selectedTableIndex, _selectedRowIndex) = (foundRowData.TableIndex, foundRowData.RowIndex);
 
-            var foundListIndex = AppData.FilesListContent.GetListIndex(_selectedTableIndex);
-            if (foundListIndex != _filesList.SelectedIndex)
+            var foundListIndex = _project.FilesListContent.GetListIndex(_selectedTableIndex);
+            if (foundListIndex != FilesList.SelectedIndex)
             {
-                _filesList.SelectedIndex = foundListIndex;
-                _workFileDgv.DataSource = _tables[_selectedTableIndex];
+                FilesList.SelectedIndex = foundListIndex;
+                WorkFileDgv.DataSource = ContentTables[_selectedTableIndex];
             }
 
-            _workFileDgv.CurrentCell = _workFileDgv[SearchColumnIndex, _selectedRowIndex];
+            WorkFileDgv.CurrentCell = WorkFileDgv[SearchColumnIndex, _selectedRowIndex];
             new Thread(() => SelectTextInTextBox(SearchFormFindWhatComboBox.Text)).Start();
             _startRowSearchIndex++;
         }
 
         private void SearchFormReplaceAllButton_Click(object sender, EventArgs e)
         {
-            if (string.IsNullOrEmpty(SearchFormFindWhatComboBox.Text) || AppData.CurrentProject.FilesContent == null ||
+            if (string.IsNullOrEmpty(SearchFormFindWhatComboBox.Text) || _project.FilesContent == null ||
                 (ConfirmReplaceAllCheckBox.Checked && !FunctionsMessage.ShowConfirmationDialog(T._("Replace All") + "?", T._("Confirmation"))))
                 return;
 
@@ -637,7 +663,7 @@ namespace TranslationHelper
             }
         }
 
-        private static Action<DataRow> GetInfoSearchReplaceAction(string replacement)
+        private Action<DataRow> GetInfoSearchReplaceAction(string replacement)
         {
             if (replacement == ReplaceToEqualMarker)
                 return row => row.SetField(_translationColumnIndex, row[_originalColumnIndex]);

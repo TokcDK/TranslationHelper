@@ -28,13 +28,16 @@ namespace TranslationHelper.Menus.MainMenus.Edit
 
         public override void OnClick(object sender, EventArgs e)
         {
-            if (AppData.Main.THFilesList.GetSelectedIndex() == -1) return;
+            var workspace = AppData.ActiveWorkspace;
+            if (workspace?.FilesList == null || workspace.FilesList.GetSelectedIndex() == -1) return;
 
             try
             {
                 if (AppData.Main.search == null || AppData.Main.search.IsDisposed)
                 {
-                    AppData.Main.search = new THfrmSearch(new object[3] { AppData.Main.THFilesList, AppData.Main.THFileElementsDataGridView, AppData.Main.THTargetRichTextBox });
+                    // The form is given the workspace, not three loose controls: it works on the project
+                    // the user is looking at, and reads that project's controls as it goes.
+                    AppData.Main.search = new THfrmSearch(workspace);
                 }
 
                 if (AppData.Main.search.Visible)

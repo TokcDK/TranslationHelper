@@ -30,17 +30,21 @@ namespace TranslationHelper.Menus.MainMenus.Edit
 
         private void CharFunctionTest()
         {
-            if (AppData.Main.THFileElementsDataGridView.SelectedCells.Count == 1 && (AppData.Main.THFileElementsDataGridView.SelectedCells[0].Value + string.Empty).Length > 0)
+            //The grid of the entry being shown, not a single application-wide one.
+            var grid = AppData.ActiveWorkspace?.ActiveFileWorkspace?.ElementsDataGridView;
+            if (grid == null || grid.SelectedCells.Count != 1) return;
+
+            var cellValue = grid.SelectedCells[0].Value + string.Empty;
+            if (cellValue.Length == 0) return;
+
+            HashSet<char> chars = new HashSet<char>();
+            foreach (var c in cellValue)
             {
-                HashSet<char> chars = new HashSet<char>();
-                foreach (var c in (AppData.Main.THFileElementsDataGridView.SelectedCells[0].Value + string.Empty))
-                {
-                    if (chars.Contains(c)) continue;
+                if (chars.Contains(c)) continue;
 
-                    _ = MessageBox.Show("'" + c + "' category is " + Char.GetUnicodeCategory(c));
+                _ = MessageBox.Show("'" + c + "' category is " + Char.GetUnicodeCategory(c));
 
-                    _ = chars.Add(c);
-                }
+                _ = chars.Add(c);
             }
 
 

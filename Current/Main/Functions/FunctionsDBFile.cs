@@ -187,11 +187,15 @@ namespace TranslationHelper.Main.Functions
         /// <summary>
         /// Name of the only entry of the files list, or null when the list does not hold exactly one
         /// usable entry.
+        /// <para>
+        /// The list of the project being saved, reached through its workspace: a list is one project's,
+        /// so asking the application for "the" list would answer with another project's entries.
+        /// </para>
         /// </summary>
         private static string GetSingleFilesListItemName()
         {
-            var filesList = AppData.Main.THFilesList;
-            if (filesList.GetItemsCount() != 1) return null;
+            var filesList = AppData.ActiveWorkspace?.FilesList;
+            if (filesList == null || filesList.GetItemsCount() != 1) return null;
 
             var itemName = filesList.GetItemName(0);
             if (itemName == null) return null;
@@ -794,11 +798,16 @@ namespace TranslationHelper.Main.Functions
                     }
 
 
-                    _ = AppData.Main.THFileElementsDataGridView.Invoke((Action)(() => AppData.Main.THFileElementsDataGridView.Refresh()));
+                    //The grid and the list of the project the database was loaded into. The list is
+                    //repainted because the colour of a row says whether its file is fully translated.
+                    var grid = AppData.ActiveWorkspace?.ActiveFileWorkspace?.ElementsDataGridView;
+                    grid?.Invoke((Action)(() => grid.Refresh()));
 
 
                     FunctionsSounds.LoadDBCompleted();
-                    _ = AppData.Main.THFilesList.Invoke((Action)(() => AppData.Main.THFilesList.Refresh()));
+
+                    var filesList = AppData.ActiveWorkspace?.FilesList?.FilesListControl;
+                    filesList?.Invoke((Action)(() => filesList.Refresh()));
                 }
                 finally
                 {

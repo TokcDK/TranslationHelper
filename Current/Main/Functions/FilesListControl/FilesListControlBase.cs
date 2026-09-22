@@ -1,4 +1,6 @@
-﻿using System.Windows.Forms;
+﻿using System;
+using System.Collections.Generic;
+using System.Windows.Forms;
 
 namespace TranslationHelper.Functions.FilesListControl
 {
@@ -65,5 +67,28 @@ namespace TranslationHelper.Functions.FilesListControl
         /// Is focused the control
         /// </summary>
         public abstract bool Focused { get; }
+
+        /// <summary>
+        /// Names of the selected entries, one per line, or an empty string when nothing is selected.
+        /// <para>
+        /// Composed here from the abstract members rather than left to each caller, so every list —
+        /// this project's and every future one — answers the question the same way. It is the list's
+        /// own operation: the entries it holds are its, and a caller that had to reach for a list box
+        /// to ask would be reading a list it may not own.
+        /// </para>
+        /// </summary>
+        public string GetSelectedItemNames()
+        {
+            if (GetItemsCount() == 0 || GetSelectedIndex() == -1) return string.Empty;
+
+            var indexes = GetSelectedIndexes();
+            var names = new List<string>(indexes.Length);
+            foreach (var index in indexes)
+            {
+                names.Add(GetItemName(index));
+            }
+
+            return string.Join(Environment.NewLine, names);
+        }
     }
 }

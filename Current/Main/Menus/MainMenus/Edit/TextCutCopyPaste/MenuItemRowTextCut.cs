@@ -26,19 +26,21 @@ namespace TranslationHelper.Menus.MainMenus.Edit.TextCutCopyPaste
         {
             if (AppSettings.DGVCellInEditMode) FunctionsUI.ControlsSwitch(); // если ячейка в режиме редактирования вылючение действий для ячеек при выходе из режима редактирования
 
-            if (AppData.Main.THFileElementsDataGridView == null) return;
+            //The grid of the project on screen, not a single application-wide one.
+            var grid = AppData.ActiveWorkspace?.ActiveFileWorkspace?.ElementsDataGridView;
+            if (grid == null) return;
 
             // Ensure that text is currently selected in the text box.    
-            if (AppData.Main.THFileElementsDataGridView.SelectedCells.Count == 0) return;
+            if (grid.SelectedCells.Count == 0) return;
 
             //Copy to clipboard
-            FunctionsCopyPaste.CopyToClipboard(AppData.Main.THFileElementsDataGridView);
+            FunctionsCopyPaste.CopyToClipboard(grid);
 
             //Clear selected cells                
             //проверка, выполнять очистку только если выбранные ячейки не помечены Только лдя чтения
-            if (AppData.Main.THFileElementsDataGridView.CurrentCell.ReadOnly) return;
+            if (grid.CurrentCell.ReadOnly) return;
 
-            foreach (DataGridViewCell dgvCell in AppData.Main.THFileElementsDataGridView.SelectedCells)
+            foreach (DataGridViewCell dgvCell in grid.SelectedCells)
             {
                 if (!dgvCell.ReadOnly) dgvCell.Value = null;
             }

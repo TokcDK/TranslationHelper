@@ -1,14 +1,27 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
-using System.Windows.Forms;
-using TranslationHelper.Functions;
-using TranslationHelper.Functions.FilesListControl;
+using TranslationHelper.Models;
 using TranslationHelper.Projects;
 using TranslationHelper.Settings;
+using TranslationHelper.Workspace;
 
 namespace TranslationHelper.Data
 {
+    /// <summary>
+    /// The application's own state: the window it runs in, the projects that are open, and the few
+    /// values that belong to the session rather than to a project.
+    /// <para>
+    /// This used to be where the application kept <em>the</em> project and <em>the</em> files list.
+    /// It keeps the projects now — a list and a selection — and everything that used to be read as
+    /// "the" project is read through the selection, so a caller that was written for one project
+    /// works for the one the user is looking at without being changed.
+    /// </para>
+    /// <para>
+    /// What a project owns — its files, its files list, its grid, its text boxes — is deliberately not
+    /// kept here any more. Those are reached through <see cref="ActiveWorkspace"/>, which is the
+    /// selected project's controls.
+    /// </para>
+    /// </summary>
     public static class AppData
     {
         /// <summary>
@@ -33,11 +46,10 @@ namespace TranslationHelper.Data
         {
             Main = hfrmMain;
 
-            FilesListControl = new FilesListControlListBox(); // set using files list control
-
-            // Relates the entries of the files list to the content they present. Reads the current
-            // project on every use, so one instance serves every project opened in this session.
-            FilesListContent = new FilesListContent(() => CurrentProject?.FilesContent);
+            // No project is open yet. The projects, their files and their controls are created as the
+            // user opens them, so there is nothing to build here beyond the collection that will hold
+            // them.
+            ProjectsData = new ProjectsData();
 
             SelectedProjectFilePath = string.Empty;
 
@@ -72,9 +84,47 @@ namespace TranslationHelper.Data
         internal static FormMain Main;
 
         /// <summary>
-        /// CurrentProject
+        /// The projects open in this session, and which of them is being worked on. This is what the
+        /// projects tab control is bound to.
         /// </summary>
-        internal static ProjectBase CurrentProject;
+        internal static ProjectsData ProjectsData;
+
+        /// <summary>
+        /// The workspace of the selected project: its files list, its opened files and their controls.
+        /// <para>
+        /// It is kept by the window that shows the projects, which is the one place that knows which
+        /// project was selected, so it cannot point at a project that has been closed.
+        /// </para>
+        /// </summary>
+        internal static IProjectWorkspace ActiveWorkspace;
+
+        /// <summary>
+        /// The project being opened right now, or null when no project is being opened.
+        /// <para>
+        /// A project is opened before it is added to <see cref="ProjectsData"/>, because a project
+        /// that fails to parse must not appear as a tab. For the whole of that window it is not the
+        /// selected project, yet it is the project the application is working on: the project's own
+        /// <c>Init</c> and <c>Open</c> read their directories and their content through
+        /// <see cref="CurrentProject"/>. Set by <see cref="Functions.FunctionsOpen"/> for the duration
+        /// of an open and cleared when it ends, so it can never outlive one.
+        /// </para>
+        /// </summary>
+        internal static ProjectBase OpeningProject;
+
+        /// <summary>
+        /// CurrentProject
+        /// <para>
+        /// The project being worked on. It used to be the only one there was; it is the selected one
+        /// now, which is what makes every caller that asks for "the" project follow the user's choice
+        /// instead of a value fixed when the first project was opened.
+        /// </para>
+        /// <para>
+        /// While a project is being opened it is that project, because it is the one being worked on
+        /// and it is not selectable yet — see <see cref="OpeningProject"/>. The order matters: a
+        /// project being opened is the one being worked on even when another project is on screen.
+        /// </para>
+        /// </summary>
+        internal static ProjectBase CurrentProject => OpeningProject ?? ProjectsData?.SelectedProject;
 
         /// <summary>
         /// List of project types
@@ -113,27 +163,5 @@ namespace TranslationHelper.Data
         /// [for json open\save improve] added rpg maker mv json event codes
         /// </summary>
         internal static Dictionary<int, int> RpgMVAddedCodesStat = new Dictionary<int, int>();
-
-        ///// <summary>
-        ///// Fileslist control object
-        ///// </summary>
-        //internal static object FilesList;
-
-        /// <summary>
-        /// Files list using now control
-        /// </summary>
-        internal static FilesListControlBase FilesListControl;
-
-        /// <summary>
-        /// Relates an entry index of the files list to the content that entry presents. The list holds
-        /// one entry per file of the opened project, preceded by the "[ALL]" entry which presents all
-        /// of them at once.
-        /// </summary>
-        internal static FilesListContent FilesListContent;
-
-        /// <summary>
-        /// Files list
-        /// </summary>
-        internal static ListBox THFilesList { get => Main.THFilesList; }
     }
 }

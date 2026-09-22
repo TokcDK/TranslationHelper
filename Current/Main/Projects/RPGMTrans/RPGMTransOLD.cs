@@ -73,17 +73,9 @@ namespace TranslationHelper.Projects.RPGMTrans
                 //LogToFile(string.Empty, true);
 
                 //Запись в dataGridVivwer
-                for (int i = 0; i < AppData.CurrentProject.FilesContent.Tables.Count; i++)
-                {
-                    //MessageBox.Show("ListFiles=" + ListFiles[i]);
-                    //THFilesListBox.Items.Add(THRPGMTransPatchFiles[i].Name);
-                    //THFilesListBox.Items.Add(DS.Tables[i].TableName);//asdf
-                    AppData.Main.THFilesList.Invoke((Action)(() => AppData.Main.THFilesList.AddItem(AppData.CurrentProject.FilesContent.Tables[i].TableName)));
-                    //THFilesDataGridView.Rows.Add();
-                    //THFilesDataGridView.Rows[i].Cells[0].Value = THRPGMTransPatchFiles[i].Name /*Path.GetFileNameWithoutExtension(ListFiles[i])*/;
-                    //dGFiles.Rows.Add();
-                    //dGFiles.Rows[i].Cells[0].Value = THRPGMTransPatchFiles[i].Name;
-                }
+                //The files list is built by the project's workspace from FilesContent once the project
+                //is parsed, so it is not filled from here. The loop that used to do it had become a loop
+                //over comments and was removed with it.
 
                 return "RPGMakerTransPatch";
             }

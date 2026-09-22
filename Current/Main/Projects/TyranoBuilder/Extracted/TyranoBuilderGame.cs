@@ -56,12 +56,12 @@ namespace TranslationHelper.Projects.TyranoBuilder.Extracted
 
         public override bool BakCreate()
         {
-            return ProjectToolsBackup.BackupRestorePaths(new[] { Path.Combine(Path.GetDirectoryName(AppData.SelectedProjectFilePath), "data", "scenario") });
+            return ProjectToolsBackup.BackupRestorePaths(this, new[] { Path.Combine(Path.GetDirectoryName(AppData.SelectedProjectFilePath), "data", "scenario") });
         }
 
         public override bool BakRestore()
         {
-            return ProjectToolsBackup.BackupRestorePaths(new[] { Path.Combine(Path.GetDirectoryName(AppData.SelectedProjectFilePath), "data", "scenario") }, false);
+            return ProjectToolsBackup.BackupRestorePaths(this, new[] { Path.Combine(Path.GetDirectoryName(AppData.SelectedProjectFilePath), "data", "scenario") }, false);
         }
     }
 }

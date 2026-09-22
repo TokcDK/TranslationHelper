@@ -25,11 +25,11 @@ namespace TranslationHelper.Projects.EAGLS
             // When that method was replaced by the field below the call silently turned
             // into the no-op self-assignment `ProjectName = ProjectName`, which left the
             // suffix empty and made every EAGLS game share the same work directory.
-            ProjectName = Path.GetFileName(AppData.CurrentProject.SelectedGameDir) ?? string.Empty;
+            ProjectName = Path.GetFileName(SelectedGameDir) ?? string.Empty;
 
-            AppData.CurrentProject.ProjectWorkDir = Path.Combine(THSettings.WorkDirPath, ProjectDBFolderName, ProjectName);
-            WorkTXTDir = Path.Combine(AppData.CurrentProject.ProjectWorkDir, "txt");
-            ScriptDir = Path.Combine(AppData.CurrentProject.SelectedGameDir, "Script");
+            ProjectWorkDir = Path.Combine(THSettings.WorkDirPath, ProjectDBFolderName, ProjectName);
+            WorkTXTDir = Path.Combine(ProjectWorkDir, "txt");
+            ScriptDir = Path.Combine(SelectedGameDir, "Script");
             SCPACKpak = Path.Combine(Path.GetDirectoryName(AppData.SelectedProjectFilePath), "Script", "SCPACK.pak");
             SCPACKidx = Path.Combine(Path.GetDirectoryName(AppData.SelectedProjectFilePath), "Script", "SCPACK.idx");
         }
@@ -49,14 +49,14 @@ namespace TranslationHelper.Projects.EAGLS
         {
             try
             {
-                AppData.CurrentProject.ProjectWorkDir = Path.Combine(THSettings.WorkDirPath, ProjectDBFolderName, ProjectName);
-                var workdir = AppData.CurrentProject.ProjectWorkDir;
+                ProjectWorkDir = Path.Combine(THSettings.WorkDirPath, ProjectDBFolderName, ProjectName);
+                var workdir = ProjectWorkDir;
 
                 var pythonexe = THSettings.PythonExePath;
                 var scpacker = THSettings.SCPackerPYPath;
                 var scriptdir = ScriptDir;
 
-                WorkTXTDir = Path.Combine(AppData.CurrentProject.ProjectWorkDir, "txt");
+                WorkTXTDir = Path.Combine(ProjectWorkDir, "txt");
                 var mode = (SaveFileMode ? string.Empty : "un") + "pack";
                 //var arguments = "\"" + scpacker + "\" " + mode + " \"" + scriptdir + "\" \"" + WorkTXTDir + "\" -t -o";
                 var arguments = "\"" + scpacker + "\" " + mode + " \"" + scriptdir + "\" \"" + WorkTXTDir + "\"";
@@ -64,7 +64,7 @@ namespace TranslationHelper.Projects.EAGLS
                 Directory.CreateDirectory(WorkTXTDir);
 
                 //write command file
-                File.WriteAllText(Path.Combine(AppData.CurrentProject.ProjectWorkDir, mode + "1.bat"), "\"" + pythonexe + "\" " + arguments + "\npause");
+                File.WriteAllText(Path.Combine(ProjectWorkDir, mode + "1.bat"), "\"" + pythonexe + "\" " + arguments + "\npause");
 
                 var code = FunctionsProcess.RunProcess(pythonexe, arguments, "", true, false);
                 if (!code || WorkTXTDir.IsNullOrEmptyDirectory(scriptsMask))
@@ -90,7 +90,7 @@ namespace TranslationHelper.Projects.EAGLS
                 {
                     MessageBox.Show(T._("Errors was occcured while packing") + "." + T._("Will be opened log and work dir") + ".");
                     FunctionsProcess.RunProcess(errorslog, "");
-                    FunctionsProcess.RunProcess(AppData.CurrentProject.ProjectWorkDir, "");
+                    FunctionsProcess.RunProcess(ProjectWorkDir, "");
                 }
             }
             catch (Exception ex)
@@ -124,7 +124,7 @@ namespace TranslationHelper.Projects.EAGLS
         protected string WorkTXTDir;
         public override bool BakCreate()
         {
-            return ProjectToolsBackup.BackupRestorePaths(new[]
+            return ProjectToolsBackup.BackupRestorePaths(this, new[]
             {
                 SCPACKpak,
                 SCPACKidx,
@@ -134,7 +134,7 @@ namespace TranslationHelper.Projects.EAGLS
 
         public override bool BakRestore()
         {
-            return ProjectToolsBackup.BackupRestorePaths(new[]
+            return ProjectToolsBackup.BackupRestorePaths(this, new[]
             {
                 SCPACKpak,
                 SCPACKidx,

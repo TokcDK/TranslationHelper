@@ -16,13 +16,13 @@ namespace TranslationHelper.Projects.WolfRPG
         {
             ExtractWolfFiles();
             bool[] b = new bool[] { 
-                ProjectToolsOpenSave.OpenSaveFilesBase(this, Path.Combine(AppData.CurrentProject.SelectedGameDir, "Data", "MapData"), typeof(MPS), "*.mps")
-                ,ProjectToolsOpenSave.OpenSaveFilesBase(this, new DirectoryInfo(Path.Combine(AppData.CurrentProject.SelectedGameDir, "Data", "BasicData")), typeof(Database), "*.project", exclusions: new string[] { "SysDataBaseBasic.project" })
-                ,ProjectToolsOpenSave.OpenSaveFilesBase(this, Path.Combine(AppData.CurrentProject.SelectedGameDir, "Data", "BasicData"), typeof(CommonEvents), "CommonEvent.dat")
-                ,ProjectToolsOpenSave.OpenSaveFilesBase(this, Path.Combine(AppData.CurrentProject.SelectedGameDir, "data", "Evtext"), typeof(Formats.WolfRPG.EvTextTXT), "*.txt")
-                ,ProjectToolsOpenSave.OpenSaveFilesBase(this, Path.Combine(AppData.CurrentProject.SelectedGameDir, "data", "TextE"), typeof(Formats.WolfRPG.TextEPH), "*.txt")
-                ,ProjectToolsOpenSave.OpenSaveFilesBase(this, Path.Combine(AppData.CurrentProject.SelectedGameDir, "data", "TextH"), typeof(Formats.WolfRPG.TextEPH), "*.txt")
-                ,ProjectToolsOpenSave.OpenSaveFilesBase(this, Path.Combine(AppData.CurrentProject.SelectedGameDir, "data", "TextP"), typeof(Formats.WolfRPG.TextEPH), "*.txt")
+                ProjectToolsOpenSave.OpenSaveFilesBase(this, Path.Combine(SelectedGameDir, "Data", "MapData"), typeof(MPS), "*.mps")
+                ,ProjectToolsOpenSave.OpenSaveFilesBase(this, new DirectoryInfo(Path.Combine(SelectedGameDir, "Data", "BasicData")), typeof(Database), "*.project", exclusions: new string[] { "SysDataBaseBasic.project" })
+                ,ProjectToolsOpenSave.OpenSaveFilesBase(this, Path.Combine(SelectedGameDir, "Data", "BasicData"), typeof(CommonEvents), "CommonEvent.dat")
+                ,ProjectToolsOpenSave.OpenSaveFilesBase(this, Path.Combine(SelectedGameDir, "data", "Evtext"), typeof(Formats.WolfRPG.EvTextTXT), "*.txt")
+                ,ProjectToolsOpenSave.OpenSaveFilesBase(this, Path.Combine(SelectedGameDir, "data", "TextE"), typeof(Formats.WolfRPG.TextEPH), "*.txt")
+                ,ProjectToolsOpenSave.OpenSaveFilesBase(this, Path.Combine(SelectedGameDir, "data", "TextH"), typeof(Formats.WolfRPG.TextEPH), "*.txt")
+                ,ProjectToolsOpenSave.OpenSaveFilesBase(this, Path.Combine(SelectedGameDir, "data", "TextP"), typeof(Formats.WolfRPG.TextEPH), "*.txt")
                 };
             return b.Any(p => p == true);
 
@@ -31,20 +31,20 @@ namespace TranslationHelper.Projects.WolfRPG
 
         public override bool BakCreate()
         {
-            return ProjectToolsBackup.BackupRestorePaths(new[] { Path.Combine(AppData.CurrentProject.SelectedGameDir, "Data", "Evtext") });
+            return ProjectToolsBackup.BackupRestorePaths(this, new[] { Path.Combine(SelectedGameDir, "Data", "Evtext") });
         }
 
         public override bool BakRestore()
         {
-            return ProjectToolsBackup.BackupRestorePaths(new[] { Path.Combine(AppData.CurrentProject.SelectedGameDir, "Data", "Evtext") });
+            return ProjectToolsBackup.BackupRestorePaths(this, new[] { Path.Combine(SelectedGameDir, "Data", "Evtext") });
         }
 
         //bool bakrestore()
         //{
         //    bool[] b = new bool[3] {
-        //          BackupRestorePaths(new[] { Path.Combine(ProjectData.CurrentProject.SelectedGameDir, "Data", "Evtext") })
-        //        , BackupRestorePaths(new[] { Path.Combine(ProjectData.CurrentProject.SelectedGameDir, "Data", "MapData") })
-        //        , BackupRestorePaths(new[] { Path.Combine(ProjectData.CurrentProject.SelectedGameDir, "Data", "BasicData") })
+        //          BackupRestorePaths(this, new[] { Path.Combine(ProjectData.CurrentProject.SelectedGameDir, "Data", "Evtext") })
+        //        , BackupRestorePaths(this, new[] { Path.Combine(ProjectData.CurrentProject.SelectedGameDir, "Data", "MapData") })
+        //        , BackupRestorePaths(this, new[] { Path.Combine(ProjectData.CurrentProject.SelectedGameDir, "Data", "BasicData") })
         //    };
 
         //    return b.All(r => r == true);

@@ -49,8 +49,11 @@ namespace TranslationHelper.Projects.KiriKiri
             }
             else
             {
+                //The files list is no longer filled from here. It is built by the project's workspace
+                //from FilesContent once the project has been parsed, so adding entries while parsing
+                //would either duplicate them or write them into the list of another project: this
+                //project has no workspace yet at this point.
                 _ = AppData.CurrentProject.FilesContent.Tables[0].Columns.Add(THSettings.TranslationColumnName);
-                AppData.Main.THFilesList.Invoke((Action)(() => AppData.Main.THFilesList.AddItem(filename)));
                 if (extension == ".ks")
                 {
                     return "KiriKiri script";
@@ -149,7 +152,6 @@ namespace TranslationHelper.Projects.KiriKiri
                     }
                     else
                     {
-                        AppData.Main.THFilesList.Invoke((Action)(() => AppData.Main.THFilesList.AddItem(filename)));
                         _ = AppData.CurrentProject.FilesContent.Tables[filename].Columns.Add(THSettings.TranslationColumnName);
                     }
                 }
@@ -422,7 +424,6 @@ namespace TranslationHelper.Projects.KiriKiri
                     if (AppData.CurrentProject.FilesContent.Tables[0].Rows.Count > 0)
                     {
                         _ = AppData.CurrentProject.FilesContent.Tables[0].Columns.Add(THSettings.TranslationColumnName);
-                        AppData.Main.THFilesList.Invoke((Action)(() => AppData.Main.THFilesList.AddItem(filename)));
                     }
                     else
                     {

@@ -31,9 +31,9 @@ namespace TranslationHelper.Projects.WolfRPG
         private bool OpenSaveFiles()
         {
             var OrigFolder = Path.Combine(THSettings.WorkDirPath
-                , AppData.CurrentProject.ProjectDBFolderName                , Path.GetFileName(AppData.CurrentProject.SelectedGameDir));
+                , ProjectDBFolderName                , Path.GetFileName(SelectedGameDir));
             var patchdir = Path.Combine(OrigFolder, "patch");
-            bool[] b = new bool[2] { ProjectToolsOpenSave.OpenSaveFilesBase(this, new DirectoryInfo(patchdir), typeof(Formats.WolfRPG.WolfTrans.TXT), "*.txt"), ProjectToolsOpenSave.OpenSaveFilesBase(this, Path.Combine(AppData.CurrentProject.SelectedGameDir, "data", "Evtext"), typeof(Formats.WolfRPG.EvTextTXT), "*.txt") };
+            bool[] b = new bool[2] { ProjectToolsOpenSave.OpenSaveFilesBase(this, new DirectoryInfo(patchdir), typeof(Formats.WolfRPG.WolfTrans.TXT), "*.txt"), ProjectToolsOpenSave.OpenSaveFilesBase(this, Path.Combine(SelectedGameDir, "data", "Evtext"), typeof(Formats.WolfRPG.EvTextTXT), "*.txt") };
             return b.Any(b1 => b1 == true);
         }
 
@@ -56,14 +56,14 @@ namespace TranslationHelper.Projects.WolfRPG
             try
             {
                 var WorkFolder = Path.Combine(THSettings.WorkDirPath
-                    , AppData.CurrentProject.ProjectDBFolderName                    , Path.GetFileName(AppData.CurrentProject.SelectedGameDir));
+                    , ProjectDBFolderName                    , Path.GetFileName(SelectedGameDir));
 
-                AppData.CurrentProject.ProjectWorkDir = WorkFolder;
+                ProjectWorkDir = WorkFolder;
 
                 var progressMessageTitle = "Wolf archive" + " " + (OpenFileMode ? T._("Create patch") : T._("Write patch")) + ".";
 
                 var patchdir = new DirectoryInfo(Path.Combine(WorkFolder, "patch"));
-                AppData.CurrentProject.OpenedFilesDir = patchdir.FullName;
+                OpenedFilesDir = patchdir.FullName;
                 var translateddir = new DirectoryInfo(Path.Combine(WorkFolder, "translated"));
 
                 //if (translateddir.Exists)
@@ -98,7 +98,7 @@ namespace TranslationHelper.Projects.WolfRPG
                     var log = Path.Combine(WorkFolder, "OutputLog.txt");
                     //-Ku key for ruby to fix unicode errors
                     var args = "-Ku \"" + wolftrans + "\""
-                        + " \"" + AppData.CurrentProject.SelectedGameDir + "\""
+                        + " \"" + SelectedGameDir + "\""
                         + " \"" + patchdir.FullName + "\""
                         + " \"" + translateddir.FullName + "\""
                         //+ " > \"" + log + "\""
@@ -197,7 +197,7 @@ namespace TranslationHelper.Projects.WolfRPG
                 {
                     try
                     {
-                        var targetFile = file.Replace(translatedDir, AppData.CurrentProject.SelectedGameDir);
+                        var targetFile = file.Replace(translatedDir, SelectedGameDir);
                         if (File.Exists(targetFile))
                         {
                             if (!File.Exists(targetFile + ".bak"))
@@ -220,13 +220,13 @@ namespace TranslationHelper.Projects.WolfRPG
         }
 
         readonly string[] _projectTranslatableFilesExtensionMasks = new[] { "*.mps", "*.dat", "*.project" };
-        string TranslatedDirPath => Path.Combine(THSettings.WorkDirPath, ProjectDBFolderName, Path.GetFileName(AppData.CurrentProject.SelectedGameDir), "translated");
+        string TranslatedDirPath => Path.Combine(THSettings.WorkDirPath, ProjectDBFolderName, Path.GetFileName(SelectedGameDir), "translated");
         public override bool BakCreate()
         {
             //.mps,.dat,.project using in patcher
             var translatedDir = new DirectoryInfo(TranslatedDirPath);
-            var filePaths = _projectTranslatableFilesExtensionMasks.SelectMany(f => translatedDir.GetFiles(f, searchOption: SearchOption.AllDirectories)).Select(filePath => filePath.FullName.Replace(translatedDir.FullName, AppData.CurrentProject.SelectedGameDir));
-            return translatedDir.Exists && ProjectToolsBackup.BackupRestorePaths(filePaths.Concat(new[] { Path.Combine(AppData.CurrentProject.SelectedGameDir, "data", "Evtext") }));
+            var filePaths = _projectTranslatableFilesExtensionMasks.SelectMany(f => translatedDir.GetFiles(f, searchOption: SearchOption.AllDirectories)).Select(filePath => filePath.FullName.Replace(translatedDir.FullName, SelectedGameDir));
+            return translatedDir.Exists && ProjectToolsBackup.BackupRestorePaths(this, filePaths.Concat(new[] { Path.Combine(SelectedGameDir, "data", "Evtext") }));
         }
 
         public override bool BakRestore()
@@ -239,7 +239,7 @@ namespace TranslationHelper.Projects.WolfRPG
                     Directory.Move(bak, bak.Remove(bak.Length - 4, 4));
                 }
             }
-            return ProjectToolsBackup.BackupRestorePaths(Directory.GetFiles(Path.GetDirectoryName(AppData.SelectedProjectFilePath), "*.bak", SearchOption.AllDirectories).Where(filePath => !filePath.EndsWith(".wolf.bak")).Concat(new[] { Path.Combine(AppData.CurrentProject.SelectedGameDir, "data", "Evtext") }), false);
+            return ProjectToolsBackup.BackupRestorePaths(this, Directory.GetFiles(Path.GetDirectoryName(AppData.SelectedProjectFilePath), "*.bak", SearchOption.AllDirectories).Where(filePath => !filePath.EndsWith(".wolf.bak")).Concat(new[] { Path.Combine(SelectedGameDir, "data", "Evtext") }), false);
         }
 
         internal override bool CheckForRowIssue(System.Data.DataRow row)

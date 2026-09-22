@@ -7,12 +7,15 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using TranslationHelper.Data;
+using TranslationHelper.Formats;
 using TranslationHelper.Formats.Abstractions;
 using TranslationHelper.Functions;
+using TranslationHelper.Functions.FilesListControl;
 using TranslationHelper.Main.Functions;
 using TranslationHelper.Menus.FileRowMenus;
 using TranslationHelper.Menus.FilesListMenus;
 using TranslationHelper.Menus.MainMenus;
+using TranslationHelper.Models;
 using TranslationHelper.SimpleHelpers;
 
 namespace TranslationHelper.Projects
@@ -154,6 +157,12 @@ namespace TranslationHelper.Projects
         /// </summary>
         private readonly object _saveLocker = new object();
 
+        /// <summary>
+        /// The format that produced each file table, so a table can be written back by the format that
+        /// read it. Filled while the project is parsed and read when a file is opened in the workspace.
+        /// </summary>
+        private readonly Dictionary<DataTable, FormatBase> _formatOfTable = new Dictionary<DataTable, FormatBase>();
+
         #endregion
 
         #region Constructors
@@ -166,11 +175,11 @@ namespace TranslationHelper.Projects
             // set value of the parameter for the project work session
             DontLoadDuplicates = AppSettings.DontLoadDuplicates;
 
-            if (AppData.CurrentProject == null)
-                return;
-
-            if (SaveFileMode && DontLoadDuplicates)
-                TablesLinesDict = new ConcurrentDictionary<string, string>();
+            // Both are per project: the list of opened files, and the relation between a files list
+            // entry and the content it presents. Creating them here rather than once for the whole
+            // application is what lets two projects be open without sharing either.
+            OpenedFilesData = new OpenedFilesData();
+            FilesListContent = new FilesListContent(() => FilesContent);
         }
 
         #endregion
@@ -297,6 +306,46 @@ namespace TranslationHelper.Projects
         /// </summary>
         public virtual bool IsSaveToSourceFile => false;
 
+        /// <summary>
+        /// The files of this project that are open, and which of them is being worked on.
+        /// <para>
+        /// It belongs to the project rather than to the application, so opening a second project does
+        /// not disturb the files of the first one. Created in the constructor, which is what makes it
+        /// non-null for every project.
+        /// </para>
+        /// </summary>
+        internal OpenedFilesData OpenedFilesData { get; }
+
+        /// <summary>
+        /// Relates an entry of the files list to the content it presents: one entry per file, preceded
+        /// by the "[ALL]" entry that presents every file at once.
+        /// <para>
+        /// It belongs to the project for the same reason <see cref="OpenedFilesData"/> does: the list
+        /// and the content it indexes are the project's, and two projects must not share either.
+        /// </para>
+        /// </summary>
+        internal FilesListContent FilesListContent { get; }
+
+        /// <summary>
+        /// The format that produced <paramref name="dataTable"/>, or null when the table was not
+        /// produced by a format.
+        /// <para>
+        /// A file is written back by the format that read it, so the format a table came from has to
+        /// be remembered while the project is parsed. It is recorded through
+        /// <see cref="ITranslationStore.RegisterFormat"/>, which a format calls from the host it runs
+        /// in, and read when the file is opened in the workspace.
+        /// </para>
+        /// </summary>
+        internal FormatBase GetFormatOf(DataTable dataTable)
+        {
+            if (dataTable == null) return null;
+
+            lock (_formatOfTable)
+            {
+                return _formatOfTable.TryGetValue(dataTable, out var format) ? format : null;
+            }
+        }
+
         #endregion
 
         #region Methods
@@ -310,15 +359,32 @@ namespace TranslationHelper.Projects
         // Public Methods
         /// <summary>
         /// Initializes the project and sets up working directories.
+        /// <para>
+        /// The directories are set on this project rather than on the selected one. A project is
+        /// initialised while it is still being opened, which is before it becomes the selected project,
+        /// so writing to the selection would set up whichever project happened to be open before and
+        /// leave this one without directories.
+        /// </para>
         /// </summary>
         public virtual void Init()
         {
             if (string.IsNullOrWhiteSpace(AppData.SelectedProjectFilePath))
                 return;
 
-            AppData.CurrentProject.SelectedGameDir = Path.GetDirectoryName(AppData.SelectedProjectFilePath);
-            AppData.CurrentProject.SelectedDir = Path.GetDirectoryName(AppData.SelectedProjectFilePath);
-            AppData.CurrentProject.ProjectWorkDir = Path.Combine(THSettings.WorkDirPath, ProjectDBFolderName, Name);
+            SelectedGameDir = Path.GetDirectoryName(AppData.SelectedProjectFilePath);
+            SelectedDir = Path.GetDirectoryName(AppData.SelectedProjectFilePath);
+            ProjectWorkDir = Path.Combine(THSettings.WorkDirPath, ProjectDBFolderName, Name);
+
+            // Allocated when the project is opened rather than in the constructor. A project instance
+            // is also created to ask whether it can open a path — one throwaway instance per project
+            // type, per open — and those have no session to fill a dictionary for. It used to be
+            // allocated when the application already had a project, which is a question the
+            // constructor had no business asking and which was answered wrongly for the first project
+            // of a session.
+            if (DontLoadDuplicates && TablesLinesDict == null)
+            {
+                TablesLinesDict = new ConcurrentDictionary<string, string>();
+            }
         }
 
         /// <summary>
@@ -384,7 +450,7 @@ namespace TranslationHelper.Projects
         /// <returns>True if the backup was successfully created; otherwise, false.</returns>
         public virtual bool BakCreate()
         {
-            return ProjectToolsBackup.BackupRestorePaths(BakPaths);
+            return ProjectToolsBackup.BackupRestorePaths(this, BakPaths);
         }
 
         /// <summary>
@@ -393,7 +459,7 @@ namespace TranslationHelper.Projects
         /// <returns>True if the backup was successfully restored; otherwise, false.</returns>
         public virtual bool BakRestore()
         {
-            return ProjectToolsBackup.BackupRestorePaths(BakPaths, false);
+            return ProjectToolsBackup.BackupRestorePaths(this, BakPaths, false);
         }
 
         // Internal Methods
@@ -599,6 +665,16 @@ namespace TranslationHelper.Projects
 
         void ITranslationStore.AddTable(DataTable dataTable, DataTable infoTable)
             => AddTable(dataTable, infoTable);
+
+        void ITranslationStore.RegisterFormat(DataTable dataTable, FormatBase format)
+        {
+            if (dataTable == null || format == null) return;
+
+            lock (_formatOfTable)
+            {
+                _formatOfTable[dataTable] = format;
+            }
+        }
 
         string IFormatHost.SelectedGameDir => SelectedGameDir;
 

@@ -15,6 +15,7 @@ using TranslationHelper.Menus.MainMenus.File;
 using TranslationHelper.Projects;
 using TranslationHelper.Projects.zzzOtherProject;
 using TranslationHelper.Projects.ZZZZFormats;
+using TranslationHelper.Workspace;
 using MessageBox = TranslationHelper.Theming.ThemedMessageBox;
 
 namespace TranslationHelper.Functions
@@ -50,42 +51,52 @@ namespace TranslationHelper.Functions
                 return;
             }
 
-            FunctionsCleanup.THCleanupThings();
-
-            AppData.SelectedProjectFilePath = filePath;
-
-            ProjectBase project = null;
-            await Task.Run(() => project = TrySearchAndOpenProject(AppData.SelectedProjectFilePath)).ConfigureAwait(true);
-
-            if (project == null)
+            try
             {
-                AppData.Main.frmMainPanel.Visible = false;
-                FunctionsSounds.OpenProjectFailed();
-                Logger.Info(T._("Nothing to open"));
+                FunctionsCleanup.THCleanupThings();
+
+                AppData.SelectedProjectFilePath = filePath;
+
+                ProjectBase project = null;
+                await Task.Run(() => project = TrySearchAndOpenProject(AppData.SelectedProjectFilePath)).ConfigureAwait(true);
+
+                if (project == null)
+                {
+                    AppData.Main.frmMainPanel.Visible = false;
+                    FunctionsSounds.OpenProjectFailed();
+                    Logger.Info(T._("Nothing to open"));
+                }
+                else
+                {
+                    //Попытка добавить открытие сразу всех таблиц в одной
+                    //if (setAsDatasourceAllToolStripMenuItem.Visible)
+                    //{
+                    //    for (int c = 0; c < THFilesElementsDataset.Tables[0].Columns.Count; c++)
+                    //    {
+                    //        THFilesElementsALLDataTable.Columns.Add(THFilesElementsDataset.Tables[0].Columns[c].ColumnName);//asdfgh
+                    //    }
+
+                    //    for (int t = 0; t < THFilesElementsDataset.Tables.Count; t++)
+                    //    {
+                    //        for (int r = 0; r < THFilesElementsDataset.Tables[t].Rows.Count; r++)
+                    //        {
+                    //            THFilesElementsALLDataTable.Rows.Add(THFilesElementsDataset.Tables[t].Rows[r].ItemArray);
+                    //        }
+                    //    }
+                    //}
+
+                    await AfterOpenActions(project);
+                }
             }
-            else
+            finally
             {
-                //Попытка добавить открытие сразу всех таблиц в одной
-                //if (setAsDatasourceAllToolStripMenuItem.Visible)
-                //{
-                //    for (int c = 0; c < THFilesElementsDataset.Tables[0].Columns.Count; c++)
-                //    {
-                //        THFilesElementsALLDataTable.Columns.Add(THFilesElementsDataset.Tables[0].Columns[c].ColumnName);//asdfgh
-                //    }
+                // The open is over whatever it did, and the project it was for is either open and
+                // selected or was not opened at all: from here the selected project is the answer
+                // again.
+                AppData.OpeningProject = null;
 
-                //    for (int t = 0; t < THFilesElementsDataset.Tables.Count; t++)
-                //    {
-                //        for (int r = 0; r < THFilesElementsDataset.Tables[t].Rows.Count; r++)
-                //        {
-                //            THFilesElementsALLDataTable.Rows.Add(THFilesElementsDataset.Tables[t].Rows[r].ItemArray);
-                //        }
-                //    }
-                //}
-
-                await AfterOpenActions(project);
+                FunctionsUI.IsOpeningInProcess = false;
             }
-
-            FunctionsUI.IsOpeningInProcess = false;
         }
 
         public class FormatFilterData
@@ -138,9 +149,9 @@ namespace TranslationHelper.Functions
             return $"{filtersFromFormats}|{filtersFromFormatsSplitted}|RPGMakerTrans patch|RPGMKTRANSPATCH|Application EXE|*.exe|KiriKiri engine files|*.scn;*.ks|Txt file|*.txt|All|*.*";
         }
 
-        private static string GetCorrectedGameDir(string tHSelectedGameDir)
+        private static string GetCorrectedGameDir(ProjectBase project, string tHSelectedGameDir)
         {
-            if (string.IsNullOrEmpty(tHSelectedGameDir)) tHSelectedGameDir = AppData.CurrentProject.SelectedDir;
+            if (string.IsNullOrEmpty(tHSelectedGameDir)) tHSelectedGameDir = project.SelectedDir;
 
             string pFolderName = Path.GetFileName(tHSelectedGameDir);
             if (string.Compare(pFolderName, "data", true, CultureInfo.InvariantCulture) == 0) return Path.GetDirectoryName(Path.GetDirectoryName(tHSelectedGameDir));
@@ -217,8 +228,14 @@ namespace TranslationHelper.Functions
             project.SelectedDir = dir.FullName;
             project.SelectedGameDir = dir.FullName;
 
-            AppData.CurrentProject = project;
+            // The path is recorded before the project is opened because the project's own Init reads it,
+            // and the project is not part of the open projects yet: it is added only once it has opened,
+            // so a project that fails to parse never appears as a tab.
             AppData.SelectedProjectFilePath = sPath;
+
+            // Same reason, for the project itself: from here until the end of the open this is the
+            // project being worked on, and it is the only project that knows what it is opening.
+            AppData.OpeningProject = project;
 
             if (!TryOpenProject(project))
             {
@@ -242,7 +259,9 @@ namespace TranslationHelper.Functions
             project.OpenFileMode = true;
             if (project.Open())
             {
-                MenusCreator.CreateMenus();
+                // The project's menus are built when it becomes the selected one, not here: at this
+                // point it is not open yet, so a menu built now would describe the project the user
+                // was looking at before.
                 return true;
             }
             return false;
@@ -257,33 +276,28 @@ namespace TranslationHelper.Functions
         {
             project.SaveFileMode = true;
 
-            if (!AppData.Main.THWorkSpaceSplitContainer.Visible) AppData.Main.THWorkSpaceSplitContainer.Visible = true;
-
-            if (AppData.Main.THFilesList.GetItemsCount() == 0 && project.FilesContent.Tables.Count > 0)
+            // The table order decides the order of the files list entries, and the "[ALL]" entry is
+            // built from the files in their final order, so both are settled before the workspace
+            // fills the list.
+            if (project.FilesContent.Tables.Count > 0)
             {
-                var sortedtables = Sort(AppData.CurrentProject.FilesContent.Tables);
+                var sortedtables = Sort(project.FilesContent.Tables);
                 project.FilesContent.Tables.Clear();
                 project.FilesContent.Tables.AddRange(sortedtables);
 
                 var sortedtablesinfo = Sort(project.FilesContentInfo.Tables);
                 project.FilesContentInfo.Tables.Clear();
                 project.FilesContentInfo.Tables.AddRange(sortedtablesinfo);
-
-                // The [ALL] entry presents every file at once and is always the first entry of the
-                // list, so the content index has to be built from the final table order before the
-                // list is filled.
-                AppData.FilesListContent.Initialize();
-
-                foreach (var entryName in AppData.FilesListContent.GetEntryNames())
-                {
-                    AppData.Main.THFilesList.AddItem(entryName);
-                }
             }
 
-            FunctionsMenus.CreateMainMenus();
-            FunctionsMenus.CreateFilesListMenus();
+            // Showing the project is what creates its tab and its workspace, and the workspace is what
+            // fills the files list from the parsed content — including the "[ALL]" entry. A project is
+            // added only here, once it has opened, so the tab always presents a project that parsed.
+            // Selecting it is also what rebuilds the menus for it.
+            var workspace = AppData.Main.Workspace.Add(project);
+            workspace.Initialize();
 
-            project.SelectedGameDir = GetCorrectedGameDir(project.SelectedGameDir);
+            project.SelectedGameDir = GetCorrectedGameDir(project, project.SelectedGameDir);
 
             if (project.Name.Contains("RPG Maker game with RPGMTransPatch") || project.Name.Contains("KiriKiri game"))
             {

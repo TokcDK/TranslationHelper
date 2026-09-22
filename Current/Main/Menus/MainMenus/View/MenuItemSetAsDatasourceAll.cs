@@ -1,18 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using TranslationHelper.Data;
-using TranslationHelper.Extensions;
-using TranslationHelper.Formats.RPGMaker.Functions;
-using TranslationHelper.Functions;
-using TranslationHelper.Functions.FileElementsFunctions.Row;
-using TranslationHelper.Main.Functions;
-using TranslationHelper.Menus.FileRowMenus;
-using TranslationHelper.Menus.MainMenus.File;
-using TranslationHelper.Projects.RPGMTrans;
 
 namespace TranslationHelper.Menus.MainMenus.Edit
 {
@@ -24,7 +11,12 @@ namespace TranslationHelper.Menus.MainMenus.Edit
 
         public override void OnClick(object sender, EventArgs e)
         {
-            AppData.Main.THFileElementsDataGridView.DataSource = AppData.CurrentProject.FilesContentAll;
+            //The grid and the content of the project on screen, not of "the" project and "the" grid.
+            var workspace = AppData.ActiveWorkspace;
+            var grid = workspace?.ActiveFileWorkspace?.ElementsDataGridView;
+            if (grid == null) return;
+
+            grid.DataSource = workspace.Project.FilesContentAll;
 
             //смотрел тут но в данном случае пришел к тому что отображает все также только одну таблицу
             //https://social.msdn.microsoft.com/Forums/en-US/f63f612f-20be-4bad-a91c-474396941800/display-dataset-data-in-gridview-from-multiple-data-tables?forum=adodotnetdataset

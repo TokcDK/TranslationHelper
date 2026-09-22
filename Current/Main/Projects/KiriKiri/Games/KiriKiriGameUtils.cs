@@ -31,6 +31,14 @@ namespace TranslationHelper.Projects.KiriKiri.Games
         }
     }
 
+    /// <summary>
+    /// The patch XP3 files of one game.
+    /// <para>
+    /// The folder is supplied rather than read from the application, because there is one of these per
+    /// open project and a version that asked for "the" game folder would describe whichever project
+    /// happened to be selected.
+    /// </para>
+    /// </summary>
     class Xp3PatchInfos
     {
         internal List<Xp3Patch> Xp3PatchList;
@@ -38,8 +46,15 @@ namespace TranslationHelper.Projects.KiriKiri.Games
         internal int MaxIndex = 0;
         internal string MaxIndexString { get => (MaxIndex > 0 ? MaxIndex + "" : ""); }
 
-        public Xp3PatchInfos()
+        /// <summary>
+        /// The folder of the game whose patch files are described.
+        /// </summary>
+        private readonly string _gameDir;
+
+        public Xp3PatchInfos(string gameDir)
         {
+            _gameDir = gameDir;
+
             Xp3PatchList = new List<Xp3Patch>();
             Get();
         }
@@ -50,9 +65,11 @@ namespace TranslationHelper.Projects.KiriKiri.Games
         /// <returns></returns>
         internal void Get()
         {
+            if (string.IsNullOrWhiteSpace(_gameDir)) return;
+
             foreach (var xp3 in new[] { "scripts", "scenario", "data" })
             {
-                var path = new FileInfo(Path.Combine(AppData.CurrentProject.SelectedGameDir, xp3 + ".xp3"));
+                var path = new FileInfo(Path.Combine(_gameDir, xp3 + ".xp3"));
                 if (!path.Exists) continue;
 
                 var info = new Xp3Patch();
@@ -61,7 +78,7 @@ namespace TranslationHelper.Projects.KiriKiri.Games
                 if (!Xp3PatchList.Contains(info)) Xp3PatchList.Insert(0, info);
             }
 
-            foreach (var xp3Patch in new DirectoryInfo(AppData.CurrentProject.SelectedGameDir).EnumerateFiles("patch*.xp3"))
+            foreach (var xp3Patch in new DirectoryInfo(_gameDir).EnumerateFiles("patch*.xp3"))
             {
                 if (File.Exists(xp3Patch + ".translation")) continue;
 

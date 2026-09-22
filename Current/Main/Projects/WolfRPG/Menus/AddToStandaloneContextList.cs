@@ -31,17 +31,24 @@ namespace TranslationHelper.Projects.WolfRPG.Menus
                     return;
                 }
 
-                if (AppData.THFilesList.SelectedIndex == -1)
+                //The files list and the grid of the project the menu was opened from, not the
+                //application-wide ones: a row menu belongs to one project's grid.
+                var workspace = AppData.ActiveWorkspace;
+                var filesList = workspace?.FilesList;
+                var grid = workspace?.ActiveFileWorkspace?.ElementsDataGridView;
+                if (filesList == null || grid == null) return;
+
+                if (filesList.GetSelectedIndex() == -1)
                 {
                     return;
                 }
 
                 var addedContextLine = form.ContextLine;
 
-                var selectedCells = AppData.Main.THFileElementsDataGridView.SelectedCells;
+                var selectedCells = grid.SelectedCells;
                 foreach (DataGridViewCell selectedCell in selectedCells)
                 {
-                    var cellValue = AppData.Main.THFileElementsDataGridView.Rows[selectedCell.RowIndex].Cells[0].Value + "";
+                    var cellValue = grid.Rows[selectedCell.RowIndex].Cells[0].Value + "";
                     if (string.IsNullOrWhiteSpace(cellValue))
                     {
                         continue;

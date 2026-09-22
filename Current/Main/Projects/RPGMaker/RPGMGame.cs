@@ -68,16 +68,16 @@ namespace TranslationHelper.Projects
         string patchdir;
         private bool RPGMTransPatchPrepare()
         {
-            patchdir = Path.Combine(AppData.CurrentProject.ProjectWorkDir, Path.GetFileName(AppData.CurrentProject.SelectedGameDir) + "_patch");
+            patchdir = Path.Combine(ProjectWorkDir, Path.GetFileName(SelectedGameDir) + "_patch");
 
             return ProjectToolsOpenSave.OpenSaveFilesBase(this, patchdir, typeof(TXTv3), "*.txt");
         }
 
         private bool Patching()
         {
-            var GameDirPath = new DirectoryInfo(AppData.CurrentProject.SelectedGameDir);
+            var GameDirPath = new DirectoryInfo(SelectedGameDir);
             var workdir = new DirectoryInfo(Path.Combine(THSettings.WorkDirPath, ProjectDBFolderName, GameDirPath.Name));
-            AppData.CurrentProject.ProjectWorkDir = workdir.FullName;
+            ProjectWorkDir = workdir.FullName;
             var patchdirPath = Path.Combine(workdir.FullName, workdir.Name + "_patch");
 
             workdir.Create();
@@ -163,7 +163,7 @@ namespace TranslationHelper.Projects
             })
             {
                 Logger.Info(T._("Writing ") + "Patch.cmd");
-                var patch = Path.Combine(AppData.CurrentProject.ProjectWorkDir, "Patch.cmd");
+                var patch = Path.Combine(ProjectWorkDir, "Patch.cmd");
                 File.WriteAllText(patch, "\r\n\"" + rpgmakertranscli + "\" " + args + "\r\npause");
                 try
                 {
@@ -299,7 +299,7 @@ namespace TranslationHelper.Projects
                                     + Environment.NewLine
                                     + T._("Try to run Patch.cmd manually and check it for errors.")
                                     );
-                                Process.Start("explorer.exe", AppData.CurrentProject.ProjectWorkDir);
+                                Process.Start("explorer.exe", ProjectWorkDir);
                                 return false;
                             }
 
@@ -361,7 +361,7 @@ namespace TranslationHelper.Projects
 
         internal override void AfterTranslationWriteActions()
         {
-            Process.Start("explorer.exe", Path.Combine(AppData.CurrentProject.ProjectWorkDir, Path.GetFileName(AppData.CurrentProject.ProjectWorkDir) + "_translated"));
+            Process.Start("explorer.exe", Path.Combine(ProjectWorkDir, Path.GetFileName(ProjectWorkDir) + "_translated"));
         }
     }
 }

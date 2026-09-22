@@ -45,14 +45,14 @@ namespace TranslationHelper.Projects.WolfRPG
             {
                 var progressMessageTitle = "Wolf archive" + " " + (OpenFileMode ? T._("Create patch") : T._("Write patch")) + ".";
 
-                var dataPath = Path.Combine(AppData.CurrentProject.SelectedGameDir, "Data");
+                var dataPath = Path.Combine(SelectedGameDir, "Data");
 
                 //decode wolf files
                 if (OpenFileMode)
                 {
                     //var wolfextractor = THSettings.WolfRPGExtractorExePath();
                     var wolfextractor = THSettings.WolfdecExePath;
-                    foreach (var wolfFile in Directory.EnumerateFiles(AppData.CurrentProject.SelectedGameDir, "*.wolf", SearchOption.AllDirectories))
+                    foreach (var wolfFile in Directory.EnumerateFiles(SelectedGameDir, "*.wolf", SearchOption.AllDirectories))
                     {
                         var nameNoExt = Path.GetFileNameWithoutExtension(wolfFile).ToLowerInvariant();
                         if (nameNoExt.Contains("cg")

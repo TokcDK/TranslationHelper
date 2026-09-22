@@ -1,10 +1,16 @@
-﻿using System;
-using System.Data;
-using System.Threading.Tasks;
-using TranslationHelper.Data;
+﻿using System.Threading.Tasks;
 
 namespace TranslationHelper.Functions.FileElementsFunctions.Row
 {
+    /// <summary>
+    /// Clears the translation of every row in scope.
+    /// <para>
+    /// It rewrites whole tables, so it asks the view to stop following the table while it runs: a grid
+    /// bound to a table being rewritten row by row is repainted once per row, which for a large file is
+    /// slower than the work itself. Which control that is, and whether one shows the table at all, is
+    /// the view's business — this class only says that the table is about to change wholesale.
+    /// </para>
+    /// </summary>
     class ClearCells : RowBase
     {
         public ClearCells()
@@ -14,17 +20,13 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
         protected override bool IsParallelRows => true;
 
         bool _dataSourceClear = false;
+
         protected override Task ActionsPreTableApply(TableData tableData)
         {
             if (IsAll || IsTables || IsTable)
             {
-                if (AppData.Main.THFileElementsDataGridView.DataSource != tableData.SelectedTable) return Task.CompletedTask;
-
                 _dataSourceClear = true;
-                //отключение датасорса для убирания тормозов с параллельной прорисовкой
-                AppData.Main.Invoke((Action)(() => AppData.Main.THFileElementsDataGridView.DataSource = null));
-                AppData.Main.Invoke((Action)(() => AppData.Main.THFileElementsDataGridView.Update()));
-                AppData.Main.Invoke((Action)(() => AppData.Main.THFileElementsDataGridView.Refresh()));
+                UiUpdater.BeginBulkChange(tableData.SelectedTable);
             }
 
             return Task.CompletedTask;
@@ -35,7 +37,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
             if ((IsAll || IsTables || IsTable) && _dataSourceClear)
             {
                 _dataSourceClear = false;
-                AppData.Main.Invoke((Action)(() => FunctionsUI.ActionsOnTHFIlesListElementSelected()));
+                UiUpdater.EndBulkChange(tableData.SelectedTable);
             }
 
             return Task.CompletedTask;

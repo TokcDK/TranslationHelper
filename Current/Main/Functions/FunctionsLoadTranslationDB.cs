@@ -9,6 +9,7 @@ using System.Windows.Forms;
 using TranslationHelper.Data;
 using TranslationHelper.Extensions;
 using TranslationHelper.Functions.FileElementsFunctions.Row;
+using TranslationHelper.Functions.FilesListControl;
 using TranslationHelper.Main.Functions;
 using MessageBox = TranslationHelper.Theming.ThemedMessageBox;
 
@@ -29,26 +30,29 @@ namespace TranslationHelper.Functions
         /// <param name="forced"></param>
         internal static void THLoadDBCompareFromDictionaryParallellTables(Dictionary<string, string> db, bool forced = false)
         {
-            int translationColumnIndex = AppData.CurrentProject.FilesContent.Tables[0].Columns[THSettings.TranslationColumnName].Ordinal;
+            var project = AppData.CurrentProject;
+            int translationColumnIndex = project.FilesContent.Tables[0].Columns[THSettings.TranslationColumnName].Ordinal;
 
             if (translationColumnIndex <= 0)
             {
                 return;
             }
 
-            var workTableDatagridview = AppData.Main.THFileElementsDataGridView;
-            var filesList = AppData.THFilesList;
+            //The controls of the project being loaded into, taken once: the load runs in parallel and
+            //must not pick up another project's grid or list if the user switches tabs while it runs.
+            var workTableDatagridview = AppData.ActiveWorkspace?.ActiveFileWorkspace?.ElementsDataGridView;
+            var filesList = AppData.ActiveWorkspace?.FilesList;
 
             Logger.Info(T._("Load DB"));
 
-            Parallel.ForEach(AppData.CurrentProject.FilesContent.Tables.Cast<DataTable>(), (table, state, tableIndex) =>
+            Parallel.ForEach(project.FilesContent.Tables.Cast<DataTable>(), (table, state, tableIndex) =>
             {
                 if (!forced && FunctionsTable.IsTableColumnCellsAll(table))
                 {
                     return;
                 }
 
-                bool resetDGV = ResetDGVDataSource(tableIndex, filesList, workTableDatagridview);
+                bool resetDGV = ResetDGVDataSource(project.FilesListContent.GetListIndex((int)tableIndex), filesList, workTableDatagridview);
 
                 //string tableProgressInfo = string.Format("{0} {1}: {2}>{3}/{4}", T._("Load"), T._(THSettings.TranslationColumnName), table.TableName, tableIndex, AppData.CurrentProject.FilesContent.Tables.Count);
                 //Logger.Info(tableProgressInfo);
@@ -108,7 +112,7 @@ namespace TranslationHelper.Functions
 
                 if (resetDGV)
                 {
-                    ResetDGVDataSource(-1, filesList, workTableDatagridview, false, table);
+                    ResetDGVDataSource(null, filesList, workTableDatagridview, false, table);
                 }
 
             });
@@ -133,8 +137,12 @@ namespace TranslationHelper.Functions
             //var progressMessage = $"{T._("Load")}:";
             Logger.Info(T._("Load DB"));
 
-            var workTableDatagridview = AppData.Main.THFileElementsDataGridView;
-            var filesList = AppData.THFilesList;
+            //The project being loaded into and its controls, taken once: the load runs in parallel and
+            //must not pick up another project's grid or list if the user switches tabs while it runs.
+            var workspace = AppData.ActiveWorkspace;
+            var workTableDatagridview = workspace?.ActiveFileWorkspace?.ElementsDataGridView;
+            var filesList = workspace?.FilesList;
+            var filesListContent = AppData.CurrentProject.FilesListContent;
 
             _ = Parallel.ForEach(tables.Cast<DataTable>(), (table, _, tableIndex) =>
             {
@@ -145,7 +153,7 @@ namespace TranslationHelper.Functions
 
                 //Only reset the grid for tables which are really processed: the early return above
                 //would otherwise leave the grid unbound, because its DataSource stays null.
-                var isTableReset = ResetDGVDataSource(tableIndex, filesList, workTableDatagridview);
+                var isTableReset = ResetDGVDataSource(filesListContent.GetListIndex((int)tableIndex), filesList, workTableDatagridview);
 
                 //var tableProgressMessage = $"{progressMessage} {table.TableName}>{tableIndex + 1}/{tables.Count}";
                 //Logger.Info(tableProgressMessage);
@@ -227,7 +235,7 @@ namespace TranslationHelper.Functions
 
                 if (isTableReset)
                 {
-                    ResetDGVDataSource(-1, filesList, workTableDatagridview, false, table);
+                    ResetDGVDataSource(null, filesList, workTableDatagridview, false, table);
                 }
 
                 //Logger.Info(tableProgressMessage);
@@ -238,20 +246,37 @@ namespace TranslationHelper.Functions
             System.Media.SystemSounds.Beep.Play();
         }
 
-        private static bool ResetDGVDataSource(long tableIndex, ListBox filesList, DataGridView dgv, bool isReset = true, DataTable table = null)
+        /// <summary>
+        /// Unbind or rebind <paramref name="dgv"/> when it is presenting the entry at
+        /// <paramref name="listIndex"/>.
+        /// </summary>
+        /// <param name="listIndex">
+        /// Index of the entry in the files list, or null to rebind without consulting the selection.
+        /// It is an entry index, not a table index: the list starts with the "[ALL]" entry, so the two
+        /// differ by one whenever a project has one, and a caller holding a table index resolves it
+        /// with <see cref="FilesListControl.FilesListContent.GetListIndex"/>.
+        /// </param>
+        /// <param name="filesList">The files list of the project being loaded into.</param>
+        /// <param name="dgv">The work grid of the entry being shown.</param>
+        /// <param name="isReset">True to unbind the grid, false to bind <paramref name="table"/> to it.</param>
+        /// <param name="table">The table to bind when <paramref name="isReset"/> is false.</param>
+        private static bool ResetDGVDataSource(int? listIndex, FilesListControlBase filesList, DataGridView dgv, bool isReset = true, DataTable table = null)
         {
             bool b = false;
+
+            if (dgv == null) return false;
 
             if (dgv.InvokeRequired)
             {
                 dgv.Invoke(new Action(() =>
                 {
-                    b = ResetDGVDataSource(tableIndex, filesList, dgv, isReset, table);
+                    b = ResetDGVDataSource(listIndex, filesList, dgv, isReset, table);
                 }));
             }
             else
             {
-                if ((isReset && dgv.DataSource != null || !isReset && dgv.DataSource == null) && filesList.SelectedIndex == tableIndex)
+                if ((isReset && dgv.DataSource != null || !isReset && dgv.DataSource == null)
+                    && (listIndex == null || (filesList != null && filesList.GetSelectedIndex() == listIndex)))
                 {
                     dgv.DataSource = isReset ? null : table;
                     dgv.Update();

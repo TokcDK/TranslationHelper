@@ -2,10 +2,18 @@
 using System;
 using System.Runtime;
 using TranslationHelper.Functions;
-using TranslationHelper.Menus.MainMenus.Edit;
 
 namespace TranslationHelper.Data
 {
+    /// <summary>
+    /// What has to be dropped before another project is opened.
+    /// <para>
+    /// It used to empty the application's single files list, grid and text boxes, because those were
+    /// about to be filled with the new project. There is one of each per project now, so a project
+    /// that is already open keeps its own: this clears the session-wide values and the shared menu
+    /// strip only, and the new project's own workspace starts empty because it has just been built.
+    /// </para>
+    /// </summary>
     class FunctionsCleanup
     {
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
@@ -27,123 +35,22 @@ namespace TranslationHelper.Data
                     AppData.Main.search = null;
                 }
 
-                //ProjectData.FilesListControl.Dispose(); // dispose for control elements
-
-                //if (ProjectData.Main.Settings != null)
-                //{
-                //    if (!ProjectData.Main.Settings.IsDisposed)
-                //    {
-                //        ProjectData.Main.Settings.Close();
-                //        ProjectData.Main.Settings.Dispose();
-                //    }
-                //    ProjectData.Main.Settings = null;
-                //}
-
-                // A different project is about to be opened, so the content that is about to be
-                // replaced must not be worked on any more. MarkProjectOpened is called again once
-                // the new project's content is complete.
+                // A project is about to be parsed, so the content that is about to be filled must not be
+                // worked on yet. MarkProjectOpened is called again once the new project's content is
+                // complete.
                 ProjectReadiness.MarkProjectClosed();
 
                 //Reset vars
                 AppData.Main.Text = "Translation Helper";
-                AppData.Main.THInfoTextBox.Text = string.Empty;
-                AppData.Main.THSourceRichTextBox.Text = string.Empty;
-                AppData.Main.THTargetRichTextBox.Text = string.Empty;
-                AppData.Main.TableCompleteInfoLabel.Text = string.Empty;
-                AppData.Main.TranslationLongestLineLenghtLabel.Text = string.Empty;
                 FunctionsUI.ControlsSwitchActivated = false;
 
                 //Clean data
-                AppData.FilesListContent.Reset(); // drop the [ALL] entry and its content
-                AppData.Main.THFilesList.Items.Clear();
-                //ProjectData.CurrentProject.FilesContent.Reset();
-                //ProjectData.CurrentProject.FilesContentInfo.Reset();
-                //ProjectData.CurrentProject.FilesContentAll.Reset();
-                AppData.Main.THFileElementsDataGridView.Columns.Clear();
                 AppData.AllDBmerged = null;
-                //THFileElementsDataGridView.Rows.Clear();
                 AppData.SelectedProjectFilePath = string.Empty;
 
                 //Reload regex rules
                 FunctionRules.ReloadTranslationRegexRules();
                 FunctionRules.ReloadCellFixesRegexRules();
-
-                //Dispose objects
-                //ProjectData.THFilesElementsDataset.Dispose();
-                //ProjectData.THFilesElementsDatasetInfo.Dispose();
-                //ProjectData.THFilesElementsALLDataTable.Dispose();
-
-                //Hide some items 
-                AppData.Main.tlpTextLenPosInfo.Visible = false;
-                AppData.Main.TableCompleteInfoLabel.Visible = false;
-                AppData.Main.THWorkSpaceSplitContainer.Visible = false;
-
-                //Disable items
-                //AppData.Main.EditToolStripMenuItem.Enabled = false;
-                //AppData.Main.ViewToolStripMenuItem.Enabled = false;
-                //AppData.Main.SaveTranslationToolStripMenuItem.Enabled = false;
-                //AppData.Main.WriteTranslationInGameToolStripMenuItem.Enabled = false;
-                //AppData.Main.LoadTranslationToolStripMenuItem.Enabled = false;
-                //AppData.Main.LoadTrasnlationAsToolStripMenuItem.Enabled = false;
-                //AppData.Main.LoadTrasnlationAsForcedToolStripMenuItem.Enabled = false;
-                //AppData.Main.SaveTranslationAsToolStripMenuItem.Enabled = false;
-                //AppData.Main.SavemenusNOTenabled = true;
-                //AppData.Main.THSourceRichTextBox.Enabled = false;
-                //AppData.Main.THTargetRichTextBox.Enabled = false;
-                //AppData.Main.OpenInWebToolStripMenuItem.Enabled = false;
-                //AppData.Main.SelectedToolStripMenuItem1.Enabled = false;
-                //AppData.Main.TableToolStripMenuItem1.Enabled = false;
-                //AppData.Main.FixCellsSelectedToolStripMenuItem.Enabled = false;
-                //AppData.Main.FixCellsTableToolStripMenuItem.Enabled = false;
-                //AppData.Main.SetOriginalValueToTranslationToolStripMenuItem.Enabled = false;
-                //AppData.Main.CompleteRomajiotherLinesToolStripMenuItem.Enabled = false;
-                //AppData.Main.CompleteRomajiotherLinesToolStripMenuItem1.Enabled = false;
-                //AppData.Main.ForceSameForSimularToolStripMenuItem.Enabled = false;
-                //AppData.Main.ForceSameForSimularToolStripMenuItem1.Enabled = false;
-                //AppData.Main.CutToolStripMenuItem1.Enabled = false;
-                //AppData.Main.CopyCellValuesToolStripMenuItem.Enabled = false;
-                //AppData.Main.PasteCellValuesToolStripMenuItem.Enabled = false;
-                //AppData.Main.ClearSelectedCellsToolStripMenuItem.Enabled = false;
-                //AppData.Main.ToUPPERCASEToolStripMenuItem.Enabled = false;
-                //AppData.Main.FirstCharacterToUppercaseToolStripMenuItem.Enabled = false;
-                //AppData.Main.ToLowercaseToolStripMenuItem.Enabled = false;
-                //AppData.Main.SetColumnSortingToolStripMenuItem.Enabled = false;
-                //AppData.Main.OpenInWebContextToolStripMenuItem.Enabled = false;
-                //AppData.Main.TranslateSelectedContextToolStripMenuItem.Enabled = false;
-                //AppData.Main.TranslateTableContextToolStripMenuItem.Enabled = false;
-                //AppData.Main.FixSymbolsContextToolStripMenuItem.Enabled = false;
-                //AppData.Main.FixSymbolsTableContextToolStripMenuItem.Enabled = false;
-                //AppData.Main.OriginalToTransalationContextToolStripMenuItem.Enabled = false;
-                //AppData.Main.CutToolStripMenuItem.Enabled = false;
-                //AppData.Main.CopyCMStripMenuItem.Enabled = false;s
-                //AppData.Main.PasteToolStripMenuItem.Enabled = false;
-                //AppData.Main.CleanSelectedCellsToolStripMenuItem1.Enabled = false;
-                //AppData.Main.ToolStripMenuItem14.Enabled = false;
-                //AppData.Main.UppercaseToolStripMenuItem.Enabled = false;
-                //AppData.Main.LowercaseToolStripMenuItem.Enabled = false;
-                //AppData.Main.ExportToolStripMenuItem1.Enabled = false;
-                //AppData.Main.OpenProjectsDirToolStripMenuItem.Enabled = false;
-                //AppData.Main.OpenTranslationRulesFileToolStripMenuItem.Enabled = false;
-                //AppData.Main.OpenCellFixesFileToolStripMenuItem.Enabled = false;
-                //AppData.Main.ReloadRulesToolStripMenuItem.Enabled = false;
-
-                //AppData.Main.runTestGameToolStripMenuItem.Enabled = false;
-
-                AppData.Main.TargetTextBoxLinePositionLabelData.Text = string.Empty;
-                AppData.Main.TargetTextBoxColumnPositionLabelData.Text = string.Empty;
-
-                //remove project category
-                var CategoryName = T._("Project");
-                foreach(var menu in AppData.Main.FilesListMenus.Items)
-                {
-                    if(menu is System.Windows.Forms.ToolStripMenuItem t && t.Text== CategoryName)
-                    {
-                        AppData.Main.FilesListMenus.Items.Remove(t);
-                        break;
-                    }
-                }
-
-                //reset vars
 
                 //memory cleaning thing.
                 GCSettings.LargeObjectHeapCompactionMode = GCLargeObjectHeapCompactionMode.CompactOnce;
@@ -152,7 +59,7 @@ namespace TranslationHelper.Data
             catch (Exception ex)
             {
                 //The cleanup has to continue whatever happens, but a failure must not be invisible.
-                Logger.Error(ex, "Failed to clean up the previously opened project");
+                Logger.Error(ex, "Failed to clean up before opening a project");
             }
         }
     }

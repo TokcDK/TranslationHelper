@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Data;
 using System.Drawing;
 using System.Windows.Forms;
 using TranslationHelper.Data;
@@ -8,32 +9,62 @@ using TranslationHelper.Theming;
 
 namespace TranslationHelper.Functions.FilesListControl
 {
-    class FilesListControlListBox : FilesListControlBase, IDisposable
+    /// <summary>
+    /// The files list of one project, over the <see cref="ListBox"/> that project's panel owns.
+    /// <para>
+    /// The control is a constructor argument rather than a lookup, because there is one list per open
+    /// project: a version that read the application's single list would present whichever project
+    /// happened to be selected instead of the one the list belongs to.
+    /// </para>
+    /// <para>
+    /// The rows are painted here rather than by the framework, so the colours come from the theme and
+    /// are rebuilt whenever it changes. This is the one part of the files list the theme applicator
+    /// cannot reach: the list itself is a control, but the code that decides what colour each row is
+    /// drawn in is not.
+    /// </para>
+    /// </summary>
+    internal class FilesListControlListBox : FilesListControlBase, IDisposable
     {
-        ListBox _listBox;
+        private readonly ListBox _listBox;
 
-        public override Control FilesListControl { get => _listBox; protected set => _listBox = value as ListBox; }
+        /// <summary>
+        /// The table an entry of the list presents. Supplied by the project, so this class does not
+        /// have to know how an entry index maps to content.
+        /// </summary>
+        private readonly Func<int, DataTable> _tableProvider;
 
-        public override bool Focused => _listBox.Focused;
+        /// <summary>
+        /// Called when the user selects a different entry.
+        /// </summary>
+        private readonly Action _selectionChanged;
 
-        public FilesListControlListBox()
+        internal FilesListControlListBox(ListBox listBox, Func<int, DataTable> tableProvider, Action selectionChanged)
         {
-            //_listBox = new ListBox();
-            //_listBox = ProjectData.FilesList as ListBox;
-            _listBox = AppData.THFilesList;
+            _listBox = listBox ?? throw new ArgumentNullException(nameof(listBox));
+            _tableProvider = tableProvider ?? throw new ArgumentNullException(nameof(tableProvider));
+            _selectionChanged = selectionChanged ?? throw new ArgumentNullException(nameof(selectionChanged));
 
-            // register events
+            // The rows are painted by this class, so the list has to be told to let it: a list that is
+            // not owner-drawn never raises DrawItem, and the row colours — including the one that says
+            // a file is fully translated — would silently be the framework's instead of the theme's.
+            // Set here rather than by the panel because this is the class that draws them, and only
+            // when it has to change, because assigning DrawMode recreates the control's handle.
+            if (_listBox.DrawMode != DrawMode.OwnerDrawFixed)
+            {
+                _listBox.DrawMode = DrawMode.OwnerDrawFixed;
+            }
+
             _listBox.DrawItem += ListBox_DrawItem;
             _listBox.MouseUp += ListBox_MouseUp;
             _listBox.SelectedIndexChanged += ListBox_SelectedIndexChanged;
 
-            // The rows are painted here rather than by the framework, so the colours have to come from
-            // the theme and be rebuilt whenever it changes. This is the one part of the files list
-            // the theme applicator cannot reach: the list itself is a control, but the code that
-            // decides what colour each row is drawn in is not.
             ThemeManager.Instance.ThemeChanged += ListBox_ThemeChanged;
             ApplyTheme(ThemeManager.Instance.CurrentTheme);
         }
+
+        public override Control FilesListControl { get => _listBox; protected set => throw new NotSupportedException("The list control is supplied by the project and cannot be replaced."); }
+
+        public override bool Focused => _listBox.Focused;
 
         public override string GetItemName(int index)
         {
@@ -103,21 +134,19 @@ namespace TranslationHelper.Functions.FilesListControl
 
         private void ListBox_SelectedIndexChanged(object sender, EventArgs e)
         {
-            FunctionsUI.ActionsOnTHFIlesListElementSelected();
-            AppData.Main.TableCompleteInfoLabel.Visible = true;
+            _selectionChanged();
         }
 
         private void ListBox_MouseUp(object sender, MouseEventArgs e)
         {
-            if (e.Button == MouseButtons.Right)
-            {
-                var item = _listBox.IndexFromPoint(e.Location);
-                if (item >= 0)
-                {
-                    //_listBox.SetSelectedIndex(item);
-                    AppData.Main.FilesListMenus.Show(_listBox, e.Location);
-                }
-            }
+            if (e.Button != MouseButtons.Right) return;
+
+            var item = _listBox.IndexFromPoint(e.Location);
+            if (item < 0) return;
+
+            // The files list menus are rebuilt for the selected project, so the shared strip always
+            // shows the entries of the project the list belongs to.
+            AppData.Main.FilesListMenus.Show(_listBox, e.Location);
         }
 
         // Row colours, rebuilt when the theme changes rather than created per item: every visible row
@@ -178,14 +207,14 @@ namespace TranslationHelper.Functions.FilesListControl
             e.DrawBackground();
 
             int index = e.Index;
-            if (index >= 0 && index < AppData.THFilesList.GetItemsCount())
+            if (index >= 0 && index < _listBox.Items.Count)
             {
                 bool selected = ((e.State & DrawItemState.Selected) == DrawItemState.Selected);
-                string text = _listBox.GetItemNameWithIndex(index);
+                string text = (index + 1) + " " + GetItemName(index);
                 Graphics g = e.Graphics;
 
                 // the entry presents a file, or every file at once for the "[ALL]" entry
-                var table = AppData.FilesListContent?.GetTable(index);
+                var table = _tableProvider(index);
                 bool isComplete = table != null && FunctionsTable.IsTableColumnCellsAll(table);
 
                 //background:
@@ -207,7 +236,7 @@ namespace TranslationHelper.Functions.FilesListControl
 
                 //text:
                 SolidBrush foregroundBrush = (selected) ? _foregroundSelected : _foreground;
-                g.DrawString(text, e.Font, foregroundBrush, AppData.THFilesList.GetItemRectangle(index).Location);
+                g.DrawString(text, e.Font, foregroundBrush, _listBox.GetItemRectangle(index).Location);
             }
 
             e.DrawFocusRectangle();
@@ -215,9 +244,8 @@ namespace TranslationHelper.Functions.FilesListControl
 
         public void Dispose()
         {
-            //The list box belongs to the main form (AppData.THFilesList), so this adapter must not
-            //dispose it; it only releases what it created itself: the event subscriptions and the
-            //brushes. The previous version disposed the app wide ListBox and leaked the brushes.
+            //The list box belongs to the project's panel, so this adapter must not dispose it; it only
+            //releases what it created itself: the event subscriptions and the brushes.
             _listBox.DrawItem -= ListBox_DrawItem;
             _listBox.MouseUp -= ListBox_MouseUp;
             _listBox.SelectedIndexChanged -= ListBox_SelectedIndexChanged;

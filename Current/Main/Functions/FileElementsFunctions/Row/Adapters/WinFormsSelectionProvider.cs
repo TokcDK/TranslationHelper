@@ -3,19 +3,20 @@ using System.Collections.Generic;
 using System.Data;
 using System.Linq;
 using System.Windows.Forms;
-using TranslationHelper.Data;
 using TranslationHelper.Extensions;
+using TranslationHelper.Functions.FilesListControl;
 using TranslationHelper.Main.Functions;
+using TranslationHelper.Models;
+using TranslationHelper.Workspace;
 
 namespace TranslationHelper.Functions.FileElementsFunctions.Row
 {
     /// <summary>
-    /// Reads the user's selection out of the WinForms controls: the files list and the work table
-    /// grid.
+    /// Reads the user's selection out of one project's WinForms controls: its files list and the grid
+    /// of the file it is showing.
     /// <para>
-    /// This is an adapter and the only place in this folder, together with
-    /// <see cref="WinFormsUiUpdater"/>, that is allowed to know about WinForms and about
-    /// <see cref="AppData"/>. The row engine and the row operations talk to
+    /// This is an adapter and, together with <see cref="WinFormsUiUpdater"/>, the only place in this
+    /// folder that is allowed to know about WinForms. The row engine and the row operations talk to
     /// <see cref="ISelectionProvider"/> instead.
     /// </para>
     /// <para>
@@ -25,22 +26,43 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
     /// </summary>
     internal class WinFormsSelectionProvider : ISelectionProvider
     {
-        private readonly ListBox _filesList;
-        private readonly DataGridView _dataGridView;
+        /// <summary>
+        /// The project whose selection is read. Held as a workspace rather than as a pair of controls
+        /// because the content an entry presents — which is what turns an entry into a table and a row
+        /// — belongs to the project as well.
+        /// </summary>
+        private readonly IProjectWorkspace _workspace;
 
-        public WinFormsSelectionProvider(ListBox filesList, DataGridView dataGridView)
+        public WinFormsSelectionProvider(IProjectWorkspace workspace)
         {
-            _filesList = filesList;
-            _dataGridView = dataGridView;
+            _workspace = workspace;
         }
+
+        /// <summary>
+        /// The files list of the project. Null while the project is not on screen.
+        /// </summary>
+        private FilesListControlBase FilesList => _workspace?.FilesList;
+
+        /// <summary>
+        /// The grid of the file the project is showing. Null while no file is shown.
+        /// </summary>
+        private DataGridView DataGridView => _workspace?.ActiveFileWorkspace?.ElementsDataGridView;
+
+        /// <summary>
+        /// The relation between a files list entry and the content it presents, for this project.
+        /// </summary>
+        private FilesListContent FilesListContent => _workspace?.Project?.FilesListContent;
 
         public int[] GetSelectedTableIndexes()
         {
+            var filesListContent = FilesListContent;
+            if (filesListContent == null) return Array.Empty<int>();
+
             var tableIndexes = new List<int>();
 
             foreach (var listIndex in GetSelectedListIndexes())
             {
-                foreach (var tableIndex in AppData.FilesListContent.GetTableIndexes(listIndex))
+                foreach (var tableIndex in filesListContent.GetTableIndexes(listIndex))
                 {
                     if (!tableIndexes.Contains(tableIndex)) tableIndexes.Add(tableIndex);
                 }
@@ -54,6 +76,9 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
             var listIndexes = GetSelectedListIndexes();
             if (listIndexes.Length != 1) return Array.Empty<TableRowPlan>();
 
+            var filesListContent = FilesListContent;
+            if (filesListContent == null) return Array.Empty<TableRowPlan>();
+
             int listIndex = listIndexes[0];
 
             // Grid row -> row of the entry's table -> the file table and row it was taken from. The
@@ -62,10 +87,10 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
             var rowsByTable = new SortedDictionary<int, List<int>>();
             foreach (var gridRowIndex in GetSelectedGridRowIndexes())
             {
-                var entryRowIndex = FunctionsTable.GetRealRowIndex(listIndex, gridRowIndex);
+                var entryRowIndex = FunctionsTable.GetRealRowIndex(_workspace, listIndex, gridRowIndex);
                 if (entryRowIndex < 0) continue;
 
-                if (!AppData.FilesListContent.TryResolveRow(listIndex, entryRowIndex, out var tableIndex, out var sourceRowIndex)) continue;
+                if (!filesListContent.TryResolveRow(listIndex, entryRowIndex, out var tableIndex, out var sourceRowIndex)) continue;
 
                 if (!rowsByTable.TryGetValue(tableIndex, out var rows))
                 {
@@ -76,7 +101,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
                 if (!rows.Contains(sourceRowIndex)) rows.Add(sourceRowIndex);
             }
 
-            var allTables = AppData.CurrentProject.FilesContent.Tables;
+            var allTables = _workspace.Project.FilesContent.Tables;
             var plan = new List<TableRowPlan>(rowsByTable.Count);
             foreach (var rowsOfTable in rowsByTable)
             {
@@ -92,13 +117,10 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
 
         public int GetSelectedListIndex()
         {
-            if (_filesList.InvokeRequired)
-            {
-                int i = -1;
-                _filesList.Invoke((Action)(() => i = _filesList.SelectedIndex));
-                return i;
-            }
-            return _filesList.SelectedIndex;
+            var filesList = FilesList;
+            if (filesList == null) return -1;
+
+            return filesList.GetSelectedIndex();
         }
 
         public bool TryGetSingleSelectedGridRowIndex(out int gridRowIndex)
@@ -114,7 +136,10 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
 
         public int GetRealTableRowIndex(DataTable table, int gridRowIndex)
         {
-            return table.GetRealRowIndex(gridRowIndex);
+            var grid = DataGridView;
+            if (grid == null) return -1;
+
+            return table.GetRealRowIndex(grid, gridRowIndex);
         }
 
         /// <summary>
@@ -122,13 +147,19 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
         /// </summary>
         private int[] GetSelectedListIndexes()
         {
-            if (_filesList.InvokeRequired)
+            var filesList = FilesList;
+            if (filesList == null) return Array.Empty<int>();
+
+            var control = filesList.FilesListControl;
+
+            if (control.InvokeRequired)
             {
                 int[] indexes = Array.Empty<int>();
-                _filesList.Invoke((Action)(() => indexes = _filesList.CopySelectedIndexes()));
+                control.Invoke((Action)(() => indexes = filesList.GetSelectedIndexes()));
                 return indexes;
             }
-            return _filesList.CopySelectedIndexes();
+
+            return filesList.GetSelectedIndexes();
         }
 
         /// <summary>
@@ -136,18 +167,22 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row
         /// </summary>
         private int[] GetSelectedGridRowIndexes()
         {
-            if (_dataGridView.InvokeRequired)
+            var grid = DataGridView;
+            if (grid == null) return Array.Empty<int>();
+
+            if (grid.InvokeRequired)
             {
                 int[] indexes = null;
-                _dataGridView.Invoke((Action)(() => indexes = ReadSelectedGridRowIndexes()));
+                grid.Invoke((Action)(() => indexes = ReadSelectedGridRowIndexes(grid)));
                 return indexes ?? Array.Empty<int>();
             }
-            return ReadSelectedGridRowIndexes();
+
+            return ReadSelectedGridRowIndexes(grid);
         }
 
-        private int[] ReadSelectedGridRowIndexes()
+        private static int[] ReadSelectedGridRowIndexes(DataGridView grid)
         {
-            return _dataGridView.SelectedCells
+            return grid.SelectedCells
                 .Cast<DataGridViewCell>()
                 .Select(c => c.RowIndex)
                 .Distinct()

@@ -1,4 +1,6 @@
 ﻿using TranslationHelper.Data;
+using TranslationHelper.Projects;
+using TranslationHelper.Workspace;
 
 namespace TranslationHelper.Functions.FileElementsFunctions.Row.AutoSameForSimular
 {
@@ -17,6 +19,16 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row.AutoSameForSimul
     /// </summary>
     abstract class AutoSameForSimularBase : RowBase
     {
+        /// <summary>
+        /// A run started from the application's own menus: the project and its controls are named by
+        /// the caller, so the spread works on the project the user is looking at rather than on
+        /// whichever one happens to be selected when a row is edited.
+        /// </summary>
+        protected AutoSameForSimularBase(ProjectBase project = null, IProjectWorkspace workspace = null)
+            : base(project, workspace)
+        {
+        }
+
         /// <summary>
         /// Only a row that already has a translation is worth spreading from. The force variant also
         /// accepts a row whose translation is still its original, because it is the one that is asked

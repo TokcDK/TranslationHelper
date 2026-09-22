@@ -82,7 +82,7 @@ namespace TranslationHelper.Projects.RPGMMV
         /// <returns>True if successful, otherwise false.</returns>
         protected override bool TryOpen()
         {
-            WWWDir = Path.Combine(AppData.CurrentProject.SelectedDir, HasWWWDir ? "www" : "");
+            WWWDir = Path.Combine(SelectedDir, HasWWWDir ? "www" : "");
             return ParseProjectFiles();
         }
 
@@ -101,7 +101,7 @@ namespace TranslationHelper.Projects.RPGMMV
         {
             if (tind == -1 || rind == -1) return false;
 
-            string cell = AppData.CurrentProject.FilesContentInfo.Tables[tind].Rows[rind][0] + string.Empty;
+            string cell = FilesContentInfo.Tables[tind].Rows[rind][0] + string.Empty;
             return cell.Contains("Code=655") || cell.Contains("Code=355");
         }
 
@@ -285,10 +285,10 @@ namespace TranslationHelper.Projects.RPGMMV
         public override bool BakCreate()
         {
             if (string.IsNullOrWhiteSpace(WWWDir))
-                WWWDir = Path.Combine(AppData.CurrentProject.SelectedDir, HasWWWDir ? "www" : "");
+                WWWDir = Path.Combine(SelectedDir, HasWWWDir ? "www" : "");
 
             BakRestore();
-            return ProjectToolsBackup.BackupRestorePaths(BakPaths);
+            return ProjectToolsBackup.BackupRestorePaths(this, BakPaths);
         }
 
         /// <summary>
@@ -298,11 +298,11 @@ namespace TranslationHelper.Projects.RPGMMV
         public override bool BakRestore()
         {
             if (string.IsNullOrWhiteSpace(WWWDir))
-                WWWDir = Path.Combine(AppData.CurrentProject.SelectedDir, HasWWWDir ? "www" : "");
+                WWWDir = Path.Combine(SelectedDir, HasWWWDir ? "www" : "");
 
             // Removed RestoreFromBakIfNeedData and RestoreFromBakIfNeedJS calls as they are redundant
             // with ProjectToolsBackup.BackupRestorePaths handling directory restoration.
-            return ProjectToolsBackup.BackupRestorePaths(BakPaths, false);
+            return ProjectToolsBackup.BackupRestorePaths(this, BakPaths, false);
         }
 
         private FillEmptyTablesLinesDictBase _filler;
@@ -368,10 +368,10 @@ namespace TranslationHelper.Projects.RPGMMV
             if (!tableName.EndsWith(".js")) return false;
 
             var rowIndex = row.Table.Rows.IndexOf(row);
-            var info = AppData.CurrentProject.FilesContentInfo.Tables[tableName].Rows[rowIndex].Field<string>(0);
+            var info = FilesContentInfo.Tables[tableName].Rows[rowIndex].Field<string>(0);
 
             if (!info.Contains("Command code: 356")) return false;
-            var originalText = row.Field<string>(AppData.CurrentProject.OriginalColumnIndex);
+            var originalText = row.Field<string>(OriginalColumnIndex);
 
             return !(originalText.StartsWith("D_TEXT") || originalText.StartsWith("GabText"));
         }

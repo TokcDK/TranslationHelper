@@ -160,7 +160,7 @@ namespace TranslationHelper.Main.Functions
                 {
                     //cind = THFileElementsDataGridView.Columns[THSettings.TranslationColumnName].Index;//-поле untrans                            
                     initialtableindex = tind;// THFilesListBox.SelectedIndex;//установить индекс таблицы на выбранную в listbox
-                    selcellscnt = FunctionsTable.GetDGVRowIndexsesInDataSetTable();
+                    selcellscnt = FunctionsTable.GetDGVRowIndexsesInDataSetTable(AppData.ActiveWorkspace);
                 }
                 else if (Method == "t")
                 {

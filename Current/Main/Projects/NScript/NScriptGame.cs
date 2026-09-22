@@ -30,7 +30,7 @@ namespace TranslationHelper.Projects.NScript
 
         private bool OpenSaveNScript()
         {
-            var filePath = Path.Combine(AppData.CurrentProject.SelectedGameDir, "nscript.dat");
+            var filePath = Path.Combine(SelectedGameDir, "nscript.dat");
 
             if (OpenFileMode)
             {
@@ -43,13 +43,20 @@ namespace TranslationHelper.Projects.NScript
             return this.OpenSaveFilesBase(new FileInfo(filePath), typeof(NSCRIPT));
         }
 
-        private static bool ExtractNScriptDAT()
+        /// <summary>
+        /// Unpacks the game's <c>nscript.dat</c> into the project's work folder.
+        /// <para>
+        /// An instance member because it reads and writes the project's own folders. It was static and
+        /// went through the selected project, which is this one only while this one is on screen.
+        /// </para>
+        /// </summary>
+        private bool ExtractNScriptDAT()
         {
             var ret = false;
 
             try
             {
-                var nscriptdat = Path.Combine(AppData.CurrentProject.SelectedDir, "nscript.dat");
+                var nscriptdat = Path.Combine(SelectedDir, "nscript.dat");
                 //var nsdecingame = Path.Combine(ProjectData.CurrentProject.SelectedDir, THSettingsData.NSDECexeName());
                 //if (!File.Exists(nsdecingame))
                 //{
@@ -59,7 +66,7 @@ namespace TranslationHelper.Projects.NScript
                 //var ssss = encryptDecrypt(File.ReadAllText(nscriptdat, Encoding.GetEncoding(932)));
                 //var ssss = EncryptOrDecrypt(File.ReadAllText(nscriptdat, Encoding.GetEncoding(932)),"84");
 
-                var targetnscripttxt = Path.Combine(AppData.CurrentProject.ProjectWorkDir, "nscript.txt");
+                var targetnscripttxt = Path.Combine(ProjectWorkDir, "nscript.txt");
 
                 using (var s = new FileStream(nscriptdat, FileMode.Open, FileAccess.Read))
                 using (var br = new BinaryReader(s, Encoding.GetEncoding(932)))
@@ -85,7 +92,7 @@ namespace TranslationHelper.Projects.NScript
 
                     string decryptedStr = Encoding.GetEncoding(932).GetString(decryptedBytes).Replace("\n", Environment.NewLine);
 
-                    Directory.CreateDirectory(AppData.CurrentProject.ProjectWorkDir);
+                    Directory.CreateDirectory(ProjectWorkDir);
                     File.WriteAllText(targetnscripttxt, decryptedStr, Encoding.GetEncoding(932));
                     ret = true;
                 }
@@ -124,12 +131,12 @@ namespace TranslationHelper.Projects.NScript
 
         public override bool BakCreate()
         {
-            return ProjectToolsBackup.BackupFile(Path.Combine(AppData.CurrentProject.SelectedGameDir, "nscript.dat"));
+            return ProjectToolsBackup.BackupFile(Path.Combine(SelectedGameDir, "nscript.dat"));
         }
 
         public override bool BakRestore()
         {
-            return ProjectToolsBackup.RestoreFile(Path.Combine(AppData.CurrentProject.SelectedGameDir, "nscript.dat"));
+            return ProjectToolsBackup.RestoreFile(Path.Combine(SelectedGameDir, "nscript.dat"));
         }
     }
 }

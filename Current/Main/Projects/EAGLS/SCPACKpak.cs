@@ -26,7 +26,7 @@ namespace TranslationHelper.Projects.EAGLS
         private bool UnpackSCPACK()
         {
             ProjectName = "SCPACK" + (ISpak ? "pak" : "idx") + "_" + AppData.SelectedProjectFilePath.GetCrc32();
-            ScriptDir = AppData.CurrentProject.SelectedGameDir;
+            ScriptDir = SelectedGameDir;
             return PackUnpackFiles() && OpenFiles();
         }
 

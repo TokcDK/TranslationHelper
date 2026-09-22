@@ -71,10 +71,15 @@ namespace TranslationHelper.Projects
         /// <summary>
         /// make buckup .bak copy of selected paths
         /// </summary>
+        /// <param name="project">
+        /// The project the paths belong to. A path written relative to the project (<c>.\x</c>) is
+        /// resolved against its selected folder, so the project has to be the one that supplied the
+        /// paths rather than whichever project happens to be selected.
+        /// </param>
         /// <param name="paths">file paths</param>
         /// <param name="bak">true = backup, false = restore</param>
         /// <returns>true if was processed atleast one file\dir</returns>
-        internal static bool BackupRestorePaths(IEnumerable<string> paths, bool bak = true)
+        internal static bool BackupRestorePaths(ProjectBase project, IEnumerable<string> paths, bool bak = true)
         {
             if (paths == null) return false;
 
@@ -86,7 +91,9 @@ namespace TranslationHelper.Projects
             {
                 if (string.IsNullOrWhiteSpace(path)) continue;
 
-                string fullPath = (path.StartsWith(@".\") || path.StartsWith(@"..\")) ? Path.GetFullPath(Path.Combine(AppData.CurrentProject.SelectedDir, path)) : path;
+                string fullPath = (path.StartsWith(@".\") || path.StartsWith(@"..\")) && project != null
+                    ? Path.GetFullPath(Path.Combine(project.SelectedDir, path))
+                    : path;
 
                 if (string.IsNullOrWhiteSpace(fullPath) || added.Contains(fullPath)) continue;
 
