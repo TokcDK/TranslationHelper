@@ -73,27 +73,46 @@ namespace TranslationHelper.Functions
             AddMenus(AppData.Main.FilesListMenus.Items, fileListMenus);
         }
 
+        /// <summary>
+        /// Build the row menu of the project being worked on.
+        /// <para>
+        /// Called whenever the entry on screen changes as well as when the project does, so it has to
+        /// be repeatable: what is built once is cached on the project, and every later call rebuilds
+        /// the strip from that cache. The project's own row entries go into the cache rather than
+        /// being appended to it, because a project may well hand out a fresh array each time it is
+        /// asked and appending would then grow the cache on every call.
+        /// </para>
+        /// <para>
+        /// The strip belongs to the window, so a call made before the window exists does nothing
+        /// rather than failing: the caller does not have to know when the window is up.
+        /// </para>
+        /// </summary>
         internal static void CreateFileRowMenus()
         {
             var proj = AppData.CurrentProject;
-            bool isProjOpen = proj != null;
 
-            if (!isProjOpen) return;
+            if (proj == null || AppData.Main == null) return;
 
-            bool isCached = proj.RowMenusCache != null;
-            if (!isCached)
+            if (proj.RowMenusCache == null)
             {
+                // The row entries are collected from the same implementations the other strips are
+                // built from, so a project whose row menu is built for the first time is also a
+                // project whose other menus have not been built for it yet.
                 CreateMainMenus();
                 CreateFilesListMenus();
+
+                IEnumerable<IFileRowMenuItem> rowMenus = GetListOfSubClasses.Inherited
+                    .GetInterfaceImplimentations<IFileRowMenuItem>()
+                    .Where(m => !(m is IProjectSpecifiedMenuItem));
+
+                if (proj.FileRowItemMenusList != null && proj.FileRowItemMenusList.Length > 0)
+                {
+                    rowMenus = rowMenus.Concat(proj.FileRowItemMenusList);
+                }
+
+                proj.RowMenusCache = rowMenus.ToArray();
             }
 
-            var rowMenus = isCached ? proj.RowMenusCache :
-                (proj.RowMenusCache = GetListOfSubClasses.Inherited.GetInterfaceImplimentations<IFileRowMenuItem>()
-                .Where(m => !(m is IProjectSpecifiedMenuItem)).ToArray());
-            if (proj.FileRowItemMenusList != null && proj.FileRowItemMenusList.Length > 0)
-            {
-                proj.RowMenusCache = proj.RowMenusCache.Concat(proj.FileRowItemMenusList).ToArray();
-            }
             AddMenus(AppData.Main.RowMenus.Items, proj.RowMenusCache);
         }
         internal static void CreateMenus()

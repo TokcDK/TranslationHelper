@@ -2,6 +2,7 @@
 using System.ComponentModel;
 using System.Data;
 using System.Windows.Forms;
+using TranslationHelper.Data;
 using TranslationHelper.Functions;
 using TranslationHelper.Functions.FilesListControl;
 using TranslationHelper.Models;
@@ -132,7 +133,7 @@ namespace TranslationHelper.Workspace
 
         /// <summary>
         /// Show the entry the model has selected: bind the project's grid to it, highlight its row in
-        /// the files list, and fill the text boxes.
+        /// the files list, fill the text boxes, and let the window's menus catch up.
         /// </summary>
         private void OnOpenedFilesDataChanged(object sender, PropertyChangedEventArgs e)
         {
@@ -165,6 +166,19 @@ namespace TranslationHelper.Workspace
             // pointing them at its selected row. The grid may already have been showing that row, in
             // which case no selection change is raised and this is the only thing that fills them.
             FunctionsUI.UpdateTextboxes(this);
+
+            // The window's row menu lists what can be done to the entry on screen, so it is rebuilt
+            // now that one is bound. It has to be here rather than when the project is opened: an
+            // entry that offers a row command is one that is shown, and nothing is shown yet at that
+            // point, so the commands would be left out of the strip for good.
+            //
+            // Only the selected project may do this. The strip belongs to the window and is shared by
+            // every open project, so it always describes the project the user is looking at, and a
+            // project that is merely open must not rebuild it from the state of another one.
+            if (ReferenceEquals(AppData.ActiveWorkspace, this))
+            {
+                FunctionsMenus.CreateFileRowMenus();
+            }
         }
     }
 }

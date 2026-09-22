@@ -201,42 +201,6 @@ namespace TranslationHelper.Functions
             workspace.TargetRichTextBox.Text = grid.Rows[e.RowIndex].Cells[e.ColumnIndex].Value + string.Empty;
         }
 
-        private static bool THFilesListBox_MouseClickBusy;
-
-        /// <summary>
-        /// The entry of <paramref name="workspace"/> that is shown has changed: bring the window up to
-        /// date with it.
-        /// <para>
-        /// The grid is not rebound here. Each entry owns its own controls now, so showing another entry
-        /// means showing another tab whose grid is already bound to that entry's table.
-        /// </para>
-        /// </summary>
-        internal static void ActionsOnTHFIlesListElementSelected(IProjectWorkspace workspace)
-        {
-            if (workspace == null) return;
-            if (THFilesListBox_MouseClickBusy) return;
-            if (workspace.FilesList == null || workspace.FilesList.GetSelectedIndex() == -1) return;
-
-            THFilesListBox_MouseClickBusy = true;
-
-            try
-            {
-                ShowNonEmptyRowsCount(workspace.Project, workspace.CompletionLabel);
-
-                UpdateTextboxes(workspace);
-
-                FunctionsMenus.CreateFileRowMenus();
-
-                BindTextBoxesOriginalTranslation(workspace.ActiveFileWorkspace);
-            }
-            catch (Exception ex)
-            {
-                Logger.Error(ex, "Failed to show the selected files list element content");
-            }
-
-            THFilesListBox_MouseClickBusy = false;
-        }
-
         /// <summary>
         /// Get one file's workspace ready to be worked in: hide the columns that are not the original
         /// or the translation, name the two that are, and let the text boxes be used.
