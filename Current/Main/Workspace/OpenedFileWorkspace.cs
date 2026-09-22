@@ -10,35 +10,39 @@ using TranslationHelper.Models;
 namespace TranslationHelper.Workspace
 {
     /// <summary>
-    /// The controls of one opened file: its table grid, the original text and the translation text.
+    /// The controls one project works in: the grid of the entry being worked on, the original text and
+    /// the translation text.
     /// <para>
-    /// One instance is created per entry of <see cref="OpenedFilesData.OpenedFilesList"/> that is
-    /// shown — per file, and per the "[ALL]" entry — and lives in that entry's tab. Because the
-    /// controls belong to the entry rather than to the application, two open files can be scrolled,
-    /// sorted and edited independently, and an edit can no longer land in whichever file happened to be
-    /// shown last.
+    /// One instance belongs to one project and lives in that project's panel. There is no tab per file
+    /// and no grid per file: <see cref="Bind"/> repoints this workspace at whichever entry of
+    /// <see cref="OpenedFilesData.OpenedFilesList"/> is selected — a file, or the "[ALL]" entry, which
+    /// presents every file at once and is bound exactly like one.
     /// </para>
     /// <para>
-    /// It is built when its entry is selected rather than when the entry enters the list, so a project
-    /// that has just been opened holds none of these and only the files the user has looked at have
-    /// one. That is what keeps a project with thousands of files from being opened with thousands of
-    /// grids.
+    /// Because the controls belong to the project rather than to the application, two open projects can
+    /// be scrolled, sorted and edited independently, and an edit can no longer land in whichever project
+    /// happened to be shown last.
     /// </para>
     /// <para>
     /// The class is a view: every handler forwards to the function that owns the behaviour and hands it
-    /// this workspace, so the behaviour reads this entry's controls instead of a global one. No rule
+    /// this workspace, so the behaviour reads this project's controls instead of a global one. No rule
     /// about what an edit means is written here.
     /// </para>
     /// </summary>
     internal partial class OpenedFileWorkspace : UserControl
     {
         /// <summary>
-        /// The project this file belongs to. Set by <see cref="Initialize"/>.
+        /// The project this workspace belongs to. Set by <see cref="Initialize"/>.
         /// </summary>
         internal IProjectWorkspace Workspace { get; private set; }
 
         /// <summary>
-        /// The entry this workspace presents, or null before <see cref="Initialize"/>.
+        /// The entry this workspace is showing, or null while nothing is selected.
+        /// <para>
+        /// It is null rather than "the first entry" for the whole time between a project being opened
+        /// and the user picking something from the files list, and the controls are left empty for that
+        /// time: nothing has been asked for yet.
+        /// </para>
         /// </summary>
         internal OpenedFileData File { get; private set; }
 
@@ -48,35 +52,55 @@ namespace TranslationHelper.Workspace
         }
 
         /// <summary>
-        /// Bind the grid to <paramref name="file"/>'s table and remember where this workspace belongs.
+        /// Remember where this workspace belongs. The grid stays unbound until
+        /// <see cref="Bind"/> says what to show.
         /// </summary>
-        internal void Initialize(IProjectWorkspace workspace, OpenedFileData file)
+        internal void Initialize(IProjectWorkspace workspace)
         {
             Workspace = workspace ?? throw new ArgumentNullException(nameof(workspace));
-            File = file ?? throw new ArgumentNullException(nameof(file));
 
             SourceRichTextBox.DetectUrls = false;
 
-            // The grid is bound here rather than by the caller so that a workspace is usable the
-            // moment it is built, and so that the binding follows the entry it was built for.
-            ElementsDataGridView.DataSource = file.Table;
+            Bind(null);
         }
 
         /// <summary>
-        /// Point the grid at the entry's table again. Used for the "[ALL]" entry, whose table is
-        /// rebuilt in place from the files while it is displayed.
+        /// Show <paramref name="file"/>: bind its table to the grid and get the grid ready to be worked
+        /// in, or empty the controls when it is null.
+        /// <para>
+        /// The grid is prepared here rather than once per entry, because the columns of a grid come from
+        /// the table it is bound to and every entry has its own table: a grid that is repointed needs
+        /// its columns hidden, named and made read-only again. The order matters — the columns exist
+        /// only after the table is bound.
+        /// </para>
+        /// </summary>
+        internal void Bind(OpenedFileData file)
+        {
+            File = file;
+
+            ElementsDataGridView.DataSource = file?.Table;
+
+            if (file == null)
+            {
+                // Nothing is shown, so the target box is held read-only: there is no row to write to,
+                // and a read-only box keeps the theme's colour where a disabled one would paint the
+                // system's light background.
+                TargetRichTextBox.ReadOnly = true;
+                return;
+            }
+
+            FunctionsUI.PrepareElementsGrid(this);
+        }
+
+        /// <summary>
+        /// Point the grid at the entry's table again. Used where the table's contents were replaced
+        /// rather than another entry selected — the "[ALL]" entry, whose table is rebuilt in place from
+        /// the files while it is displayed.
         /// </summary>
         internal void RefreshBinding()
         {
-            if (File == null) return;
-
-            ElementsDataGridView.DataSource = File.Table;
+            Bind(File);
         }
-
-        /// <summary>
-        /// Number of rows the entry's table holds, which is what the grid should be showing.
-        /// </summary>
-        internal int RowsCount => File?.Table?.Rows.Count ?? 0;
 
         #region Grid handlers
 

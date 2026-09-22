@@ -22,7 +22,7 @@ namespace TranslationHelper.Models
         /// <summary>
         /// Creates the entry of one file of a project.
         /// </summary>
-        /// <param name="fileName">Name of the file, as shown in the files list and on its tab.</param>
+        /// <param name="fileName">Name of the file, as shown in the files list.</param>
         /// <param name="filePath">Path the file was opened from, or empty for a file that has none.</param>
         /// <param name="format">The format that parsed the file and can write it back.</param>
         /// <param name="table">The table the file's content was parsed into.</param>
@@ -37,9 +37,9 @@ namespace TranslationHelper.Models
         /// <summary>
         /// Creates the "[ALL]" entry: a view over every file of the project rather than a file itself.
         /// <para>
-        /// It is an <see cref="OpenedFileData"/> like any other so that the files list and the opened
-        /// files tabs can present it the same way they present a file, and so that the editing a view
-        /// offers it is the editing it offers a file. It differs in the one way that matters:
+        /// It is an <see cref="OpenedFileData"/> like any other so that the files list and the grid can
+        /// present it the same way they present a file, and so that the editing a view offers it is the
+        /// editing it offers a file. It differs in the one way that matters:
         /// <see cref="IsAllFilesAggregate"/> is true, and a caller about to write a file has to skip
         /// it.
         /// </para>
@@ -64,7 +64,7 @@ namespace TranslationHelper.Models
         public const string AllEntryName = "[ALL]";
 
         /// <summary>
-        /// Name of the file, as shown in the files list and on its tab. For the "[ALL]" entry this is
+        /// Name of the file, as shown in the files list. For the "[ALL]" entry this is
         /// <see cref="AllEntryName"/>.
         /// </summary>
         public string FileName { get; }
@@ -99,7 +99,7 @@ namespace TranslationHelper.Models
         public bool IsAllFilesAggregate { get; }
 
         /// <summary>
-        /// The file's name. It is what a bound list or tab shows for this entry.
+        /// The file's name. It is what a bound list shows for this entry.
         /// </summary>
         public override string ToString() => FileName;
     }

@@ -10,13 +10,19 @@ using TranslationHelper.Models;
 namespace TranslationHelper.Workspace
 {
     /// <summary>
-    /// The files of one project: the files list on the left, the opened files on the right, and the
-    /// count of translated rows below them.
+    /// The files of one project: the files list on the left, the entry being worked on on the right,
+    /// and the count of translated rows below them.
     /// <para>
     /// One instance is created per open project and lives in that project's tab, so the list a user
     /// sees always belongs to the project they are looking at. The panel is a view: it wires the
     /// controls it owns to the functions that own the behaviour, and hands those functions itself so
     /// they read this project's controls.
+    /// </para>
+    /// <para>
+    /// The right-hand side is one <see cref="OpenedFileWorkspace"/> for the whole project, not one per
+    /// file: there is no tab per file any more. Selecting an entry in the list repoints that workspace
+    /// at the entry's table, which is what <see cref="ProjectWorkspace"/> does when the selection
+    /// changes.
     /// </para>
     /// </summary>
     internal partial class ProjectFilesWorkspacePanel : UserControl
@@ -137,9 +143,8 @@ namespace TranslationHelper.Workspace
         /// <summary>
         /// The user selected a different entry: make it the entry being worked on.
         /// <para>
-        /// This is also what shows its tab. Nothing is shown for an entry until it is selected, so the
-        /// selection is the only thing that opens a file — which is what keeps a project from being
-        /// opened with a grid per file already built.
+        /// This is also what points the project's grid at it. Nothing is shown for an entry until it is selected, so the
+        /// selection is the only thing that shows a file.
         /// </para>
         /// </summary>
         private void OnFilesListSelectionChanged()

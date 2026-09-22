@@ -15,10 +15,10 @@ namespace TranslationHelper.Workspace
     /// This is the composition point of the multi-project workspace, in the same spirit as
     /// <see cref="Functions.FileElementsFunctions.Row.RowServices"/> is for the row framework. It is
     /// the only place that knows a project's files list is filled from
-    /// <see cref="OpenedFilesData.OpenedFilesList"/>, that a tab page holds a
-    /// <see cref="ProjectFilesWorkspacePanel"/>, and that a file's tab page holds an
-    /// <see cref="OpenedFileWorkspace"/>. Nothing else has to be told when a project is opened or
-    /// closed.
+    /// <see cref="OpenedFilesData.OpenedFilesList"/>, that a project's tab page holds a
+    /// <see cref="ProjectFilesWorkspacePanel"/>, and that the entry the user picked is the one the
+    /// project's single <see cref="OpenedFileWorkspace"/> is bound to. Nothing else has to be told when
+    /// a project is opened or closed, or when another file is selected in it.
     /// </para>
     /// <para>
     /// It implements <see cref="IProjectWorkspace"/> so the functions that used to read the single
@@ -29,6 +29,7 @@ namespace TranslationHelper.Workspace
     {
         private readonly ProjectBase _project;
         private readonly ProjectFilesWorkspacePanel _panel;
+        private readonly OpenedFileWorkspace _fileWorkspace;
 
         internal ProjectWorkspace(ProjectBase project)
         {
@@ -37,14 +38,17 @@ namespace TranslationHelper.Workspace
             _panel = new ProjectFilesWorkspacePanel { Dock = DockStyle.Fill };
             _panel.Initialize(this);
 
-            _panel.OpenedFilesTabControl.Bind(_project.OpenedFilesData, CreateFileTabPage);
+            // One workspace for the whole project: selecting an entry repoints it rather than creating
+            // anything, so a project with a thousand files has one grid, not a thousand.
+            _fileWorkspace = _panel.OpenedFileWorkspace;
+            _fileWorkspace.Initialize(this);
 
             // The completion label is the project's, so its tooltip is set once here rather than on
             // every refresh of the count.
             FunctionsUI.SetTooltips(_panel.TableCompleteInfoLabel);
 
-            // The selection is owned by the model, so both the files list and the tabs report into it
-            // and both follow it. That is what keeps them from disagreeing about which file is shown.
+            // The selection is owned by the model, so the files list reports into it and this follows
+            // it. That is what keeps the list and the grid from disagreeing about which file is shown.
             _project.OpenedFilesData.PropertyChanged += OnOpenedFilesDataChanged;
         }
 
@@ -56,20 +60,9 @@ namespace TranslationHelper.Workspace
 
         public FilesListControlBase FilesList => _panel.FilesListControl;
 
-        public TabControl OpenedFilesTabs => _panel.OpenedFilesTabControl.Tabs;
-
         public Label CompletionLabel => _panel.TableCompleteInfoLabel;
 
-        public OpenedFileWorkspace ActiveFileWorkspace
-        {
-            get
-            {
-                var page = OpenedFilesTabs.SelectedTab;
-                if (page == null || page.Controls.Count == 0) return null;
-
-                return page.Controls[0] as OpenedFileWorkspace;
-            }
-        }
+        public OpenedFileWorkspace ActiveFileWorkspace => _fileWorkspace.File == null ? null : _fileWorkspace;
 
         #endregion
 
@@ -82,7 +75,7 @@ namespace TranslationHelper.Workspace
         }
 
         /// <summary>
-        /// Fill the project's opened files from its content and show the first one.
+        /// Fill the project's entries from its content, leaving nothing selected.
         /// <para>
         /// Called once the project has finished parsing, because the entries are the parsed file
         /// tables: the "[ALL]" entry first, then one entry per file. Rebuilding the aggregate before
@@ -114,11 +107,9 @@ namespace TranslationHelper.Workspace
             _panel.RefreshFilesList();
             _panel.ShowCompletion();
 
-            // Nothing is shown yet, and that is deliberate. An entry's tab is built when the entry is
-            // selected, and its page is a grid bound to a whole table, so building one for every file
-            // of the project would be the most expensive thing opening it could do — for content the
-            // user has not asked to see. The files list is what they pick from, and picking is what
-            // shows a tab. "Nothing is selected" is the state Clear() above has already left behind.
+            // Nothing is shown yet, and that is deliberate: the grid is bound when an entry is
+            // selected, and the user has not picked one. The files list is what they pick from.
+            // "Nothing is selected" is the state Clear() above has already left behind.
         }
 
         /// <summary>
@@ -132,12 +123,16 @@ namespace TranslationHelper.Workspace
             _project.OpenedFilesData.Clear();
 
             _panel.Unbind();
-            _panel.OpenedFilesTabControl.Unbind();
             _panel.RefreshFilesList();
+
+            // The grid is emptied while its controls still exist: removing the project disposes its
+            // tab, and binding a disposed grid would touch controls that are gone.
+            _fileWorkspace.Bind(null);
         }
 
         /// <summary>
-        /// Show the entry the model has selected: its tab, its row in the files list, and its content.
+        /// Show the entry the model has selected: bind the project's grid to it, highlight its row in
+        /// the files list, and fill the text boxes.
         /// </summary>
         private void OnOpenedFilesDataChanged(object sender, PropertyChangedEventArgs e)
         {
@@ -145,44 +140,31 @@ namespace TranslationHelper.Workspace
 
             var selected = _project.OpenedFilesData.SelectedOpenedFileData;
 
-            _panel.OpenedFilesTabControl.SelectFile(selected);
-            _panel.SelectEntry(selected);
-
             // The "[ALL]" entry is a view over the files, so it is rebuilt from them whenever it is
             // shown and kept in step with them while it stays shown. Every other entry presents one
-            // file and needs neither.
+            // file and needs neither. The rebuild comes first: it is the table the grid is about to be
+            // bound to.
             if (selected != null && selected.IsAllFilesAggregate)
             {
                 _project.FilesListContent.Refresh();
                 _project.FilesListContent.AttachToFiles();
-                _panel.OpenedFilesTabControl.RefreshSelectedTab();
             }
             else
             {
                 _project.FilesListContent.DetachFromFiles();
             }
 
-            // The text boxes belong to the entry, so showing another one has to be followed by pointing
-            // them at its selected row. The tab may already have been showing that row, in which case
-            // no selection change is raised and this is the only thing that fills them.
+            // One grid for the project, repointed at the entry being worked on. It is prepared again on
+            // every bind, because a grid takes its columns from the table it is bound to and every entry
+            // has its own table.
+            _fileWorkspace.Bind(selected);
+
+            _panel.SelectEntry(selected);
+
+            // The text boxes belong to the workspace, so showing another entry has to be followed by
+            // pointing them at its selected row. The grid may already have been showing that row, in
+            // which case no selection change is raised and this is the only thing that fills them.
             FunctionsUI.UpdateTextboxes(this);
-        }
-
-        /// <summary>
-        /// Build the tab page of one opened file: the file's own grid, source box and target box.
-        /// </summary>
-        private TabPage CreateFileTabPage(OpenedFileData file)
-        {
-            var workspace = new OpenedFileWorkspace { Dock = DockStyle.Fill };
-            workspace.Initialize(this, file);
-
-            // One file's grid is prepared once, when its controls are built: which columns it shows,
-            // what its two work columns are called and that they may be edited. It used to be redone
-            // every time the files list selection changed, because there was a single grid being
-            // repointed at another table.
-            FunctionsUI.PrepareElementsGrid(workspace);
-
-            return new TabPage(file.FileName) { Controls = { workspace } };
         }
     }
 }

@@ -630,12 +630,6 @@
     <Compile Include="Workspace\OpenedFileWorkspace.Designer.cs">
       <DependentUpon>OpenedFileWorkspace.cs</DependentUpon>
     </Compile>
-    <Compile Include="Workspace\OpenedFilesTabControl.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="Workspace\OpenedFilesTabControl.Designer.cs">
-      <DependentUpon>OpenedFilesTabControl.cs</DependentUpon>
-    </Compile>
     <Compile Include="Workspace\ProjectFilesWorkspacePanel.cs">
       <SubType>UserControl</SubType>
     </Compile>

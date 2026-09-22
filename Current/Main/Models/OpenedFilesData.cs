@@ -13,18 +13,17 @@ namespace TranslationHelper.Models
     /// </para>
     /// <para>
     /// The list is a <see cref="BindingList{T}"/> because that is what a bound control can follow —
-    /// it announces an added or removed file, so the files list and the opened files tabs can be kept
-    /// in step without either of them polling.
+    /// it announces an added or removed file, so the files list can be kept in step without polling.
     /// </para>
     /// </summary>
     public class OpenedFilesData : ObservableObject
     {
         /// <summary>
-        /// The opened files, in the order they were opened.
+        /// The files of the project, in the order they are presented.
         /// <para>
         /// The "[ALL]" entry, when the project has one, is the first item: it is an
         /// <see cref="OpenedFileData"/> whose <see cref="OpenedFileData.IsAllFilesAggregate"/> is true,
-        /// which is what lets the files list and the tabs present it exactly like a file.
+        /// which is what lets the files list and the grid treat it exactly like a file.
         /// </para>
         /// </summary>
         public BindingList<OpenedFileData> OpenedFilesList { get; } = new BindingList<OpenedFileData>();
@@ -32,12 +31,12 @@ namespace TranslationHelper.Models
         private OpenedFileData _selectedOpenedFileData;
 
         /// <summary>
-        /// The file being worked on: the selected entry of the files list, and the selected tab of the
-        /// opened files tabs.
+        /// The file being worked on: the selected entry of the files list, and the entry the project's
+        /// grid is bound to.
         /// <para>
         /// Null means nothing is being worked on, which is the state a project opens in: the entries
-        /// are in the list, but no tab is shown and no controls for one exist until the user picks an
-        /// entry.
+        /// are in the list, but no grid has been pointed at one yet and the controls are empty until
+        /// the user picks an entry.
         /// </para>
         /// </summary>
         public OpenedFileData SelectedOpenedFileData

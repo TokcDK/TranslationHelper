@@ -37,15 +37,14 @@ namespace TranslationHelper.Workspace
         FilesListControlBase FilesList { get; }
 
         /// <summary>
-        /// The control presenting the selected entry of <see cref="OpenedFilesData"/> in a tab. A tab is
-        /// built when its entry is selected, so a project that has just been opened has none and this
-        /// control is empty until the user picks an entry from <see cref="FilesList"/>.
-        /// </summary>
-        TabControl OpenedFilesTabs { get; }
-
-        /// <summary>
         /// The controls of the entry being worked on — its grid, its source box and its target box —
         /// or null while no entry is selected.
+        /// <para>
+        /// There is one set of these per project, not one per file: the grid of a project is
+        /// repointed at the entry that is selected, which is why it is null rather than empty when
+        /// nothing is. A caller that has nothing to show is told so by null, exactly as it was when
+        /// each file had its own grid.
+        /// </para>
         /// </summary>
         OpenedFileWorkspace ActiveFileWorkspace { get; }
 

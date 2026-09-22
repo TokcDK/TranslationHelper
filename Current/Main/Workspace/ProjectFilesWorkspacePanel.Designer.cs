@@ -31,7 +31,7 @@
             this.FilesAndOpenedFilesSplitContainer = new System.Windows.Forms.SplitContainer();
             this.FilesListPanel = new System.Windows.Forms.Panel();
             this.FilesList = new System.Windows.Forms.ListBox();
-            this.OpenedFilesTabControl = new TranslationHelper.Workspace.OpenedFilesTabControl();
+            this.OpenedFileWorkspace = new TranslationHelper.Workspace.OpenedFileWorkspace();
             this.tlpWorkInfo = new System.Windows.Forms.TableLayoutPanel();
             this.TableCompleteInfoLabel = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.FilesAndOpenedFilesSplitContainer)).BeginInit();
@@ -56,7 +56,7 @@
             // 
             // FilesAndOpenedFilesSplitContainer.Panel2
             // 
-            this.FilesAndOpenedFilesSplitContainer.Panel2.Controls.Add(this.OpenedFilesTabControl);
+            this.FilesAndOpenedFilesSplitContainer.Panel2.Controls.Add(this.OpenedFileWorkspace);
             this.FilesAndOpenedFilesSplitContainer.Size = new System.Drawing.Size(790, 405);
             this.FilesAndOpenedFilesSplitContainer.SplitterDistance = 127;
             this.FilesAndOpenedFilesSplitContainer.TabIndex = 3;
@@ -83,14 +83,14 @@
             this.FilesList.Size = new System.Drawing.Size(125, 403);
             this.FilesList.TabIndex = 0;
             // 
-            // OpenedFilesTabControl
+            // OpenedFileWorkspace
             // 
-            this.OpenedFilesTabControl.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.OpenedFilesTabControl.Location = new System.Drawing.Point(0, 0);
-            this.OpenedFilesTabControl.Margin = new System.Windows.Forms.Padding(0);
-            this.OpenedFilesTabControl.Name = "OpenedFilesTabControl";
-            this.OpenedFilesTabControl.Size = new System.Drawing.Size(657, 403);
-            this.OpenedFilesTabControl.TabIndex = 4;
+            this.OpenedFileWorkspace.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.OpenedFileWorkspace.Location = new System.Drawing.Point(0, 0);
+            this.OpenedFileWorkspace.Margin = new System.Windows.Forms.Padding(0);
+            this.OpenedFileWorkspace.Name = "OpenedFileWorkspace";
+            this.OpenedFileWorkspace.Size = new System.Drawing.Size(657, 403);
+            this.OpenedFileWorkspace.TabIndex = 4;
             // 
             // tlpWorkInfo
             // 
@@ -140,7 +140,7 @@
         private System.Windows.Forms.SplitContainer FilesAndOpenedFilesSplitContainer;
         private System.Windows.Forms.Panel FilesListPanel;
         internal System.Windows.Forms.ListBox FilesList;
-        internal OpenedFilesTabControl OpenedFilesTabControl;
+        internal OpenedFileWorkspace OpenedFileWorkspace;
         private System.Windows.Forms.TableLayoutPanel tlpWorkInfo;
         internal System.Windows.Forms.Label TableCompleteInfoLabel;
     }
