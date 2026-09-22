@@ -155,10 +155,26 @@ namespace TranslationHelper.Workspace
                 _project.FilesListContent.DetachFromFiles();
             }
 
+            // Whether a file is being worked on decides which commands the window's menus offer at
+            // all: a command that acts on a row is left out while there is no row to act on, and the
+            // shortcut key is declared on the command, so a shortcut exists only once its command does.
+            // The menus therefore follow this, and it is the change of it that matters, so it is read
+            // on both sides of the bind — an entry replacing another entry leaves the menus describing
+            // the same commands.
+            //
+            // Only the selected project is asked, and only the selected project may rebuild: the menus
+            // belong to the window and are shared by every open project, so they describe the project
+            // the user is looking at. Asking through the application-wide predicate is what makes the
+            // two agree — it is the same one the menu builder filters with.
+            var isSelected = ReferenceEquals(AppData.ActiveWorkspace, this);
+            var wasWorkingOnFile = isSelected && AppSettings.IsFileOpened;
+
             // One grid for the project, repointed at the entry being worked on. It is prepared again on
             // every bind, because a grid takes its columns from the table it is bound to and every entry
             // has its own table.
             _fileWorkspace.Bind(selected);
+
+            var isWorkingOnFile = isSelected && AppSettings.IsFileOpened;
 
             _panel.SelectEntry(selected);
 
@@ -167,17 +183,13 @@ namespace TranslationHelper.Workspace
             // which case no selection change is raised and this is the only thing that fills them.
             FunctionsUI.UpdateTextboxes(this);
 
-            // The window's row menu lists what can be done to the entry on screen, so it is rebuilt
-            // now that one is bound. It has to be here rather than when the project is opened: an
-            // entry that offers a row command is one that is shown, and nothing is shown yet at that
-            // point, so the commands would be left out of the strip for good.
-            //
-            // Only the selected project may do this. The strip belongs to the window and is shared by
-            // every open project, so it always describes the project the user is looking at, and a
-            // project that is merely open must not rebuild it from the state of another one.
-            if (ReferenceEquals(AppData.ActiveWorkspace, this))
+            // The menus are rebuilt only when what they can offer has changed, which is when a file
+            // starts or stops being worked on: selecting another entry leaves them describing the same
+            // commands, so nothing has to be done for it. The project has to be the selected one to
+            // rebuild them at all — see above.
+            if (isSelected && wasWorkingOnFile != isWorkingOnFile)
             {
-                FunctionsMenus.CreateFileRowMenus();
+                FunctionsMenus.CreateMenus();
             }
         }
     }

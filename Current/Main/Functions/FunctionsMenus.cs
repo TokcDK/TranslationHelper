@@ -76,22 +76,21 @@ namespace TranslationHelper.Functions
         /// <summary>
         /// Build the row menu of the project being worked on.
         /// <para>
-        /// Called whenever the entry on screen changes as well as when the project does, so it has to
-        /// be repeatable: what is built once is cached on the project, and every later call rebuilds
-        /// the strip from that cache. The project's own row entries go into the cache rather than
-        /// being appended to it, because a project may well hand out a fresh array each time it is
-        /// asked and appending would then grow the cache on every call.
+        /// Reached through <see cref="CreateMenus"/>, which is what the callers that need every strip
+        /// to catch up use.
         /// </para>
         /// <para>
-        /// The strip belongs to the window, so a call made before the window exists does nothing
-        /// rather than failing: the caller does not have to know when the window is up.
+        /// The strip is rebuilt from what was collected once and cached on the project, so calling it
+        /// again costs the strip and not the search. The project's own row entries go into the cache
+        /// rather than being appended to it, because a project may well hand out a fresh array each
+        /// time it is asked and appending would then grow the cache on every call.
         /// </para>
         /// </summary>
         internal static void CreateFileRowMenus()
         {
             var proj = AppData.CurrentProject;
 
-            if (proj == null || AppData.Main == null) return;
+            if (proj == null) return;
 
             if (proj.RowMenusCache == null)
             {
@@ -115,8 +114,26 @@ namespace TranslationHelper.Functions
 
             AddMenus(AppData.Main.RowMenus.Items, proj.RowMenusCache);
         }
+
+        /// <summary>
+        /// Build every menu of the window from the project being worked on: the main menu, the files
+        /// list menu and the row menu.
+        /// <para>
+        /// This is what a caller uses when the commands the menus can offer have changed. Which
+        /// commands those are depends on the project, and on whether a file is being worked on — a
+        /// command that acts on a row is left out while there is no row to act on, and the shortcut
+        /// key is declared on the command — so both of those are what has to be followed, and this is
+        /// the call that catches up with either.
+        /// </para>
+        /// <para>
+        /// The strips belong to the window, so a call made before the window exists does nothing
+        /// rather than failing: the caller does not have to know when the window is up.
+        /// </para>
+        /// </summary>
         internal static void CreateMenus()
         {
+            if (AppData.Main == null) return;
+
             CreateMainMenus();
 
             CreateFilesListMenus();
