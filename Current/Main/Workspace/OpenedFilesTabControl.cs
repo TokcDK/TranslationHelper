@@ -7,11 +7,16 @@ namespace TranslationHelper.Workspace
     /// <summary>
     /// The opened files of one project, one tab each.
     /// <para>
-    /// The tabs are the entries of <see cref="OpenedFilesData.OpenedFilesList"/> — a tab per file, and
-    /// a tab for the "[ALL]" entry — and the selected tab is
+    /// The tabs present the entries of <see cref="OpenedFilesData.OpenedFilesList"/> — a tab per file,
+    /// and a tab for the "[ALL]" entry — and the selected tab is
     /// <see cref="OpenedFilesData.SelectedOpenedFileData"/>. Both directions are kept in step by
-    /// <see cref="TabControlBinder{T}"/>, so opening a file adds its tab without any caller having to
-    /// remember to, and closing one removes it.
+    /// <see cref="TabControlBinder{T}"/>, so selecting an entry shows its tab without any caller having
+    /// to remember to, and closing one removes it.
+    /// </para>
+    /// <para>
+    /// A tab is shown when its entry is selected, not when the entry enters the list, so a project
+    /// opens with this control empty: see <see cref="TabControlBinder{T}"/> for why building a page per
+    /// file up front is the one thing an open must not do.
     /// </para>
     /// <para>
     /// The class does not know what a tab contains: the factory that builds a tab page is supplied by
@@ -39,8 +44,8 @@ namespace TranslationHelper.Workspace
         }
 
         /// <summary>
-        /// Show one tab per entry of <paramref name="openedFilesData"/>, now and for every later change
-        /// of the list.
+        /// Follow <paramref name="openedFilesData"/>: show the tab of the entry it has selected, and
+        /// drop the tab of an entry it no longer holds.
         /// </summary>
         /// <param name="openedFilesData">The files of the project.</param>
         /// <param name="createTabPage">Builds the page for one entry.</param>

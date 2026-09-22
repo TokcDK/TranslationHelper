@@ -12,10 +12,17 @@ namespace TranslationHelper.Workspace
     /// <summary>
     /// The controls of one opened file: its table grid, the original text and the translation text.
     /// <para>
-    /// One instance is created per entry of <see cref="OpenedFilesData.OpenedFilesList"/> — per file,
-    /// and per the "[ALL]" entry — and lives in that entry's tab. Because the controls belong to the
-    /// entry rather than to the application, two open files can be scrolled, sorted and edited
-    /// independently, and an edit can no longer land in whichever file happened to be shown last.
+    /// One instance is created per entry of <see cref="OpenedFilesData.OpenedFilesList"/> that is
+    /// shown — per file, and per the "[ALL]" entry — and lives in that entry's tab. Because the
+    /// controls belong to the entry rather than to the application, two open files can be scrolled,
+    /// sorted and edited independently, and an edit can no longer land in whichever file happened to be
+    /// shown last.
+    /// </para>
+    /// <para>
+    /// It is built when its entry is selected rather than when the entry enters the list, so a project
+    /// that has just been opened holds none of these and only the files the user has looked at have
+    /// one. That is what keeps a project with thousands of files from being opened with thousands of
+    /// grids.
     /// </para>
     /// <para>
     /// The class is a view: every handler forwards to the function that owns the behaviour and hands it

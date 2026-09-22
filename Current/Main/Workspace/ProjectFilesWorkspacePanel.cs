@@ -136,6 +136,11 @@ namespace TranslationHelper.Workspace
 
         /// <summary>
         /// The user selected a different entry: make it the entry being worked on.
+        /// <para>
+        /// This is also what shows its tab. Nothing is shown for an entry until it is selected, so the
+        /// selection is the only thing that opens a file — which is what keeps a project from being
+        /// opened with a grid per file already built.
+        /// </para>
         /// </summary>
         private void OnFilesListSelectionChanged()
         {

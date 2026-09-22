@@ -34,6 +34,11 @@ namespace TranslationHelper.Models
         /// <summary>
         /// The file being worked on: the selected entry of the files list, and the selected tab of the
         /// opened files tabs.
+        /// <para>
+        /// Null means nothing is being worked on, which is the state a project opens in: the entries
+        /// are in the list, but no tab is shown and no controls for one exist until the user picks an
+        /// entry.
+        /// </para>
         /// </summary>
         public OpenedFileData SelectedOpenedFileData
         {

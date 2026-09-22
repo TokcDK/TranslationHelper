@@ -37,8 +37,9 @@ namespace TranslationHelper.Workspace
         FilesListControlBase FilesList { get; }
 
         /// <summary>
-        /// The control presenting one tab per entry of <see cref="OpenedFilesData"/>. The selected tab
-        /// is <see cref="OpenedFilesData.SelectedOpenedFileData"/>.
+        /// The control presenting the selected entry of <see cref="OpenedFilesData"/> in a tab. A tab is
+        /// built when its entry is selected, so a project that has just been opened has none and this
+        /// control is empty until the user picks an entry from <see cref="FilesList"/>.
         /// </summary>
         TabControl OpenedFilesTabs { get; }
 

@@ -78,7 +78,7 @@ namespace TranslationHelper.Workspace
         /// </summary>
         internal TabPage CreateProjectTabPage()
         {
-            return new TabPage(_project.Name) { Tag = _project, Controls = { _panel } };
+            return new TabPage(_project.Name) { Controls = { _panel } };
         }
 
         /// <summary>
@@ -114,9 +114,11 @@ namespace TranslationHelper.Workspace
             _panel.RefreshFilesList();
             _panel.ShowCompletion();
 
-            opened.SelectedOpenedFileData = opened.OpenedFilesList.Count > 0
-                ? opened.OpenedFilesList[0]
-                : null;
+            // Nothing is shown yet, and that is deliberate. An entry's tab is built when the entry is
+            // selected, and its page is a grid bound to a whole table, so building one for every file
+            // of the project would be the most expensive thing opening it could do — for content the
+            // user has not asked to see. The files list is what they pick from, and picking is what
+            // shows a tab. "Nothing is selected" is the state Clear() above has already left behind.
         }
 
         /// <summary>
@@ -180,7 +182,7 @@ namespace TranslationHelper.Workspace
             // repointed at another table.
             FunctionsUI.PrepareElementsGrid(workspace);
 
-            return new TabPage(file.FileName) { Tag = file, Controls = { workspace } };
+            return new TabPage(file.FileName) { Controls = { workspace } };
         }
     }
 }
