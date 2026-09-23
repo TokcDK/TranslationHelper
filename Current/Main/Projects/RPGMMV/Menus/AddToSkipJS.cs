@@ -21,7 +21,7 @@ namespace TranslationHelper.Projects.RPGMMV.Menus
             //The menu is a files list menu, so the names are the selected entries of the project whose
             //list it was opened from.
             var names = AppData.ActiveWorkspace?.FilesList?.GetSelectedItemNames() ?? string.Empty;
-            if (string.IsNullOrWhiteSpace(names) || names.ToUpperInvariant().IndexOf(".JS") == -1)
+            if (string.IsNullOrWhiteSpace(names) || names.IndexOf(".JS", StringComparison.InvariantCultureIgnoreCase) == -1)
             {
                 return;
             }
@@ -69,7 +69,7 @@ namespace TranslationHelper.Projects.RPGMMV.Menus
         /// <param name="skipjsfilePath"></param>
         private static void SetSkipJSList(HashSet<string> SkipJSList, string skipjsfilePath)
         {
-            if (!File.Exists(skipjsfilePath)) return;
+            if (!File.Exists(skipjsfilePath)) File.WriteAllText(skipjsfilePath, "\r\n");
 
             var skipjs = File.ReadAllLines(skipjsfilePath);
             foreach (var line in skipjs)

@@ -896,6 +896,9 @@
     </PackageReference>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="BUILD\RES\Rules\rpgmvskipjs.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="thIcon.ico" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

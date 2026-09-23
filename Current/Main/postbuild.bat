@@ -61,6 +61,15 @@ if exist "%projectResLocaleDir%" (
 	echo copy localization files
 	robocopy "%projectResLocaleDir% " "%targetResLocaleDir%\ " *.po *.mo /MIR /COPYALL /B /R:3 /W:1
 )
+if exist "%projectResDir%\rules" (
+	:: copy "%projectResDir%\rules\rpgmvskipjs.txt to "%targetResDir%\rules
+	echo copy rpgmvskipjs list
+	if not exist %projectResDir%\rules\rpgmvskipjs.txt (
+		robocopy "%projectResDir%\rules " "%targetResDir%\rules\ " rpgmvskipjs.txt /MIR /COPYALL /B /R:3 /W:1
+	)
+)
+
+
 
 :: release creation
 set releasesDirPath=%targetDir%RELEASES
