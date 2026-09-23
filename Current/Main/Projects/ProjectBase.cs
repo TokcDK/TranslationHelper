@@ -163,6 +163,19 @@ namespace TranslationHelper.Projects
         /// </summary>
         private readonly Dictionary<DataTable, FormatBase> _formatOfTable = new Dictionary<DataTable, FormatBase>();
 
+        /// <summary>
+        /// True when a translation was written into the project since its database file was last
+        /// written. Written from whichever thread a row operation happens to run on, hence volatile.
+        /// </summary>
+        private volatile bool _hasUnsavedTranslations;
+
+        /// <summary>
+        /// The tables whose changes are already being followed. It is what makes following a table
+        /// twice impossible, and therefore makes it safe to follow tables wherever they appear without
+        /// the caller having to know whether they were followed before.
+        /// </summary>
+        private readonly HashSet<DataTable> _watchedTables = new HashSet<DataTable>();
+
         #endregion
 
         #region Constructors
@@ -327,6 +340,21 @@ namespace TranslationHelper.Projects
         internal FilesListContent FilesListContent { get; }
 
         /// <summary>
+        /// True when a translation was written into the project since its database file was last
+        /// written. This is what closing the project asks about.
+        /// <para>
+        /// The fact is read from the tables rather than reported by the code that writes them. A
+        /// translation reaches a row through the grid, through a row operation, through the search
+        /// window, through an undo, and through a format writing a file back; a flag that each of those
+        /// had to remember to set would be a flag that is wrong the first time a sixth one is added.
+        /// <see cref="DataTable.ColumnChanged"/> is raised by the row itself, whichever code wrote it,
+        /// so this is taken from where the change is true rather than from every place that makes it
+        /// true.
+        /// </para>
+        /// </summary>
+        internal bool HasUnsavedTranslations => _hasUnsavedTranslations;
+
+        /// <summary>
         /// The format that produced <paramref name="dataTable"/>, or null when the table was not
         /// produced by a format.
         /// <para>
@@ -397,14 +425,75 @@ namespace TranslationHelper.Projects
 
             if (result == true)
             {
+                // The content exists now, which is the first moment its tables can be followed. Every
+                // translation written from here on goes into one of them.
+                WatchTables();
+
                 FunctionAutoSave.StartAutoSave(
                     AutosaveTimer = new System.Timers.Timer(),
-                    () => FunctionAutoSave.SaveDBByAutosave(_saveLocker),
+                    // The project is named rather than looked up when the timer fires: with more than
+                    // one project open there is a timer per project, and a save that asked for "the"
+                    // project would write whichever one the user happens to be looking at.
+                    () => FunctionAutoSave.SaveDBByAutosave(this, _saveLocker),
                     AppSettings.DBAutoSaveTimeout
                 );
             }
 
             return result;
+        }
+
+        /// <summary>
+        /// Report the project's translations as written into its database file. Called by the save
+        /// itself, because only the save knows that the file now holds them.
+        /// </summary>
+        internal void MarkTranslationsSaved() => _hasUnsavedTranslations = false;
+
+        /// <summary>
+        /// Follow every table the project has for changes to its translation column.
+        /// </summary>
+        private void WatchTables()
+        {
+            foreach (DataTable table in FilesContent.Tables)
+            {
+                WatchTable(table);
+            }
+        }
+
+        /// <summary>
+        /// Follow one table for changes to its translation column. Doing nothing when it is already
+        /// followed is what makes this safe to call wherever a table appears.
+        /// </summary>
+        private void WatchTable(DataTable table)
+        {
+            if (table == null) return;
+            if (!_watchedTables.Add(table)) return;
+
+            table.ColumnChanged += OnTableColumnChanged;
+        }
+
+        /// <summary>
+        /// A cell of one of the project's tables changed. Marks the project when what changed is a
+        /// translation and the project is in a state where a translation means work the user did.
+        /// <para>
+        /// That state is what keeps the mark off the project's own opening. A project fills its tables
+        /// while it parses, and reading a database writes a translation into every row it has, so
+        /// without it a project would come up already marked and closing it would always ask. Neither
+        /// of those is work the user did, and neither is thrown away by closing.
+        /// </para>
+        /// <para>
+        /// The column is recognised by its name rather than by its position, because the name is what a
+        /// database file is written from: a table whose translation column is named otherwise is one
+        /// whose translations no save would put anywhere, and asking to save them would be asking about
+        /// nothing.
+        /// </para>
+        /// </summary>
+        private void OnTableColumnChanged(object sender, DataColumnChangeEventArgs e)
+        {
+            if (!ProjectReadiness.IsReady) return;
+            if (e == null || e.Column == null) return;
+            if (e.Column.ColumnName != THSettings.TranslationColumnName) return;
+
+            _hasUnsavedTranslations = true;
         }
 
         /// <summary>
@@ -479,6 +568,11 @@ namespace TranslationHelper.Projects
 
                 FilesContent.Tables.Add(dataTable);
                 FilesContentInfo.Tables.Add(infoTable);
+
+                // Followed from the moment it exists, rather than only when the project has finished
+                // opening: a table added to a project that is already open is one the tables collected
+                // when it opened do not include.
+                WatchTable(dataTable);
             }
         }
 

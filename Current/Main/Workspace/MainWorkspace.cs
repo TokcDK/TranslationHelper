@@ -1,11 +1,15 @@
-﻿using System;
+﻿using NLog;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Globalization;
 using System.Windows.Forms;
 using TranslationHelper.Data;
 using TranslationHelper.Functions;
+using TranslationHelper.Main.Functions;
 using TranslationHelper.Models;
 using TranslationHelper.Projects;
+using TranslationHelper.Theming;
 
 namespace TranslationHelper.Workspace
 {
@@ -28,6 +32,8 @@ namespace TranslationHelper.Workspace
     /// </summary>
     internal sealed class MainWorkspace : IDisposable
     {
+        private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
+
         /// <summary>
         /// The projects that are open, and which of them is selected.
         /// </summary>
@@ -54,8 +60,9 @@ namespace TranslationHelper.Workspace
 
             // Binding is what makes a tab appear per project, so adding a project below needs no
             // second step. The factory passed here is the one that builds a project's workspace, which
-            // is how the map above stays complete.
-            _projectsTabControl.Bind(_projectsData, CreateProjectTabPage);
+            // is how the map above stays complete; the second one is what a click on a tab's close
+            // button reaches, which is how closing a project goes through the same door as opening it.
+            _projectsTabControl.Bind(_projectsData, CreateProjectTabPage, Close);
 
             // The selection is owned by the model, so the active workspace follows it rather than
             // being set by whoever changed the tab.
@@ -113,6 +120,29 @@ namespace TranslationHelper.Workspace
         }
 
         /// <summary>
+        /// Close <paramref name="project"/> as the user asked: offer to save what its database does not
+        /// have yet, then drop its files, remove its tab, and move the selection to the project that
+        /// takes its place.
+        /// <para>
+        /// This is what a tab's close button and the Close project command both reach. It is here
+        /// rather than in either of them because the two have to do the same thing, and because what
+        /// has to be saved is a property of the project rather than of the way it was closed.
+        /// </para>
+        /// </summary>
+        /// <returns>True when the project was open and has been closed.</returns>
+        internal bool Close(ProjectBase project)
+        {
+            if (project == null) return false;
+
+            var workspace = WorkspaceOf(project);
+            if (workspace == null) return false;
+
+            if (!ConfirmClose(workspace)) return false;
+
+            return Remove(project);
+        }
+
+        /// <summary>
         /// Close <paramref name="project"/>: drop its files, remove its tab, and move the selection to
         /// the project that takes its place.
         /// </summary>
@@ -132,6 +162,70 @@ namespace TranslationHelper.Workspace
             _projectsData.Remove(project);
 
             return true;
+        }
+
+        /// <summary>
+        /// Ask the user about the translations of <paramref name="workspace"/> that its database does
+        /// not have yet, and write them out when that is what they chose.
+        /// <para>
+        /// The question is asked only when there is something to lose. A project whose translations are
+        /// already in its database is closed without a word, which is what keeps the prompt meaning
+        /// something: it appears exactly when closing would throw work away.
+        /// </para>
+        /// </summary>
+        /// <returns>False when the close has to be abandoned, either because the user cancelled or
+        /// because the save they asked for did not happen.</returns>
+        private static bool ConfirmClose(ProjectWorkspace workspace)
+        {
+            var project = workspace.Project;
+
+            if (!project.HasUnsavedTranslations) return true;
+
+            var answer = ThemedMessageBox.Show(
+                string.Format(
+                    CultureInfo.CurrentCulture,
+                    T._("The project \"{0}\" has translations which its database file does not have yet."),
+                    project.Name) + Environment.NewLine + Environment.NewLine + T._("Save them before closing the project?"),
+                T._("Close project"),
+                MessageBoxButtons.YesNoCancel,
+                MessageBoxIcon.Question);
+
+            switch (answer)
+            {
+                case DialogResult.Yes:
+                    return SaveDatabase(workspace);
+
+                case DialogResult.No:
+                    return true;
+
+                default:
+                    // Closing the box is not an answer, and neither is the Escape key: a close that was
+                    // backed out of has to leave the project where it was rather than throw the work
+                    // away because no button was pressed.
+                    return false;
+            }
+        }
+
+        /// <summary>
+        /// Write the database of <paramref name="workspace"/> and report whether it was written.
+        /// </summary>
+        private static bool SaveDatabase(ProjectWorkspace workspace)
+        {
+            try
+            {
+                // Waited for rather than awaited: the caller is deciding whether to close the project,
+                // and its answer has to be known before the tab that presents it is disposed. The save
+                // itself does not come back to the UI thread, so waiting here cannot deadlock it.
+                FunctionsDBFile.SaveDB(workspace).GetAwaiter().GetResult();
+
+                return true;
+            }
+            catch (Exception ex)
+            {
+                Logger.Error(ex, "Failed to save the database of the project being closed");
+
+                return false;
+            }
         }
 
         /// <summary>

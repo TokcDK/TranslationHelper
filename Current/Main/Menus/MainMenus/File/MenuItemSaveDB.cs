@@ -16,9 +16,10 @@ namespace TranslationHelper.Menus.MainMenus.File
 
         public override async void OnClick(object sender, EventArgs e)
         {
-            if (AppData.CurrentProject == null) return;
+            var workspace = AppData.ActiveWorkspace;
+            if (workspace == null) return;
 
-            await FunctionsDBFile.SaveDB();
+            await FunctionsDBFile.SaveDB(workspace);
         }
 
         public override int Order => base.Order + 15;

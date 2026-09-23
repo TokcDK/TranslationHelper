@@ -64,6 +64,21 @@ namespace TranslationHelper.Workspace
         }
 
         /// <summary>
+        /// The item the tab at <paramref name="index"/> presents, or null when the index is outside the
+        /// list.
+        /// <para>
+        /// A caller that is told about a tab — a click on it, say — has an index and needs the item.
+        /// It asks here rather than reading the list itself, because this class is the only thing that
+        /// keeps the index of a tab and the index of an item the same, so it is the only thing that can
+        /// be trusted to translate between them.
+        /// </para>
+        /// </summary>
+        internal T ItemAt(int index)
+        {
+            return index >= 0 && index < _source.Count ? _source[index] : null;
+        }
+
+        /// <summary>
         /// Build the tabs from the list as it is now. Called once after the items that already exist
         /// have been added, and again whenever the list is reset wholesale.
         /// </summary>

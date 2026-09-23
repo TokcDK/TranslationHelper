@@ -12,6 +12,13 @@ namespace TranslationHelper.Theming
     /// drawing them; the band around them cannot be, and is filled by hand.
     /// </para>
     /// <para>
+    /// Whether the strip is owner-drawn at all is the strip's decision, and it is read back from the
+    /// control rather than assumed: the light theme leaves it to the framework, so a strip that wants
+    /// to be drawn — one whose tabs carry close buttons, and whose buttons would have nowhere to be
+    /// painted otherwise — says so by choosing owner drawing, and the theme honours that choice in
+    /// every theme. See <see cref="ThemedControlState"/> for what "chose" means here.
+    /// </para>
+    /// <para>
     /// The fill happens inside the owner draw handler and not in a <see cref="Control.Paint"/> handler,
     /// which is the one thing about this class that looks wrong and is not. A tab control never raises
     /// <see cref="Control.Paint"/> at all — the native control answers its own paint message and the
@@ -43,8 +50,10 @@ namespace TranslationHelper.Theming
             }
 
             // Removed before it is added so that applying the theme twice cannot draw every tab
-            // twice. While the light theme is on, the handler returns immediately and the framework
-            // draws the tabs, which is what the designer's own handler, if there is one, expects.
+            // twice. While the light theme is on, the strip is handed back to the framework and the
+            // handler returns immediately, which is what the designer's own handler, if there is one,
+            // expects — unless the strip chose to be drawn itself, in which case it is drawn here in
+            // both themes.
             tabs.DrawItem -= DrawTab;
             tabs.DrawItem += DrawTab;
 
@@ -66,13 +75,18 @@ namespace TranslationHelper.Theming
                 return;
             }
 
-            var theme = ThemeManager.Instance.CurrentTheme;
-
-            if (!theme.IsDark)
+            // Reaching here at all means the strip is owner-drawn, and this is the only thing that will
+            // paint it: a strip the framework draws raises no DrawItem. The light theme used to hand the
+            // tabs back to the framework and stop here, which it still does — through the DrawMode it
+            // gives back, so a strip that left the choice to the theme is still the framework's to draw.
+            // A strip that chose owner drawing instead — one that carries close buttons, whose button
+            // has nowhere to be drawn otherwise — is drawn here in either theme.
+            if (tabs.DrawMode != TabDrawMode.OwnerDrawFixed)
             {
                 return;
             }
 
+            var theme = ThemeManager.Instance.CurrentTheme;
             var bounds = tabs.GetTabRect(e.Index);
             var selected = e.Index == tabs.SelectedIndex;
 
@@ -95,13 +109,56 @@ namespace TranslationHelper.Theming
                 e.Graphics.DrawLine(outline, bounds.Right - 1, bounds.Top, bounds.Right - 1, bounds.Bottom - 1);
             }
 
+            var close = CloseButtonBounds(tabs, e.Index);
+
+            // The text is centred in what is left of the tab once the button has its corner, so that a
+            // name long enough to fill the tab is shortened rather than written over the button.
+            var textBounds = close.IsEmpty
+                ? bounds
+                : new Rectangle(bounds.Left, bounds.Top, close.Left - bounds.Left, bounds.Height);
+
             TextRenderer.DrawText(
                 e.Graphics,
                 tabs.TabPages[e.Index].Text,
                 tabs.Font,
-                bounds,
+                textBounds,
                 selected ? theme.TabSelectedText : theme.TabText,
                 TextFormatFlags.HorizontalCenter | TextFormatFlags.VerticalCenter | TextFormatFlags.EndEllipsis);
+
+            DrawCloseButton(e.Graphics, close, selected ? theme.TabSelectedText : theme.TabText);
+        }
+
+        /// <summary>
+        /// Where the close button of a tab is, asked of the strip itself, or
+        /// <see cref="Rectangle.Empty"/> for a strip whose tabs cannot be closed.
+        /// <para>
+        /// It is asked rather than computed here because the geometry is the tab control's: it is the
+        /// only thing that knows where its tabs are once they have been laid out, resized and wrapped.
+        /// </para>
+        /// </summary>
+        private static Rectangle CloseButtonBounds(TabControl tabs, int index)
+        {
+            return tabs is IClosableTabStrip closable ? closable.CloseButtonBounds(index) : Rectangle.Empty;
+        }
+
+        /// <summary>
+        /// Draws the cross that says a tab can be closed, in the colour the tab's own text is drawn in
+        /// so that it reads as part of the tab rather than as a control that landed on it.
+        /// </summary>
+        private static void DrawCloseButton(Graphics graphics, Rectangle bounds, Color colour)
+        {
+            if (bounds.IsEmpty)
+            {
+                return;
+            }
+
+            const int Inset = 4;
+
+            using (var pen = new Pen(colour))
+            {
+                graphics.DrawLine(pen, bounds.Left + Inset, bounds.Top + Inset, bounds.Right - Inset - 1, bounds.Bottom - Inset - 1);
+                graphics.DrawLine(pen, bounds.Right - Inset - 1, bounds.Top + Inset, bounds.Left + Inset, bounds.Bottom - Inset - 1);
+            }
         }
 
         /// <summary>

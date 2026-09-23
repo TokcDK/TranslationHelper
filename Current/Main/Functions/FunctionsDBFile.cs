@@ -17,7 +17,9 @@ using TranslationHelper.Extensions;
 using TranslationHelper.Functions;
 using TranslationHelper.Functions.DBSaveFormats;
 using TranslationHelper.Functions.FileElementsFunctions.Row;
+using TranslationHelper.Projects;
 using TranslationHelper.Projects.RPGMMV;
+using TranslationHelper.Workspace;
 
 namespace TranslationHelper.Main.Functions
 {
@@ -137,10 +139,18 @@ namespace TranslationHelper.Main.Functions
             return ".xml";
         }
 
-        internal static string GetProjectDBFolder()
+        /// <summary>
+        /// The folder the database file of <paramref name="project"/> belongs in.
+        /// <para>
+        /// The project is named rather than looked up, so that a caller acting on one project cannot be
+        /// given another project's folder: with several projects open there is no such thing as "the"
+        /// project to fall back on, only the one the caller meant.
+        /// </para>
+        /// </summary>
+        internal static string GetProjectDBFolder(ProjectBase project)
         {
             string projectDirName = string.Empty;
-            if (AppData.CurrentProject != null) projectDirName = AppData.CurrentProject.ProjectDBFolderName;
+            if (project != null) projectDirName = project.ProjectDBFolderName;
 
             projectDirName = Path.Combine(THSettings.DBDirPathByLanguage, projectDirName.Length > 0 ? projectDirName : "Other");
             Directory.CreateDirectory(projectDirName);
@@ -148,9 +158,13 @@ namespace TranslationHelper.Main.Functions
             return projectDirName;
         }
 
-        internal static string GetDBFileName(bool saveAs = false)
+        /// <summary>
+        /// The name of the database file of <paramref name="workspace"/>'s project, without extension.
+        /// </summary>
+        internal static string GetDBFileName(IProjectWorkspace workspace, bool saveAs = false)
         {
-            var project = AppData.CurrentProject;
+            var project = workspace?.Project;
+            if (project == null) return string.Empty;
 
             string fName = Path.GetFileName(project.SelectedDir);
             if (project.ProjectDBFileName.Length > 0)
@@ -159,7 +173,7 @@ namespace TranslationHelper.Main.Functions
             }
             else if (project.Name.Contains(new RPGMMVGame().Name))
             {
-                var singleItemName = GetSingleFilesListItemName();
+                var singleItemName = GetSingleFilesListItemName(workspace);
                 if (singleItemName != null)
                 {
                     if (fName == "data")
@@ -174,7 +188,7 @@ namespace TranslationHelper.Main.Functions
             }
             else
             {
-                var singleItemName = GetSingleFilesListItemName();
+                var singleItemName = GetSingleFilesListItemName(workspace);
                 if (singleItemName != null)
                 {
                     //dbfilename as name of single file in files list
@@ -185,16 +199,16 @@ namespace TranslationHelper.Main.Functions
         }
 
         /// <summary>
-        /// Name of the only entry of the files list, or null when the list does not hold exactly one
-        /// usable entry.
+        /// Name of the only entry of the files list of <paramref name="workspace"/>'s project, or null
+        /// when the list does not hold exactly one usable entry.
         /// <para>
         /// The list of the project being saved, reached through its workspace: a list is one project's,
         /// so asking the application for "the" list would answer with another project's entries.
         /// </para>
         /// </summary>
-        private static string GetSingleFilesListItemName()
+        private static string GetSingleFilesListItemName(IProjectWorkspace workspace)
         {
-            var filesList = AppData.ActiveWorkspace?.FilesList;
+            var filesList = workspace?.FilesList;
             if (filesList == null || filesList.GetItemsCount() != 1) return null;
 
             var itemName = filesList.GetItemName(0);
@@ -684,13 +698,29 @@ namespace TranslationHelper.Main.Functions
             return dateTimeCompareResult <= 0 ? pathNextToSource : lastautosavepath;
         }
 
-        public static async Task WriteDBFileLite(DataSet ds, string[] fileNames)
+        /// <summary>
+        /// Write <paramref name="ds"/> into every path of <paramref name="fileNames"/>, without the
+        /// empty table rows.
+        /// </summary>
+        /// <returns>
+        /// True when every path was written. A failure is reported rather than thrown, because the
+        /// callers are a menu command and a close that is already under way; but it is reported, so
+        /// that a caller which has to know — the close, which must not claim to have saved what it
+        /// did not — can tell.
+        /// </returns>
+        public static async Task<bool> WriteDBFileLite(DataSet ds, string[] fileNames)
         {
-            if (ds == null) return;
+            if (ds == null) return false;
+
+            var allWritten = true;
 
             foreach (var fileName in fileNames)
             {
-                if (string.IsNullOrEmpty(fileName)) return;
+                if (string.IsNullOrEmpty(fileName))
+                {
+                    allWritten = false;
+                    continue;
+                }
 
                 try
                 {
@@ -705,8 +735,11 @@ namespace TranslationHelper.Main.Functions
                 }
                 catch (Exception ex) {
                     Logger.Warn("Error writing DB file: {0}", ex);
+                    allWritten = false;
                 }
             }
+
+            return allWritten;
         }
 
 
@@ -726,7 +759,7 @@ namespace TranslationHelper.Main.Functions
                 {
                     openBD.Filter = FunctionsDBFile.GetDBFormatsFilters();
 
-                    openBD.InitialDirectory = FunctionsDBFile.GetProjectDBFolder();
+                    openBD.InitialDirectory = FunctionsDBFile.GetProjectDBFolder(AppData.CurrentProject);
 
                     if (openBD.ShowDialog() == DialogResult.OK)
                     {
@@ -888,21 +921,39 @@ namespace TranslationHelper.Main.Functions
             }
         }
 
-        internal async static Task SaveDB()
+        /// <summary>
+        /// Write the translations of the project <paramref name="workspace"/> presents into its database
+        /// file, in the application's database folder and next to the game's own files.
+        /// <para>
+        /// The project is named rather than taken from the selection. Saving happens for a project the
+        /// user is closing, for the project they are looking at, and for whichever project an autosave
+        /// timer belongs to, and only one of those three is the selected one.
+        /// </para>
+        /// </summary>
+        internal async static Task SaveDB(IProjectWorkspace workspace)
         {
-            var fileName = FunctionsDBFile.GetDBFileName();
-            var fileExtension = FunctionsDBFile.GetDBCompressionExt();
-            var path = Path.Combine(FunctionsDBFile.GetProjectDBFolder(), fileName + fileExtension);
+            var project = workspace?.Project;
+            if (project == null) return;
+
+            var fileName = GetDBFileName(workspace);
+            var fileExtension = GetDBCompressionExt();
+            var path = Path.Combine(GetProjectDBFolder(project), fileName + fileExtension);
 
             if (System.IO.File.Exists(path))
             {
                FunctionsBackup.ShiftToBackups(path);
             }
 
-            var pathNextToSource = Path.Combine(AppData.CurrentProject.SelectedDir, Data.THSettings.TranslationFileSourceDirSuffix + fileExtension);
+            var pathNextToSource = Path.Combine(project.SelectedDir, Data.THSettings.TranslationFileSourceDirSuffix + fileExtension);
 
-            await AppData.CurrentProject.PreSaveDB().ConfigureAwait(false);
-            await FunctionsDBFile.WriteDBFileLite(AppData.CurrentProject.FilesContent, new[] { path, pathNextToSource }).ConfigureAwait(false);
+            await project.PreSaveDB().ConfigureAwait(false);
+
+            // The project is told its translations are written only when they were. A save that failed
+            // leaves the project marked, so the next close offers again instead of closing on work that
+            // never reached the disk.
+            if (!await WriteDBFileLite(project.FilesContent, new[] { path, pathNextToSource }).ConfigureAwait(false)) return;
+
+            project.MarkTranslationsSaved();
 
             Logger.Info(T._("DB saved!"));
 

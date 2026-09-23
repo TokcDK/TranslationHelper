@@ -295,7 +295,13 @@ namespace TranslationHelper.Functions
             // exactly the window an automatic operation must stay out of.
             using (ProjectReadiness.BeginDatabaseLoad())
             {
-                var dbPath = Path.Combine(FunctionsDBFile.GetProjectDBFolder(), FunctionsDBFile.GetDBFileName() + FunctionsDBFile.GetDBCompressionExt());
+                // The database of the project being worked on, reached through its workspace: the file
+                // name can be the name of the only entry of its files list, which is a fact about that
+                // project's list and not about the application's.
+                var workspace = AppData.ActiveWorkspace;
+                if (workspace == null) return;
+
+                var dbPath = Path.Combine(FunctionsDBFile.GetProjectDBFolder(workspace.Project), FunctionsDBFile.GetDBFileName(workspace) + FunctionsDBFile.GetDBCompressionExt());
                 dbPath = FunctionsDBFile.SearchByAllDBFormatExtensions(dbPath);
 
                 if (File.Exists(dbPath) && (!askIfLoadDB || (askIfLoadDB && MessageBox.Show(T._("Found translation DB. Load it?"), T._("Load translation DB"), MessageBoxButtons.YesNo, MessageBoxIcon.Warning) == DialogResult.Yes)))

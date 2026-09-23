@@ -476,6 +476,7 @@
     <Compile Include="Menus\MainMenus\File\MenuItemLoadDBAs.cs" />
     <Compile Include="Menus\MainMenus\File\MenuItemSaveDBTo.cs" />
     <Compile Include="Menus\MainMenus\File\MenuItemSaveDB.cs" />
+    <Compile Include="Menus\MainMenus\File\MenuItemCloseProject.cs" />
     <Compile Include="Menus\MainMenus\File\MenuItemWriteTranslation.cs" />
     <Compile Include="Menus\MainMenus\File\MenuItemOpen.cs" />
     <Compile Include="Menus\MainMenus\File\Other\MainMenuFileSubItemOtherBase.cs" />
@@ -642,6 +643,9 @@
     <Compile Include="Workspace\ProjectsTabControl.Designer.cs">
       <DependentUpon>ProjectsTabControl.cs</DependentUpon>
     </Compile>
+    <Compile Include="Workspace\ClosableTabControl.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="Workspace\ProjectWorkspace.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Projects\zzzOtherProject\DummyProject.cs" />
@@ -670,6 +674,7 @@
     <Compile Include="Theming\AppearanceSettings.cs" />
     <Compile Include="Theming\ITheme.cs" />
     <Compile Include="Theming\IControlStyler.cs" />
+    <Compile Include="Theming\IClosableTabStrip.cs" />
     <Compile Include="Theming\LightTheme.cs" />
     <Compile Include="Theming\DarkTheme.cs" />
     <Compile Include="Theming\ThemeManager.cs" />

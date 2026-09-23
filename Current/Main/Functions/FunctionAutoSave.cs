@@ -1,7 +1,9 @@
 ﻿using NLog;
 using System;
 using System.Threading.Tasks;
+using TranslationHelper.Data;
 using TranslationHelper.Main.Functions;
+using TranslationHelper.Projects;
 
 namespace TranslationHelper.Functions
 {
@@ -57,11 +59,26 @@ namespace TranslationHelper.Functions
             StartAutoSave(autoSaveTimer, autosave, timeout);
         }
 
-        internal static Task SaveDBByAutosave(object locker)
+        /// <summary>
+        /// Save the database of the project a timer belongs to.
+        /// <para>
+        /// The project is a parameter rather than taken from the selection: every open project runs a
+        /// timer of its own, so a save that asked for "the" project would write the database of
+        /// whichever project the user happens to be looking at, and would leave the one the timer was
+        /// started for unsaved.
+        /// </para>
+        /// </summary>
+        internal static Task SaveDBByAutosave(ProjectBase project, object locker)
         {
             lock (locker)
             {
-                return Task.FromResult(FunctionsDBFile.SaveDB());
+                var workspace = AppData.Main?.Workspace?.WorkspaceOf(project);
+                if (workspace == null) return Task.CompletedTask;
+
+                // The task is deliberately not awaited inside the lock: the save does not come back to
+                // the UI thread, and a lock held across it would be held against whatever the UI thread
+                // is doing at the same time — including the project's own save, which takes this lock.
+                return Task.FromResult(FunctionsDBFile.SaveDB(workspace));
             }
         }
     }

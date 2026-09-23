@@ -21,13 +21,19 @@ namespace TranslationHelper.Menus.MainMenus.File
 
         public override async void OnClick(object sender, EventArgs e)
         {
+            // The project being worked on, named once: the folder and the file name are its, and the
+            // dialog below can outlive the selection it was opened from.
+            var workspace = AppData.ActiveWorkspace;
+            var project = workspace?.Project;
+            if (project == null) return;
+
             using (SaveFileDialog THFSaveBDAs = new SaveFileDialog())
             {
                 var selectedFormat = FunctionsInterfaces.GetCurrentDBFormat();
                 THFSaveBDAs.Filter = $"{selectedFormat.Description}|*.{selectedFormat.Ext}";
 
-                THFSaveBDAs.InitialDirectory = FunctionsDBFile.GetProjectDBFolder();
-                THFSaveBDAs.FileName = FunctionsDBFile.GetDBFileName(true) + FunctionsDBFile.GetDBCompressionExt();
+                THFSaveBDAs.InitialDirectory = FunctionsDBFile.GetProjectDBFolder(project);
+                THFSaveBDAs.FileName = FunctionsDBFile.GetDBFileName(workspace, true) + FunctionsDBFile.GetDBCompressionExt();
 
                 if (THFSaveBDAs.ShowDialog() != DialogResult.OK) return;
                 if (THFSaveBDAs.FileName.Length == 0) return;
@@ -39,7 +45,7 @@ namespace TranslationHelper.Menus.MainMenus.File
 
                 
 
-                switch (AppData.CurrentProject.Name)
+                switch (project.Name)
                 {
                     case "RPGMakerTransPatch":
                     case "RPG Maker game with RPGMTransPatch":
@@ -47,7 +53,7 @@ namespace TranslationHelper.Menus.MainMenus.File
                         // that can write an RPG Maker Trans patch, so the legacy call stays.
                         // Scoped suppression instead of a project-wide one keeps it visible.
 #pragma warning disable CS0612 // Type or member is obsolete
-                        _ = await Task.Run(() => new RPGMTransOLD().SaveRPGMTransPatchFiles(AppData.CurrentProject.SelectedDir, RPGMFunctions.RPGMTransPatchVersion)).ConfigureAwait(true);
+                        _ = await Task.Run(() => new RPGMTransOLD().SaveRPGMTransPatchFiles(project.SelectedDir, RPGMFunctions.RPGMTransPatchVersion)).ConfigureAwait(true);
 #pragma warning restore CS0612 // Type or member is obsolete
                         break;
                 }
@@ -55,7 +61,10 @@ namespace TranslationHelper.Menus.MainMenus.File
                 //SaveNEWDB(THFilesElementsDataset, THFSaveBDAs.FileName);
                 //WriteDBFile(THFilesElementsDataset, THFSaveBDAs.FileName);
 
-                await Task.Run(() => FunctionsDBFile.WriteDBFileLite(AppData.CurrentProject.FilesContent, new[] { THFSaveBDAs.FileName })).ConfigureAwait(true);
+                // Written into a file the user chose, which is a copy and not the project's database:
+                // the project stays marked as having translations its own database does not have, so
+                // closing it still offers to save them where they belong.
+                await Task.Run(() => FunctionsDBFile.WriteDBFileLite(project.FilesContent, new[] { THFSaveBDAs.FileName })).ConfigureAwait(true);
                 //Task task = new Task(() => WriteDBFileLite(ProjectData.THFilesElementsDataset, THFSaveBDAs.FileName));
                 //task.Start();
                 //task.Wait();

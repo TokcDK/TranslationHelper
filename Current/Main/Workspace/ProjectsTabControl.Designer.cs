@@ -28,7 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.ProjectsTabs = new System.Windows.Forms.TabControl();
+            this.ProjectsTabs = new ClosableTabControl();
             this.SuspendLayout();
             // 
             // ProjectsTabs
@@ -53,6 +53,6 @@
 
         #endregion
 
-        internal System.Windows.Forms.TabControl ProjectsTabs;
+        internal ClosableTabControl ProjectsTabs;
     }
 }
