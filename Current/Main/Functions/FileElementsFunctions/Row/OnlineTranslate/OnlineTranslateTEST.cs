@@ -1,7 +1,9 @@
-﻿using NLog;
+﻿using Newtonsoft.Json.Linq;
+using NLog;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
@@ -9,11 +11,11 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
-using System.Web;
 using System.Windows.Forms;
 using TranslationHelper.Data;
 using TranslationHelper.Data.Interfaces;
 using TranslationHelper.Extensions;
+using TranslationHelper.Functions.FileElementsFunctions.Row.OnlineTranslate.OnlineTranslators;
 using TranslationHelper.Functions.StringChangers;
 using TranslationHelper.Functions.StringChangers.HardFixes;
 using TranslationHelper.Main.Functions;
@@ -85,6 +87,12 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row.OnlineTranslate
         private readonly FixCellsChanger _fixCells = new FixCellsChanger();
 
         /// <summary>
+        /// Whether this instance created <see cref="_translator"/> and therefore owns its lifetime.
+        /// An injected translator belongs to the caller.
+        /// </summary>
+        private readonly bool _ownsTranslator;
+
+        /// <summary>
         /// Regex for determining replacer list type.
         /// </summary>
         private static readonly Regex _replacerListTypeRegex = new Regex(@"^\$[0-9]+(,\$[0-9]+)+$", RegexOptions.Compiled);
@@ -130,6 +138,7 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row.OnlineTranslate
         public OnlineTranslateTEST(ITranslator translator = null, ITranslationCache cache = null)
         {
             Logger.Debug("Initializing OnlineTranslateTEST");
+            _ownsTranslator = translator == null;
             _translator = translator ?? new GoogleTranslator(sourceLanguage: THSettings.SourceLanguageCode, targetLanguage: THSettings.TargetLanguageCode);
             _cache = cache ?? new TranslationCache();
             _buffer = new ConcurrentDictionary<int, TranslationData>();
@@ -196,12 +205,34 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row.OnlineTranslate
                 TranslateStrings();
             }
             _cache.Dispose();
+            DisposeTranslator();
             if (AppSettings.InterruptTtanslation)
             {
                 Logger.Warn("Translation was interrupted by the user.");
                 AppSettings.InterruptTtanslation = false;
             }
             Logger.Info(T._("Translation complete"));
+        }
+
+        /// <summary>
+        /// Releases the translator when this instance created it. Without this the HTTP client of every
+        /// run stays alive until the process ends, because a fresh function instance is built per menu call.
+        /// </summary>
+        private void DisposeTranslator()
+        {
+            if (!_ownsTranslator) return;
+
+            var disposable = _translator as IDisposable;
+            if (disposable == null) return;
+
+            try
+            {
+                disposable.Dispose();
+            }
+            catch (Exception ex)
+            {
+                Logger.Warn($"Could not dispose the translator ({ex.Message}).");
+            }
         }
 
         /// <summary>
@@ -892,11 +923,133 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row.OnlineTranslate
     }
 
     /// <summary>
-    /// Implementation of a translator using Google Translate (web).
+    /// Raised when a translation request was refused or answered with something that could not be read.
+    /// Derives from <see cref="HttpRequestException"/> so callers that already handled a failed request
+    /// keep working.
+    /// </summary>
+    public class TranslationRequestException : HttpRequestException
+    {
+        /// <summary>
+        /// Creates an instance with a message.
+        /// </summary>
+        /// <param name="message">Description of the failure.</param>
+        public TranslationRequestException(string message) : base(message) { }
+
+        /// <summary>
+        /// Creates an instance with a message and the underlying cause.
+        /// </summary>
+        /// <param name="message">Description of the failure.</param>
+        /// <param name="innerException">The cause.</param>
+        public TranslationRequestException(string message, Exception innerException) : base(message, innerException) { }
+    }
+
+    /// <summary>
+    /// Translates text through the JSON endpoint of the Google Translate web client.
+    /// <para>
+    /// Requests are signed with the <c>tk</c> token and carry the browser headers a real browser sends.
+    /// This is the realization XUnity.AutoTranslator ships as <c>GoogleTranslateCompat</c>, and the token
+    /// is what makes the service answer: the same request without it is refused with HTTP 403.
+    /// </para>
+    /// <para>
+    /// The HTML endpoint this class used before (<c>https://translate.google.com/m</c>) is now answered
+    /// with a redirect to <c>https://www.google.com/sorry/index</c>, and that interstitial is served with
+    /// HTTP 429. Because a handler follows redirects by default, every translation arrived as a 429 no
+    /// matter how short the text was or how long the caller waited, which is why even a single word
+    /// failed. Waiting longer cannot clear a challenge page, so retrying with a bigger delay never helped.
+    /// </para>
+    /// <para>
+    /// The endpoint is reachable under more than one host and the hosts are challenged independently, so
+    /// a refusal moves to the next one rather than ending the run. That is what makes a single word work
+    /// even while one of the hosts is refusing this client.
+    /// </para>
     /// </summary>
     public class GoogleTranslator : ITranslator, IDisposable
     {
+        #region Constants
+
+        /// <summary>
+        /// Endpoints of the Google Translate JSON API, tried in order.
+        /// <para>
+        /// They answer the same protocol with the same token, but they are separate services: measured
+        /// from one machine, <c>translate.googleapis.com</c> answered the challenge page while
+        /// <c>translate.google.com</c> answered the translation. A refusal therefore moves to the next
+        /// entry instead of ending the run.
+        /// </para>
+        /// </summary>
+        private static readonly string[] TranslateApiUrls =
+        {
+            "https://translate.googleapis.com/translate_a/single",
+            "https://translate.google.com/translate_a/single",
+        };
+
+        /// <summary>
+        /// Query template of the endpoint: base URL, client, source, target, what to return, token, text.
+        /// </summary>
+        private const string TranslateApiUrlTemplate = "{0}?client={1}&sl={2}&tl={3}&dt=t&tk={4}&q={5}";
+
+        /// <summary>
+        /// Site the referer points at, so a request looks like it came from the translate page.
+        /// </summary>
+        private const string TranslateSiteUrl = "https://translate.google.com";
+
+        /// <summary>
+        /// Client identifier the web front end uses. The signed "webapp" client is the one the endpoint accepts.
+        /// </summary>
+        private const string WebAppClient = "webapp";
+
+        /// <summary>
+        /// Texts joined into a single request. Mirrors the batch size of the reference realization, and
+        /// is what keeps a large batch from turning into one request per string.
+        /// </summary>
+        private const int MaxTextsPerRequest = 10;
+
+        /// <summary>
+        /// Upper bound for the encoded query of one request. The texts travel in the query string, where a
+        /// non-ASCII character costs up to nine characters once escaped, so the budget is measured on the
+        /// escaped length rather than on the text length.
+        /// </summary>
+        private const int MaxEncodedQueryLength = 4000;
+
+        /// <summary>
+        /// Attempts per request before the failure is reported.
+        /// </summary>
+        private const int MaxAttempts = 5;
+
+        /// <summary>
+        /// First backoff step in milliseconds; doubles per attempt.
+        /// </summary>
+        private const int BaseRetryDelayMs = 500;
+
+        /// <summary>
+        /// Ceiling of the backoff, so a large Retry-After cannot freeze the caller for minutes.
+        /// </summary>
+        private const int MaxRetryDelayMs = 15000;
+
+        /// <summary>
+        /// Multiplier of the signing TKK.
+        /// <para>
+        /// The reference realization reads this from a TKK value on the translate page and falls back to
+        /// this constant. The page has stopped publishing one — a fetched copy is 281 KB and carries no
+        /// <c>tkk:</c> and no cookie at all — so the constant is what signs requests, and the page is not
+        /// read for it. Re-add the read if Google starts publishing a TKK again.
+        /// </para>
+        /// </summary>
+        private const long TkkMultiplier = 427761;
+
+        /// <summary>
+        /// Offset of the signing TKK, used together with <see cref="TkkMultiplier"/>.
+        /// </summary>
+        private const long TkkOffset = 1179739010;
+
+        /// <summary>
+        /// Length at which a response body is cut down for a log line.
+        /// </summary>
+        private const int LoggedBodyLength = 200;
+
+        #endregion
+
         #region Fields
+
         protected static readonly Logger Logger = LogManager.GetCurrentClassLogger();
 
         /// <summary>
@@ -915,39 +1068,52 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row.OnlineTranslate
         private readonly string _targetLanguage;
 
         /// <summary>
-        /// List of User-Agent strings to bypass restrictions.
+        /// User-Agent of the simulated browser.
         /// </summary>
-        private readonly List<string> _userAgents;
+        private readonly string _userAgent;
 
         /// <summary>
-        /// Random number generator for selecting User-Agent.
+        /// Accept-Language of the simulated browser.
         /// </summary>
-        private readonly Random _random;
+        private readonly string _acceptLanguage;
 
         /// <summary>
-        /// Semaphore for limiting concurrent requests.
+        /// Accept header of the simulated browser.
         /// </summary>
-        private readonly SemaphoreSlim _semaphore;
+        private readonly string _accept;
 
         /// <summary>
-        /// Delay between requests.
+        /// Referer of a translation request.
         /// </summary>
-        private readonly TimeSpan _delayBetweenRequests;
+        private readonly string _referer;
+
+        /// <summary>
+        /// Accept-Charset of the simulated browser.
+        /// </summary>
+        private readonly string _acceptCharset;
+
+        /// <summary>
+        /// Serialises requests. The endpoint is asked one request at a time, which is what the reference
+        /// realization does and what keeps the caller from being throttled.
+        /// </summary>
+        private readonly SemaphoreSlim _requestGate;
+
+        /// <summary>
+        /// Minimum distance between two requests. <see cref="TimeSpan.Zero"/> disables the spacing.
+        /// </summary>
+        private readonly TimeSpan _minRequestInterval;
+
+        /// <summary>
+        /// Endpoint currently used. Only touched while <see cref="_requestGate"/> is held.
+        /// </summary>
+        private int _apiUrlIndex;
+
+        private DateTime _lastRequestUtc = DateTime.MinValue;
 
         /// <summary>
         /// Flag: object disposed.
         /// </summary>
         private bool _disposed;
-
-        /// <summary>
-        /// Maximum number of retries for HTTP 429 errors.
-        /// </summary>
-        private const int Max429Retries = 5;
-
-        /// <summary>
-        /// Delay increase for HTTP 429 errors (ms).
-        /// </summary>
-        private const int DelayIncreaseMs = 2000;
 
         #endregion
 
@@ -959,26 +1125,29 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row.OnlineTranslate
         /// <param name="sourceLanguage">Source language code.</param>
         /// <param name="targetLanguage">Target language code.</param>
         /// <param name="maxConcurrentRequests">Maximum concurrent requests.</param>
-        /// <param name="delayMs">Delay between requests (ms).</param>
-        public GoogleTranslator(string sourceLanguage = "auto", string targetLanguage = "en", int maxConcurrentRequests = 5, int delayMs = 1000)
+        /// <param name="delayMs">Minimum delay between two requests in milliseconds. The first request is not delayed.</param>
+        public GoogleTranslator(string sourceLanguage = "auto", string targetLanguage = "en", int maxConcurrentRequests = 1, int delayMs = 1000)
         {
             Logger.Debug("Initializing GoogleTranslator");
             _sourceLanguage = sourceLanguage ?? throw new ArgumentNullException(nameof(sourceLanguage));
             _targetLanguage = targetLanguage ?? throw new ArgumentNullException(nameof(targetLanguage));
-            _userAgents = new List<string>
-                    {
-                        "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36",
-                        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/14.0 Safari/605.1.15",
-                        "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/92.0.4515.107 Safari/537.36"
-                    };
-            _random = new Random();
-            _semaphore = new SemaphoreSlim(maxConcurrentRequests);
-            _delayBetweenRequests = TimeSpan.FromMilliseconds(delayMs);
+
+            // One coherent browser identity for the whole session: rotating it per request is what a bot
+            // does, not what a browser does.
+            _userAgent = UserAgents.Chrome_Win10;
+            _acceptLanguage = "en-US,en;q=0.9";
+            _accept = "application/json";
+            _referer = TranslateSiteUrl + "/";
+            _acceptCharset = Encoding.UTF8.WebName;
+
+            _requestGate = new SemaphoreSlim(maxConcurrentRequests < 1 ? 1 : maxConcurrentRequests);
+            _minRequestInterval = delayMs > 0 ? TimeSpan.FromMilliseconds(delayMs) : TimeSpan.Zero;
 
             var handler = new HttpClientHandler
             {
                 CookieContainer = new CookieContainer(),
-                UseCookies = true
+                UseCookies = true,
+                AutomaticDecompression = DecompressionMethods.GZip | DecompressionMethods.Deflate
             };
             _httpClient = new HttpClient(handler)
             {
@@ -997,112 +1166,508 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row.OnlineTranslate
         /// <returns>Translated string.</returns>
         public string Translate(string text)
         {
-            Logger.Debug($"Translating string: {text}");
-            return TranslateAsync(text).GetAwaiter().GetResult();
+            if (string.IsNullOrEmpty(text))
+                throw new ArgumentException("Text to translate cannot be null or empty.", nameof(text));
+
+            return Translate(new[] { text })[0];
         }
 
         /// <summary>
         /// Translates an array of strings (synchronously).
         /// </summary>
         /// <param name="texts">Array of strings to translate.</param>
-        /// <returns>Array of translated strings.</returns>
+        /// <returns>Array of translated strings, in the order of <paramref name="texts"/>.</returns>
         public string[] Translate(string[] texts)
         {
-            Logger.Debug($"Batch translation of string array. Count: {texts?.Length ?? 0}");
-            return Task.WhenAll(texts.Select(TranslateAsync)).GetAwaiter().GetResult();
+            if (texts == null) throw new ArgumentNullException(nameof(texts));
+
+            Logger.Debug($"Batch translation of string array. Count: {texts.Length}");
+            return TranslateAsync(texts).GetAwaiter().GetResult();
         }
 
         #endregion
 
-        #region Private Methods
+        #region Translation Pipeline
 
         /// <summary>
-        /// Asynchronously translates a single string.
+        /// Translates every text, one chunk of requests at a time.
         /// </summary>
-        /// <param name="text">String to translate.</param>
-        /// <returns>Translated string.</returns>
-        private async Task<string> TranslateAsync(string text)
+        /// <param name="texts">Texts to translate.</param>
+        /// <returns>Translations in the order of <paramref name="texts"/>.</returns>
+        private async Task<string[]> TranslateAsync(string[] texts)
         {
-            if (string.IsNullOrEmpty(text))
+            EnsureNotDisposed();
+            if (texts.Length == 0) return Array.Empty<string>();
+
+            for (int i = 0; i < texts.Length; i++)
+                if (string.IsNullOrEmpty(texts[i]))
+                    throw new ArgumentException("Text to translate cannot be null or empty.", nameof(texts));
+
+            var translations = new string[texts.Length];
+            foreach (var chunk in BuildChunks(texts))
+                await TranslateChunkAsync(texts, chunk, translations).ConfigureAwait(false);
+
+            return translations;
+        }
+
+        /// <summary>
+        /// Splits the texts into request-sized chunks, bounded by both the text count and the escaped length.
+        /// </summary>
+        /// <param name="texts">Texts to translate.</param>
+        /// <returns>Indexes of the texts belonging to each request.</returns>
+        private static IEnumerable<List<int>> BuildChunks(string[] texts)
+        {
+            var chunk = new List<int>(MaxTextsPerRequest);
+            int encodedLength = 0;
+
+            for (int i = 0; i < texts.Length; i++)
             {
-                Logger.Error("Text to translate cannot be null or empty.");
-                throw new ArgumentException("Text to translate cannot be null or empty.", nameof(text));
+                int textLength = Uri.EscapeDataString(texts[i]).Length;
+                bool countReached = chunk.Count >= MaxTextsPerRequest;
+                bool lengthReached = encodedLength + textLength + 1 > MaxEncodedQueryLength;
+                if (chunk.Count > 0 && (countReached || lengthReached))
+                {
+                    yield return chunk;
+                    chunk = new List<int>(MaxTextsPerRequest);
+                    encodedLength = 0;
+                }
+
+                chunk.Add(i);
+                encodedLength += textLength + 1;
             }
 
-            await _semaphore.WaitAsync();
+            if (chunk.Count > 0) yield return chunk;
+        }
+
+        /// <summary>
+        /// Translates one chunk. A chunk travels as a single request, so when it fails it is retried text
+        /// by text: one text the service dislikes must not cost the rest of the chunk.
+        /// </summary>
+        /// <param name="texts">All texts of the batch.</param>
+        /// <param name="indexes">Indexes of the texts of this chunk.</param>
+        /// <param name="translations">Translations collected so far.</param>
+        private async Task TranslateChunkAsync(string[] texts, List<int> indexes, string[] translations)
+        {
+            if (indexes.Count == 0) return;
+
             try
             {
-                int retryCount = 0;
-                int currentDelayMs = (int)_delayBetweenRequests.TotalMilliseconds;
-                while (true)
-                {
-                    await Task.Delay(currentDelayMs);
-                    string userAgent = _userAgents[_random.Next(_userAgents.Count)];
+                var chunkTexts = new string[indexes.Count];
+                for (int i = 0; i < indexes.Count; i++) chunkTexts[i] = texts[indexes[i]];
 
-                    string url = $"https://translate.google.com/m?hl=en&sl={_sourceLanguage}&tl={_targetLanguage}&ie=UTF-8&prev=_m&q={Uri.EscapeDataString(text)}";
-                    var request = new HttpRequestMessage(HttpMethod.Get, url);
-                    request.Headers.UserAgent.ParseAdd(userAgent);
+                var translated = await RequestChunkAsync(chunkTexts).ConfigureAwait(false);
+                for (int i = 0; i < indexes.Count; i++) translations[indexes[i]] = translated[i];
+                return;
+            }
+            catch (Exception ex)
+            {
+                if (indexes.Count == 1)
+                    throw new TranslationRequestException($"Failed to translate \"{texts[indexes[0]]}\".", ex);
+
+                Logger.Warn($"A chunk of {indexes.Count} texts failed ({ex.Message}); retrying its texts one by one.");
+            }
+
+            foreach (int index in indexes)
+                await TranslateChunkAsync(texts, new List<int> { index }, translations).ConfigureAwait(false);
+        }
+
+        /// <summary>
+        /// Sends one chunk as a single request and maps the answer back onto the individual texts.
+        /// </summary>
+        /// <param name="texts">Texts of the chunk.</param>
+        /// <returns>One translation per text.</returns>
+        private async Task<string[]> RequestChunkAsync(string[] texts)
+        {
+            // The texts travel newline separated, which is how the service keeps them apart in the answer.
+            var joined = string.Join("\n", texts);
+            var translated = await SendAsync(joined).ConfigureAwait(false);
+
+            if (texts.Length == 1) return new[] { translated };
+
+            // The answer carries one line per text, so the split is what maps the translations back. When
+            // it does not line up the mapping is unknown, and guessing it would put the wrong translation
+            // into a row: the chunk is refused instead, and the caller retries its texts one by one.
+            var lines = translated.Split('\n');
+            if (lines.Length != texts.Length)
+                throw new TranslationRequestException(
+                    $"The service answered with {lines.Length} lines for {texts.Length} texts, so the translations cannot be matched back.");
+
+            return lines;
+        }
+
+        #endregion
+
+        #region Request Transport
+
+        /// <summary>
+        /// Sends one signed request and returns the translation, moving to the next endpoint and backing
+        /// off while the service keeps refusing.
+        /// </summary>
+        /// <param name="text">Text of the request.</param>
+        /// <returns>Translated text.</returns>
+        private async Task<string> SendAsync(string text)
+        {
+            await _requestGate.WaitAsync().ConfigureAwait(false);
+            try
+            {
+                for (int attempt = 1; ; attempt++)
+                {
+                    await WaitForRequestSlotAsync().ConfigureAwait(false);
 
                     HttpResponseMessage response = null;
+                    string refusal = null;
+                    TimeSpan? retryAfter = null;
+
                     try
                     {
-                        response = await _httpClient.SendAsync(request);
+                        response = await SendTranslationRequestAsync(text).ConfigureAwait(false);
+                        int status = (int)response.StatusCode;
+
+                        if (IsChallenge(response))
+                        {
+                            refusal = $"the challenge page at {GetFinalLocation(response)}";
+                        }
+                        else if (status == 429 || status == 403 || status >= 500)
+                        {
+                            refusal = $"HTTP {status}";
+                            retryAfter = ReadRetryAfter(response);
+                        }
+                        else
+                        {
+                            response.EnsureSuccessStatusCode();
+                            var body = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
+                            return ExtractTranslation(body);
+                        }
                     }
                     catch (Exception ex)
                     {
-                        Logger.Warn($"Error sending request to Google Translate: {ex.Message}");
-                        if (retryCount > Max429Retries)
-                        {
-                            Logger.Error("Exceeded retry count for request error.");
-                            throw;
-                        }
-                        retryCount++;
-                        currentDelayMs += DelayIncreaseMs;
-                        continue;
+                        refusal = ex.Message;
                     }
-
-                    if (response.StatusCode == (HttpStatusCode)429)
+                    finally
                     {
-                        Logger.Warn("Received HTTP 429 (rate limit).");
-                        if (retryCount > Max429Retries)
-                        {
-                            Logger.Error("Exceeded retry count for HTTP 429 error.");
-                            throw new HttpRequestException("Rate limit exceeded (HTTP 429) after several retries. Consider increasing delay or using proxies.");
-                        }
-                        retryCount++;
-                        currentDelayMs += DelayIncreaseMs;
-                        continue;
+                        if (response != null) response.Dispose();
                     }
 
-                    response.EnsureSuccessStatusCode();
-                    string html = await response.Content.ReadAsStringAsync();
-                    string translation = ExtractTranslation(html);
-                    Logger.Debug($"Translation received: {translation}");
-                    return translation;
+                    if (attempt >= MaxAttempts)
+                        throw new TranslationRequestException($"Google did not answer the translation request ({refusal}) after {attempt} attempts.");
+
+                    Logger.Warn($"Translation request refused ({refusal}); retrying (attempt {attempt} of {MaxAttempts}).");
+
+                    // The endpoints are challenged independently and one can also be unreachable, so every
+                    // retry moves to the next one before waiting: a bad endpoint costs an attempt instead
+                    // of the whole run. A failure that is not endpoint-specific simply alternates.
+                    MoveToNextEndpoint();
+
+                    await DelayBeforeRetryAsync(attempt, retryAfter).ConfigureAwait(false);
                 }
             }
             finally
             {
-                _semaphore.Release();
+                _requestGate.Release();
             }
         }
 
         /// <summary>
-        /// Extracts translation from Google Translate HTML response.
+        /// Sends one signed translation request to the endpoint currently in use.
         /// </summary>
-        /// <param name="html">HTML response.</param>
-        /// <returns>Translated string.</returns>
-        private static string ExtractTranslation(string html)
+        /// <param name="text">Text of the request.</param>
+        /// <returns>The raw response; the caller owns and disposes it.</returns>
+        private async Task<HttpResponseMessage> SendTranslationRequestAsync(string text)
         {
-            var match = Regex.Match(html, @"<div class=""result-container"">(.*?)</div>");
-            if (!match.Success)
+            var url = string.Format(
+                CultureInfo.InvariantCulture,
+                TranslateApiUrlTemplate,
+                TranslateApiUrls[_apiUrlIndex],
+                WebAppClient,
+                Uri.EscapeDataString(FixLanguage(_sourceLanguage)),
+                Uri.EscapeDataString(FixLanguage(_targetLanguage)),
+                Tk(text),
+                Uri.EscapeDataString(text));
+
+            var request = new HttpRequestMessage(HttpMethod.Get, url);
+            AddBrowserHeaders(request);
+            try
             {
-                Logger.Debug($"Failed to extract translation from {nameof(GoogleTranslator)} response. HTML: ```\n{html}\n```");
-                throw new InvalidOperationException("Failed to extract translation from response.");
+                // The content is read to the end before the call returns, which is what makes disposing
+                // the request here safe.
+                return await _httpClient.SendAsync(request, HttpCompletionOption.ResponseContentRead).ConfigureAwait(false);
+            }
+            finally
+            {
+                request.Dispose();
+            }
+        }
+
+        /// <summary>
+        /// Moves to the next endpoint after a refusal, so a challenged host costs one attempt rather than
+        /// the whole operation.
+        /// </summary>
+        private void MoveToNextEndpoint()
+        {
+            _apiUrlIndex = (_apiUrlIndex + 1) % TranslateApiUrls.Length;
+            Logger.Warn($"Trying the next Google Translate endpoint: {TranslateApiUrls[_apiUrlIndex]}");
+        }
+
+        /// <summary>
+        /// Tells whether the answer is the anti-abuse interstitial rather than a translation. The handler
+        /// follows redirects, so the challenge is recognised by where the request ended up, which is what
+        /// turns the old unexplained HTTP 429 into something that can be acted on.
+        /// </summary>
+        /// <param name="response">Answer to inspect.</param>
+        /// <returns>True when the challenge page answered.</returns>
+        private static bool IsChallenge(HttpResponseMessage response)
+        {
+            var location = GetFinalLocation(response);
+            return location != null && location.IndexOf("/sorry/", StringComparison.OrdinalIgnoreCase) >= 0;
+        }
+
+        /// <summary>
+        /// Reads where a request ended up, for the challenge check and the log line.
+        /// </summary>
+        /// <param name="response">Answer to inspect.</param>
+        /// <returns>The final address, or null when it is not known.</returns>
+        private static string GetFinalLocation(HttpResponseMessage response)
+        {
+            var request = response.RequestMessage;
+            var uri = request == null ? null : request.RequestUri;
+            return uri == null ? null : uri.ToString();
+        }
+
+        /// <summary>
+        /// Maps a language tag the settings can hold onto the code the service uses.
+        /// </summary>
+        /// <param name="language">Language tag.</param>
+        /// <returns>Language code the service understands.</returns>
+        private static string FixLanguage(string language)
+        {
+            switch (language)
+            {
+                case "zh-Hans":
+                case "zh":
+                    return "zh-CN";
+                case "zh-Hant":
+                    return "zh-TW";
+                default:
+                    return language;
+            }
+        }
+
+        /// <summary>
+        /// Adds the headers a browser would send. The endpoint is noticeably less willing to answer a bare
+        /// request, and the referer is what tells it the caller came from the translate page.
+        /// </summary>
+        /// <param name="request">Request to decorate.</param>
+        private void AddBrowserHeaders(HttpRequestMessage request)
+        {
+            AddHeader(request, "User-Agent", _userAgent);
+            AddHeader(request, "Accept-Language", _acceptLanguage);
+            AddHeader(request, "Accept", _accept);
+            AddHeader(request, "Accept-Charset", _acceptCharset);
+            AddHeader(request, "Referer", _referer);
+        }
+
+        /// <summary>
+        /// Adds a header when it has a value, leaving the validation of unusual values to the caller.
+        /// </summary>
+        /// <param name="request">Request to decorate.</param>
+        /// <param name="name">Header name.</param>
+        /// <param name="value">Header value.</param>
+        private static void AddHeader(HttpRequestMessage request, string name, string value)
+        {
+            if (string.IsNullOrEmpty(value)) return;
+
+            request.Headers.TryAddWithoutValidation(name, value);
+        }
+
+        /// <summary>
+        /// Keeps two requests apart by at least <see cref="_minRequestInterval"/>. The first request is
+        /// never delayed, so translating a single word does not pay for a pause nobody needs.
+        /// </summary>
+        private async Task WaitForRequestSlotAsync()
+        {
+            if (_minRequestInterval <= TimeSpan.Zero) return;
+
+            var elapsed = DateTime.UtcNow - _lastRequestUtc;
+            if (elapsed < _minRequestInterval)
+                await Task.Delay(_minRequestInterval - elapsed).ConfigureAwait(false);
+
+            _lastRequestUtc = DateTime.UtcNow;
+        }
+
+        /// <summary>
+        /// Waits before the next attempt, doubling the pause each time and never shorter than what the
+        /// service asked for.
+        /// </summary>
+        /// <param name="attempt">Attempt that just failed, counted from one.</param>
+        /// <param name="retryAfter">Delay the service asked for, if any.</param>
+        private async Task DelayBeforeRetryAsync(int attempt, TimeSpan? retryAfter)
+        {
+            var backoff = TimeSpan.FromMilliseconds(Math.Min(BaseRetryDelayMs * Math.Pow(2, attempt - 1), MaxRetryDelayMs));
+            var delay = retryAfter.HasValue && retryAfter.Value > backoff ? retryAfter.Value : backoff;
+
+            if (delay > TimeSpan.FromMilliseconds(MaxRetryDelayMs))
+            {
+                Logger.Debug($"Google asked to wait {delay.TotalSeconds:F0} s; waiting {MaxRetryDelayMs / 1000} s instead.");
+                delay = TimeSpan.FromMilliseconds(MaxRetryDelayMs);
             }
 
-            // Decode HTML entities to normalize special characters
-            return HttpUtility.HtmlDecode(match.Groups[1].Value);
+            Logger.Debug($"Waiting {delay.TotalMilliseconds:F0} ms before the next translation attempt.");
+            await Task.Delay(delay).ConfigureAwait(false);
+        }
+
+        /// <summary>
+        /// Reads the delay the service asked for, if it asked for one.
+        /// </summary>
+        /// <param name="response">Answer to inspect.</param>
+        /// <returns>The requested delay, or null.</returns>
+        private static TimeSpan? ReadRetryAfter(HttpResponseMessage response)
+        {
+            var retryAfter = response.Headers.RetryAfter;
+            if (retryAfter == null) return null;
+            if (retryAfter.Delta.HasValue) return retryAfter.Delta.Value;
+            if (!retryAfter.Date.HasValue) return null;
+
+            var delta = retryAfter.Date.Value - DateTimeOffset.UtcNow;
+            return delta > TimeSpan.Zero ? delta : (TimeSpan?)null;
+        }
+
+        #endregion
+
+        #region Request Signing
+
+        /// <summary>
+        /// Computes the <c>tk</c> token that signs a request. The arithmetic follows the algorithm the
+        /// translation clients use, including the 32-bit mask, because the service validates the result.
+        /// </summary>
+        /// <param name="text">Text of the request.</param>
+        /// <returns>The signing token.</returns>
+        private static string Tk(string text)
+        {
+            var bytes = new List<long>();
+            for (int i = 0; i < text.Length; i++)
+            {
+                long code = text[i];
+                if (code < 128)
+                {
+                    bytes.Add(code);
+                    continue;
+                }
+
+                if (code < 2048)
+                {
+                    bytes.Add(code >> 6 | 192);
+                }
+                else if (55296 == (64512 & code) && i + 1 < text.Length && 56320 == (64512 & text[i + 1]))
+                {
+                    code = 65536 + ((1023 & code) << 10) + (1023 & text[i + 1]);
+                    i++;
+                    bytes.Add(code >> 18 | 240);
+                    bytes.Add(code >> 12 & 63 | 128);
+                }
+                else
+                {
+                    bytes.Add(code >> 12 | 224);
+                    bytes.Add(code >> 6 & 63 | 128);
+                }
+
+                bytes.Add(63 & code | 128);
+            }
+
+            const string mixMultiply = "+-a^+6";
+            const string mixFinish = "+-3^+b+-f";
+
+            long value = TkkMultiplier;
+            for (int i = 0; i < bytes.Count; i++)
+            {
+                value += bytes[i];
+                value = Mix(value, mixMultiply);
+            }
+
+            value = Mix(value, mixFinish);
+            value ^= TkkOffset;
+            if (value < 0) value = (2147483647 & value) + 2147483648;
+            value %= 1000000;
+
+            return value.ToString(CultureInfo.InvariantCulture) + "." + (value ^ TkkMultiplier).ToString(CultureInfo.InvariantCulture);
+        }
+
+        /// <summary>
+        /// Bit-mixing step of the signing algorithm.
+        /// </summary>
+        /// <param name="value">Current value.</param>
+        /// <param name="operations">Operation string, read in triples.</param>
+        /// <returns>Mixed value.</returns>
+        private static long Mix(long value, string operations)
+        {
+            for (int i = 0; i < operations.Length; i += 3)
+            {
+                long amount = operations[i + 2];
+                amount = amount >= 'a' ? amount - 87 : amount - '0';
+                amount = '+' == operations[i + 1] ? value >> (int)amount : value << (int)amount;
+                value = '+' == operations[i] ? value + amount & 4294967295 : value ^ amount;
+            }
+
+            return value;
+        }
+
+        #endregion
+
+        #region Response Parsing
+
+        /// <summary>
+        /// Reads the translation out of the JSON answer. The answer is a nested array whose first element
+        /// holds one segment per translated line, and the segments are concatenated because that is what
+        /// rebuilds the text that was sent.
+        /// </summary>
+        /// <param name="json">Response body.</param>
+        /// <returns>Translated text.</returns>
+        private static string ExtractTranslation(string json)
+        {
+            if (string.IsNullOrWhiteSpace(json))
+                throw new TranslationRequestException("Google answered the translation request with an empty body.");
+
+            JArray root;
+            try
+            {
+                root = JArray.Parse(json);
+            }
+            catch (Exception ex)
+            {
+                // A challenge or error page arrives as HTML, and guessing what it says is not worth it.
+                throw new TranslationRequestException($"Google answered the translation request with something that is not a JSON array: {Shorten(json)}", ex);
+            }
+
+            if (root.Count == 0 || root[0].Type != JTokenType.Array)
+                throw new TranslationRequestException($"Google answered the translation request without a translation segment array: {Shorten(json)}");
+
+            var builder = new StringBuilder();
+            foreach (var token in (JArray)root[0])
+            {
+                var segment = token as JArray;
+                if (segment == null || segment.Count == 0) continue;
+
+                var value = segment[0] as JValue;
+                if (value == null || value.Type != JTokenType.String) continue;
+
+                builder.Append(value.Value<string>());
+            }
+
+            if (builder.Length == 0)
+                throw new TranslationRequestException($"Google answered the translation request without any translated segment: {Shorten(json)}");
+
+            return builder.ToString();
+        }
+
+        /// <summary>
+        /// Shortens a response body so a log line stays readable.
+        /// </summary>
+        /// <param name="text">Body to shorten.</param>
+        /// <returns>The body, truncated when long.</returns>
+        private static string Shorten(string text)
+        {
+            if (string.IsNullOrEmpty(text)) return "<empty>";
+
+            return text.Length <= LoggedBodyLength ? text : text.Substring(0, LoggedBodyLength) + "...";
         }
 
         #endregion
@@ -1114,16 +1679,23 @@ namespace TranslationHelper.Functions.FileElementsFunctions.Row.OnlineTranslate
         /// </summary>
         public void Dispose()
         {
-            if (!_disposed)
-            {
-                Logger.Debug("Disposing GoogleTranslator resources.");
-                _httpClient.Dispose();
-                _semaphore.Dispose();
+            if (_disposed) return;
+            _disposed = true;
 
-                _disposed = true;
+            Logger.Debug("Disposing GoogleTranslator resources.");
+            try { _httpClient.Dispose(); } catch (Exception ex) { Logger.Warn($"Could not dispose the HTTP client ({ex.Message})."); }
+            try { _requestGate.Dispose(); } catch (Exception ex) { Logger.Warn($"Could not dispose the request gate ({ex.Message})."); }
 
-                GC.SuppressFinalize(this);
-            }
+            GC.SuppressFinalize(this);
+        }
+
+        /// <summary>
+        /// Fails fast when the translator was already disposed, instead of reporting the failure as a
+        /// request error.
+        /// </summary>
+        private void EnsureNotDisposed()
+        {
+            if (_disposed) throw new ObjectDisposedException(nameof(GoogleTranslator));
         }
 
         #endregion
