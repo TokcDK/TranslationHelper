@@ -117,7 +117,15 @@ namespace TranslationHelper.Forms.Search
             if (condition.UseRegex)
             {
                 var options = condition.CaseSensitive ? RegexOptions.None : RegexOptions.IgnoreCase;
-                bool ret = Regex.IsMatch(input, condition.FindWhat, options);
+                bool ret;
+                try
+                {
+                    ret = Regex.IsMatch(input, condition.FindWhat, options);
+                }
+                catch
+                {
+                    ret = false;
+                }
                 return ret;
             }
             else
