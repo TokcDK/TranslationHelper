@@ -1,6 +1,7 @@
 ﻿using System;
 using System.ComponentModel;
 using System.Data;
+using System.IO;
 using System.Windows.Forms;
 using TranslationHelper.Data;
 using TranslationHelper.Functions;
@@ -72,7 +73,10 @@ namespace TranslationHelper.Workspace
         /// </summary>
         internal TabPage CreateProjectTabPage()
         {
-            return new TabPage(_project.Name) { Controls = { _panel } };
+            // project tab page name will be project name + project directory name
+            string projectDirectoryName = Path.GetFileName(_project.SelectedGameDir);
+            string tabName = $"[{_project.Name}] {projectDirectoryName}";
+            return new TabPage(tabName) { Controls = { _panel } };
         }
 
         /// <summary>
